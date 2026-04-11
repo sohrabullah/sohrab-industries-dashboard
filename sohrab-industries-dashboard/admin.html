@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Sohrab Industries</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .admin-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .admin-header { background: #333; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .admin-section { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; }
+        .btn-save { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .investor-list { margin-top: 20px; }
+        .investor-item { padding: 10px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>🔧 Admin Panel - Sohrab Industries</h1>
+            <p>Manage Investors, Investments, and Profits</p>
+            <button onclick="logout()" style="background: #dc3545; color: white; padding: 5px 10px; border: none; border-radius: 5px;">Logout</button>
+        </div>
+
+        <!-- Add Investment Section -->
+        <div class="admin-section">
+            <h2>➕ Add Investment for Investor</h2>
+            <div class="form-group">
+                <label>Select Investor</label>
+                <select id="investorSelect"></select>
+            </div>
+            <div class="form-group">
+                <label>Amount (Rs.)</label>
+                <input type="number" id="invAmount" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label>Investment Date</label>
+                <input type="date" id="invDate">
+            </div>
+            <button onclick="addInvestment()" class="btn-save">Add Investment</button>
+        </div>
+
+        <!-- Add Profit Section -->
+        <div class="admin-section">
+            <h2>💰 Add Profit Distribution</h2>
+            <div class="form-group">
+                <label>Select Investor</label>
+                <select id="profitInvestorSelect"></select>
+            </div>
+            <div class="form-group">
+                <label>Profit Amount (Rs.)</label>
+                <input type="number" id="profitAmount" placeholder="Enter profit amount">
+            </div>
+            <div class="form-group">
+                <label>Month</label>
+                <input type="month" id="profitMonth">
+            </div>
+            <button onclick="addProfit()" class="btn-save">Add Profit</button>
+        </div>
+
+        <!-- Investor List -->
+        <div class="admin-section">
+            <h2>📋 All Investors</h2>
+            <div id="investorList" class="investor-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function checkAdmin() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                window.location.href = 'index.html';
+            }
+            await loadInvestors();
+        }
+
+        async function loadInvestors() {
+            const { data, error } = await supabase
+                .from('investors')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            if (error) return;
+            
+            // Populate selects
+            const selectHtml = data.map(i => `<option value="${i.id}">${i.full_name} (${i.email})</option>`).join('');
+            document.getElementById('investorSelect').innerHTML = selectHtml;
+            document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
+            
+            // Display investor list
+            document.getElementById('investorList').innerHTML = data.map(i => `
+                <div class="investor-item">
+                    <strong>${i.full_name}</strong><br>
+                    Email: ${i.email}<br>
+                    Phone: ${i.phone || 'N/A'}<br>
+                    Joined: ${new Date(i.created_at).toLocaleDateString()}
+                </div>
+            `).join('');
+        }
+
+        async function addInvestment() {
+            const investorId = document.getElementById('investorSelect').value;
+            const amount = document.getElementById('invAmount').value;
+            const date = document.getElementById('invDate').value;
+            
+            if (!investorId || !amount || !date) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            const { error } = await supabase
+                .from('investments')
+                .insert([{
+                    investor_id: investorId,
+                    amount: parseFloat(amount),
+                    investment_date: date,
+                    status: 'active'
+                }]);
+            
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                alert('Investment added successfully!');
+                document.getElementById('invAmount').value = '';
+            }
+        }
+
+        async function addProfit() {
+            const investorId = document.getElementById('profitInvestorSelect').value;
+            const amount = document.getElementById('profitAmount').value;
+            const month = document.getElementById('profitMonth').value;
+            
+            if (!investorId || !amount || !month) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            const { error } = await supabase
+                .from('profits')
+                .insert([{
+                    investor_id: investorId,
+                    amount: parseFloat(amount),
+                    month: month + '-01',
+                    paid: true,
+                    paid_date: new Date().toISOString().split('T')[0]
+                }]);
+            
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                alert('Profit added successfully!');
+                document.getElementById('profitAmount').value = '';
+            }
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        checkAdmin();
+    </script>
+</body>
+</html>
