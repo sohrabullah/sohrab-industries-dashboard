@@ -25,9 +25,9 @@
         .logo { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 700; color: #1E4E3E; }
         .logo i { color: #E8B13C; }
         .nav-links { display: flex; gap: 20px; }
-        .nav-links a { text-decoration: none; color: #1E4E3E; font-weight: 500; }
+        .nav-links a { text-decoration: none; color: #1E4E3E; font-weight: 500; transition: color 0.3s; }
         .nav-links a:hover { color: #E8B13C; }
-        .container { max-width: 550px; margin: 2rem auto; padding: 0 1rem; }
+        .container { max-width: 520px; margin: 2rem auto; padding: 0 1rem; }
         .auth-card { background: white; border-radius: 2rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); }
         .card-header { background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%); padding: 2rem; text-align: center; color: white; }
         .card-header i { font-size: 3rem; color: #E8B13C; margin-bottom: 0.5rem; }
@@ -54,11 +54,8 @@
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
         }
-        .toggle-btn.active {
-            background: #1E4E3E;
-            color: white;
-        }
-        .form-container { transition: all 0.3s ease; }
+        .toggle-btn.active { background: #1E4E3E; color: white; }
+        .form-wrapper { transition: all 0.3s ease; }
         .form-group { margin-bottom: 1.2rem; position: relative; }
         .form-group i {
             position: absolute;
@@ -89,9 +86,10 @@
             transition: all 0.3s;
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30,78,62,0.3); }
-        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
-        .footer-links { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
-        .footer-links a { color: #1E4E3E; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .toggle-link { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
+        .toggle-link a { color: #1E4E3E; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .toggle-link a:hover { text-decoration: underline; }
         .back-home { text-align: center; margin-top: 1rem; }
         .back-home a { color: white; text-decoration: none; font-size: 0.9rem; opacity: 0.8; }
         .toast {
@@ -109,7 +107,6 @@
         }
         .toast.success { background: #28a745; }
         .toast.error { background: #dc3545; }
-        .toast.info { background: #17a2b8; }
         @keyframes slideUp {
             from { transform: translateX(-50%) translateY(100px); opacity: 0; }
             to { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -141,15 +138,8 @@
                     <button class="toggle-btn active" id="signupTabBtn">Sign Up</button>
                 </div>
 
-                <!-- Login Form -->
-                <div id="loginForm">
-                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address" required></div>
-                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password" required></div>
-                    <button class="btn-primary" id="loginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard</button>
-                </div>
-
-                <!-- Signup Form -->
-                <div id="signupForm">
+                <!-- Signup Form (Visible by default) -->
+                <div id="signupForm" class="form-wrapper">
                     <div class="form-group"><i class="fas fa-user"></i><input type="text" id="fullName" placeholder="Full Name" required></div>
                     <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="email" placeholder="Email Address" required></div>
                     <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="phone" placeholder="Phone Number" required></div>
@@ -159,7 +149,14 @@
                     <button class="btn-primary" id="signupBtn"><i class="fas fa-user-plus"></i> Create Investor Account</button>
                 </div>
 
-                <div class="footer-links">
+                <!-- Login Form (Hidden by default) -->
+                <div id="loginForm" class="form-wrapper" style="display: none;">
+                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address" required></div>
+                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password" required></div>
+                    <button class="btn-primary" id="loginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard</button>
+                </div>
+
+                <div class="toggle-link">
                     <a id="toggleLink">Already have an account? Login →</a>
                 </div>
                 <div class="back-home"><a href="index.html">← Back to Home</a></div>
@@ -175,7 +172,6 @@
         function showToast(message, isError = false) {
             const existingToast = document.querySelector('.toast');
             if (existingToast) existingToast.remove();
-            
             const toast = document.createElement('div');
             toast.className = `toast ${isError ? 'error' : 'success'}`;
             toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
@@ -183,23 +179,22 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Get elements
-        const loginForm = document.getElementById('loginForm');
         const signupForm = document.getElementById('signupForm');
+        const loginForm = document.getElementById('loginForm');
         const loginTab = document.getElementById('loginTabBtn');
         const signupTab = document.getElementById('signupTabBtn');
         const toggleLink = document.getElementById('toggleLink');
 
-        // Function to show login form
+        // Show Login Form (Hide Signup)
         function showLoginForm() {
-            loginForm.style.display = 'block';
             signupForm.style.display = 'none';
+            loginForm.style.display = 'block';
             loginTab.classList.add('active');
             signupTab.classList.remove('active');
             toggleLink.innerHTML = "Don't have an account? Sign Up →";
         }
 
-        // Function to show signup form
+        // Show Signup Form (Hide Login)
         function showSignupForm() {
             loginForm.style.display = 'none';
             signupForm.style.display = 'block';
@@ -208,20 +203,19 @@
             toggleLink.innerHTML = "Already have an account? Login →";
         }
 
-        // Add click event listeners
         loginTab.addEventListener('click', showLoginForm);
         signupTab.addEventListener('click', showSignupForm);
-        toggleLink.addEventListener('click', function() {
-            if (loginForm.style.display === 'none' || loginForm.style.display === '') {
+        toggleLink.addEventListener('click', () => {
+            if (loginForm.style.display === 'none') {
                 showLoginForm();
             } else {
                 showSignupForm();
             }
         });
 
-        // SIGNUP FUNCTION - Submit to Database
+        // ========== SIGNUP FUNCTION - Submits to Database ==========
         document.getElementById('signupBtn').addEventListener('click', async function() {
-            const signupBtn = document.getElementById('signupBtn');
+            const btn = document.getElementById('signupBtn');
             const fullName = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
@@ -243,26 +237,12 @@
                 return;
             }
 
-            // Disable button and show loading
-            signupBtn.disabled = true;
-            signupBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
+            // Disable button
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
 
             try {
-                // Check if email already exists in investors table
-                const { data: existingUser, error: checkError } = await supabase
-                    .from('investors')
-                    .select('email')
-                    .eq('email', email)
-                    .single();
-
-                if (existingUser) {
-                    showToast('Email already registered. Please login.', true);
-                    signupBtn.disabled = false;
-                    signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
-                    return;
-                }
-
-                // Create user in Supabase Auth
+                // 1. Create user in Supabase Auth
                 const { data: authData, error: authError } = await supabase.auth.signUp({
                     email: email,
                     password: password,
@@ -278,13 +258,13 @@
 
                 if (authError) {
                     showToast(authError.message, true);
-                    signupBtn.disabled = false;
-                    signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
                     return;
                 }
 
                 if (authData.user) {
-                    // Insert into investors table
+                    // 2. Insert into investors table
                     const { error: insertError } = await supabase
                         .from('investors')
                         .insert([{
@@ -299,20 +279,20 @@
                         }]);
 
                     if (insertError) {
-                        console.error('Insert error:', insertError);
-                        showToast('Account created but profile needs update. Please login.', false);
+                        console.error('Insert Error:', insertError);
+                        showToast('Account created but profile sync pending. Please login.', false);
                     } else {
                         showToast('Account created successfully! Please login.', false);
                     }
 
-                    // Clear form
+                    // Clear form and switch to login
                     document.getElementById('fullName').value = '';
                     document.getElementById('email').value = '';
                     document.getElementById('phone').value = '';
                     document.getElementById('city').value = '';
                     document.getElementById('password').value = '';
                     document.getElementById('confirmPassword').value = '';
-
+                    
                     // Switch to login form
                     showLoginForm();
                 }
@@ -320,14 +300,14 @@
                 console.error('Error:', error);
                 showToast('An error occurred. Please try again.', true);
             } finally {
-                signupBtn.disabled = false;
-                signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
             }
         });
 
-        // LOGIN FUNCTION
+        // ========== LOGIN FUNCTION ==========
         document.getElementById('loginBtn').addEventListener('click', async function() {
-            const loginBtn = document.getElementById('loginBtn');
+            const btn = document.getElementById('loginBtn');
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
@@ -336,9 +316,8 @@
                 return;
             }
 
-            // Disable button and show loading
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
 
             try {
                 const { data, error } = await supabase.auth.signInWithPassword({ 
@@ -348,8 +327,8 @@
 
                 if (error) {
                     showToast('Invalid email or password', true);
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
                     return;
                 }
 
@@ -363,14 +342,14 @@
                 }
             } catch (error) {
                 showToast('An error occurred. Please try again.', true);
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
             }
         });
 
         // Enter key support
         document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('keypress', function(e) {
+            input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     if (loginForm.style.display !== 'none') {
                         document.getElementById('loginBtn').click();
@@ -380,10 +359,6 @@
                 }
             });
         });
-
-        // Initially show signup form
-        signupForm.style.display = 'block';
-        loginForm.style.display = 'none';
     </script>
 </body>
 </html>
