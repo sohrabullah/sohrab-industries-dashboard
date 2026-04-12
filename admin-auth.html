@@ -37,51 +37,17 @@
         .admin-notice { background: #fff3cd; padding: 12px; border-radius: 10px; margin-bottom: 1.5rem; text-align: center; font-size: 0.8rem; color: #856404; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .form-group { margin-bottom: 1.2rem; position: relative; }
         .form-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9CA3AF; }
-        .form-group input {
-            width: 100%;
-            padding: 0.9rem 1rem 0.9rem 2.8rem;
-            border: 1.5px solid #E2E8F0;
-            border-radius: 1rem;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
+        .form-group input { width: 100%; padding: 0.9rem 1rem 0.9rem 2.8rem; border: 1.5px solid #E2E8F0; border-radius: 1rem; font-size: 1rem; }
         .form-group input:focus { outline: none; border-color: #dc3545; }
-        .btn-primary {
-            width: 100%;
-            padding: 0.9rem;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 2rem;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+        .btn-primary { width: 100%; padding: 0.9rem; background: #dc3545; color: white; border: none; border-radius: 2rem; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(220,53,69,0.3); }
         .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
         .back-home { text-align: center; margin-top: 1.5rem; }
         .back-home a { color: #666; text-decoration: none; font-size: 0.9rem; }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 40px;
-            color: white;
-            z-index: 1000;
-            animation: slideUp 0.3s ease;
-            text-align: center;
-            font-weight: 500;
-        }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 1000; animation: slideUp 0.3s ease; text-align: center; font-weight: 500; }
         .toast.success { background: #28a745; }
         .toast.error { background: #dc3545; }
-        @keyframes slideUp {
-            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-        @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } }
+        @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -121,6 +87,18 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Check if already logged in as admin
+        async function checkAdminSession() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
+                if (adminEmails.includes(user.email)) {
+                    window.location.href = 'admin.html';
+                }
+            }
+        }
+        checkAdminSession();
+
         function showToast(message, isError = false) {
             const toast = document.createElement('div');
             toast.className = `toast ${isError ? 'error' : 'success'}`;
@@ -139,7 +117,7 @@
                 return;
             }
 
-            const adminEmails = ['admin@sohrab.com', 'sohrabullahkn786@gmail.com'];
+            const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
             if (!adminEmails.includes(email)) {
                 showToast('Unauthorized access. Admin only.', true);
                 return;
