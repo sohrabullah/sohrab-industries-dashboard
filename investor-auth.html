@@ -27,7 +27,7 @@
         .nav-links { display: flex; gap: 20px; }
         .nav-links a { text-decoration: none; color: #1E4E3E; font-weight: 500; }
         .nav-links a:hover { color: #E8B13C; }
-        .container { max-width: 500px; margin: 2rem auto; padding: 0 1rem; }
+        .container { max-width: 550px; margin: 2rem auto; padding: 0 1rem; }
         .auth-card { background: white; border-radius: 2rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); }
         .card-header { background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%); padding: 2rem; text-align: center; color: white; }
         .card-header i { font-size: 3rem; color: #E8B13C; margin-bottom: 0.5rem; }
@@ -52,8 +52,11 @@
             transition: all 0.3s;
             background: transparent;
             font-family: 'Inter', sans-serif;
+            font-size: 1rem;
         }
-        .toggle-btn.active { background: #1E4E3E; color: white; }
+        .toggle-btn.login-btn.active { background: #1E4E3E; color: white; }
+        .toggle-btn.signup-btn.active { background: #1E4E3E; color: white; }
+        .form-container { transition: all 0.3s ease; }
         .form-group { margin-bottom: 1.2rem; position: relative; }
         .form-group i {
             position: absolute;
@@ -84,9 +87,9 @@
             transition: all 0.3s;
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30,78,62,0.3); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
         .footer-links { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
         .footer-links a { color: #1E4E3E; text-decoration: none; font-weight: 600; cursor: pointer; }
-        .footer-links a:hover { text-decoration: underline; }
         .back-home { text-align: center; margin-top: 1rem; }
         .back-home a { color: white; text-decoration: none; font-size: 0.9rem; opacity: 0.8; }
         .toast {
@@ -99,6 +102,7 @@
             color: white;
             z-index: 1000;
             animation: slideUp 0.3s ease;
+            text-align: center;
         }
         .toast.success { background: #28a745; }
         .toast.error { background: #dc3545; }
@@ -129,19 +133,19 @@
             </div>
             <div class="card-body">
                 <div class="toggle-buttons">
-                    <button class="toggle-btn active" id="showLoginBtn">Login</button>
-                    <button class="toggle-btn" id="showSignupBtn">Sign Up</button>
+                    <button class="toggle-btn login-btn" id="loginTabBtn">Login</button>
+                    <button class="toggle-btn signup-btn active" id="signupTabBtn">Sign Up</button>
                 </div>
 
-                <!-- Login Form (hidden by default) -->
-                <div id="loginForm" style="display: none;">
+                <!-- Login Form -->
+                <div id="loginContainer" class="form-container" style="display: none;">
                     <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address" required></div>
                     <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password" required></div>
                     <button class="btn-primary" id="loginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard</button>
                 </div>
 
-                <!-- Signup Form (visible by default) -->
-                <div id="signupForm">
+                <!-- Signup Form -->
+                <div id="signupContainer" class="form-container">
                     <div class="form-group"><i class="fas fa-user"></i><input type="text" id="fullName" placeholder="Full Name" required></div>
                     <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="email" placeholder="Email Address" required></div>
                     <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="phone" placeholder="Phone Number" required></div>
@@ -165,6 +169,9 @@
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         function showToast(message, isError = false) {
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+            
             const toast = document.createElement('div');
             toast.className = `toast ${isError ? 'error' : 'success'}`;
             toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
@@ -172,41 +179,45 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Elements
-        const loginForm = document.getElementById('loginForm');
-        const signupForm = document.getElementById('signupForm');
-        const showLoginBtn = document.getElementById('showLoginBtn');
-        const showSignupBtn = document.getElementById('showSignupBtn');
+        // Get elements
+        const loginContainer = document.getElementById('loginContainer');
+        const signupContainer = document.getElementById('signupContainer');
+        const loginTab = document.getElementById('loginTabBtn');
+        const signupTab = document.getElementById('signupTabBtn');
         const toggleLink = document.getElementById('toggleFormLink');
 
         // Show Login Form
-        function showLogin() {
-            loginForm.style.display = 'block';
-            signupForm.style.display = 'none';
-            showLoginBtn.classList.add('active');
-            showSignupBtn.classList.remove('active');
-            toggleLink.innerHTML = 'Don\'t have an account? Sign Up →';
+        function showLoginForm() {
+            loginContainer.style.display = 'block';
+            signupContainer.style.display = 'none';
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            toggleLink.innerHTML = "Don't have an account? Sign Up →";
         }
 
         // Show Signup Form
-        function showSignup() {
-            loginForm.style.display = 'none';
-            signupForm.style.display = 'block';
-            showSignupBtn.classList.add('active');
-            showLoginBtn.classList.remove('active');
+        function showSignupForm() {
+            loginContainer.style.display = 'none';
+            signupContainer.style.display = 'block';
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
             toggleLink.innerHTML = 'Already have an account? Login →';
         }
 
-        // Event Listeners
-        showLoginBtn.addEventListener('click', showLogin);
-        showSignupBtn.addEventListener('click', showSignup);
+        // Tab click events
+        loginTab.addEventListener('click', showLoginForm);
+        signupTab.addEventListener('click', showSignupForm);
         toggleLink.addEventListener('click', () => {
-            if (loginForm.style.display === 'none') showLogin();
-            else showSignup();
+            if (loginContainer.style.display === 'none') {
+                showLoginForm();
+            } else {
+                showSignupForm();
+            }
         });
 
         // SIGNUP FUNCTION
         document.getElementById('signupBtn').addEventListener('click', async () => {
+            const signupBtn = document.getElementById('signupBtn');
             const fullName = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
@@ -214,6 +225,7 @@
             const password = document.getElementById('password').value;
             const confirm = document.getElementById('confirmPassword').value;
 
+            // Validation
             if (!fullName || !email || !phone || !city || !password) {
                 showToast('Please fill all fields', true);
                 return;
@@ -227,48 +239,74 @@
                 return;
             }
 
-            // Check if email already exists
-            const { data: existingUser } = await supabase
-                .from('investors')
-                .select('email')
-                .eq('email', email)
-                .single();
+            // Disable button
+            signupBtn.disabled = true;
+            signupBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
 
-            if (existingUser) {
-                showToast('Email already registered. Please login.', true);
-                return;
-            }
+            try {
+                // Check if email already exists
+                const { data: existingUser } = await supabase
+                    .from('investors')
+                    .select('email')
+                    .eq('email', email)
+                    .maybeSingle();
 
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email, password,
-                options: { data: { full_name: fullName, phone, city, role: 'investor' } }
-            });
+                if (existingUser) {
+                    showToast('Email already registered. Please login.', true);
+                    signupBtn.disabled = false;
+                    signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
+                    return;
+                }
 
-            if (authError) {
-                showToast(authError.message, true);
-                return;
-            }
+                // Create auth user
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email, password,
+                    options: { data: { full_name: fullName, phone, city, role: 'investor' } }
+                });
 
-            if (authData.user) {
-                const { error: insertError } = await supabase.from('investors').insert([{
-                    id: authData.user.id,
-                    email,
-                    full_name: fullName,
-                    phone,
-                    city,
-                    created_at: new Date().toISOString()
-                }]);
+                if (authError) {
+                    showToast(authError.message, true);
+                    signupBtn.disabled = false;
+                    signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
+                    return;
+                }
 
-                if (insertError) console.error('Insert error:', insertError);
+                if (authData.user) {
+                    // Insert into investors table
+                    const { error: insertError } = await supabase.from('investors').insert([{
+                        id: authData.user.id,
+                        email: email,
+                        full_name: fullName,
+                        phone: phone,
+                        city: city,
+                        status: 'approved',
+                        is_approved: true,
+                        created_at: new Date().toISOString()
+                    }]);
 
-                showToast('Account created successfully! Please login.', false);
-                showLogin();
-                document.getElementById('signupForm').reset();
+                    if (insertError) {
+                        console.error('Insert error:', insertError);
+                        showToast('Account created but profile sync pending. Please login.', false);
+                    } else {
+                        showToast('Account created successfully! Please login.', false);
+                    }
+
+                    // Reset form and show login
+                    document.getElementById('signupContainer').querySelectorAll('input').forEach(input => input.value = '');
+                    showLoginForm();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred. Please try again.', true);
+            } finally {
+                signupBtn.disabled = false;
+                signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
             }
         });
 
         // LOGIN FUNCTION
         document.getElementById('loginBtn').addEventListener('click', async () => {
+            const loginBtn = document.getElementById('loginBtn');
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
@@ -277,20 +315,31 @@
                 return;
             }
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
 
-            if (error) {
-                showToast('Invalid email or password', true);
-                return;
-            }
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-            if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
-                localStorage.setItem('userType', 'investor');
-                showToast('Login successful! Redirecting...', false);
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
+                if (error) {
+                    showToast('Invalid email or password', true);
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
+                    return;
+                }
+
+                if (data.user) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('userType', 'investor');
+                    showToast('Login successful! Redirecting...', false);
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                showToast('An error occurred. Please try again.', true);
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
             }
         });
 
@@ -298,7 +347,7 @@
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    if (loginForm.style.display !== 'none') {
+                    if (loginContainer.style.display !== 'none') {
                         document.getElementById('loginBtn').click();
                     } else {
                         document.getElementById('signupBtn').click();
