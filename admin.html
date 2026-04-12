@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Sohrab Industries | Complete Manual Control</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Admin Panel - Sohrab Industries | Complete Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -63,8 +62,6 @@
         .search-box { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
         .search-box input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; min-width: 200px; }
         .action-buttons { display: flex; gap: 5px; flex-wrap: wrap; }
-        .add-btn { background: #1E4E3E; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-bottom: 15px; }
-        .add-btn:hover { background: #2A6B58; }
         .form-card { background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e0e0e0; }
         .form-card h3 { margin-bottom: 15px; color: #1E4E3E; }
         @media (max-width: 768px) { .admin-header { flex-direction: column; text-align: center; } .stats-grid { grid-template-columns: repeat(2, 1fr); } .nav-tabs { justify-content: center; } }
@@ -110,11 +107,9 @@
             </div>
         </div>
 
-        <!-- Investors Section - ADD FORM + LIST -->
+        <!-- Investors Section -->
         <div id="investorsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-users"></i> Investors Management</h2>
-            
-            <!-- Add Investor Form -->
             <div class="form-card">
                 <h3><i class="fas fa-plus-circle"></i> Add New Investor</h3>
                 <div class="form-row">
@@ -126,25 +121,14 @@
                 </div>
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
-            
-            <!-- Search -->
-            <div class="search-box">
-                <input type="text" id="investorSearch" placeholder="Search investors...">
-                <button onclick="searchInvestors()" class="btn-primary"><i class="fas fa-search"></i> Search</button>
-                <button onclick="resetInvestorSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button>
-            </div>
-            
-            <!-- Investors List -->
-            <div class="table-container">
-                <table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table>
-            </div>
+            <div class="search-box"><input type="text" id="investorSearch" placeholder="Search investors..."><button onclick="searchInvestors()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetInvestorSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
         <div id="buyersSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-user-friends"></i> Buyers Management</h2>
-            <div class="form-card">
-                <h3><i class="fas fa-plus-circle"></i> Add New Buyer</h3>
+            <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Buyer</h3>
                 <div class="form-row">
                     <div class="form-group"><label>Full Name *</label><input type="text" id="newBuyerName" placeholder="Enter full name"></div>
                     <div class="form-group"><label>Email *</label><input type="email" id="newBuyerEmail" placeholder="Enter email"></div>
@@ -154,13 +138,13 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -174,15 +158,15 @@
                     <div class="form-group"><label>Payment Method</label><select id="invPaymentMethod"><option>Bank Transfer</option><option>EasyPaisa</option><option>JazzCash</option></select></div>
                     <div class="form-group"><label>Transaction ID</label><input type="text" id="invTransactionId" placeholder="Transaction ID"></div>
                 </div>
-                <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment & Update Balance</button>
+                <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
         <div id="profitsSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-gift"></i> Manually Add Profit Distribution</h2>
+            <h2 class="section-title"><i class="fas fa-gift"></i> Manually Add Profit</h2>
             <div class="form-card">
                 <div class="form-row">
                     <div class="form-group"><label>Select Investor</label><select id="profitInvestorSelect"></select></div>
@@ -190,30 +174,28 @@
                     <div class="form-group"><label>Month</label><input type="month" id="profitMonth"></div>
                     <div class="form-group"><label>Profit Percentage</label><input type="number" id="profitPercentage" placeholder="%" value="10"></div>
                 </div>
-                <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit & Update Balance</button>
+                <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
         <!-- Withdrawals Section -->
         <div id="withdrawalsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
         </div>
 
         <!-- Products Section -->
         <div id="productsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2>
-            <div class="form-card">
-                <h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
+            <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
                 <div class="form-row">
                     <div class="form-group"><label>Product Name *</label><input type="text" id="newProductName" placeholder="Enter product name"></div>
                     <div class="form-group"><label>Category *</label><select id="newProductCategory"><option>LED Bulbs</option><option>Energy Saving</option><option>Decorative</option><option>Street Light</option><option>Solar</option></select></div>
                     <div class="form-group"><label>Wattage</label><input type="text" id="newProductWattage" placeholder="e.g., 9W"></div>
                     <div class="form-group"><label>Price (Rs.) *</label><input type="number" id="newProductPrice" placeholder="Enter price"></div>
                     <div class="form-group"><label>Stock Quantity</label><input type="number" id="newProductStock" placeholder="0" value="0"></div>
-                    <div class="form-group"><label>Description</label><textarea id="newProductDescription" rows="2" placeholder="Product description"></textarea></div>
                 </div>
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
@@ -230,209 +212,208 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let allInvestors = [], allBuyers = [];
+        // Wait for Supabase to load
+        setTimeout(function() {
+            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+            
+            if (typeof supabase === 'undefined') {
+                console.error('Supabase not loaded');
+                return;
+            }
+            
+            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            let allInvestors = [], allBuyers = [];
 
-        function showNotification(msg, isError) { const t = document.createElement('div'); t.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`; t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
-        
-        function showSection(section) {
-            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(`${section}Section`).classList.add('active');
-            event.target.classList.add('active');
-        }
+            function showNotification(msg, isError) { 
+                const t = document.createElement('div'); 
+                t.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`; 
+                t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; 
+                document.body.appendChild(t); 
+                setTimeout(() => t.remove(), 3000); 
+            }
+            
+            window.showSection = function(section) {
+                document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                const targetSection = document.getElementById(`${section}Section`);
+                if (targetSection) targetSection.classList.add('active');
+                event.target.classList.add('active');
+            };
 
-        async function checkAuth() {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (error || !user) { window.location.href = 'admin-auth.html'; return null; }
-            const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
-            if (!adminEmails.includes(user.email)) { showNotification('Unauthorized', true); window.location.href = 'index.html'; return null; }
-            document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
-            await refreshAllData();
-            return user;
-        }
+            async function checkAuth() {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                if (error || !user) { window.location.href = 'admin-auth.html'; return null; }
+                const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
+                if (!adminEmails.includes(user.email)) { showNotification('Unauthorized', true); window.location.href = 'index.html'; return null; }
+                document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
+                await refreshAllData();
+                return user;
+            }
 
-        async function refreshAllData() {
-            await Promise.all([loadStats(), loadInvestors(), loadBuyers(), loadInvestmentRequests(), loadInvestmentHistory(), loadProfitHistory(), loadWithdrawals(), loadProducts(), loadOrders(), loadRecentActivities()]);
-        }
+            async function refreshAllData() {
+                await Promise.all([loadStats(), loadInvestors(), loadBuyers(), loadInvestmentRequests(), loadInvestmentHistory(), loadProfitHistory(), loadWithdrawals(), loadProducts(), loadOrders(), loadRecentActivities()]);
+            }
 
-        async function loadStats() {
-            const { count: ic } = await supabase.from('investors').select('*', { count: 'exact', head: true });
-            document.getElementById('totalInvestors').innerHTML = ic || 0;
-            const { count: bc } = await supabase.from('buyers').select('*', { count: 'exact', head: true });
-            document.getElementById('totalBuyers').innerHTML = bc || 0;
-            const { count: pr } = await supabase.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-            document.getElementById('pendingRequests').innerHTML = pr || 0;
-            const { data: inv } = await supabase.from('investments').select('amount');
-            const totalInv = inv?.reduce((s,i)=>s+(i.amount||0),0)||0;
-            document.getElementById('totalInvestments').innerHTML = `Rs. ${totalInv.toLocaleString()}`;
-            const { data: prof } = await supabase.from('profits').select('amount').eq('paid',true);
-            const totalProf = prof?.reduce((s,p)=>s+(p.amount||0),0)||0;
-            document.getElementById('totalProfit').innerHTML = `Rs. ${totalProf.toLocaleString()}`;
-            const { count: pw } = await supabase.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
-            document.getElementById('pendingWithdrawals').innerHTML = pw || 0;
-            const { count: pc } = await supabase.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
-            document.getElementById('totalProducts').innerHTML = pc || 0;
-            const { count: oc } = await supabase.from('orders').select('*',{count:'exact',head:true});
-            document.getElementById('totalOrders').innerHTML = oc || 0;
-        }
+            async function loadStats() {
+                const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
+                document.getElementById('totalInvestors').innerHTML = ic || 0;
+                const { count: bc } = await supabaseClient.from('buyers').select('*', { count: 'exact', head: true });
+                document.getElementById('totalBuyers').innerHTML = bc || 0;
+                const { count: pr } = await supabaseClient.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+                document.getElementById('pendingRequests').innerHTML = pr || 0;
+                const { data: inv } = await supabaseClient.from('investments').select('amount');
+                const totalInv = inv?.reduce((s,i)=>s+(i.amount||0),0)||0;
+                document.getElementById('totalInvestments').innerHTML = `Rs. ${totalInv.toLocaleString()}`;
+                const { data: prof } = await supabaseClient.from('profits').select('amount').eq('paid',true);
+                const totalProf = prof?.reduce((s,p)=>s+(p.amount||0),0)||0;
+                document.getElementById('totalProfit').innerHTML = `Rs. ${totalProf.toLocaleString()}`;
+                const { count: pw } = await supabaseClient.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
+                document.getElementById('pendingWithdrawals').innerHTML = pw || 0;
+                const { count: pc } = await supabaseClient.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
+                document.getElementById('totalProducts').innerHTML = pc || 0;
+                const { count: oc } = await supabaseClient.from('orders').select('*',{count:'exact',head:true});
+                document.getElementById('totalOrders').innerHTML = oc || 0;
+            }
 
-        // ============ INVESTOR CRUD ============
-        async function loadInvestors() {
-            const { data } = await supabase.from('investors').select('*').order('created_at', { ascending: false });
-            allInvestors = data || [];
-            const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${i.full_name}</option>`).join('');
-            document.getElementById('investorSelect').innerHTML = selectHtml;
-            document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
-            document.getElementById('investorsList').innerHTML = allInvestors.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td class="action-buttons"><button onclick="editInvestor('${i.id}')" class="btn-edit">Edit</button><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
-        }
+            // INVESTOR FUNCTIONS
+            async function loadInvestors() {
+                const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
+                allInvestors = data || [];
+                const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${i.full_name}</option>`).join('');
+                document.getElementById('investorSelect').innerHTML = selectHtml;
+                document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
+                document.getElementById('investorsList').innerHTML = allInvestors.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+            }
 
-        async function addNewInvestor() {
-            const name = document.getElementById('newInvestorName').value.trim();
-            const email = document.getElementById('newInvestorEmail').value.trim();
-            const phone = document.getElementById('newInvestorPhone').value;
-            const city = document.getElementById('newInvestorCity').value;
-            const investment = parseFloat(document.getElementById('newInvestorInvestment').value) || 0;
-            if(!name || !email){ showNotification('Name and email required', true); return; }
-            const { error } = await supabase.from('investors').insert([{ 
-                id: crypto.randomUUID(), full_name: name, email, phone, city, 
-                total_investment: investment, total_profit: 0, available_balance: investment,
-                created_at: new Date().toISOString() 
-            }]);
-            if(error){ showNotification(error.message, true); return; }
-            showNotification('Investor added successfully!', false);
-            document.getElementById('newInvestorName').value = '';
-            document.getElementById('newInvestorEmail').value = '';
-            document.getElementById('newInvestorPhone').value = '';
-            document.getElementById('newInvestorCity').value = '';
-            document.getElementById('newInvestorInvestment').value = '0';
-            await loadInvestors(); await loadStats();
-        }
+            window.addNewInvestor = async function() {
+                const name = document.getElementById('newInvestorName').value.trim();
+                const email = document.getElementById('newInvestorEmail').value.trim();
+                const phone = document.getElementById('newInvestorPhone').value;
+                const city = document.getElementById('newInvestorCity').value;
+                const investment = parseFloat(document.getElementById('newInvestorInvestment').value) || 0;
+                if(!name || !email){ showNotification('Name and email required', true); return; }
+                const { error } = await supabaseClient.from('investors').insert([{ 
+                    id: crypto.randomUUID(), full_name: name, email, phone, city, 
+                    total_investment: investment, total_profit: 0, available_balance: investment,
+                    created_at: new Date().toISOString() 
+                }]);
+                if(error){ showNotification(error.message, true); return; }
+                showNotification('Investor added!', false);
+                document.getElementById('newInvestorName').value = '';
+                document.getElementById('newInvestorEmail').value = '';
+                document.getElementById('newInvestorInvestment').value = '0';
+                await loadInvestors(); await loadStats();
+            };
 
-        async function editInvestor(id) { const i = allInvestors.find(x=>x.id===id); if(!i) return; const newName = prompt('Edit Name:', i.full_name); if(!newName) return; const newPhone = prompt('Edit Phone:', i.phone||''); const newCity = prompt('Edit City:', i.city||''); await supabase.from('investors').update({full_name:newName, phone:newPhone, city:newCity}).eq('id',id); showNotification('Investor updated!', false); await loadInvestors(); await loadStats(); }
-        async function deleteInvestor(id){ if(confirm('Delete this investor?')){ await supabase.from('investments').delete().eq('investor_id',id); await supabase.from('profits').delete().eq('investor_id',id); await supabase.from('withdrawals').delete().eq('investor_id',id); await supabase.from('investors').delete().eq('id',id); showNotification('Investor deleted', false); await loadInvestors(); await loadStats(); } }
+            window.deleteInvestor = async function(id){ if(confirm('Delete this investor?')){ await supabaseClient.from('investments').delete().eq('investor_id',id); await supabaseClient.from('profits').delete().eq('investor_id',id); await supabaseClient.from('withdrawals').delete().eq('investor_id',id); await supabaseClient.from('investors').delete().eq('id',id); showNotification('Investor deleted', false); await loadInvestors(); await loadStats(); } };
 
-        // ============ BUYER CRUD ============
-        async function loadBuyers() {
-            const { data } = await supabase.from('buyers').select('*').order('created_at', { ascending: false });
-            allBuyers = data || [];
-            document.getElementById('buyersList').innerHTML = allBuyers.map(b=>`<tr><td><strong>${b.full_name}</strong></td><td>${b.email}</td><td>${b.phone||'-'}</td><td>${b.address||'-'}</td><td class="action-buttons"><button onclick="editBuyer('${b.id}')" class="btn-edit">Edit</button><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
-        }
+            // BUYER FUNCTIONS
+            async function loadBuyers() {
+                const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
+                allBuyers = data || [];
+                document.getElementById('buyersList').innerHTML = allBuyers.map(b=>`<tr><td><strong>${b.full_name}</strong></td><td>${b.email}</td><td>${b.phone||'-'}</td><td>${b.address||'-'}</td><td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+            }
 
-        async function addNewBuyer() {
-            const name = document.getElementById('newBuyerName').value.trim();
-            const email = document.getElementById('newBuyerEmail').value.trim();
-            const phone = document.getElementById('newBuyerPhone').value;
-            const address = document.getElementById('newBuyerAddress').value;
-            if(!name || !email){ showNotification('Name and email required', true); return; }
-            const { error } = await supabase.from('buyers').insert([{ id: crypto.randomUUID(), full_name: name, email, phone, address, created_at: new Date().toISOString() }]);
-            if(error){ showNotification(error.message, true); return; }
-            showNotification('Buyer added successfully!', false);
-            document.getElementById('newBuyerName').value = '';
-            document.getElementById('newBuyerEmail').value = '';
-            document.getElementById('newBuyerPhone').value = '';
-            document.getElementById('newBuyerAddress').value = '';
-            await loadBuyers(); await loadStats();
-        }
+            window.addNewBuyer = async function() {
+                const name = document.getElementById('newBuyerName').value.trim();
+                const email = document.getElementById('newBuyerEmail').value.trim();
+                const phone = document.getElementById('newBuyerPhone').value;
+                const address = document.getElementById('newBuyerAddress').value;
+                if(!name || !email){ showNotification('Name and email required', true); return; }
+                const { error } = await supabaseClient.from('buyers').insert([{ id: crypto.randomUUID(), full_name: name, email, phone, address, created_at: new Date().toISOString() }]);
+                if(error){ showNotification(error.message, true); return; }
+                showNotification('Buyer added!', false);
+                document.getElementById('newBuyerName').value = '';
+                document.getElementById('newBuyerEmail').value = '';
+                document.getElementById('newBuyerAddress').value = '';
+                await loadBuyers(); await loadStats();
+            };
 
-        async function editBuyer(id) { const b = allBuyers.find(x=>x.id===id); if(!b) return; const newName = prompt('Edit Name:', b.full_name); if(!newName) return; await supabase.from('buyers').update({full_name:newName}).eq('id',id); showNotification('Buyer updated!', false); await loadBuyers(); await loadStats(); }
-        async function deleteBuyer(id){ if(confirm('Delete this buyer?')){ await supabase.from('orders').delete().eq('user_id',id); await supabase.from('buyers').delete().eq('id',id); showNotification('Buyer deleted', false); await loadBuyers(); await loadStats(); } }
+            window.deleteBuyer = async function(id){ if(confirm('Delete this buyer?')){ await supabaseClient.from('buyers').delete().eq('id',id); showNotification('Buyer deleted', false); await loadBuyers(); await loadStats(); } };
 
-        // ============ PRODUCT CRUD ============
-        async function loadProducts() {
-            const { data } = await supabase.from('products').select('*').order('created_at',{ascending:false});
-            document.getElementById('productsList').innerHTML = (data||[]).map(p=>`<tr><td><strong>${p.name}</strong></td><td>${p.category}</td><td>Rs.${(p.price||0).toLocaleString()}</td><td>${p.stock_quantity||0}</td><td class="action-buttons"><button onclick="editProductItem('${p.id}')" class="btn-edit">Edit</button><button onclick="deleteProduct('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
-        }
+            // PRODUCT FUNCTIONS
+            async function loadProducts() {
+                const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
+                document.getElementById('productsList').innerHTML = (data||[]).map(p=>`<tr><td><strong>${p.name}</strong></td><td>${p.category}</td><td>Rs.${(p.price||0).toLocaleString()}</td><td>${p.stock_quantity||0}</td><td class="action-buttons"><button onclick="deleteProduct('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+            }
 
-        async function addNewProduct() {
-            const name = document.getElementById('newProductName').value.trim();
-            const category = document.getElementById('newProductCategory').value;
-            const wattage = document.getElementById('newProductWattage').value;
-            const price = parseFloat(document.getElementById('newProductPrice').value);
-            const stock = parseInt(document.getElementById('newProductStock').value) || 0;
-            const description = document.getElementById('newProductDescription').value;
-            if(!name || !category || !price){ showNotification('Name, category and price required', true); return; }
-            const { error } = await supabase.from('products').insert([{ name, category, wattage, price, stock_quantity: stock, description, is_active: true, created_at: new Date().toISOString() }]);
-            if(error){ showNotification(error.message, true); return; }
-            showNotification('Product added successfully!', false);
-            document.getElementById('newProductName').value = '';
-            document.getElementById('newProductPrice').value = '';
-            document.getElementById('newProductStock').value = '0';
-            document.getElementById('newProductDescription').value = '';
-            await loadProducts(); await loadStats();
-        }
+            window.addNewProduct = async function() {
+                const name = document.getElementById('newProductName').value.trim();
+                const category = document.getElementById('newProductCategory').value;
+                const wattage = document.getElementById('newProductWattage').value;
+                const price = parseFloat(document.getElementById('newProductPrice').value);
+                const stock = parseInt(document.getElementById('newProductStock').value) || 0;
+                if(!name || !category || !price){ showNotification('Name, category and price required', true); return; }
+                const { error } = await supabaseClient.from('products').insert([{ name, category, wattage, price, stock_quantity: stock, is_active: true, created_at: new Date().toISOString() }]);
+                if(error){ showNotification(error.message, true); return; }
+                showNotification('Product added!', false);
+                document.getElementById('newProductName').value = '';
+                document.getElementById('newProductPrice').value = '';
+                await loadProducts(); await loadStats();
+            };
 
-        async function editProductItem(id) { const newPrice = prompt('Enter new price:'); if(newPrice){ await supabase.from('products').update({price:parseFloat(newPrice)}).eq('id',id); showNotification('Product updated!', false); await loadProducts(); await loadStats(); } }
-        async function deleteProduct(id){ if(confirm('Delete this product?')){ await supabase.from('products').update({is_active:false}).eq('id',id); showNotification('Product deleted', false); await loadProducts(); await loadStats(); } }
+            window.deleteProduct = async function(id){ if(confirm('Delete this product?')){ await supabaseClient.from('products').update({is_active:false}).eq('id',id); showNotification('Product deleted', false); await loadProducts(); await loadStats(); } };
 
-        // ============ INVESTMENT FUNCTIONS ============
-        async function addInvestment() { 
-            const investorId = document.getElementById('investorSelect').value, amount = parseFloat(document.getElementById('invAmount').value), date = document.getElementById('invDate').value, paymentMethod = document.getElementById('invPaymentMethod').value, transactionId = document.getElementById('invTransactionId').value; 
-            if(!investorId || !amount || !date){ showNotification('Fill all fields',true); return; } 
-            const { error: invError } = await supabase.from('investments').insert([{ investor_id: investorId, amount, investment_date: date, payment_method: paymentMethod, transaction_id: transactionId, status: 'active' }]); 
-            if(invError){ showNotification(invError.message,true); return; } 
-            const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id',investorId).eq('status','active'); 
-            const totalInvestment = investments?.reduce((s,i)=>s+(i.amount||0),0)||0; 
-            const { data: investor } = await supabase.from('investors').select('available_balance').eq('id',investorId).single(); 
-            const newBalance = (investor?.available_balance||0) + amount; 
-            await supabase.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id',investorId); 
-            showNotification('Investment added & balance updated!',false); 
-            document.getElementById('invAmount').value = ''; document.getElementById('invTransactionId').value = ''; 
-            await loadInvestmentHistory(); await loadInvestors(); await loadStats(); 
-        }
+            // INVESTMENT FUNCTIONS
+            window.addInvestment = async function() { 
+                const investorId = document.getElementById('investorSelect').value, amount = parseFloat(document.getElementById('invAmount').value), date = document.getElementById('invDate').value, paymentMethod = document.getElementById('invPaymentMethod').value, transactionId = document.getElementById('invTransactionId').value; 
+                if(!investorId || !amount || !date){ showNotification('Fill all fields',true); return; } 
+                const { error } = await supabaseClient.from('investments').insert([{ investor_id: investorId, amount, investment_date: date, payment_method: paymentMethod, transaction_id: transactionId, status: 'active' }]); 
+                if(error){ showNotification(error.message,true); return; } 
+                const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id',investorId).eq('status','active'); 
+                const totalInvestment = investments?.reduce((s,i)=>s+(i.amount||0),0)||0; 
+                const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); 
+                const newBalance = (investor?.available_balance||0) + amount; 
+                await supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id',investorId); 
+                showNotification('Investment added!',false); 
+                document.getElementById('invAmount').value = ''; 
+                await loadInvestmentHistory(); await loadInvestors(); await loadStats(); 
+            };
 
-        async function addProfit() { 
-            const investorId = document.getElementById('profitInvestorSelect').value, amount = parseFloat(document.getElementById('profitAmount').value), month = document.getElementById('profitMonth').value, percentage = parseFloat(document.getElementById('profitPercentage').value) || 10; 
-            if(!investorId || !amount || !month){ showNotification('Fill all fields',true); return; } 
-            const { error: profError } = await supabase.from('profits').insert([{ investor_id: investorId, amount, month: month + '-01', profit_percentage: percentage, paid: true, paid_date: new Date().toISOString().split('T')[0] }]); 
-            if(profError){ showNotification(profError.message,true); return; } 
-            const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id',investorId).eq('paid',true); 
-            const totalProfit = profits?.reduce((s,p)=>s+(p.amount||0),0)||0; 
-            const { data: investor } = await supabase.from('investors').select('available_balance').eq('id',investorId).single(); 
-            const newBalance = (investor?.available_balance||0) + amount; 
-            await supabase.from('investors').update({ total_profit: totalProfit, available_balance: newBalance }).eq('id',investorId); 
-            showNotification('Profit added & balance updated!',false); 
-            document.getElementById('profitAmount').value = ''; 
-            await loadProfitHistory(); await loadInvestors(); await loadStats(); 
-        }
+            window.addProfit = async function() { 
+                const investorId = document.getElementById('profitInvestorSelect').value, amount = parseFloat(document.getElementById('profitAmount').value), month = document.getElementById('profitMonth').value, percentage = parseFloat(document.getElementById('profitPercentage').value) || 10; 
+                if(!investorId || !amount || !month){ showNotification('Fill all fields',true); return; } 
+                const { error } = await supabaseClient.from('profits').insert([{ investor_id: investorId, amount, month: month + '-01', profit_percentage: percentage, paid: true, paid_date: new Date().toISOString().split('T')[0] }]); 
+                if(error){ showNotification(error.message,true); return; } 
+                const { data: profits } = await supabaseClient.from('profits').select('amount').eq('investor_id',investorId).eq('paid',true); 
+                const totalProfit = profits?.reduce((s,p)=>s+(p.amount||0),0)||0; 
+                const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); 
+                const newBalance = (investor?.available_balance||0) + amount; 
+                await supabaseClient.from('investors').update({ total_profit: totalProfit, available_balance: newBalance }).eq('id',investorId); 
+                showNotification('Profit added!',false); 
+                document.getElementById('profitAmount').value = ''; 
+                await loadProfitHistory(); await loadInvestors(); await loadStats(); 
+            };
 
-        async function loadInvestmentHistory() { const { data } = await supabase.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); document.getElementById('investmentHistory').innerHTML = (data||[]).map(i=>`<tr><td>${i.investors?.full_name||'-'}</td><td>Rs.${(i.amount||0).toLocaleString()}</td><td>${new Date(i.investment_date).toLocaleDateString()}</td><td>${i.payment_method||'-'}</td><td><span class="status-badge status-${i.status}">${i.status}</span></td><td class="action-buttons"><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
-        async function loadProfitHistory() { const { data } = await supabase.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); document.getElementById('profitHistory').innerHTML = (data||[]).map(p=>`<tr><td>${p.investors?.full_name||'-'}</td><td>Rs.${(p.amount||0).toLocaleString()}</td><td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td><td>${p.profit_percentage||10}%</td><td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td><td class="action-buttons"><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
-        async function loadInvestmentRequests() { const { data } = await supabase.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); document.getElementById('investmentRequestsList').innerHTML = (data || []).map(req => `<tr><td><strong>${req.investors?.full_name || '-'}</strong></td><td>Rs. ${(req.amount || 0).toLocaleString()}</td><td>${new Date(req.created_at).toLocaleDateString()}</td><td>${req.payment_method || '-'}</td><td>${req.transaction_id || '-'}</td><td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></td></tr>`).join(''); }
-        async function loadWithdrawals() { const { data } = await supabase.from('withdrawals').select('*,investors(full_name)').order('request_date',{ascending:false}); document.getElementById('withdrawalsList').innerHTML = (data||[]).map(w=>`<tr><td>${w.investors?.full_name||'-'}</td><td>Rs.${(w.amount||0).toLocaleString()}</td><td>${new Date(w.request_date).toLocaleDateString()}</td><td>${w.payment_method||'-'}</td><td><span class="status-badge status-${w.status}">${w.status}</span></td><td class="action-buttons">${w.status==='pending'?`<button onclick="approveWithdrawal('${w.id}',${w.amount},'${w.investor_id}')" class="btn-success">Approve</button> <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>`:'-'}</td></tr>`).join(''); }
-        async function loadOrders() { const { data } = await supabase.from('orders').select('*').order('order_date',{ascending:false}); document.getElementById('ordersList').innerHTML = (data||[]).map(o=>`<tr><td>${o.id?.slice(0,8)}</td><td>${o.user_type||'-'}</td><td>Rs.${(o.total_amount||0).toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><select onchange="updateOrderStatus('${o.id}',this.value)" class="status-badge"><option value="pending" ${o.status==='pending'?'selected':''}>Pending</option><option value="processing" ${o.status==='processing'?'selected':''}>Processing</option><option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option></select></td><td class="action-buttons"><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
-        async function loadRecentActivities() { const activities = []; const { data: inv } = await supabase.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); if(inv) inv.forEach(i=>activities.push({action:'Investment',details:`${i.investors?.full_name} invested Rs.${i.amount}`,time:new Date(i.created_at).toLocaleString()})); const { data: wd } = await supabase.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); if(wd) wd.forEach(w=>activities.push({action:'Withdrawal',details:`${w.investors?.full_name} requested Rs.${w.amount}`,time:new Date(w.created_at).toLocaleString()})); activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); document.getElementById('recentActivities').innerHTML = activities.slice(0,10).map(a=>`<tr><td>${a.action}</td><td>${a.details}</td><td>${a.time}</td></tr>`).join(''); }
+            async function loadInvestmentHistory() { const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); document.getElementById('investmentHistory').innerHTML = (data||[]).map(i=>`<td>65;${i.investors?.full_name||'-'}</td><td>Rs.${(i.amount||0).toLocaleString()}</td><td>${new Date(i.investment_date).toLocaleDateString()}</td><td>${i.payment_method||'-'}</td><td><span class="status-badge status-${i.status}">${i.status}</span></td><td class="action-buttons"><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
+            async function loadProfitHistory() { const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); document.getElementById('profitHistory').innerHTML = (data||[]).map(p=>`<tr><td>${p.investors?.full_name||'-'}</td><td>Rs.${(p.amount||0).toLocaleString()}</td><td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td><td>${p.profit_percentage||10}%</td><td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td><td class="action-buttons"><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
+            async function loadInvestmentRequests() { const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); document.getElementById('investmentRequestsList').innerHTML = (data || []).map(req => `<tr><td><strong>${req.investors?.full_name || '-'}</strong><br><small>${req.investors?.email || '-'}</small></td><td>Rs. ${(req.amount || 0).toLocaleString()}</td><td>${new Date(req.created_at).toLocaleDateString()}</td><td>${req.payment_method || '-'}</td><td>${req.transaction_id || '-'}</td><td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></td></tr>`).join(''); }
+            async function loadWithdrawals() { const { data } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('request_date',{ascending:false}); document.getElementById('withdrawalsList').innerHTML = (data||[]).map(w=>`<tr><td>${w.investors?.full_name||'-'}</td><td>Rs.${(w.amount||0).toLocaleString()}</td><td>${new Date(w.request_date).toLocaleDateString()}</td><td>${w.payment_method||'-'}</td><td><span class="status-badge status-${w.status}">${w.status}</span></td><td class="action-buttons">${w.status==='pending'?`<button onclick="approveWithdrawal('${w.id}',${w.amount},'${w.investor_id}')" class="btn-success">Approve</button> <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>`:'-'}</td></tr>`).join(''); }
+            async function loadOrders() { const { data } = await supabaseClient.from('orders').select('*').order('order_date',{ascending:false}); document.getElementById('ordersList').innerHTML = (data||[]).map(o=>`<td><td>${o.id?.slice(0,8)}</td><td>${o.user_type||'-'}</td><td>Rs.${(o.total_amount||0).toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><select onchange="updateOrderStatus('${o.id}',this.value)" class="status-badge"><option value="pending" ${o.status==='pending'?'selected':''}>Pending</option><option value="processing" ${o.status==='processing'?'selected':''}>Processing</option><option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option></select></td><td class="action-buttons"><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
+            async function loadRecentActivities() { const activities = []; const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); if(inv) inv.forEach(i=>activities.push({action:'Investment',details:`${i.investors?.full_name} invested Rs.${i.amount}`,time:new Date(i.created_at).toLocaleString()})); const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); if(wd) wd.forEach(w=>activities.push({action:'Withdrawal',details:`${w.investors?.full_name} requested Rs.${w.amount}`,time:new Date(w.created_at).toLocaleString()})); activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); document.getElementById('recentActivities').innerHTML = activities.slice(0,10).map(a=>`<tr><td>${a.action}</td><td>${a.details}</td><td>${a.time}</td></tr>`).join(''); }
 
-        async function approveInvestment(id, amount, investorId) { if (!confirm(`Approve investment of Rs. ${amount.toLocaleString()}?`)) return; await supabase.from('investments').update({ status: 'active' }).eq('id', id); const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', investorId).eq('status', 'active'); const totalInvestment = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0; const { data: investor } = await supabase.from('investors').select('available_balance').eq('id', investorId).single(); const newBalance = (investor?.available_balance || 0) + amount; await supabase.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id', investorId); showNotification('Investment approved!', false); await loadInvestmentRequests(); await loadInvestmentHistory(); await loadInvestors(); await loadStats(); }
-        async function rejectInvestment(id) { if (!confirm('Reject this investment request?')) return; await supabase.from('investments').update({ status: 'rejected' }).eq('id', id); showNotification('Investment rejected', false); await loadInvestmentRequests(); await loadStats(); }
-        async function approveWithdrawal(id,amount,investorId){ if(!confirm('Approve withdrawal?'))return; await supabase.from('withdrawals').update({status:'approved'}).eq('id',id); const{data:i}=await supabase.from('investors').select('available_balance').eq('id',investorId).single(); if(i) await supabase.from('investors').update({available_balance:(i.available_balance||0)-amount}).eq('id',investorId); showNotification('Approved!',false); await loadWithdrawals(); await loadInvestors(); await loadStats(); }
-        async function rejectWithdrawal(id){ await supabase.from('withdrawals').update({status:'rejected'}).eq('id',id); showNotification('Rejected',false); await loadWithdrawals(); }
-        async function updateOrderStatus(id,status){ await supabase.from('orders').update({status}).eq('id',id); showNotification(`Status: ${status}`,false); }
-        async function deleteInvestment(id){ if(confirm('Delete this investment?')){ await supabase.from('investments').delete().eq('id',id); await loadInvestmentHistory(); await loadInvestors(); await loadStats(); showNotification('Deleted',false); } }
-        async function deleteProfit(id){ if(confirm('Delete this profit?')){ await supabase.from('profits').delete().eq('id',id); await loadProfitHistory(); await loadInvestors(); await loadStats(); showNotification('Deleted',false); } }
-        async function deleteOrder(id){ if(confirm('Delete this order?')){ await supabase.from('orders').delete().eq('id',id); showNotification('Order deleted',false); await loadOrders(); await loadStats(); } }
+            window.approveInvestment = async function(id, amount, investorId) { if (!confirm(`Approve investment of Rs. ${amount.toLocaleString()}?`)) return; await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id', investorId).eq('status', 'active'); const totalInvestment = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0; const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id', investorId).single(); const newBalance = (investor?.available_balance || 0) + amount; await supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id', investorId); showNotification('Investment approved!', false); await loadInvestmentRequests(); await loadInvestmentHistory(); await loadInvestors(); await loadStats(); };
+            window.rejectInvestment = async function(id) { if (!confirm('Reject this investment request?')) return; await supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id); showNotification('Investment rejected', false); await loadInvestmentRequests(); await loadStats(); };
+            window.approveWithdrawal = async function(id,amount,investorId){ if(!confirm('Approve withdrawal?'))return; await supabaseClient.from('withdrawals').update({status:'approved'}).eq('id',id); const{data:i}=await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); if(i) await supabaseClient.from('investors').update({available_balance:(i.available_balance||0)-amount}).eq('id',investorId); showNotification('Approved!',false); await loadWithdrawals(); await loadInvestors(); await loadStats(); };
+            window.rejectWithdrawal = async function(id){ await supabaseClient.from('withdrawals').update({status:'rejected'}).eq('id',id); showNotification('Rejected',false); await loadWithdrawals(); };
+            window.updateOrderStatus = async function(id,status){ await supabaseClient.from('orders').update({status}).eq('id',id); showNotification(`Status: ${status}`,false); };
+            window.deleteInvestment = async function(id){ if(confirm('Delete this investment?')){ await supabaseClient.from('investments').delete().eq('id',id); await loadInvestmentHistory(); await loadInvestors(); await loadStats(); showNotification('Deleted',false); } };
+            window.deleteProfit = async function(id){ if(confirm('Delete this profit?')){ await supabaseClient.from('profits').delete().eq('id',id); await loadProfitHistory(); await loadInvestors(); await loadStats(); showNotification('Deleted',false); } };
+            window.deleteOrder = async function(id){ if(confirm('Delete this order?')){ await supabaseClient.from('orders').delete().eq('id',id); showNotification('Order deleted',false); await loadOrders(); await loadStats(); } };
 
-        function searchInvestors() { const term = document.getElementById('investorSearch').value.toLowerCase(); const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); document.getElementById('investorsList').innerHTML = filtered.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td class="action-buttons"><button onclick="editInvestor('${i.id}')" class="btn-edit">Edit</button><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
-        function resetInvestorSearch() { document.getElementById('investorSearch').value = ''; loadInvestors(); }
-        function searchBuyers() { const term = document.getElementById('buyerSearch').value.toLowerCase(); const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); document.getElementById('buyersList').innerHTML = filtered.map(b=>`<tr><td><strong>${b.full_name}</strong></td><td>${b.email}</td><td>${b.phone||'-'}</td><td>${b.address||'-'}</td><td class="action-buttons"><button onclick="editBuyer('${b.id}')" class="btn-edit">Edit</button><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
-        function resetBuyerSearch() { document.getElementById('buyerSearch').value = ''; loadBuyers(); }
-        function searchProducts() { const term = document.getElementById('productSearch').value.toLowerCase(); const rows = document.querySelectorAll('#productsList tr'); rows.forEach(row=>{ row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; }); }
-        
-        async function handleLogout(){ await supabase.auth.signOut(); localStorage.clear(); window.location.href = 'index.html'; }
-        
-        window.showSection = showSection; window.handleLogout = handleLogout; window.addInvestment = addInvestment; window.addProfit = addProfit; 
-        window.approveWithdrawal = approveWithdrawal; window.rejectWithdrawal = rejectWithdrawal; window.updateOrderStatus = updateOrderStatus; 
-        window.approveInvestment = approveInvestment; window.rejectInvestment = rejectInvestment; window.addNewInvestor = addNewInvestor; 
-        window.addNewBuyer = addNewBuyer; window.addNewProduct = addNewProduct; window.editInvestor = editInvestor; window.editBuyer = editBuyer;
-        window.editProductItem = editProductItem; window.deleteInvestor = deleteInvestor; window.deleteBuyer = deleteBuyer; 
-        window.deleteProduct = deleteProduct; window.deleteInvestment = deleteInvestment; window.deleteProfit = deleteProfit; 
-        window.deleteOrder = deleteOrder; window.searchInvestors = searchInvestors; window.searchBuyers = searchBuyers; 
-        window.searchProducts = searchProducts; window.resetInvestorSearch = resetInvestorSearch; window.resetBuyerSearch = resetBuyerSearch;
-        
-        checkAuth();
+            // Search Functions
+            window.searchInvestors = function() { const term = document.getElementById('investorSearch').value.toLowerCase(); const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); document.getElementById('investorsList').innerHTML = filtered.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); };
+            window.resetInvestorSearch = function() { document.getElementById('investorSearch').value = ''; loadInvestors(); };
+            window.searchBuyers = function() { const term = document.getElementById('buyerSearch').value.toLowerCase(); const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); document.getElementById('buyersList').innerHTML = filtered.map(b=>`<tr><td><strong>${b.full_name}</strong></td><td>${b.email}</td><td>${b.phone||'-'}</td><td>${b.address||'-'}</td><td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); };
+            window.resetBuyerSearch = function() { document.getElementById('buyerSearch').value = ''; loadBuyers(); };
+            window.searchProducts = function() { const term = document.getElementById('productSearch').value.toLowerCase(); const rows = document.querySelectorAll('#productsList tr'); rows.forEach(row=>{ row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; }); };
+            
+            window.handleLogout = async function(){ await supabaseClient.auth.signOut(); localStorage.clear(); window.location.href = 'index.html'; };
+            
+            checkAuth();
+        }, 100);
     </script>
 </body>
 </html>
