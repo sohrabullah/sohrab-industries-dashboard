@@ -51,7 +51,7 @@
         }
 
         .container {
-            max-width: 520px;
+            max-width: 550px;
             width: 100%;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 2rem;
@@ -110,7 +110,7 @@
 
         .user-type-selector {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin: 20px 20px 0 20px;
             background: #f0f2f5;
             padding: 8px;
@@ -119,7 +119,7 @@
 
         .type-btn {
             flex: 1;
-            padding: 12px;
+            padding: 12px 8px;
             border: none;
             background: transparent;
             border-radius: 50px;
@@ -127,6 +127,7 @@
             cursor: pointer;
             transition: all 0.3s;
             font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
         }
 
         .type-btn.investor.active { background: #1E4E3E; color: white; }
@@ -176,7 +177,7 @@
             z-index: 1;
         }
 
-        input, select {
+        input {
             width: 100%;
             padding: 0.85rem 1rem 0.85rem 2.8rem;
             font-size: 0.95rem;
@@ -188,7 +189,7 @@
             outline: none;
         }
 
-        input:focus, select:focus {
+        input:focus {
             border-color: #E8B13C;
             box-shadow: 0 0 0 4px rgba(232, 177, 60, 0.2);
         }
@@ -285,21 +286,12 @@
             color: #856404;
         }
 
-        .pending-badge {
-            display: inline-block;
-            background: #ffc107;
-            color: #333;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 10px;
-            margin-left: 8px;
-        }
-
         @media (max-width: 480px) {
             .container { border-radius: 1.5rem; }
             .form-panel { padding: 1.5rem; }
             .brand-header h1 { font-size: 1.4rem; }
             .toast-notification { white-space: normal; max-width: 90%; font-size: 0.85rem; }
+            .type-btn { font-size: 0.75rem; padding: 10px 4px; }
         }
     </style>
 </head>
@@ -316,24 +308,26 @@
         <div class="tagline">Premium Bulbs | Smart Investment | Grow with Us</div>
     </div>
 
+    <!-- User Type Selection Buttons -->
     <div class="user-type-selector">
-        <button class="type-btn investor active" onclick="selectUserType('investor')">
+        <button class="type-btn investor active" id="investorTabBtn" onclick="selectUserType('investor')">
             <i class="fas fa-chart-line"></i> Investor
         </button>
-        <button class="type-btn buyer" onclick="selectUserType('buyer')">
+        <button class="type-btn buyer" id="buyerTabBtn" onclick="selectUserType('buyer')">
             <i class="fas fa-shopping-cart"></i> Buyer
         </button>
-        <button class="type-btn admin" onclick="selectUserType('admin')">
+        <button class="type-btn admin" id="adminTabBtn" onclick="selectUserType('admin')">
             <i class="fas fa-shield-alt"></i> Admin
         </button>
     </div>
 
     <div class="form-panel">
-        <!-- Investor Forms -->
+        <!-- ==================== INVESTOR FORMS ==================== -->
         <div id="investorForms" class="form-container active">
-            <div id="investorLoginForm" class="auth-form" style="display: block;">
+            <!-- Investor Login -->
+            <div id="investorLoginDiv" class="auth-form">
                 <h2><i class="fas fa-sign-in-alt"></i> Investor Login</h2>
-                <form id="investorLoginFormElement">
+                <form id="investorLoginForm">
                     <div class="input-group">
                         <i class="fas fa-envelope"></i>
                         <input type="email" id="investorLoginEmail" placeholder="Email Address" required>
@@ -344,12 +338,13 @@
                     </div>
                     <button type="submit"><i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard</button>
                 </form>
-                <p class="toggle-text">New Investor? <a onclick="showInvestorSignup()">Create Investment Account →</a></p>
+                <p class="toggle-text">New Investor? <a id="showInvestorSignupLink" style="cursor:pointer;">Create Investment Account →</a></p>
             </div>
 
-            <div id="investorSignupForm" class="auth-form" style="display: none;">
+            <!-- Investor Signup -->
+            <div id="investorSignupDiv" class="auth-form" style="display: none;">
                 <h2><i class="fas fa-user-plus"></i> Become an Investor</h2>
-                <form id="investorSignupFormElement">
+                <form id="investorSignupForm">
                     <div class="input-group">
                         <i class="fas fa-user-circle"></i>
                         <input type="text" id="investorFullName" placeholder="Full Name" required>
@@ -371,20 +366,21 @@
                         <input type="password" id="investorPassword" placeholder="Password (min 6 characters)" required>
                     </div>
                     <div class="input-group">
-                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-check-circle"></i>
                         <input type="password" id="investorConfirmPassword" placeholder="Confirm Password" required>
                     </div>
-                    <button type="submit"><i class="fas fa-gem"></i> Submit for Approval</button>
+                    <button type="submit"><i class="fas fa-gem"></i> Register as Investor</button>
                 </form>
-                <p class="toggle-text">Already have an account? <a onclick="showInvestorLogin()">Login →</a></p>
+                <p class="toggle-text">Already have an account? <a id="showInvestorLoginLink" style="cursor:pointer;">Login →</a></p>
             </div>
         </div>
 
-        <!-- Buyer Forms -->
+        <!-- ==================== BUYER FORMS ==================== -->
         <div id="buyerForms" class="form-container">
-            <div id="buyerLoginForm" class="auth-form" style="display: block;">
+            <!-- Buyer Login -->
+            <div id="buyerLoginDiv" class="auth-form">
                 <h2><i class="fas fa-sign-in-alt"></i> Buyer Login</h2>
-                <form id="buyerLoginFormElement">
+                <form id="buyerLoginForm">
                     <div class="input-group">
                         <i class="fas fa-envelope"></i>
                         <input type="email" id="buyerLoginEmail" placeholder="Email Address" required>
@@ -393,14 +389,15 @@
                         <i class="fas fa-lock"></i>
                         <input type="password" id="buyerLoginPassword" placeholder="Password" required>
                     </div>
-                    <button type="submit"><i class="fas fa-store"></i> Shop Now</button>
+                    <button type="submit"><i class="fas fa-store"></i> Login to Shop</button>
                 </form>
-                <p class="toggle-text">New Customer? <a onclick="showBuyerSignup()">Create Account →</a></p>
+                <p class="toggle-text">New Customer? <a id="showBuyerSignupLink" style="cursor:pointer;">Create Account →</a></p>
             </div>
 
-            <div id="buyerSignupForm" class="auth-form" style="display: none;">
+            <!-- Buyer Signup -->
+            <div id="buyerSignupDiv" class="auth-form" style="display: none;">
                 <h2><i class="fas fa-user-plus"></i> Create Account</h2>
-                <form id="buyerSignupFormElement">
+                <form id="buyerSignupForm">
                     <div class="input-group">
                         <i class="fas fa-user-circle"></i>
                         <input type="text" id="buyerFullName" placeholder="Full Name" required>
@@ -422,22 +419,22 @@
                         <input type="password" id="buyerPassword" placeholder="Password (min 6 characters)" required>
                     </div>
                     <div class="input-group">
-                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-check-circle"></i>
                         <input type="password" id="buyerConfirmPassword" placeholder="Confirm Password" required>
                     </div>
-                    <button type="submit"><i class="fas fa-shopping-cart"></i> Submit for Approval</button>
+                    <button type="submit"><i class="fas fa-shopping-cart"></i> Register as Buyer</button>
                 </form>
-                <p class="toggle-text">Already have an account? <a onclick="showBuyerLogin()">Login →</a></p>
+                <p class="toggle-text">Already have an account? <a id="showBuyerLoginLink" style="cursor:pointer;">Login →</a></p>
             </div>
         </div>
 
-        <!-- Admin Login -->
+        <!-- ==================== ADMIN FORMS ==================== -->
         <div id="adminForms" class="form-container">
             <div class="admin-notice">
                 <i class="fas fa-shield-alt"></i> Authorized Personnel Only
             </div>
             <h2><i class="fas fa-user-shield"></i> Admin Login</h2>
-            <form id="adminLoginFormElement">
+            <form id="adminLoginForm">
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
                     <input type="email" id="adminEmail" placeholder="Admin Email" required>
@@ -450,6 +447,7 @@
             </form>
         </div>
 
+        <!-- Feature Badges -->
         <div class="feature-badges">
             <span><i class="fas fa-chart-line"></i> Monthly Returns</span>
             <span><i class="fas fa-truck"></i> Free Delivery</span>
@@ -461,44 +459,44 @@
 
 <script>
     // ============================================
-    // SUPABASE CONFIGURATION
+    // SUPABASE CONFIGURATION - YOUR REAL KEYS
     // ============================================
     const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // Toast Notification
-    function showNotification(message, isError = false, isWarning = false) {
+    function showNotification(message, isError = false) {
         const existingToast = document.querySelector('.toast-notification');
         if (existingToast) existingToast.remove();
         
         const toast = document.createElement('div');
-        if (isWarning) {
-            toast.className = 'toast-notification toast-warning';
-            toast.innerHTML = `⚠️ ${message}`;
-        } else {
-            toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
-        }
+        toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
+        toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
         document.body.appendChild(toast);
         
         setTimeout(() => {
             toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 500);
-        }, 4000);
+        }, 3000);
     }
 
-    // User Type Selection - FIXED
+    // ============================================
+    // USER TYPE SELECTION - FULLY WORKING
+    // ============================================
     function selectUserType(type) {
-        // Update button styles
+        // Update button active states
         document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`.type-btn.${type}`).classList.add('active');
+        if (type === 'investor') document.querySelector('.type-btn.investor').classList.add('active');
+        if (type === 'buyer') document.querySelector('.type-btn.buyer').classList.add('active');
+        if (type === 'admin') document.querySelector('.type-btn.admin').classList.add('active');
         
-        // Show appropriate form container
+        // Hide all form containers
         document.getElementById('investorForms').classList.remove('active');
         document.getElementById('buyerForms').classList.remove('active');
         document.getElementById('adminForms').classList.remove('active');
         
+        // Show selected form container
         if (type === 'investor') {
             document.getElementById('investorForms').classList.add('active');
         } else if (type === 'buyer') {
@@ -508,271 +506,241 @@
         }
     }
 
-    // Investor Form Toggles
+    // ============================================
+    // INVESTOR FORM TOGGLES
+    // ============================================
     function showInvestorLogin() {
-        document.getElementById('investorLoginForm').style.display = 'block';
-        document.getElementById('investorSignupForm').style.display = 'none';
+        document.getElementById('investorLoginDiv').style.display = 'block';
+        document.getElementById('investorSignupDiv').style.display = 'none';
     }
-
+    
     function showInvestorSignup() {
-        document.getElementById('investorLoginForm').style.display = 'none';
-        document.getElementById('investorSignupForm').style.display = 'block';
+        document.getElementById('investorLoginDiv').style.display = 'none';
+        document.getElementById('investorSignupDiv').style.display = 'block';
     }
 
-    // Buyer Form Toggles
+    // ============================================
+    // BUYER FORM TOGGLES
+    // ============================================
     function showBuyerLogin() {
-        document.getElementById('buyerLoginForm').style.display = 'block';
-        document.getElementById('buyerSignupForm').style.display = 'none';
+        document.getElementById('buyerLoginDiv').style.display = 'block';
+        document.getElementById('buyerSignupDiv').style.display = 'none';
     }
-
+    
     function showBuyerSignup() {
-        document.getElementById('buyerLoginForm').style.display = 'none';
-        document.getElementById('buyerSignupForm').style.display = 'block';
+        document.getElementById('buyerLoginDiv').style.display = 'none';
+        document.getElementById('buyerSignupDiv').style.display = 'block';
     }
 
     // ============================================
-    // INVESTOR SIGNUP (Pending Approval)
+    // ATTACH EVENT LISTENERS AFTER DOM LOADS
     // ============================================
-    document.getElementById('investorSignupFormElement')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    document.addEventListener('DOMContentLoaded', function() {
         
-        const fullName = document.getElementById('investorFullName').value.trim();
-        const email = document.getElementById('investorEmail').value.trim();
-        const phone = document.getElementById('investorPhone').value.trim();
-        const city = document.getElementById('investorCity').value.trim();
-        const password = document.getElementById('investorPassword').value;
-        const confirmPassword = document.getElementById('investorConfirmPassword').value;
-        
-        if (password.length < 6) {
-            showNotification('Password must be at least 6 characters', true);
-            return;
+        // ========== INVESTOR TOGGLE LINKS ==========
+        const showInvestorSignupLink = document.getElementById('showInvestorSignupLink');
+        if (showInvestorSignupLink) {
+            showInvestorSignupLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showInvestorSignup();
+            });
         }
         
-        if (password !== confirmPassword) {
-            showNotification('Passwords do not match', true);
-            return;
+        const showInvestorLoginLink = document.getElementById('showInvestorLoginLink');
+        if (showInvestorLoginLink) {
+            showInvestorLoginLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showInvestorLogin();
+            });
         }
         
-        // Check if email already exists in pending_investors or investors
-        const { data: existingInvestor } = await supabase
-            .from('investors')
-            .select('email')
-            .eq('email', email)
-            .single();
-        
-        if (existingInvestor) {
-            showNotification('This email is already registered. Please login.', true);
-            return;
+        // ========== BUYER TOGGLE LINKS ==========
+        const showBuyerSignupLink = document.getElementById('showBuyerSignupLink');
+        if (showBuyerSignupLink) {
+            showBuyerSignupLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showBuyerSignup();
+            });
         }
         
-        // Create auth user (will be disabled until admin approves)
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-            email, password,
-            options: { 
-                data: { 
-                    full_name: fullName, 
-                    phone, 
-                    city, 
-                    role: 'investor',
-                    status: 'pending'
-                } 
+        const showBuyerLoginLink = document.getElementById('showBuyerLoginLink');
+        if (showBuyerLoginLink) {
+            showBuyerLoginLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showBuyerLogin();
+            });
+        }
+        
+        // ============================================
+        // INVESTOR SIGNUP
+        // ============================================
+        document.getElementById('investorSignupForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('investorFullName').value.trim();
+            const email = document.getElementById('investorEmail').value.trim();
+            const phone = document.getElementById('investorPhone').value.trim();
+            const city = document.getElementById('investorCity').value.trim();
+            const password = document.getElementById('investorPassword').value;
+            const confirmPassword = document.getElementById('investorConfirmPassword').value;
+            
+            if (password.length < 6) {
+                showNotification('Password must be at least 6 characters', true);
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match', true);
+                return;
+            }
+            
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+                email, password,
+                options: { data: { full_name: fullName, phone, city, role: 'investor' } }
+            });
+            
+            if (authError) {
+                showNotification('Signup failed: ' + authError.message, true);
+                return;
+            }
+            
+            if (authData.user) {
+                const { error: insertError } = await supabase.from('investors').insert([{
+                    id: authData.user.id,
+                    email: email,
+                    full_name: fullName,
+                    phone: phone,
+                    city: city,
+                    created_at: new Date().toISOString()
+                }]);
+                
+                if (insertError) console.error('Insert error:', insertError);
+                
+                showNotification('Account created successfully! Please login.', false);
+                showInvestorLogin();
+                document.getElementById('investorSignupForm').reset();
             }
         });
         
-        if (authError) {
-            showNotification('Signup failed: ' + authError.message, true);
-            return;
-        }
-        
-        if (authData.user) {
-            // Insert into investors table with pending status
-            const { error: insertError } = await supabase.from('investors').insert([{
-                id: authData.user.id,
-                email: email,
-                full_name: fullName,
-                phone: phone,
-                city: city,
-                status: 'pending',
-                is_approved: false,
-                created_at: new Date().toISOString()
-            }]);
+        // ============================================
+        // INVESTOR LOGIN
+        // ============================================
+        document.getElementById('investorLoginForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('investorLoginEmail').value.trim();
+            const password = document.getElementById('investorLoginPassword').value;
             
-            if (insertError) {
-                console.error('Insert error:', insertError);
-            }
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             
-            showNotification('Registration submitted! Awaiting admin approval (within 24 hours).', false);
-            showInvestorLogin();
-            document.getElementById('investorSignupFormElement').reset();
-        }
-    });
-
-    // ============================================
-    // INVESTOR LOGIN (Check Approval Status)
-    // ============================================
-    document.getElementById('investorLoginFormElement')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('investorLoginEmail').value.trim();
-        const password = document.getElementById('investorLoginPassword').value;
-        
-        // First check if investor is approved
-        const { data: investor, error: investorError } = await supabase
-            .from('investors')
-            .select('status, is_approved')
-            .eq('email', email)
-            .single();
-        
-        if (investor && (!investor.is_approved || investor.status === 'pending')) {
-            showNotification('Your account is pending admin approval. Please wait for approval email.', true);
-            return;
-        }
-        
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        
-        if (error) {
-            showNotification('Login failed: ' + error.message, true);
-        } else if (data.user) {
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('userType', 'investor');
-            showNotification('Welcome back, Investor! Redirecting...', false);
-            setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
-        }
-    });
-
-    // ============================================
-    // BUYER SIGNUP (Pending Approval)
-    // ============================================
-    document.getElementById('buyerSignupFormElement')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const fullName = document.getElementById('buyerFullName').value.trim();
-        const email = document.getElementById('buyerEmail').value.trim();
-        const phone = document.getElementById('buyerPhone').value.trim();
-        const address = document.getElementById('buyerAddress').value.trim();
-        const password = document.getElementById('buyerPassword').value;
-        const confirmPassword = document.getElementById('buyerConfirmPassword').value;
-        
-        if (password.length < 6) {
-            showNotification('Password must be at least 6 characters', true);
-            return;
-        }
-        
-        if (password !== confirmPassword) {
-            showNotification('Passwords do not match', true);
-            return;
-        }
-        
-        // Check if email already exists
-        const { data: existingBuyer } = await supabase
-            .from('buyers')
-            .select('email')
-            .eq('email', email)
-            .single();
-        
-        if (existingBuyer) {
-            showNotification('This email is already registered. Please login.', true);
-            return;
-        }
-        
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-            email, password,
-            options: { 
-                data: { 
-                    full_name: fullName, 
-                    phone, 
-                    address, 
-                    role: 'buyer',
-                    status: 'pending'
-                } 
+            if (error) {
+                showNotification('Login failed: ' + error.message, true);
+            } else if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('userType', 'investor');
+                showNotification('Welcome back, Investor! Redirecting...', false);
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
             }
         });
         
-        if (authError) {
-            showNotification('Signup failed: ' + authError.message, true);
-            return;
-        }
-        
-        if (authData.user) {
-            const { error: insertError } = await supabase.from('buyers').insert([{
-                id: authData.user.id,
-                email: email,
-                full_name: fullName,
-                phone: phone,
-                address: address,
-                status: 'pending',
-                is_approved: false,
-                created_at: new Date().toISOString()
-            }]);
+        // ============================================
+        // BUYER SIGNUP
+        // ============================================
+        document.getElementById('buyerSignupForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            if (insertError) {
-                console.error('Insert error:', insertError);
+            const fullName = document.getElementById('buyerFullName').value.trim();
+            const email = document.getElementById('buyerEmail').value.trim();
+            const phone = document.getElementById('buyerPhone').value.trim();
+            const address = document.getElementById('buyerAddress').value.trim();
+            const password = document.getElementById('buyerPassword').value;
+            const confirmPassword = document.getElementById('buyerConfirmPassword').value;
+            
+            if (password.length < 6) {
+                showNotification('Password must be at least 6 characters', true);
+                return;
             }
             
-            showNotification('Registration submitted! Awaiting admin approval (within 24 hours).', false);
-            showBuyerLogin();
-            document.getElementById('buyerSignupFormElement').reset();
-        }
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match', true);
+                return;
+            }
+            
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+                email, password,
+                options: { data: { full_name: fullName, phone, address, role: 'buyer' } }
+            });
+            
+            if (authError) {
+                showNotification('Signup failed: ' + authError.message, true);
+                return;
+            }
+            
+            if (authData.user) {
+                const { error: insertError } = await supabase.from('buyers').insert([{
+                    id: authData.user.id,
+                    email: email,
+                    full_name: fullName,
+                    phone: phone,
+                    address: address,
+                    created_at: new Date().toISOString()
+                }]);
+                
+                if (insertError) console.error('Insert error:', insertError);
+                
+                showNotification('Account created successfully! Please login.', false);
+                showBuyerLogin();
+                document.getElementById('buyerSignupForm').reset();
+            }
+        });
+        
+        // ============================================
+        // BUYER LOGIN
+        // ============================================
+        document.getElementById('buyerLoginForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('buyerLoginEmail').value.trim();
+            const password = document.getElementById('buyerLoginPassword').value;
+            
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                showNotification('Login failed: ' + error.message, true);
+            } else if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('userType', 'buyer');
+                showNotification('Welcome back! Redirecting to shop...', false);
+                setTimeout(() => { window.location.href = 'buyer.html'; }, 1000);
+            }
+        });
+        
+        // ============================================
+        // ADMIN LOGIN
+        // ============================================
+        document.getElementById('adminLoginForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            
+            const adminEmails = ['admin@sohrab.com', 'sohrabullahkn786@gmail.com'];
+            if (!adminEmails.includes(email)) {
+                showNotification('Unauthorized. Admin access only.', true);
+                return;
+            }
+            
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                showNotification('Login failed: ' + error.message, true);
+            } else if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('userType', 'admin');
+                showNotification('Welcome Admin! Redirecting to panel...', false);
+                setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
+            }
+        });
     });
-
-    // ============================================
-    // BUYER LOGIN (Check Approval Status)
-    // ============================================
-    document.getElementById('buyerLoginFormElement')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('buyerLoginEmail').value.trim();
-        const password = document.getElementById('buyerLoginPassword').value;
-        
-        // First check if buyer is approved
-        const { data: buyer, error: buyerError } = await supabase
-            .from('buyers')
-            .select('status, is_approved')
-            .eq('email', email)
-            .single();
-        
-        if (buyer && (!buyer.is_approved || buyer.status === 'pending')) {
-            showNotification('Your account is pending admin approval. Please wait for approval email.', true);
-            return;
-        }
-        
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        
-        if (error) {
-            showNotification('Login failed: ' + error.message, true);
-        } else if (data.user) {
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('userType', 'buyer');
-            showNotification('Welcome back! Redirecting to shop...', false);
-            setTimeout(() => { window.location.href = 'buyer.html'; }, 1000);
-        }
-    });
-
-    // ============================================
-    // ADMIN LOGIN
-    // ============================================
-    document.getElementById('adminLoginFormElement')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('adminEmail').value.trim();
-        const password = document.getElementById('adminPassword').value;
-        
-        const adminEmails = ['admin@sohrab.com', 'sohrabullahkn786@gmail.com'];
-        if (!adminEmails.includes(email)) {
-            showNotification('Unauthorized. Admin access only.', true);
-            return;
-        }
-        
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        
-        if (error) {
-            showNotification('Login failed: ' + error.message, true);
-        } else if (data.user) {
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('userType', 'admin');
-            showNotification('Welcome Admin! Redirecting to panel...', false);
-            setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
-        }
-    });
-
-    // Make functions global
+    
+    // Make functions globally available
     window.selectUserType = selectUserType;
     window.showInvestorLogin = showInvestorLogin;
     window.showInvestorSignup = showInvestorSignup;
