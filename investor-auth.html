@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sohrab Industries | Investor Portal - Earn High Returns</title>
+    <title>Sohrab Industries | Investor Portal - Earn in PKR</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -20,7 +20,6 @@
             min-height: 100vh;
         }
 
-        /* Navigation */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -64,7 +63,6 @@
             color: #E8B13C;
         }
 
-        /* Main Container */
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -75,7 +73,7 @@
             align-items: center;
         }
 
-        /* Left Side - Hero Content */
+        /* Left Side - Hero Content with PKR */
         .hero-content h1 {
             font-size: 3rem;
             color: white;
@@ -108,10 +106,22 @@
             border-radius: 1rem;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-card .currency-icon {
+            font-size: 1.8rem;
+            color: #E8B13C;
+            margin-bottom: 0.5rem;
         }
 
         .stat-card .number {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 800;
             color: #E8B13C;
         }
@@ -157,7 +167,7 @@
             padding: 2rem;
         }
 
-        /* Toggle Buttons - FIXED */
+        /* Toggle Buttons - WORKING */
         .toggle-buttons {
             display: flex;
             gap: 1rem;
@@ -186,7 +196,6 @@
             box-shadow: 0 4px 12px rgba(30, 78, 62, 0.3);
         }
 
-        /* Forms */
         .form-group {
             margin-bottom: 1.2rem;
             position: relative;
@@ -258,7 +267,6 @@
             text-decoration: underline;
         }
 
-        /* Message Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -292,7 +300,6 @@
             }
         }
 
-        /* Responsive */
         @media (max-width: 968px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -304,10 +311,6 @@
             }
             .hero-content p {
                 text-align: center;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1rem;
             }
         }
 
@@ -337,21 +340,24 @@
     </nav>
 
     <div class="main-container">
-        <!-- Left Side - Attractive Content -->
+        <!-- Left Side - Attractive Content with PKR -->
         <div class="hero-content">
             <h1>Start Your <span>Investment Journey</span> Today</h1>
-            <p>Join thousands of investors earning consistent monthly returns with Sohrab Industries. Your trusted partner in wealth creation since 2015.</p>
+            <p>Join thousands of investors earning consistent monthly returns in <strong>Pakistani Rupees (PKR)</strong> with Sohrab Industries. Your trusted partner in wealth creation since 2015.</p>
             
             <div class="stats-grid">
                 <div class="stat-card">
+                    <div class="currency-icon">💰</div>
                     <div class="number">5000+</div>
                     <div class="label">Happy Investors</div>
                 </div>
                 <div class="stat-card">
-                    <div class="number">₹50M+</div>
+                    <div class="currency-icon">💵</div>
+                    <div class="number">50M+ PKR</div>
                     <div class="label">Total Investment</div>
                 </div>
                 <div class="stat-card">
+                    <div class="currency-icon">📈</div>
                     <div class="number">10-15%</div>
                     <div class="label">Monthly Returns</div>
                 </div>
@@ -359,14 +365,17 @@
 
             <div class="stats-grid" style="margin-top: 1rem;">
                 <div class="stat-card">
+                    <div class="currency-icon">🕒</div>
                     <div class="number">24/7</div>
                     <div class="label">Support Available</div>
                 </div>
                 <div class="stat-card">
+                    <div class="currency-icon">🔒</div>
                     <div class="number">100%</div>
                     <div class="label">Secure Investment</div>
                 </div>
                 <div class="stat-card">
+                    <div class="currency-icon">⭐</div>
                     <div class="number">2 Years</div>
                     <div class="label">Warranty</div>
                 </div>
@@ -378,7 +387,7 @@
             <div class="card-header">
                 <i class="fas fa-chart-line"></i>
                 <h2>Investor Portal</h2>
-                <p>Login or Create Account to Start Investing</p>
+                <p>Login or Create Account to Start Investing in PKR</p>
             </div>
             <div class="card-body">
                 <div class="toggle-buttons">
@@ -386,7 +395,7 @@
                     <button class="toggle-btn active" id="signupTabBtn">📝 Sign Up</button>
                 </div>
 
-                <!-- SIGNUP FORM -->
+                <!-- SIGNUP FORM - Visible by default -->
                 <div id="signupSection">
                     <div class="form-group">
                         <i class="fas fa-user"></i>
@@ -417,7 +426,7 @@
                     </button>
                 </div>
 
-                <!-- LOGIN FORM -->
+                <!-- LOGIN FORM - Hidden by default -->
                 <div id="loginSection" style="display: none;">
                     <div class="form-group">
                         <i class="fas fa-envelope"></i>
@@ -455,8 +464,8 @@
         const signupTabBtn = document.getElementById('signupTabBtn');
         const toggleFormLink = document.getElementById('toggleFormLink');
 
-        // Show Login Function
-        function showLogin() {
+        // Function to show Login Form (HIDE Signup, SHOW Login)
+        function showLoginForm() {
             signupSection.style.display = 'none';
             loginSection.style.display = 'block';
             loginTabBtn.classList.add('active');
@@ -464,8 +473,8 @@
             toggleFormLink.innerHTML = "Don't have an account? Sign Up →";
         }
 
-        // Show Signup Function
-        function showSignup() {
+        // Function to show Signup Form (HIDE Login, SHOW Signup)
+        function showSignupForm() {
             loginSection.style.display = 'none';
             signupSection.style.display = 'block';
             signupTabBtn.classList.add('active');
@@ -473,18 +482,20 @@
             toggleFormLink.innerHTML = "Already have an account? Login →";
         }
 
-        // Add click events - THIS IS THE FIX
-        loginTabBtn.addEventListener('click', showLogin);
-        signupTabBtn.addEventListener('click', showSignup);
+        // Add click event listeners for tabs
+        loginTabBtn.addEventListener('click', showLoginForm);
+        signupTabBtn.addEventListener('click', showSignupForm);
+        
+        // Toggle link click handler
         toggleFormLink.addEventListener('click', function() {
             if (loginSection.style.display === 'none') {
-                showLogin();
+                showLoginForm();
             } else {
-                showSignup();
+                showSignupForm();
             }
         });
 
-        // Toast Message
+        // Toast Message Function
         function showToast(message, isError) {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
@@ -508,16 +519,33 @@
             const password = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirm').value;
 
-            if (!name || !email || !phone || !city || !password) {
-                showToast('Please fill all fields', true);
+            // Validation
+            if (!name) {
+                showToast('Please enter your full name', true);
                 return;
             }
-            if (password !== confirm) {
-                showToast('Passwords do not match', true);
+            if (!email) {
+                showToast('Please enter your email address', true);
+                return;
+            }
+            if (!phone) {
+                showToast('Please enter your phone number', true);
+                return;
+            }
+            if (!city) {
+                showToast('Please enter your city', true);
+                return;
+            }
+            if (!password) {
+                showToast('Please enter a password', true);
                 return;
             }
             if (password.length < 6) {
                 showToast('Password must be at least 6 characters', true);
+                return;
+            }
+            if (password !== confirm) {
+                showToast('Passwords do not match', true);
                 return;
             }
 
@@ -526,6 +554,7 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
 
             try {
+                // Create user in Supabase Auth
                 const { data: authData, error: authError } = await supabase.auth.signUp({
                     email: email,
                     password: password,
@@ -547,6 +576,7 @@
                 }
 
                 if (authData.user) {
+                    // Insert into investors table
                     const { error: insertError } = await supabase
                         .from('investors')
                         .insert([{
@@ -564,7 +594,7 @@
                     
                     showToast('Account created successfully! Please login.', false);
                     
-                    // Clear form
+                    // Clear form fields
                     document.getElementById('signupName').value = '';
                     document.getElementById('signupEmail').value = '';
                     document.getElementById('signupPhone').value = '';
@@ -572,7 +602,8 @@
                     document.getElementById('signupPassword').value = '';
                     document.getElementById('signupConfirm').value = '';
                     
-                    showLogin();
+                    // Switch to login form
+                    showLoginForm();
                 }
             } catch (err) {
                 showToast('Error: ' + err.message, true);
@@ -587,8 +618,12 @@
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            if (!email || !password) {
-                showToast('Please enter email and password', true);
+            if (!email) {
+                showToast('Please enter your email address', true);
+                return;
+            }
+            if (!password) {
+                showToast('Please enter your password', true);
                 return;
             }
 
@@ -611,7 +646,7 @@
             if (data.user) {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 localStorage.setItem('userType', 'investor');
-                showToast('Login successful! Redirecting...', false);
+                showToast('Login successful! Redirecting to dashboard...', false);
                 
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
@@ -619,7 +654,7 @@
             }
         });
 
-        // Enter key support
+        // Enter key support for forms
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -631,6 +666,8 @@
                 }
             });
         });
+
+        console.log('Page loaded - Login/Signup tabs working correctly');
     </script>
 </body>
 </html>
