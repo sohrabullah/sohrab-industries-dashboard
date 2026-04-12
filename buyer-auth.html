@@ -128,41 +128,111 @@
         const signupTabBtn = document.getElementById('signupTabBtn');
         const toggleFormLink = document.getElementById('toggleFormLink');
 
-        function showLoginForm() { signupSection.style.display = 'none'; loginSection.style.display = 'block'; loginTabBtn.classList.add('active'); signupTabBtn.classList.remove('active'); toggleFormLink.innerHTML = "Don't have an account? Sign Up →"; }
-        function showSignupForm() { loginSection.style.display = 'none'; signupSection.style.display = 'block'; signupTabBtn.classList.add('active'); loginTabBtn.classList.remove('active'); toggleFormLink.innerHTML = "Already have an account? Login →"; }
+        // These functions toggle the visibility
+        function showLoginForm() { 
+            signupSection.style.display = 'none'; 
+            loginSection.style.display = 'block'; 
+            loginTabBtn.classList.add('active'); 
+            signupTabBtn.classList.remove('active'); 
+            toggleFormLink.innerHTML = "Don't have an account? Sign Up →"; 
+        }
+        
+        function showSignupForm() { 
+            loginSection.style.display = 'none'; 
+            signupSection.style.display = 'block'; 
+            signupTabBtn.classList.add('active'); 
+            loginTabBtn.classList.remove('active'); 
+            toggleFormLink.innerHTML = "Already have an account? Login →"; 
+        }
 
-        loginTabBtn.addEventListener('click', showLoginForm);
-        signupTabBtn.addEventListener('click', showSignupForm);
-        toggleFormLink.addEventListener('click', () => { if (loginSection.style.display === 'none') showLoginForm(); else showSignupForm(); });
+        // Attach click events
+        loginTabBtn.onclick = showLoginForm;
+        signupTabBtn.onclick = showSignupForm;
+        toggleFormLink.onclick = function() { 
+            if (loginSection.style.display === 'none') {
+                showLoginForm(); 
+            } else {
+                showSignupForm(); 
+            }
+        };
 
-        function showToast(msg, isError) { const t = document.createElement('div'); t.className = `toast ${isError ? 'error' : 'success'}`; t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+        function showToast(msg, isError) { 
+            const t = document.createElement('div'); 
+            t.className = `toast ${isError ? 'error' : 'success'}`; 
+            t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; 
+            document.body.appendChild(t); 
+            setTimeout(() => t.remove(), 3000); 
+        }
 
-        document.getElementById('signupBtn').addEventListener('click', async () => {
+        // SIGNUP
+        document.getElementById('signupBtn').onclick = async () => {
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const phone = document.getElementById('signupPhone').value.trim();
             const address = document.getElementById('signupAddress').value.trim();
             const password = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirm').value;
+            
             if (!name || !email || !phone || !address || !password) { showToast('Please fill all fields', true); return; }
             if (password !== confirm) { showToast('Passwords do not match', true); return; }
             if (password.length < 6) { showToast('Password must be at least 6 characters', true); return; }
-            const btn = document.getElementById('signupBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating...';
-            const { data: authData, error: authError } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name, phone, address, role: 'buyer' } } });
-            if (authError) { showToast(authError.message, true); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account'; return; }
-            if (authData.user) { await supabase.from('buyers').insert([{ id: authData.user.id, email, full_name: name, phone, address, created_at: new Date().toISOString() }]); showToast('Account created! Please login.', false); document.querySelectorAll('#signupSection input').forEach(i => i.value = ''); showLoginForm(); }
-            btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
-        });
+            
+            const btn = document.getElementById('signupBtn'); 
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating...';
+            
+            const { data: authData, error: authError } = await supabase.auth.signUp({ 
+                email, password, 
+                options: { data: { full_name: name, phone, address, role: 'buyer' } } 
+            });
+            
+            if (authError) { 
+                showToast(authError.message, true); 
+                btn.disabled = false; 
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account'; 
+                return; 
+            }
+            
+            if (authData.user) { 
+                await supabase.from('buyers').insert([{ 
+                    id: authData.user.id, email, full_name: name, phone, address, 
+                    created_at: new Date().toISOString() 
+                }]); 
+                showToast('Account created! Please login.', false); 
+                document.querySelectorAll('#signupSection input').forEach(i => i.value = ''); 
+                showLoginForm(); 
+            }
+            btn.disabled = false; 
+            btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
+        };
 
-        document.getElementById('loginBtn').addEventListener('click', async () => {
+        // LOGIN
+        document.getElementById('loginBtn').onclick = async () => {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
+            
             if (!email || !password) { showToast('Please enter email and password', true); return; }
-            const btn = document.getElementById('loginBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+            
+            const btn = document.getElementById('loginBtn'); 
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+            
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) { showToast('Invalid email or password', true); btn.disabled = false; btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop'; return; }
-            if (data.user) { localStorage.setItem('user', JSON.stringify(data.user)); localStorage.setItem('userType', 'buyer'); showToast('Login successful! Redirecting...', false); setTimeout(() => window.location.href = 'buyer.html', 1500); }
-        });
+            
+            if (error) { 
+                showToast('Invalid email or password', true); 
+                btn.disabled = false; 
+                btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop'; 
+                return; 
+            }
+            
+            if (data.user) { 
+                localStorage.setItem('user', JSON.stringify(data.user)); 
+                localStorage.setItem('userType', 'buyer'); 
+                showToast('Login successful! Redirecting...', false); 
+                setTimeout(() => window.location.href = 'buyer.html', 1500); 
+            }
+        };
     </script>
 </body>
 </html>
