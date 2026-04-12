@@ -6,7 +6,6 @@
     <title>Sohrab Industries | Invest • Buy • Grow</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -256,124 +255,49 @@
             color: #1E4E3E;
         }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 2000;
-            align-items: center;
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
             justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
         }
 
-        .modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-        }
-
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            color: #1E4E3E;
-        }
-
-        .close-modal {
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .user-type-select {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 1.5rem;
-        }
-
-        .user-type-btn {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            background: white;
-            cursor: pointer;
+        .cta-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
             font-weight: 600;
+            text-decoration: none;
             transition: all 0.3s;
         }
 
-        .user-type-btn.active {
-            border-color: #1E4E3E;
-            background: #1E4E3E;
+        .cta-btn.primary {
+            background: #E8B13C;
+            color: #1E4E3E;
+        }
+
+        .cta-btn.secondary {
+            background: transparent;
             color: white;
+            border: 2px solid white;
         }
 
-        .input-group {
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px 15px 12px 45px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 1rem;
-        }
-
-        .modal-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(95deg, #1F4E41, #2A6B58);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 1rem;
-        }
-
-        .toggle-form {
-            text-align: center;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .toggle-form a {
-            color: #E8B13C;
-            cursor: pointer;
-            font-weight: 600;
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
 
         /* Footer */
@@ -400,33 +324,6 @@
             to { opacity: 1; }
         }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .toast-notification {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 40px;
-            color: white;
-            font-weight: 500;
-            z-index: 3000;
-            animation: slideUp 0.3s ease;
-        }
-
-        .toast-success { background: #28a745; }
-        .toast-error { background: #dc3545; }
-
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -435,6 +332,7 @@
             }
             .hero h1 { font-size: 2rem; }
             .hero-stats { gap: 1.5rem; }
+            .cta-buttons { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
@@ -452,14 +350,14 @@
                     <i class="fas fa-user-plus"></i> Sign Up
                 </button>
                 <div class="dropdown-content" id="signupDropdownContent">
-                    <a onclick="openSignupModal('investor')">
+                    <a href="investor-auth.html">
                         <i class="fas fa-chart-line"></i> Sign up as Investor
                     </a>
-                    <a onclick="openSignupModal('buyer')">
+                    <a href="buyer-auth.html">
                         <i class="fas fa-shopping-cart"></i> Sign up as Buyer
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a onclick="openSignupModal('admin')">
+                    <a href="admin-auth.html">
                         <i class="fas fa-shield-alt"></i> Sign up as Admin
                     </a>
                 </div>
@@ -471,14 +369,14 @@
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
                 <div class="dropdown-content" id="loginDropdownContent">
-                    <a onclick="openLoginModal('investor')">
+                    <a href="investor-auth.html">
                         <i class="fas fa-chart-line"></i> Login as Investor
                     </a>
-                    <a onclick="openLoginModal('buyer')">
+                    <a href="buyer-auth.html">
                         <i class="fas fa-shopping-cart"></i> Login as Buyer
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a onclick="openLoginModal('admin')">
+                    <a href="admin-auth.html">
                         <i class="fas fa-shield-alt"></i> Login as Admin
                     </a>
                 </div>
@@ -543,6 +441,16 @@
         </div>
     </section>
 
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <h2>Ready to Start Your Journey?</h2>
+        <p>Join thousands of satisfied investors and customers today!</p>
+        <div class="cta-buttons">
+            <a href="investor-auth.html" class="cta-btn primary"><i class="fas fa-chart-line"></i> Start Investing</a>
+            <a href="buyer-auth.html" class="cta-btn secondary"><i class="fas fa-shopping-cart"></i> Shop Now</a>
+        </div>
+    </section>
+
     <!-- Testimonials -->
     <section class="testimonials">
         <h2 class="section-title">What Our Clients Say</h2>
@@ -572,76 +480,8 @@
         </p>
     </footer>
 
-    <!-- Signup Modal -->
-    <div id="signupModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="signupModalTitle">Create Account</h2>
-                <span class="close-modal" onclick="closeModal('signupModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="user-type-select">
-                    <button class="user-type-btn active" data-type="investor" onclick="selectSignupType('investor')">Investor</button>
-                    <button class="user-type-btn" data-type="buyer" onclick="selectSignupType('buyer')">Buyer</button>
-                    <button class="user-type-btn" data-type="admin" onclick="selectSignupType('admin')">Admin</button>
-                </div>
-                <form id="signupForm">
-                    <div id="signupFields"></div>
-                    <button type="submit" class="modal-btn">Sign Up</button>
-                </form>
-                <div class="toggle-form">
-                    Already have an account? <a onclick="closeModal('signupModal'); openLoginModal('investor')">Login</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="loginModalTitle">Login to Account</h2>
-                <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="user-type-select">
-                    <button class="user-type-btn active" data-type="investor" onclick="selectLoginType('investor')">Investor</button>
-                    <button class="user-type-btn" data-type="buyer" onclick="selectLoginType('buyer')">Buyer</button>
-                    <button class="user-type-btn" data-type="admin" onclick="selectLoginType('admin')">Admin</button>
-                </div>
-                <form id="loginForm">
-                    <div id="loginFields"></div>
-                    <button type="submit" class="modal-btn">Login</button>
-                </form>
-                <div class="toggle-form">
-                    Don't have an account? <a onclick="closeModal('loginModal'); openSignupModal('investor')">Sign Up</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Supabase Configuration
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        let currentSignupType = 'investor';
-        let currentLoginType = 'investor';
-
-        // Toast Notification
-        function showNotification(message, isError = false) {
-            const toast = document.createElement('div');
-            toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
-        }
-
-        // Dropdown Toggle
+        // Dropdown Toggle Function
         function toggleDropdown(type) {
             const signupContent = document.getElementById('signupDropdownContent');
             const loginContent = document.getElementById('loginDropdownContent');
@@ -663,141 +503,8 @@
             }
         });
 
-        // Modal Functions
-        function openSignupModal(type) {
-            currentSignupType = type;
-            selectSignupType(type);
-            document.getElementById('signupModal').classList.add('active');
-            document.getElementById('signupModalTitle').innerHTML = type === 'investor' ? 'Investor Sign Up' : (type === 'buyer' ? 'Buyer Sign Up' : 'Admin Sign Up');
-        }
-
-        function openLoginModal(type) {
-            currentLoginType = type;
-            selectLoginType(type);
-            document.getElementById('loginModal').classList.add('active');
-            document.getElementById('loginModalTitle').innerHTML = type === 'investor' ? 'Investor Login' : (type === 'buyer' ? 'Buyer Login' : 'Admin Login');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Signup Form Fields
-        function selectSignupType(type) {
-            currentSignupType = type;
-            document.querySelectorAll('#signupModal .user-type-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`#signupModal .user-type-btn[data-type="${type}"]`).classList.add('active');
-            
-            const container = document.getElementById('signupFields');
-            if (type === 'investor') {
-                container.innerHTML = `
-                    <div class="input-group"><i class="fas fa-user"></i><input type="text" id="investorFullName" placeholder="Full Name" required></div>
-                    <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="investorEmail" placeholder="Email Address" required></div>
-                    <div class="input-group"><i class="fas fa-phone"></i><input type="tel" id="investorPhone" placeholder="Phone Number" required></div>
-                    <div class="input-group"><i class="fas fa-city"></i><input type="text" id="investorCity" placeholder="City" required></div>
-                    <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="investorPassword" placeholder="Password (min 6 characters)" required></div>
-                    <div class="input-group"><i class="fas fa-check-circle"></i><input type="password" id="investorConfirmPassword" placeholder="Confirm Password" required></div>
-                `;
-            } else if (type === 'buyer') {
-                container.innerHTML = `
-                    <div class="input-group"><i class="fas fa-user"></i><input type="text" id="buyerFullName" placeholder="Full Name" required></div>
-                    <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="buyerEmail" placeholder="Email Address" required></div>
-                    <div class="input-group"><i class="fas fa-phone"></i><input type="tel" id="buyerPhone" placeholder="Phone Number" required></div>
-                    <div class="input-group"><i class="fas fa-map-marker-alt"></i><input type="text" id="buyerAddress" placeholder="Delivery Address" required></div>
-                    <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="buyerPassword" placeholder="Password (min 6 characters)" required></div>
-                    <div class="input-group"><i class="fas fa-check-circle"></i><input type="password" id="buyerConfirmPassword" placeholder="Confirm Password" required></div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="input-group"><i class="fas fa-user"></i><input type="text" id="adminFullName" placeholder="Full Name" required></div>
-                    <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="adminEmail" placeholder="Email Address" required></div>
-                    <div class="input-group"><i class="fas fa-phone"></i><input type="tel" id="adminPhone" placeholder="Phone Number" required></div>
-                    <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="adminPassword" placeholder="Password (min 6 characters)" required></div>
-                    <div class="input-group"><i class="fas fa-check-circle"></i><input type="password" id="adminConfirmPassword" placeholder="Confirm Password" required></div>
-                `;
-            }
-        }
-
-        // Login Form Fields
-        function selectLoginType(type) {
-            currentLoginType = type;
-            document.querySelectorAll('#loginModal .user-type-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`#loginModal .user-type-btn[data-type="${type}"]`).classList.add('active');
-            
-            const container = document.getElementById('loginFields');
-            container.innerHTML = `
-                <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="${type}LoginEmail" placeholder="Email Address" required></div>
-                <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="${type}LoginPassword" placeholder="Password" required></div>
-            `;
-        }
-
-        // Signup Handler
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (currentSignupType === 'investor') {
-                const fullName = document.getElementById('investorFullName').value;
-                const email = document.getElementById('investorEmail').value;
-                const phone = document.getElementById('investorPhone').value;
-                const city = document.getElementById('investorCity').value;
-                const password = document.getElementById('investorPassword').value;
-                const confirm = document.getElementById('investorConfirmPassword').value;
-                
-                if (password !== confirm) { showNotification('Passwords do not match', true); return; }
-                
-                const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName, phone, city, role: 'investor' } } });
-                if (error) { showNotification(error.message, true); return; }
-                if (data.user) {
-                    await supabase.from('investors').insert([{ id: data.user.id, email, full_name: fullName, phone, city }]);
-                    showNotification('Account created! Please login.', false);
-                    closeModal('signupModal');
-                }
-            } else if (currentSignupType === 'buyer') {
-                const fullName = document.getElementById('buyerFullName').value;
-                const email = document.getElementById('buyerEmail').value;
-                const phone = document.getElementById('buyerPhone').value;
-                const address = document.getElementById('buyerAddress').value;
-                const password = document.getElementById('buyerPassword').value;
-                const confirm = document.getElementById('buyerConfirmPassword').value;
-                
-                if (password !== confirm) { showNotification('Passwords do not match', true); return; }
-                
-                const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName, phone, address, role: 'buyer' } } });
-                if (error) { showNotification(error.message, true); return; }
-                if (data.user) {
-                    await supabase.from('buyers').insert([{ id: data.user.id, email, full_name: fullName, phone, address }]);
-                    showNotification('Account created! Please login.', false);
-                    closeModal('signupModal');
-                }
-            } else {
-                showNotification('Admin accounts are created by Super Admin only', true);
-            }
-        });
-
-        // Login Handler
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById(`${currentLoginType}LoginEmail`).value;
-            const password = document.getElementById(`${currentLoginType}LoginPassword`).value;
-            
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) { showNotification(error.message, true); return; }
-            
-            if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
-                if (currentLoginType === 'investor') window.location.href = 'dashboard.html';
-                else if (currentLoginType === 'buyer') window.location.href = 'buyer.html';
-                else window.location.href = 'admin.html';
-            }
-        });
-
         // Make functions global
         window.toggleDropdown = toggleDropdown;
-        window.openSignupModal = openSignupModal;
-        window.openLoginModal = openLoginModal;
-        window.closeModal = closeModal;
-        window.selectSignupType = selectSignupType;
-        window.selectLoginType = selectLoginType;
     </script>
 </body>
 </html>
