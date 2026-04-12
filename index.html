@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Sohrab Industries | Invest • Buy • Grow</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -15,25 +14,43 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a2a25; }
+        ::-webkit-scrollbar-thumb { background: #E8B13C; border-radius: 10px; }
+
+        /* Navigation */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1rem 5%;
-            background: rgba(255,255,255,0.95);
+            background: rgba(255,255,255,0.98);
             backdrop-filter: blur(10px);
             box-shadow: 0 2px 20px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
+            transition: all 0.3s ease;
         }
-        .logo { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 700; color: #1E4E3E; }
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: #1E4E3E;
+            cursor: pointer;
+        }
         .logo i { color: #E8B13C; font-size: 1.8rem; }
         .nav-buttons { display: flex; gap: 15px; align-items: center; }
+        
+        /* Dropdown Styles */
         .dropdown { position: relative; display: inline-block; }
         .dropbtn {
             padding: 10px 24px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             border: none;
             border-radius: 50px;
@@ -41,21 +58,38 @@
             transition: all 0.3s;
             font-family: 'Inter', sans-serif;
         }
-        .dropbtn.signup { background: linear-gradient(95deg, #1F4E41, #2A6B58); color: white; }
-        .dropbtn.login { background: transparent; color: #1E4E3E; border: 2px solid #1E4E3E; }
-        .dropbtn.signup:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30,78,62,0.3); }
-        .dropbtn.login:hover { background: #1E4E3E; color: white; }
+        .dropbtn.signup { 
+            background: linear-gradient(95deg, #1F4E41, #2A6B58); 
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .dropbtn.login { 
+            background: transparent; 
+            color: #1E4E3E; 
+            border: 2px solid #1E4E3E;
+        }
+        .dropbtn.signup:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(30,78,62,0.3);
+            background: linear-gradient(95deg, #2A6B58, #1F4E41);
+        }
+        .dropbtn.login:hover { 
+            background: #1E4E3E; 
+            color: white;
+            transform: translateY(-2px);
+        }
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
             background: white;
-            min-width: 220px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            min-width: 240px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
             border-radius: 16px;
             z-index: 1001;
             overflow: hidden;
             animation: fadeIn 0.2s ease;
+            margin-top: 10px;
         }
         .dropdown-content.show { display: block; }
         .dropdown-content a {
@@ -67,10 +101,13 @@
             gap: 12px;
             transition: all 0.2s;
             cursor: pointer;
+            font-weight: 500;
         }
         .dropdown-content a:hover { background: #f0f2f5; }
-        .dropdown-content a i { width: 24px; color: #1E4E3E; }
+        .dropdown-content a i { width: 24px; color: #1E4E3E; font-size: 1.1rem; }
         .dropdown-divider { height: 1px; background: #eee; margin: 5px 0; }
+        
+        /* Dashboard Button */
         .dashboard-btn {
             background: #1E4E3E;
             color: white;
@@ -81,6 +118,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.3s;
+        }
+        .dashboard-btn:hover {
+            background: #2A6B58;
+            transform: translateY(-2px);
         }
         .logout-nav-btn {
             background: #dc3545;
@@ -90,64 +132,210 @@
             border: none;
             cursor: pointer;
             font-weight: 600;
+            transition: all 0.3s;
         }
+        .logout-nav-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
         .hero {
             text-align: center;
             padding: 4rem 2rem;
             color: white;
+            position: relative;
         }
-        .hero h1 { font-size: 3rem; margin-bottom: 1rem; animation: fadeInUp 0.6s ease; }
+        .hero h1 { 
+            font-size: 3rem; 
+            margin-bottom: 1rem; 
+            animation: fadeInUp 0.6s ease;
+            background: linear-gradient(135deg, #fff, #E8B13C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
         .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 2rem; animation: fadeInUp 0.8s ease; }
         .hero-stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; margin-top: 2rem; }
-        .stat-item { text-align: center; animation: fadeInUp 1s ease; }
+        .stat-item { 
+            text-align: center; 
+            animation: fadeInUp 1s ease;
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+        }
+        .stat-item:hover { transform: translateY(-5px); }
         .stat-number { font-size: 2.5rem; font-weight: 700; color: #E8B13C; }
-        .stat-label { font-size: 0.9rem; opacity: 0.8; }
+        .stat-label { font-size: 0.9rem; opacity: 0.8; margin-top: 5px; }
+
+        /* Features Section */
         .features { padding: 4rem 5%; background: white; }
-        .section-title { text-align: center; font-size: 2rem; color: #1E4E3E; margin-bottom: 3rem; }
+        .section-title { 
+            text-align: center; 
+            font-size: 2rem; 
+            color: #1E4E3E; 
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #E8B13C;
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
-        .feature-card { text-align: center; padding: 2rem; border-radius: 20px; background: #f8f9fa; transition: all 0.3s; }
-        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .feature-card { 
+            text-align: center; 
+            padding: 2rem; 
+            border-radius: 20px; 
+            background: #f8f9fa; 
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .feature-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            background: white;
+        }
         .feature-icon { font-size: 3rem; color: #E8B13C; margin-bottom: 1rem; }
         .feature-card h3 { color: #1E4E3E; margin-bottom: 0.5rem; }
+
+        /* Testimonials */
         .testimonials { background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); padding: 4rem 5%; }
         .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
-        .testimonial-card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        .testimonial-text { font-style: italic; margin-bottom: 1rem; color: #555; }
-        .testimonial-author { font-weight: 600; color: #1E4E3E; }
-        .cta-section { background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%); padding: 4rem 2rem; text-align: center; color: white; }
-        .cta-section h2 { font-size: 2rem; margin-bottom: 1rem; }
-        .cta-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
-        .cta-btn { padding: 12px 30px; border-radius: 50px; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+        .testimonial-card { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 20px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        .testimonial-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .testimonial-text { font-style: italic; margin-bottom: 1rem; color: #555; line-height: 1.6; }
+        .testimonial-author { font-weight: 700; color: #1E4E3E; margin-top: 1rem; }
+
+        /* CTA Section */
+        .cta-section { 
+            background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%); 
+            padding: 4rem 2rem; 
+            text-align: center; 
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-section:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(232,177,60,0.1) 0%, transparent 70%);
+            animation: pulse 8s ease infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+        .cta-section h2 { font-size: 2rem; margin-bottom: 1rem; position: relative; z-index: 1; }
+        .cta-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; position: relative; z-index: 1; }
+        .cta-btn { 
+            padding: 12px 30px; 
+            border-radius: 50px; 
+            font-weight: 600; 
+            text-decoration: none; 
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
         .cta-btn.primary { background: #E8B13C; color: #1E4E3E; }
         .cta-btn.secondary { background: transparent; color: white; border: 2px solid white; }
         .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+
+        /* Footer */
         .footer { background: #1a2a25; color: white; text-align: center; padding: 2rem; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; padding: 1rem; } .hero h1 { font-size: 2rem; } .hero-stats { gap: 1.5rem; } .cta-buttons { flex-direction: column; align-items: center; } }
+        .footer .social-icons { margin-top: 1rem; }
+        .footer .social-icons i { 
+            font-size: 1.2rem; 
+            margin: 0 8px; 
+            cursor: pointer; 
+            transition: all 0.3s;
+            color: #E8B13C;
+        }
+        .footer .social-icons i:hover { transform: translateY(-2px); color: white; }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: white;
+            z-index: 10000;
+            font-weight: 500;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+        .toast.info { background: #17a2b8; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; padding: 1rem; }
+            .hero h1 { font-size: 2rem; }
+            .hero-stats { gap: 1rem; }
+            .stat-item { padding: 1rem; }
+            .stat-number { font-size: 1.5rem; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .nav-buttons { width: 100%; justify-content: center; }
+        }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo"><i class="fas fa-lightbulb"></i><span>Sohrab Industries</span></div>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class="fas fa-lightbulb"></i>
+            <span>Sohrab Industries</span>
+        </div>
         <div class="nav-buttons" id="navButtons">
-            <!-- Dynamic content will be inserted here based on login status -->
             <div class="dropdown" id="signupDropdown">
-                <button class="dropbtn signup" onclick="toggleDropdown('signup')"><i class="fas fa-user-plus"></i> Sign Up</button>
+                <button class="dropbtn signup" id="signupMainBtn"><i class="fas fa-user-plus"></i> Sign Up</button>
                 <div class="dropdown-content" id="signupDropdownContent">
                     <a href="investor-auth.html"><i class="fas fa-chart-line"></i> Sign up as Investor</a>
                     <a href="buyer-auth.html"><i class="fas fa-shopping-cart"></i> Sign up as Buyer</a>
                     <div class="dropdown-divider"></div>
-                    <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Sign up as Admin</a>
+                    <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Admin Access</a>
                 </div>
             </div>
             <div class="dropdown" id="loginDropdown">
-                <button class="dropbtn login" onclick="toggleDropdown('login')"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <button class="dropbtn login" id="loginMainBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
                 <div class="dropdown-content" id="loginDropdownContent">
                     <a href="investor-auth.html"><i class="fas fa-chart-line"></i> Login as Investor</a>
                     <a href="buyer-auth.html"><i class="fas fa-shopping-cart"></i> Login as Buyer</a>
                     <div class="dropdown-divider"></div>
-                    <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Login as Admin</a>
+                    <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Admin Login</a>
                 </div>
             </div>
         </div>
@@ -194,60 +382,128 @@
     </section>
 
     <footer class="footer">
-        <p>&copy; 2024 Sohrab Industries. All rights reserved.</p>
-        <p style="margin-top: 10px; font-size: 0.8rem;">Follow us: <i class="fab fa-facebook"></i> &nbsp; <i class="fab fa-whatsapp"></i> &nbsp; <i class="fab fa-instagram"></i></p>
+        <p>&copy; 2025 Sohrab Industries. All rights reserved.</p>
+        <div class="social-icons">
+            <i class="fab fa-facebook"></i>
+            <i class="fab fa-whatsapp"></i>
+            <i class="fab fa-instagram"></i>
+            <i class="fab fa-linkedin"></i>
+        </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        function toggleDropdown(type) {
-            const signupContent = document.getElementById('signupDropdownContent');
-            const loginContent = document.getElementById('loginDropdownContent');
-            if (type === 'signup') { signupContent.classList.toggle('show'); loginContent.classList.remove('show'); } 
-            else { loginContent.classList.toggle('show'); signupContent.classList.remove('show'); }
-        }
-
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.dropdown')) {
-                document.getElementById('signupDropdownContent').classList.remove('show');
-                document.getElementById('loginDropdownContent').classList.remove('show');
-            }
-        });
-
-        window.toggleDropdown = toggleDropdown;
-
-        // Check if user is logged in and update navbar
-        async function updateNavbar() {
-            const { data: { user } } = await supabase.auth.getUser();
-            const navButtons = document.getElementById('navButtons');
+        // Wait for Supabase to load
+        setTimeout(function() {
+            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             
-            if (user) {
-                // Determine user type
-                const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
-                let dashboardLink = 'investor.html';
-                if (adminEmails.includes(user.email)) dashboardLink = 'admin.html';
-                else {
-                    const { data: investor } = await supabase.from('investors').select('id').eq('id', user.id).single();
-                    if (!investor) dashboardLink = 'buyer.html';
-                }
-                
-                navButtons.innerHTML = `
-                    <a href="${dashboardLink}" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                    <button onclick="handleLogout()" class="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                `;
+            if (typeof supabase === 'undefined') {
+                console.error('Supabase not loaded');
+                return;
             }
-        }
-        
-        async function handleLogout() {
-            await supabase.auth.signOut();
-            localStorage.clear();
-            window.location.reload();
-        }
-        
-        updateNavbar();
+            
+            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            // Dropdown toggle function
+            window.toggleDropdown = function(type) {
+                const signupContent = document.getElementById('signupDropdownContent');
+                const loginContent = document.getElementById('loginDropdownContent');
+                if (type === 'signup') { 
+                    signupContent.classList.toggle('show'); 
+                    loginContent.classList.remove('show'); 
+                } else { 
+                    loginContent.classList.toggle('show'); 
+                    signupContent.classList.remove('show'); 
+                }
+            };
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.dropdown')) {
+                    const signupContent = document.getElementById('signupDropdownContent');
+                    const loginContent = document.getElementById('loginDropdownContent');
+                    if (signupContent) signupContent.classList.remove('show');
+                    if (loginContent) loginContent.classList.remove('show');
+                }
+            });
+
+            // Attach dropdown events to buttons
+            const signupMainBtn = document.getElementById('signupMainBtn');
+            const loginMainBtn = document.getElementById('loginMainBtn');
+            
+            if (signupMainBtn) {
+                signupMainBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    window.toggleDropdown('signup');
+                };
+            }
+            
+            if (loginMainBtn) {
+                loginMainBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    window.toggleDropdown('login');
+                };
+            }
+
+            // Toast notification
+            function showToast(message, type) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = type === 'success' ? `✅ ${message}` : (type === 'error' ? `❌ ${message}` : `ℹ️ ${message}`);
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+
+            // Check if user is logged in and update navbar
+            async function updateNavbar() {
+                try {
+                    const { data: { user }, error } = await supabaseClient.auth.getUser();
+                    const navButtons = document.getElementById('navButtons');
+                    
+                    if (user && !error) {
+                        // Determine user type
+                        const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
+                        let dashboardLink = 'investor.html';
+                        let userRole = 'Investor';
+                        
+                        if (adminEmails.includes(user.email)) {
+                            dashboardLink = 'admin.html';
+                            userRole = 'Admin';
+                        } else {
+                            const { data: investor } = await supabaseClient.from('investors').select('id').eq('id', user.id).single();
+                            if (!investor) {
+                                dashboardLink = 'buyer.html';
+                                userRole = 'Buyer';
+                            }
+                        }
+                        
+                        navButtons.innerHTML = `
+                            <span style="background: rgba(30,78,62,0.1); padding: 8px 16px; border-radius: 50px; color: #1E4E3E; font-weight: 600;">
+                                <i class="fas fa-user-circle"></i> Welcome, ${user.email.split('@')[0]}
+                            </span>
+                            <a href="${dashboardLink}" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> ${userRole} Dashboard</a>
+                            <button onclick="handleLogout()" class="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        `;
+                    }
+                } catch (err) {
+                    console.log('User not logged in');
+                }
+            }
+            
+            // Global logout function
+            window.handleLogout = async function() {
+                await supabaseClient.auth.signOut();
+                localStorage.clear();
+                showToast('Logged out successfully!', 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            };
+            
+            updateNavbar();
+            console.log('Sohrab Industries - Homepage loaded');
+        }, 100);
     </script>
 </body>
 </html>
