@@ -35,7 +35,7 @@
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
         th { background: #f8f9fa; font-weight: 600; position: sticky; top: 0; }
-        tr:hover { background: #f8f9fa; cursor: pointer; }
+        tr:hover { background: #f8f9fa; }
         .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; display: inline-block; }
         .status-active, .status-approved, .status-delivered { background: #d4edda; color: #155724; }
         .status-pending { background: #fff3cd; color: #856404; }
@@ -52,7 +52,7 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Inter', sans-serif; }
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
-        .modal-content { background: white; margin: 5% auto; padding: 30px; width: 90%; max-width: 700px; border-radius: 20px; animation: slideIn 0.3s ease; max-height: 80vh; overflow-y: auto; }
+        .modal-content { background: white; margin: 5% auto; padding: 30px; width: 90%; max-width: 600px; border-radius: 20px; animation: slideIn 0.3s ease; max-height: 80vh; overflow-y: auto; }
         @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .close { float: right; font-size: 28px; cursor: pointer; color: #999; transition: all 0.3s; }
         .close:hover { color: #333; }
@@ -63,19 +63,6 @@
         .search-box { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
         .search-box input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; min-width: 200px; }
         .action-buttons { display: flex; gap: 5px; flex-wrap: wrap; }
-        .investor-row { cursor: pointer; transition: background 0.2s; }
-        .investor-row:hover { background: #e8f4f0 !important; }
-        .investor-detail-card { background: #f8f9fa; border-radius: 12px; padding: 20px; margin-top: 20px; border-left: 4px solid #1E4E3E; }
-        .detail-title { font-size: 18px; font-weight: 700; color: #1E4E3E; margin-bottom: 15px; }
-        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .detail-item { margin-bottom: 10px; }
-        .detail-label { font-weight: 600; color: #666; font-size: 12px; text-transform: uppercase; }
-        .detail-value { font-size: 16px; color: #333; margin-top: 5px; }
-        .edit-mode { background: #fff3cd; border: 1px solid #ffc107; }
-        .inline-edit { display: none; }
-        .inline-edit.active { display: inline-block; }
-        .inline-view { display: inline-block; }
-        .inline-view.hide { display: none; }
         @media (max-width: 768px) { .admin-header { flex-direction: column; text-align: center; } .stats-grid { grid-template-columns: repeat(2, 1fr); } .nav-tabs { justify-content: center; } }
     </style>
 </head>
@@ -132,38 +119,11 @@
             </div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead>
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="investorsList"></tbody>
                 </table>
-            </div>
-            <!-- Investor Detail View -->
-            <div id="investorDetailView" style="display: none; margin-top: 30px;">
-                <div class="investor-detail-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 class="detail-title"><i class="fas fa-user-circle"></i> <span id="detailInvestorName"></span></h3>
-                        <div>
-                            <button onclick="toggleEditMode()" id="editModeBtn" class="btn-warning"><i class="fas fa-pencil-alt"></i> Edit Mode</button>
-                            <button onclick="closeInvestorDetail()" class="btn-danger"><i class="fas fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                    <div id="investorDetailContent"></div>
-                    <div id="editModeContent" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
-                        <h4><i class="fas fa-edit"></i> Edit Investor Details</h4>
-                        <div class="form-row">
-                            <div class="form-group"><label>Full Name</label><input type="text" id="editFullName" class="form-control"></div>
-                            <div class="form-group"><label>Email</label><input type="email" id="editEmail" class="form-control"></div>
-                            <div class="form-group"><label>Phone</label><input type="text" id="editPhone" class="form-control"></div>
-                            <div class="form-group"><label>City</label><input type="text" id="editCity" class="form-control"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Total Investment (Rs.)</label><input type="number" id="editTotalInvestment" class="form-control"></div>
-                            <div class="form-group"><label>Total Profit (Rs.)</label><input type="number" id="editTotalProfit" class="form-control"></div>
-                            <div class="form-group"><label>Available Balance (Rs.)</label><input type="number" id="editAvailableBalance" class="form-control"></div>
-                        </div>
-                        <button onclick="saveInvestorDetails()" class="btn-primary"><i class="fas fa-save"></i> Save Changes</button>
-                        <button onclick="cancelEditMode()" class="btn-danger"><i class="fas fa-times"></i> Cancel</button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -180,7 +140,9 @@
             </div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Total Orders</th><th>Total Spent</th><th>Actions</th></tr></thead>
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Total Orders</th><th>Total Spent</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="buyersList"></tbody>
                 </table>
             </div>
@@ -189,7 +151,14 @@
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="investmentRequestsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Investments Section -->
@@ -204,7 +173,12 @@
             </div>
             <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment & Update Balance</button>
             <h2 class="section-title" style="margin-top: 30px;"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="investmentHistory"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Profits Section -->
@@ -218,26 +192,54 @@
             </div>
             <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit & Update Balance</button>
             <h2 class="section-title" style="margin-top: 30px;"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></tr></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="profitHistory"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Withdrawals Section -->
         <div id="withdrawalsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="table-container">
+                <tr>
+                    <thead>
+                        <tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Method</th><th>Account</th><th>Status</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="withdrawalsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Products Section -->
         <div id="productsSection" class="admin-section">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;"><h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2><button onclick="openProductModal()" class="btn-primary"><i class="fas fa-plus"></i> Add Product</button></div>
-            <div class="search-box"><input type="text" id="productSearch" placeholder="Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2>
+                <button onclick="openProductModal()" class="btn-primary"><i class="fas fa-plus"></i> Add Product</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="productSearch" placeholder="Search products...">
+                <button onclick="searchProducts()" class="btn-primary"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+                    <tbody id="productsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Orders Section -->
         <div id="ordersSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
-            <div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="ordersList"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -275,18 +277,26 @@
         
         let editingInvestorId = null, editingBuyerId = null, editingProductId = null;
         let allInvestors = [], allBuyers = [];
-        let currentSelectedInvestor = null;
-        let editModeActive = false;
 
         function showNotification(msg, isError) { const t = document.createElement('div'); t.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`; t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; editingInvestorId = null; editingBuyerId = null; editingProductId = null; }
         
         function showSection(section) {
+            console.log("Showing section:", section);
+            // Hide all sections
             document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            // Remove active class from all tabs
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(`${section}Section`).classList.add('active');
-            document.querySelectorAll('.nav-tab').forEach(t => { if(t.innerText.toLowerCase().includes(section.toLowerCase()) || (section === 'investmentRequests' && t.innerText.includes('Investment Requests'))) t.classList.add('active'); });
-            if (section === 'investors') closeInvestorDetail();
+            // Show selected section
+            const targetSection = document.getElementById(`${section}Section`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                console.log("Section activated:", section);
+            } else {
+                console.error("Section not found:", section);
+            }
+            // Add active class to clicked tab
+            event.target.classList.add('active');
         }
 
         async function checkAuth() {
@@ -320,6 +330,7 @@
             document.getElementById('totalOrders').innerHTML = oc || 0;
         }
 
+        // INVESTORS CRUD
         async function loadInvestors() {
             const { data } = await supabase.from('investors').select('*').order('created_at', { ascending: false });
             allInvestors = data || [];
@@ -327,190 +338,23 @@
             document.getElementById('investorSelect').innerHTML = selectHtml;
             document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
             document.getElementById('investorsList').innerHTML = allInvestors.map(i=>`
-                <tr class="investor-row" onclick="showInvestorDetail('${i.id}')">
-                    <td><strong>${i.full_name}</strong> <i class="fas fa-info-circle" style="color:#1E4E3E; font-size:12px;"></i></td>
+                <tr>
+                    <td><strong>${i.full_name}</strong></td>
                     <td>${i.email}</td>
                     <td>${i.phone||'-'}</td>
+                    <td>${i.city||'-'}</td>
                     <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
                     <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                     <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                    <td class="action-buttons" onclick="event.stopPropagation()">
-                        <button onclick="editInvestor('${i.id}')" class="btn-edit"><i class="fas fa-pencil-alt"></i> Edit</button>
-                        <button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button>
-                    </td>
+                    <td class="action-buttons"><button onclick="editInvestor('${i.id}')" class="btn-edit"><i class="fas fa-pencil-alt"></i> Edit</button><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
                 </tr>
             `).join('');
         }
 
-        async function showInvestorDetail(investorId) {
-            const investor = allInvestors.find(i => i.id === investorId);
-            if (!investor) return;
-            currentSelectedInvestor = investor;
-            editModeActive = false;
-            
-            document.getElementById('detailInvestorName').innerHTML = `<i class="fas fa-user-circle"></i> ${investor.full_name}`;
-            document.getElementById('investorDetailContent').innerHTML = `
-                <div class="detail-grid">
-                    <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value">${investor.email}</div></div>
-                    <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${investor.phone || 'Not provided'}</div></div>
-                    <div class="detail-item"><div class="detail-label">City</div><div class="detail-value">${investor.city || 'Not provided'}</div></div>
-                    <div class="detail-item"><div class="detail-label">Total Investment</div><div class="detail-value">Rs. ${(investor.total_investment || 0).toLocaleString()}</div></div>
-                    <div class="detail-item"><div class="detail-label">Total Profit</div><div class="detail-value">Rs. ${(investor.total_profit || 0).toLocaleString()}</div></div>
-                    <div class="detail-item"><div class="detail-label">Available Balance</div><div class="detail-value">Rs. ${(investor.available_balance || 0).toLocaleString()}</div></div>
-                    <div class="detail-item"><div class="detail-label">Joined Date</div><div class="detail-value">${new Date(investor.created_at).toLocaleDateString()}</div></div>
-                    <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value"><span class="status-badge status-active">Active</span></div></div>
-                </div>
-                <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button onclick="openAddInvestmentForInvestor('${investor.id}')" class="btn-primary"><i class="fas fa-plus-circle"></i> Add Investment</button>
-                    <button onclick="openAddProfitForInvestor('${investor.id}')" class="btn-success"><i class="fas fa-gift"></i> Add Profit</button>
-                    <button onclick="openWithdrawalForInvestor('${investor.id}')" class="btn-warning"><i class="fas fa-money-bill-wave"></i> Request Withdrawal</button>
-                </div>
-            `;
-            
-            document.getElementById('investorDetailView').style.display = 'block';
-            document.getElementById('editModeContent').style.display = 'none';
-            document.getElementById('editModeBtn').innerHTML = '<i class="fas fa-pencil-alt"></i> Edit Mode';
-            
-            // Scroll to detail view
-            document.getElementById('investorDetailView').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function toggleEditMode() {
-            if (!currentSelectedInvestor) return;
-            editModeActive = !editModeActive;
-            
-            if (editModeActive) {
-                document.getElementById('editFullName').value = currentSelectedInvestor.full_name || '';
-                document.getElementById('editEmail').value = currentSelectedInvestor.email || '';
-                document.getElementById('editPhone').value = currentSelectedInvestor.phone || '';
-                document.getElementById('editCity').value = currentSelectedInvestor.city || '';
-                document.getElementById('editTotalInvestment').value = currentSelectedInvestor.total_investment || 0;
-                document.getElementById('editTotalProfit').value = currentSelectedInvestor.total_profit || 0;
-                document.getElementById('editAvailableBalance').value = currentSelectedInvestor.available_balance || 0;
-                document.getElementById('editModeContent').style.display = 'block';
-                document.getElementById('editModeBtn').innerHTML = '<i class="fas fa-times"></i> Cancel Edit';
-            } else {
-                document.getElementById('editModeContent').style.display = 'none';
-                document.getElementById('editModeBtn').innerHTML = '<i class="fas fa-pencil-alt"></i> Edit Mode';
-            }
-        }
-
-        function cancelEditMode() {
-            editModeActive = false;
-            document.getElementById('editModeContent').style.display = 'none';
-            document.getElementById('editModeBtn').innerHTML = '<i class="fas fa-pencil-alt"></i> Edit Mode';
-        }
-
-        async function saveInvestorDetails() {
-            if (!currentSelectedInvestor) return;
-            
-            const updatedData = {
-                full_name: document.getElementById('editFullName').value,
-                email: document.getElementById('editEmail').value,
-                phone: document.getElementById('editPhone').value,
-                city: document.getElementById('editCity').value,
-                total_investment: parseFloat(document.getElementById('editTotalInvestment').value) || 0,
-                total_profit: parseFloat(document.getElementById('editTotalProfit').value) || 0,
-                available_balance: parseFloat(document.getElementById('editAvailableBalance').value) || 0
-            };
-            
-            const { error } = await supabase.from('investors').update(updatedData).eq('id', currentSelectedInvestor.id);
-            if (error) {
-                showNotification(error.message, true);
-            } else {
-                showNotification('Investor details updated successfully!', false);
-                cancelEditMode();
-                await loadInvestors();
-                await showInvestorDetail(currentSelectedInvestor.id);
-                await loadStats();
-            }
-        }
-
-        function closeInvestorDetail() {
-            document.getElementById('investorDetailView').style.display = 'none';
-            currentSelectedInvestor = null;
-            editModeActive = false;
-        }
-
-        function openAddInvestmentForInvestor(investorId) {
-            document.getElementById('investorSelect').value = investorId;
-            showSection('investments');
-            document.getElementById('invAmount').focus();
-        }
-
-        function openAddProfitForInvestor(investorId) {
-            document.getElementById('profitInvestorSelect').value = investorId;
-            showSection('profits');
-            document.getElementById('profitAmount').focus();
-        }
-
-        function openWithdrawalForInvestor(investorId) {
-            // This would open a withdrawal modal - simplified for now
-            showNotification('Withdrawal request feature - Contact investor directly', false);
-        }
-
-        function openInvestorModal() { 
-            editingInvestorId = null; 
-            document.getElementById('modalInvestorName').value = ''; 
-            document.getElementById('modalInvestorEmail').value = ''; 
-            document.getElementById('modalInvestorPhone').value = ''; 
-            document.getElementById('modalInvestorCity').value = ''; 
-            document.getElementById('modalInvestorInvestment').value = '0'; 
-            document.getElementById('investorModal').style.display = 'block'; 
-        }
-        
-        async function editInvestor(id) { 
-            const i = allInvestors.find(x=>x.id===id); 
-            if(!i) return; 
-            editingInvestorId = id; 
-            document.getElementById('modalInvestorName').value = i.full_name; 
-            document.getElementById('modalInvestorEmail').value = i.email; 
-            document.getElementById('modalInvestorPhone').value = i.phone || ''; 
-            document.getElementById('modalInvestorCity').value = i.city || ''; 
-            document.getElementById('modalInvestorInvestment').value = i.total_investment || 0; 
-            document.getElementById('investorModal').style.display = 'block'; 
-        }
-        
-        async function saveInvestor() { 
-            const name = document.getElementById('modalInvestorName').value.trim(); 
-            const email = document.getElementById('modalInvestorEmail').value.trim(); 
-            const phone = document.getElementById('modalInvestorPhone').value; 
-            const city = document.getElementById('modalInvestorCity').value; 
-            const initialInv = parseFloat(document.getElementById('modalInvestorInvestment').value) || 0;
-            
-            if(!name || !email){ showNotification('Name and email required', true); return; } 
-            
-            if(editingInvestorId){ 
-                const { error } = await supabase.from('investors').update({ full_name: name, email, phone, city }).eq('id', editingInvestorId); 
-                if(error) { showNotification(error.message, true); return; }
-                showNotification('Investor updated!', false); 
-            } else { 
-                const newId = crypto.randomUUID();
-                const { error } = await supabase.from('investors').insert([{ 
-                    id: newId, full_name: name, email, phone, city, 
-                    total_investment: initialInv, total_profit: 0, available_balance: initialInv,
-                    created_at: new Date().toISOString() 
-                }]); 
-                if(error) { showNotification(error.message, true); return; }
-                showNotification('Investor added!', false); 
-            } 
-            closeModal('investorModal'); 
-            await loadInvestors(); 
-            await loadStats(); 
-        }
-        
-        async function deleteInvestor(id){ 
-            if(confirm('Delete this investor? This will remove all their data!')){ 
-                await supabase.from('investments').delete().eq('investor_id',id); 
-                await supabase.from('profits').delete().eq('investor_id',id); 
-                await supabase.from('withdrawals').delete().eq('investor_id',id); 
-                await supabase.from('investors').delete().eq('id',id); 
-                showNotification('Investor deleted', false); 
-                await loadInvestors(); 
-                await loadStats(); 
-                closeInvestorDetail();
-            } 
-        }
+        function openInvestorModal() { editingInvestorId = null; document.getElementById('modalInvestorName').value = ''; document.getElementById('modalInvestorEmail').value = ''; document.getElementById('modalInvestorPhone').value = ''; document.getElementById('modalInvestorCity').value = ''; document.getElementById('modalInvestorInvestment').value = '0'; document.getElementById('investorModal').style.display = 'block'; }
+        async function editInvestor(id) { const i = allInvestors.find(x=>x.id===id); if(!i) return; editingInvestorId = id; document.getElementById('modalInvestorName').value = i.full_name; document.getElementById('modalInvestorEmail').value = i.email; document.getElementById('modalInvestorPhone').value = i.phone || ''; document.getElementById('modalInvestorCity').value = i.city || ''; document.getElementById('modalInvestorInvestment').value = i.total_investment || 0; document.getElementById('investorModal').style.display = 'block'; }
+        async function saveInvestor() { const name = document.getElementById('modalInvestorName').value.trim(); const email = document.getElementById('modalInvestorEmail').value.trim(); const phone = document.getElementById('modalInvestorPhone').value; const city = document.getElementById('modalInvestorCity').value; const initialInv = parseFloat(document.getElementById('modalInvestorInvestment').value) || 0; if(!name||!email){ showNotification('Name and email required', true); return; } if(editingInvestorId){ await supabase.from('investors').update({full_name:name,email,phone,city}).eq('id',editingInvestorId); showNotification('Investor updated!', false); }else{ const newId = crypto.randomUUID(); await supabase.from('investors').insert([{id:newId,full_name:name,email,phone,city,total_investment:initialInv,total_profit:0,available_balance:initialInv,created_at:new Date().toISOString()}]); showNotification('Investor added!', false); } closeModal('investorModal'); await loadInvestors(); await loadStats(); }
+        async function deleteInvestor(id){ if(confirm('Delete this investor?')){ await supabase.from('investments').delete().eq('investor_id',id); await supabase.from('profits').delete().eq('investor_id',id); await supabase.from('withdrawals').delete().eq('investor_id',id); await supabase.from('investors').delete().eq('id',id); showNotification('Investor deleted', false); await loadInvestors(); await loadStats(); } }
 
         // BUYERS CRUD
         async function loadBuyers() {
@@ -543,7 +387,7 @@
         // OTHER LOAD FUNCTIONS
         async function loadInvestmentHistory() { const { data } = await supabase.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); document.getElementById('investmentHistory').innerHTML = (data||[]).map(i=>`<tr><td>${i.investors?.full_name||'-'}</td><td>Rs.${(i.amount||0).toLocaleString()}</td><td>${new Date(i.investment_date).toLocaleDateString()}</td><td>${i.payment_method||'-'}</td><td><span class="status-badge status-${i.status}">${i.status}</span></td><td class="action-buttons"><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
         async function loadProfitHistory() { const { data } = await supabase.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); document.getElementById('profitHistory').innerHTML = (data||[]).map(p=>`<tr><td>${p.investors?.full_name||'-'}</td><td>Rs.${(p.amount||0).toLocaleString()}</td><td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td><td>${p.profit_percentage||10}%</td><td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td><td class="action-buttons"><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
-        async function loadWithdrawals() { const { data } = await supabase.from('withdrawals').select('*,investors(full_name)').order('request_date',{ascending:false}); document.getElementById('withdrawalsList').innerHTML = (data||[]).map(w=>`<tr><td>${w.investors?.full_name||'-'}</td><td>Rs.${(w.amount||0).toLocaleString()}</td><td>${new Date(w.request_date).toLocaleDateString()}</td><td>${w.payment_method||'-'}</td><td><span class="status-badge status-${w.status}">${w.status}</span></td><td class="action-buttons">${w.status==='pending'?`<button onclick="approveWithdrawal('${w.id}',${w.amount},'${w.investor_id}')" class="btn-success">Approve</button> <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>`:'-'}</td></tr>`).join(''); }
+        async function loadWithdrawals() { const { data } = await supabase.from('withdrawals').select('*,investors(full_name)').order('request_date',{ascending:false}); document.getElementById('withdrawalsList').innerHTML = (data||[]).map(w=>`<td><td>${w.investors?.full_name||'-'}</td><td>Rs.${(w.amount||0).toLocaleString()}</td><td>${new Date(w.request_date).toLocaleDateString()}</td><td>${w.payment_method||'-'}</td><td>${w.account_details||'-'}</td><td><span class="status-badge status-${w.status}">${w.status}</span></td><td class="action-buttons">${w.status==='pending'?`<button onclick="approveWithdrawal('${w.id}',${w.amount},'${w.investor_id}')" class="btn-success">Approve</button> <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>`:'-'}</td></tr>`).join(''); }
         async function loadProducts() { const { data } = await supabase.from('products').select('*').order('created_at',{ascending:false}); document.getElementById('productsList').innerHTML = (data||[]).map(p=>`<tr><td><strong>${p.name}</strong></td><td>${p.category}</td><td>Rs.${(p.price||0).toLocaleString()}</td><td>${p.stock_quantity||0}</td><td class="action-buttons"><button onclick="editProduct('${p.id}','${p.name}','${p.category}',${p.price},${p.stock_quantity||0})" class="btn-edit">Edit</button><button onclick="deleteProduct('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
         async function loadOrders() { const { data } = await supabase.from('orders').select('*').order('order_date',{ascending:false}); document.getElementById('ordersList').innerHTML = (data||[]).map(o=>`<tr><td>${o.id?.slice(0,8)}</td><td>${o.user_type||'-'}</td><td>Rs.${(o.total_amount||0).toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><select onchange="updateOrderStatus('${o.id}',this.value)" class="status-badge"><option value="pending" ${o.status==='pending'?'selected':''}>Pending</option><option value="processing" ${o.status==='processing'?'selected':''}>Processing</option><option value="shipped" ${o.status==='shipped'?'selected':''}>Shipped</option><option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option></select></td><td class="action-buttons"><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
         async function loadRecentActivities() { const activities = []; const { data: inv } = await supabase.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); if(inv) inv.forEach(i=>activities.push({action:'Investment',details:`${i.investors?.full_name} invested Rs.${i.amount}`,time:new Date(i.created_at).toLocaleString()})); const { data: wd } = await supabase.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); if(wd) wd.forEach(w=>activities.push({action:'Withdrawal',details:`${w.investors?.full_name} requested Rs.${w.amount}`,time:new Date(w.created_at).toLocaleString()})); const { data: req } = await supabase.from('investments').select('*,investors(full_name)').eq('status','pending').order('created_at',{ascending:false}).limit(5); if(req) req.forEach(r=>activities.push({action:'Investment Request',details:`${r.investors?.full_name} requested Rs.${r.amount}`,time:new Date(r.created_at).toLocaleString()})); activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); document.getElementById('recentActivities').innerHTML = activities.slice(0,10).map(a=>`<tr><td>${a.action}</td><td>${a.details}</td><td>${a.time}</td></tr>`).join(''); }
@@ -565,7 +409,7 @@
         async function deleteOrder(id){ if(confirm('Delete this order?')){ await supabase.from('orders').delete().eq('id',id); showNotification('Order deleted',false); await loadOrders(); await loadStats(); } }
 
         // SEARCH FUNCTIONS
-        function searchInvestors() { const term = document.getElementById('investorSearch').value.toLowerCase(); const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)||i.phone?.includes(term)||i.city?.toLowerCase().includes(term)); document.getElementById('investorsList').innerHTML = filtered.map(i=>`<tr class="investor-row" onclick="showInvestorDetail('${i.id}')"><td><strong>${i.full_name}</strong> <i class="fas fa-info-circle" style="color:#1E4E3E; font-size:12px;"></i></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td class="action-buttons" onclick="event.stopPropagation()"><button onclick="editInvestor('${i.id}')" class="btn-edit">Edit</button><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
+        function searchInvestors() { const term = document.getElementById('investorSearch').value.toLowerCase(); const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)||i.phone?.includes(term)||i.city?.toLowerCase().includes(term)); document.getElementById('investorsList').innerHTML = filtered.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td class="action-buttons"><button onclick="editInvestor('${i.id}')" class="btn-edit">Edit</button><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
         function resetInvestorSearch() { document.getElementById('investorSearch').value = ''; loadInvestors(); }
         function searchBuyers() { const term = document.getElementById('buyerSearch').value.toLowerCase(); const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)||b.phone?.includes(term)); document.getElementById('buyersList').innerHTML = filtered.map(b=>`<tr><td><strong>${b.full_name}</strong></td><td>${b.email}</td><td>${b.phone||'-'}</td><td>${b.address||'-'}</td><td>${b.total_orders||0}</td><td>Rs.${(b.total_spent||0).toLocaleString()}</td><td class="action-buttons"><button onclick="editBuyer('${b.id}')" class="btn-edit">Edit</button><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
         function resetBuyerSearch() { document.getElementById('buyerSearch').value = ''; loadBuyers(); }
@@ -583,10 +427,8 @@
         window.deleteProfit = deleteProfit; window.deleteOrder = deleteOrder; window.searchInvestors = searchInvestors; 
         window.searchBuyers = searchBuyers; window.searchProducts = searchProducts; window.resetInvestorSearch = resetInvestorSearch; 
         window.resetBuyerSearch = resetBuyerSearch; window.editInvestor = editInvestor; window.editBuyer = editBuyer; window.editProduct = editProduct;
-        window.showInvestorDetail = showInvestorDetail; window.closeInvestorDetail = closeInvestorDetail; window.toggleEditMode = toggleEditMode;
-        window.cancelEditMode = cancelEditMode; window.saveInvestorDetails = saveInvestorDetails;
-        window.openAddInvestmentForInvestor = openAddInvestmentForInvestor; window.openAddProfitForInvestor = openAddProfitForInvestor;
         
+        console.log("Admin panel loaded - All tabs are clickable");
         checkAuth();
     </script>
 </body>
