@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sohrab Industries | Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 700; color: #1E4E3E; }
+        .logo i { color: #E8B13C; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { text-decoration: none; color: #1E4E3E; font-weight: 500; }
+        .container { max-width: 500px; margin: 2rem auto; padding: 0 1rem; }
+        .auth-card { background: white; border-radius: 2rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); }
+        .card-header { background: linear-gradient(112deg, #dc3545 0%, #c82333 100%); padding: 2rem; text-align: center; color: white; }
+        .card-header i { font-size: 3rem; color: white; margin-bottom: 0.5rem; }
+        .card-header h2 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .card-body { padding: 2rem; }
+        .form-group { margin-bottom: 1.2rem; position: relative; }
+        .form-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9CA3AF; }
+        .form-group input { width: 100%; padding: 0.9rem 1rem 0.9rem 2.8rem; border: 1.5px solid #E2E8F0; border-radius: 1rem; font-size: 1rem; }
+        .form-group input:focus { outline: none; border-color: #dc3545; }
+        .btn-primary { width: 100%; padding: 0.9rem; background: #dc3545; color: white; border: none; border-radius: 2rem; font-weight: 700; font-size: 1rem; cursor: pointer; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(220,53,69,0.3); }
+        .admin-notice { background: #fff3cd; padding: 12px; border-radius: 10px; margin-bottom: 1.5rem; text-align: center; font-size: 0.8rem; color: #856404; }
+        .footer-links { text-align: center; margin-top: 1.5rem; }
+        .footer-links a { color: #dc3545; text-decoration: none; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 1000; }
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+        @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-lightbulb"></i><span>Sohrab Industries</span></div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="investor-auth.html">Investor</a>
+            <a href="buyer-auth.html">Buyer</a>
+            <a href="admin-auth.html">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="auth-card">
+            <div class="card-header">
+                <i class="fas fa-shield-alt"></i>
+                <h2>Admin Portal</h2>
+                <p>Authorized Personnel Only</p>
+            </div>
+            <div class="card-body">
+                <div class="admin-notice">
+                    <i class="fas fa-info-circle"></i> This area is restricted to authorized administrators only.
+                </div>
+
+                <div class="form-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="adminEmail" placeholder="Admin Email Address" required>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="adminPassword" placeholder="Password" required>
+                </div>
+                <button class="btn-primary" id="loginBtn"><i class="fas fa-shield-alt"></i> Access Admin Panel</button>
+
+                <div class="footer-links"><a href="index.html">← Back to Home</a></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'error' : 'success'}`;
+            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            const adminEmails = ['admin@sohrab.com', 'sohrabullahkn786@gmail.com'];
+            if (!adminEmails.includes(email)) {
+                showToast('Unauthorized access. Admin only.', true);
+                return;
+            }
+            
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) { showToast(error.message, true); return; }
+            
+            localStorage.setItem('user', JSON.stringify(data.user));
+            showToast('Welcome Admin! Redirecting...');
+            setTimeout(() => window.location.href = 'admin.html', 1000);
+        });
+    </script>
+</body>
+</html>
