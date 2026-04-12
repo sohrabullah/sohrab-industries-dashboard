@@ -38,14 +38,15 @@
         .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; display: inline-block; }
         .status-active, .status-approved, .status-delivered { background: #d4edda; color: #155724; }
         .status-pending { background: #fff3cd; color: #856404; }
+        .status-processing { background: #d1ecf1; color: #0c5460; }
+        .status-shipped { background: #cce5ff; color: #004085; }
         .status-rejected { background: #f8d7da; color: #721c24; }
         .btn-primary { background: #1E4E3E; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
         .btn-primary:hover { background: #2A6B58; transform: translateY(-2px); }
         .btn-success { background: #28a745; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
         .btn-danger { background: #dc3545; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
         .btn-warning { background: #ffc107; color: #333; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
-        .btn-edit { background: #17a2b8; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px; }
-        .btn-edit:hover { background: #138496; }
+        .btn-info { background: #17a2b8; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #333; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Inter', sans-serif; }
@@ -138,7 +139,7 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"></table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
@@ -161,7 +162,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -177,13 +178,13 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></td></div>
         </div>
 
         <!-- Withdrawals Section -->
         <div id="withdrawalsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
         </div>
 
         <!-- Products Section -->
@@ -200,13 +201,27 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
-        <!-- Orders Section -->
+        <!-- Orders Section - FIXED -->
         <div id="ordersSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
-            <div class="table-container"><tr><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
+                <div class="search-box" style="margin-bottom: 0;">
+                    <input type="text" id="orderSearch" placeholder="Search by Order ID or Customer...">
+                    <button onclick="searchOrders()" class="btn-primary">Search</button>
+                    <button onclick="resetOrderSearch()" class="btn-primary">Reset</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Order Date</th><th>Payment Method</th><th>Payment Status</th><th>Delivery Address</th><th>Order Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="ordersList"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -224,7 +239,7 @@
             
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            let allInvestors = [], allBuyers = [];
+            let allInvestors = [], allBuyers = [], allOrders = [];
 
             function showNotification(msg, isError) { 
                 const t = document.createElement('div'); 
@@ -387,21 +402,140 @@
                 await loadProfitHistory(); await loadInvestors(); await loadStats(); 
             };
 
-            async function loadInvestmentHistory() { const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); document.getElementById('investmentHistory').innerHTML = (data||[]).map(i=>`<td>65;${i.investors?.full_name||'-'}</td><td>Rs.${(i.amount||0).toLocaleString()}</td><td>${new Date(i.investment_date).toLocaleDateString()}</td><td>${i.payment_method||'-'}</td><td><span class="status-badge status-${i.status}">${i.status}</span></td><td class="action-buttons"><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
+            async function loadInvestmentHistory() { const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); document.getElementById('investmentHistory').innerHTML = (data||[]).map(i=>`<tr>78;${i.investors?.full_name||'-'}</td><td>Rs.${(i.amount||0).toLocaleString()}</td><td>${new Date(i.investment_date).toLocaleDateString()}</td><td>${i.payment_method||'-'}</td><td><span class="status-badge status-${i.status}">${i.status}</span></td><td class="action-buttons"><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
             async function loadProfitHistory() { const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); document.getElementById('profitHistory').innerHTML = (data||[]).map(p=>`<tr><td>${p.investors?.full_name||'-'}</td><td>Rs.${(p.amount||0).toLocaleString()}</td><td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td><td>${p.profit_percentage||10}%</td><td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td><td class="action-buttons"><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
             async function loadInvestmentRequests() { const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); document.getElementById('investmentRequestsList').innerHTML = (data || []).map(req => `<tr><td><strong>${req.investors?.full_name || '-'}</strong><br><small>${req.investors?.email || '-'}</small></td><td>Rs. ${(req.amount || 0).toLocaleString()}</td><td>${new Date(req.created_at).toLocaleDateString()}</td><td>${req.payment_method || '-'}</td><td>${req.transaction_id || '-'}</td><td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></td></tr>`).join(''); }
             async function loadWithdrawals() { const { data } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('request_date',{ascending:false}); document.getElementById('withdrawalsList').innerHTML = (data||[]).map(w=>`<tr><td>${w.investors?.full_name||'-'}</td><td>Rs.${(w.amount||0).toLocaleString()}</td><td>${new Date(w.request_date).toLocaleDateString()}</td><td>${w.payment_method||'-'}</td><td><span class="status-badge status-${w.status}">${w.status}</span></td><td class="action-buttons">${w.status==='pending'?`<button onclick="approveWithdrawal('${w.id}',${w.amount},'${w.investor_id}')" class="btn-success">Approve</button> <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>`:'-'}</td></tr>`).join(''); }
-            async function loadOrders() { const { data } = await supabaseClient.from('orders').select('*').order('order_date',{ascending:false}); document.getElementById('ordersList').innerHTML = (data||[]).map(o=>`<td><td>${o.id?.slice(0,8)}</td><td>${o.user_type||'-'}</td><td>Rs.${(o.total_amount||0).toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><select onchange="updateOrderStatus('${o.id}',this.value)" class="status-badge"><option value="pending" ${o.status==='pending'?'selected':''}>Pending</option><option value="processing" ${o.status==='processing'?'selected':''}>Processing</option><option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option></select></td><td class="action-buttons"><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
-            async function loadRecentActivities() { const activities = []; const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); if(inv) inv.forEach(i=>activities.push({action:'Investment',details:`${i.investors?.full_name} invested Rs.${i.amount}`,time:new Date(i.created_at).toLocaleString()})); const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); if(wd) wd.forEach(w=>activities.push({action:'Withdrawal',details:`${w.investors?.full_name} requested Rs.${w.amount}`,time:new Date(w.created_at).toLocaleString()})); activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); document.getElementById('recentActivities').innerHTML = activities.slice(0,10).map(a=>`<tr><td>${a.action}</td><td>${a.details}</td><td>${a.time}</td></tr>`).join(''); }
+            
+            // ORDERS FUNCTIONS - FIXED
+            async function loadOrders() { 
+                const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
+                allOrders = data || [];
+                displayOrdersTable(allOrders);
+            }
+            
+            function displayOrdersTable(orders) {
+                if (!orders || orders.length === 0) {
+                    document.getElementById('ordersList').innerHTML = '<tr><td colspan="10" class="empty-state" style="text-align:center;padding:40px;">No orders found</td></tr>';
+                    return;
+                }
+                
+                document.getElementById('ordersList').innerHTML = orders.map(o => {
+                    // Parse products from notes
+                    let productsList = '-';
+                    try {
+                        const items = JSON.parse(o.notes || '[]');
+                        if (Array.isArray(items) && items.length > 0) {
+                            productsList = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                        } else {
+                            productsList = o.notes || '-';
+                        }
+                    } catch(e) {
+                        productsList = o.notes || '-';
+                    }
+                    
+                    return `
+                        <tr>
+                            <td><strong>${o.id?.slice(0, 12)}...</strong><br><small style="color:#666;">${o.id}</small></td>
+                            <td>${o.user_type || 'buyer'}</td>
+                            <td><small>${productsList.substring(0, 50)}${productsList.length > 50 ? '...' : ''}</small></td>
+                            <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
+                            <td>${new Date(o.order_date).toLocaleDateString()}</td>
+                            <td>${o.payment_method || '-'}</td>
+                            <td><span class="status-badge ${o.payment_status === 'paid' ? 'status-active' : 'status-pending'}">${o.payment_status || 'pending'}</span></td>
+                            <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
+                            <td>
+                                <select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding: 5px;">
+                                    <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option>
+                                    <option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                                    <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                                    <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                </select>
+                            </td>
+                            <td class="action-buttons">
+                                <button onclick="viewOrderDetails('${o.id}')" class="btn-info" title="View Details"><i class="fas fa-eye"></i></button>
+                                <button onclick="deleteOrder('${o.id}')" class="btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            
+            window.updateOrderStatus = async function(id, status) { 
+                const { error } = await supabaseClient.from('orders').update({ status: status }).eq('id', id); 
+                if (error) { 
+                    showNotification(error.message, true); 
+                } else { 
+                    showNotification(`Order status updated to ${status}!`, false); 
+                    await loadOrders(); 
+                } 
+            };
+            
+            window.deleteOrder = async function(id) { 
+                if (confirm('Delete this order? This action cannot be undone.')) { 
+                    const { error } = await supabaseClient.from('orders').delete().eq('id', id); 
+                    if (error) { 
+                        showNotification(error.message, true); 
+                    } else { 
+                        showNotification('Order deleted successfully!', false); 
+                        await loadOrders(); 
+                        await loadStats(); 
+                    } 
+                } 
+            };
+            
+            window.viewOrderDetails = async function(id) {
+                const { data } = await supabaseClient.from('orders').select('*').eq('id', id);
+                if (data && data[0]) {
+                    const order = data[0];
+                    let productsHtml = '-';
+                    try {
+                        const items = JSON.parse(order.notes || '[]');
+                        if (Array.isArray(items) && items.length > 0) {
+                            productsHtml = '<ul style="margin:0; padding-left:15px;">' + items.map(item => `<li>${item.name} - Quantity: ${item.quantity} - Price: Rs. ${item.price}</li>`).join('') + '</ul>';
+                        }
+                    } catch(e) {
+                        productsHtml = order.notes || '-';
+                    }
+                    
+                    alert(`Order Details:\n\nOrder ID: ${order.id}\nCustomer: ${order.user_type}\nTotal Amount: Rs. ${order.total_amount}\nOrder Date: ${new Date(order.order_date).toLocaleDateString()}\nPayment Method: ${order.payment_method}\nPayment Status: ${order.payment_status}\nOrder Status: ${order.status}\nDelivery Address: ${order.delivery_address}\n\nProducts:\n${productsHtml.replace(/<[^>]*>/g, '')}`);
+                }
+            };
+            
+            window.searchOrders = function() { 
+                const term = document.getElementById('orderSearch').value.toLowerCase(); 
+                const filtered = allOrders.filter(o => 
+                    o.id?.toLowerCase().includes(term) || 
+                    o.user_type?.toLowerCase().includes(term) ||
+                    o.delivery_address?.toLowerCase().includes(term)
+                ); 
+                displayOrdersTable(filtered);
+            };
+            
+            window.resetOrderSearch = function() { 
+                document.getElementById('orderSearch').value = ''; 
+                displayOrdersTable(allOrders); 
+            };
+            
+            async function loadRecentActivities() { 
+                const activities = []; 
+                const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
+                if(inv) inv.forEach(i=>activities.push({action:'Investment',details:`${i.investors?.full_name} invested Rs.${i.amount}`,time:new Date(i.created_at).toLocaleString()})); 
+                const { data: ord } = await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); 
+                if(ord) ord.forEach(o=>activities.push({action:'Order',details:`Order #${o.id?.slice(0,8)} - Rs.${o.total_amount}`,time:new Date(o.created_at).toLocaleString()})); 
+                const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
+                if(wd) wd.forEach(w=>activities.push({action:'Withdrawal',details:`${w.investors?.full_name} requested Rs.${w.amount}`,time:new Date(w.created_at).toLocaleString()})); 
+                activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
+                document.getElementById('recentActivities').innerHTML = activities.slice(0,10).map(a=>`<tr><td>${a.action}</td><td>${a.details}</td><td>${a.time}</td></tr>`).join(''); 
+            }
 
             window.approveInvestment = async function(id, amount, investorId) { if (!confirm(`Approve investment of Rs. ${amount.toLocaleString()}?`)) return; await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id', investorId).eq('status', 'active'); const totalInvestment = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0; const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id', investorId).single(); const newBalance = (investor?.available_balance || 0) + amount; await supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id', investorId); showNotification('Investment approved!', false); await loadInvestmentRequests(); await loadInvestmentHistory(); await loadInvestors(); await loadStats(); };
             window.rejectInvestment = async function(id) { if (!confirm('Reject this investment request?')) return; await supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id); showNotification('Investment rejected', false); await loadInvestmentRequests(); await loadStats(); };
             window.approveWithdrawal = async function(id,amount,investorId){ if(!confirm('Approve withdrawal?'))return; await supabaseClient.from('withdrawals').update({status:'approved'}).eq('id',id); const{data:i}=await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); if(i) await supabaseClient.from('investors').update({available_balance:(i.available_balance||0)-amount}).eq('id',investorId); showNotification('Approved!',false); await loadWithdrawals(); await loadInvestors(); await loadStats(); };
             window.rejectWithdrawal = async function(id){ await supabaseClient.from('withdrawals').update({status:'rejected'}).eq('id',id); showNotification('Rejected',false); await loadWithdrawals(); };
-            window.updateOrderStatus = async function(id,status){ await supabaseClient.from('orders').update({status}).eq('id',id); showNotification(`Status: ${status}`,false); };
             window.deleteInvestment = async function(id){ if(confirm('Delete this investment?')){ await supabaseClient.from('investments').delete().eq('id',id); await loadInvestmentHistory(); await loadInvestors(); await loadStats(); showNotification('Deleted',false); } };
             window.deleteProfit = async function(id){ if(confirm('Delete this profit?')){ await supabaseClient.from('profits').delete().eq('id',id); await loadProfitHistory(); await loadInvestors(); await loadStats(); showNotification('Deleted',false); } };
-            window.deleteOrder = async function(id){ if(confirm('Delete this order?')){ await supabaseClient.from('orders').delete().eq('id',id); showNotification('Order deleted',false); await loadOrders(); await loadStats(); } };
 
             // Search Functions
             window.searchInvestors = function() { const term = document.getElementById('investorSearch').value.toLowerCase(); const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); document.getElementById('investorsList').innerHTML = filtered.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); };
