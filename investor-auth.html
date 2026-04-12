@@ -115,20 +115,48 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Check if already logged in
+        async function checkExistingSession() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                window.location.href = 'investor.html';
+            }
+        }
+        checkExistingSession();
+
         const signupSection = document.getElementById('signupSection');
         const loginSection = document.getElementById('loginSection');
         const loginTab = document.getElementById('loginTabBtn');
         const signupTab = document.getElementById('signupTabBtn');
         const toggleLink = document.getElementById('toggleFormLink');
 
-        function showLogin() { signupSection.style.display = 'none'; loginSection.style.display = 'block'; loginTab.classList.add('active'); signupTab.classList.remove('active'); toggleLink.innerHTML = "Don't have an account? Sign Up →"; }
-        function showSignup() { loginSection.style.display = 'none'; signupSection.style.display = 'block'; signupTab.classList.add('active'); loginTab.classList.remove('active'); toggleLink.innerHTML = "Already have an account? Login →"; }
+        function showLogin() { 
+            signupSection.style.display = 'none'; 
+            loginSection.style.display = 'block'; 
+            loginTab.classList.add('active'); 
+            signupTab.classList.remove('active'); 
+            toggleLink.innerHTML = "Don't have an account? Sign Up →"; 
+        }
+        
+        function showSignup() { 
+            loginSection.style.display = 'none'; 
+            signupSection.style.display = 'block'; 
+            signupTab.classList.add('active'); 
+            loginTab.classList.remove('active'); 
+            toggleLink.innerHTML = "Already have an account? Login →"; 
+        }
 
         loginTab.onclick = showLogin;
         signupTab.onclick = showSignup;
         toggleLink.onclick = () => { if (loginSection.style.display === 'none') showLogin(); else showSignup(); };
 
-        function showToast(msg, isError) { const t = document.createElement('div'); t.className = `toast ${isError ? 'error' : 'success'}`; t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+        function showToast(msg, isError) { 
+            const t = document.createElement('div'); 
+            t.className = `toast ${isError ? 'error' : 'success'}`; 
+            t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; 
+            document.body.appendChild(t); 
+            setTimeout(() => t.remove(), 3000); 
+        }
 
         // SIGNUP
         document.getElementById('signupBtn').onclick = async () => {
@@ -155,7 +183,12 @@
             if (authError) { showToast(authError.message, true); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account'; return; }
 
             if (authData.user) {
-                await supabase.from('investors').insert([{ id: authData.user.id, email, full_name: name, phone, city, created_at: new Date().toISOString() }]);
+                const { error: insertError } = await supabase
+                    .from('investors')
+                    .insert([{ id: authData.user.id, email, full_name: name, phone, city, created_at: new Date().toISOString() }]);
+                
+                if (insertError) console.error('Insert error:', insertError);
+                
                 showToast('Account created! Please login.', false);
                 document.querySelectorAll('#signupSection input').forEach(i => i.value = '');
                 showLogin();
@@ -164,7 +197,7 @@
             btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
         };
 
-        // LOGIN
+        // LOGIN - FIXED: Redirects to investor.html (NOT dashboard.html)
         document.getElementById('loginBtn').onclick = async () => {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -179,10 +212,25 @@
 
             if (data.user) {
                 localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('userType', 'investor');
                 showToast('Login successful! Redirecting...', false);
-                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+                // FIXED: Redirect to investor.html instead of dashboard.html
+                setTimeout(() => window.location.href = 'investor.html', 1500);
             }
         };
+
+        // Enter key support
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    if (loginSection.style.display !== 'none') {
+                        document.getElementById('loginBtn').click();
+                    } else {
+                        document.getElementById('signupBtn').click();
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
