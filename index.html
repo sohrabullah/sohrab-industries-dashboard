@@ -4,23 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Sohrab Industries | Invest • Buy • Grow</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #0B2B26 0%, #1A4D3E 50%, #0F3B32 100%);
             min-height: 100vh;
             overflow-x: hidden;
         }
-
-        /* Navigation Bar */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -33,32 +27,10 @@
             top: 0;
             z-index: 1000;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1E4E3E;
-        }
-
-        .logo i {
-            color: #E8B13C;
-            font-size: 1.8rem;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        /* Dropdown Styles */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 700; color: #1E4E3E; }
+        .logo i { color: #E8B13C; font-size: 1.8rem; }
+        .nav-buttons { display: flex; gap: 15px; align-items: center; }
+        .dropdown { position: relative; display: inline-block; }
         .dropbtn {
             padding: 10px 24px;
             font-size: 1rem;
@@ -69,28 +41,10 @@
             transition: all 0.3s;
             font-family: 'Inter', sans-serif;
         }
-
-        .dropbtn.signup {
-            background: linear-gradient(95deg, #1F4E41, #2A6B58);
-            color: white;
-        }
-
-        .dropbtn.login {
-            background: transparent;
-            color: #1E4E3E;
-            border: 2px solid #1E4E3E;
-        }
-
-        .dropbtn.signup:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(30,78,62,0.3);
-        }
-
-        .dropbtn.login:hover {
-            background: #1E4E3E;
-            color: white;
-        }
-
+        .dropbtn.signup { background: linear-gradient(95deg, #1F4E41, #2A6B58); color: white; }
+        .dropbtn.login { background: transparent; color: #1E4E3E; border: 2px solid #1E4E3E; }
+        .dropbtn.signup:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30,78,62,0.3); }
+        .dropbtn.login:hover { background: #1E4E3E; color: white; }
         .dropdown-content {
             display: none;
             position: absolute;
@@ -103,11 +57,7 @@
             overflow: hidden;
             animation: fadeIn 0.2s ease;
         }
-
-        .dropdown-content.show {
-            display: block;
-        }
-
+        .dropdown-content.show { display: block; }
         .dropdown-content a {
             color: #333;
             padding: 14px 20px;
@@ -118,330 +68,113 @@
             transition: all 0.2s;
             cursor: pointer;
         }
-
-        .dropdown-content a:hover {
-            background: #f0f2f5;
+        .dropdown-content a:hover { background: #f0f2f5; }
+        .dropdown-content a i { width: 24px; color: #1E4E3E; }
+        .dropdown-divider { height: 1px; background: #eee; margin: 5px 0; }
+        .dashboard-btn {
+            background: #1E4E3E;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-
-        .dropdown-content a i {
-            width: 24px;
-            color: #1E4E3E;
+        .logout-nav-btn {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
         }
-
-        .dropdown-divider {
-            height: 1px;
-            background: #eee;
-            margin: 5px 0;
-        }
-
-        /* Hero Section */
         .hero {
             text-align: center;
             padding: 4rem 2rem;
             color: white;
         }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            animation: fadeInUp 0.6s ease;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-            animation: fadeInUp 0.8s ease;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            animation: fadeInUp 1s ease;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #E8B13C;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 4rem 5%;
-            background: white;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            color: #1E4E3E;
-            margin-bottom: 3rem;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .feature-card {
-            text-align: center;
-            padding: 2rem;
-            border-radius: 20px;
-            background: #f8f9fa;
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: #E8B13C;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
-            color: #1E4E3E;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Testimonials */
-        .testimonials {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
-            padding: 4rem 5%;
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .testimonial-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        }
-
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 1rem;
-            color: #555;
-        }
-
-        .testimonial-author {
-            font-weight: 600;
-            color: #1E4E3E;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%);
-            padding: 4rem 2rem;
-            text-align: center;
-            color: white;
-        }
-
-        .cta-section h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .cta-btn {
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .cta-btn.primary {
-            background: #E8B13C;
-            color: #1E4E3E;
-        }
-
-        .cta-btn.secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-
-        .cta-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-
-        /* Footer */
-        .footer {
-            background: #1a2a25;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 1rem;
-            }
-            .hero h1 { font-size: 2rem; }
-            .hero-stats { gap: 1.5rem; }
-            .cta-buttons { flex-direction: column; align-items: center; }
-        }
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; animation: fadeInUp 0.6s ease; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 2rem; animation: fadeInUp 0.8s ease; }
+        .hero-stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; margin-top: 2rem; }
+        .stat-item { text-align: center; animation: fadeInUp 1s ease; }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: #E8B13C; }
+        .stat-label { font-size: 0.9rem; opacity: 0.8; }
+        .features { padding: 4rem 5%; background: white; }
+        .section-title { text-align: center; font-size: 2rem; color: #1E4E3E; margin-bottom: 3rem; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .feature-card { text-align: center; padding: 2rem; border-radius: 20px; background: #f8f9fa; transition: all 0.3s; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .feature-icon { font-size: 3rem; color: #E8B13C; margin-bottom: 1rem; }
+        .feature-card h3 { color: #1E4E3E; margin-bottom: 0.5rem; }
+        .testimonials { background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); padding: 4rem 5%; }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .testimonial-card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .testimonial-text { font-style: italic; margin-bottom: 1rem; color: #555; }
+        .testimonial-author { font-weight: 600; color: #1E4E3E; }
+        .cta-section { background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%); padding: 4rem 2rem; text-align: center; color: white; }
+        .cta-section h2 { font-size: 2rem; margin-bottom: 1rem; }
+        .cta-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+        .cta-btn { padding: 12px 30px; border-radius: 50px; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+        .cta-btn.primary { background: #E8B13C; color: #1E4E3E; }
+        .cta-btn.secondary { background: transparent; color: white; border: 2px solid white; }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .footer { background: #1a2a25; color: white; text-align: center; padding: 2rem; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; padding: 1rem; } .hero h1 { font-size: 2rem; } .hero-stats { gap: 1.5rem; } .cta-buttons { flex-direction: column; align-items: center; } }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar">
-        <div class="logo">
-            <i class="fas fa-lightbulb"></i>
-            <span>Sohrab Industries</span>
-        </div>
-        <div class="nav-buttons">
-            <!-- Signup Dropdown -->
+        <div class="logo"><i class="fas fa-lightbulb"></i><span>Sohrab Industries</span></div>
+        <div class="nav-buttons" id="navButtons">
+            <!-- Dynamic content will be inserted here based on login status -->
             <div class="dropdown" id="signupDropdown">
-                <button class="dropbtn signup" onclick="toggleDropdown('signup')">
-                    <i class="fas fa-user-plus"></i> Sign Up
-                </button>
+                <button class="dropbtn signup" onclick="toggleDropdown('signup')"><i class="fas fa-user-plus"></i> Sign Up</button>
                 <div class="dropdown-content" id="signupDropdownContent">
-                    <a href="investor-auth.html">
-                        <i class="fas fa-chart-line"></i> Sign up as Investor
-                    </a>
-                    <a href="buyer-auth.html">
-                        <i class="fas fa-shopping-cart"></i> Sign up as Buyer
-                    </a>
+                    <a href="investor-auth.html"><i class="fas fa-chart-line"></i> Sign up as Investor</a>
+                    <a href="buyer-auth.html"><i class="fas fa-shopping-cart"></i> Sign up as Buyer</a>
                     <div class="dropdown-divider"></div>
-                    <a href="admin-auth.html">
-                        <i class="fas fa-shield-alt"></i> Sign up as Admin
-                    </a>
+                    <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Sign up as Admin</a>
                 </div>
             </div>
-
-            <!-- Login Dropdown -->
             <div class="dropdown" id="loginDropdown">
-                <button class="dropbtn login" onclick="toggleDropdown('login')">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
+                <button class="dropbtn login" onclick="toggleDropdown('login')"><i class="fas fa-sign-in-alt"></i> Login</button>
                 <div class="dropdown-content" id="loginDropdownContent">
-                    <a href="investor-auth.html">
-                        <i class="fas fa-chart-line"></i> Login as Investor
-                    </a>
-                    <a href="buyer-auth.html">
-                        <i class="fas fa-shopping-cart"></i> Login as Buyer
-                    </a>
+                    <a href="investor-auth.html"><i class="fas fa-chart-line"></i> Login as Investor</a>
+                    <a href="buyer-auth.html"><i class="fas fa-shopping-cart"></i> Login as Buyer</a>
                     <div class="dropdown-divider"></div>
-                    <a href="admin-auth.html">
-                        <i class="fas fa-shield-alt"></i> Login as Admin
-                    </a>
+                    <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Login as Admin</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
         <h1>Welcome to Sohrab Industries</h1>
         <p>Premium Quality Bulbs | Smart Investment Opportunities | Grow Your Wealth</p>
         <div class="hero-stats">
-            <div class="stat-item">
-                <div class="stat-number">5000+</div>
-                <div class="stat-label">Happy Customers</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">Rs. 50M+</div>
-                <div class="stat-label">Investments</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Customer Support</div>
-            </div>
+            <div class="stat-item"><div class="stat-number">5000+</div><div class="stat-label">Happy Customers</div></div>
+            <div class="stat-item"><div class="stat-number">Rs. 50M+</div><div class="stat-label">Investments</div></div>
+            <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">Customer Support</div></div>
         </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features">
         <h2 class="section-title">Why Choose Sohrab Industries?</h2>
         <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                <h3>High Returns</h3>
-                <p>Earn up to 10-15% monthly profit on your investments</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
-                <h3>Premium Quality</h3>
-                <p>Energy efficient bulbs with 2 years warranty</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                <h3>Secure Investment</h3>
-                <p>Your investments are 100% secure and transparent</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-truck"></i></div>
-                <h3>Free Delivery</h3>
-                <p>Free shipping on orders over Rs. 2000</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-wallet"></i></div>
-                <h3>Easy Withdrawal</h3>
-                <p>Withdraw your profits anytime via EasyPaisa/JazzCash</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-headset"></i></div>
-                <h3>24/7 Support</h3>
-                <p>Dedicated support team for all your queries</p>
-            </div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-chart-line"></i></div><h3>High Returns</h3><p>Earn up to 10-15% monthly profit on your investments</p></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-lightbulb"></i></div><h3>Premium Quality</h3><p>Energy efficient bulbs with 2 years warranty</p></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-shield-alt"></i></div><h3>Secure Investment</h3><p>Your investments are 100% secure and transparent</p></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-truck"></i></div><h3>Free Delivery</h3><p>Free shipping on orders over Rs. 2000</p></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-wallet"></i></div><h3>Easy Withdrawal</h3><p>Withdraw your profits anytime via EasyPaisa/JazzCash</p></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-headset"></i></div><h3>24/7 Support</h3><p>Dedicated support team for all your queries</p></div>
         </div>
     </section>
 
-    <!-- Call to Action Section -->
     <section class="cta-section">
         <h2>Ready to Start Your Journey?</h2>
         <p>Join thousands of satisfied investors and customers today!</p>
@@ -451,51 +184,32 @@
         </div>
     </section>
 
-    <!-- Testimonials -->
     <section class="testimonials">
         <h2 class="section-title">What Our Clients Say</h2>
         <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <p class="testimonial-text">"Best investment platform in Pakistan. Received monthly profits on time!"</p>
-                <p class="testimonial-author">- Ahmed R., Investor</p>
-            </div>
-            <div class="testimonial-card">
-                <p class="testimonial-text">"Quality bulbs at affordable prices. Highly recommended!"</p>
-                <p class="testimonial-author">- Sara K., Buyer</p>
-            </div>
-            <div class="testimonial-card">
-                <p class="testimonial-text">"Very professional team. Quick response to all my queries."</p>
-                <p class="testimonial-author">- Usman M., Investor</p>
-            </div>
+            <div class="testimonial-card"><p class="testimonial-text">"Best investment platform in Pakistan. Received monthly profits on time!"</p><p class="testimonial-author">- Ahmed R., Investor</p></div>
+            <div class="testimonial-card"><p class="testimonial-text">"Quality bulbs at affordable prices. Highly recommended!"</p><p class="testimonial-author">- Sara K., Buyer</p></div>
+            <div class="testimonial-card"><p class="testimonial-text">"Very professional team. Quick response to all my queries."</p><p class="testimonial-author">- Usman M., Investor</p></div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <p>&copy; 2024 Sohrab Industries. All rights reserved.</p>
-        <p style="margin-top: 10px; font-size: 0.8rem;">Follow us: 
-            <i class="fab fa-facebook"></i> &nbsp; 
-            <i class="fab fa-whatsapp"></i> &nbsp; 
-            <i class="fab fa-instagram"></i>
-        </p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">Follow us: <i class="fab fa-facebook"></i> &nbsp; <i class="fab fa-whatsapp"></i> &nbsp; <i class="fab fa-instagram"></i></p>
     </footer>
 
     <script>
-        // Dropdown Toggle Function
+        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         function toggleDropdown(type) {
             const signupContent = document.getElementById('signupDropdownContent');
             const loginContent = document.getElementById('loginDropdownContent');
-            
-            if (type === 'signup') {
-                signupContent.classList.toggle('show');
-                loginContent.classList.remove('show');
-            } else {
-                loginContent.classList.toggle('show');
-                signupContent.classList.remove('show');
-            }
+            if (type === 'signup') { signupContent.classList.toggle('show'); loginContent.classList.remove('show'); } 
+            else { loginContent.classList.toggle('show'); signupContent.classList.remove('show'); }
         }
 
-        // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
             if (!event.target.closest('.dropdown')) {
                 document.getElementById('signupDropdownContent').classList.remove('show');
@@ -503,8 +217,37 @@
             }
         });
 
-        // Make functions global
         window.toggleDropdown = toggleDropdown;
+
+        // Check if user is logged in and update navbar
+        async function updateNavbar() {
+            const { data: { user } } = await supabase.auth.getUser();
+            const navButtons = document.getElementById('navButtons');
+            
+            if (user) {
+                // Determine user type
+                const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
+                let dashboardLink = 'investor.html';
+                if (adminEmails.includes(user.email)) dashboardLink = 'admin.html';
+                else {
+                    const { data: investor } = await supabase.from('investors').select('id').eq('id', user.id).single();
+                    if (!investor) dashboardLink = 'buyer.html';
+                }
+                
+                navButtons.innerHTML = `
+                    <a href="${dashboardLink}" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <button onclick="handleLogout()" class="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                `;
+            }
+        }
+        
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            localStorage.clear();
+            window.location.reload();
+        }
+        
+        updateNavbar();
     </script>
 </body>
 </html>
