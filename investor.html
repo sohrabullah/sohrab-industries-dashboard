@@ -445,7 +445,7 @@
                 <button onclick="openWithdrawalModal()" class="btn-primary"><i class="fas fa-plus"></i> Request Withdrawal</button>
             </div>
             <div class="table-container">
-                <table>
+                <td>
                     <thead>
                         <tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr>
                     </thead>
@@ -511,339 +511,325 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Wait for Supabase to load
-        setTimeout(function() {
-            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        // Supabase configuration
+        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let currentInvestorId = null;
+
+        function showToast(message, isError) {
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + (isError ? 'error' : 'success');
+            toast.innerHTML = isError ? '❌ ' + message : '✅ ' + message;
+            document.body.appendChild(toast);
+            setTimeout(function() { toast.remove(); }, 3000);
+        }
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.showTab = function(tabName) {
+            var tabs = document.querySelectorAll('.tab-content');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            var btns = document.querySelectorAll('.tab-btn');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove('active');
+            }
+            var targetTab = document.getElementById(tabName + 'Tab');
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+        }
+
+        // Function to ensure investor exists in the database - FIXED
+        async function ensureInvestorExists(user) {
+            // First check if investor exists
+            var checkResult = await supabase.from('investors').select('id').eq('id', user.id);
             
-            if (typeof supabase === 'undefined') {
-                console.error('Supabase not loaded');
+            if (checkResult.data && checkResult.data.length > 0) {
+                return true;
+            }
+            
+            // Create investor record
+            var fullName = user.user_metadata?.full_name || user.email.split('@')[0];
+            var insertResult = await supabase.from('investors').insert([{
+                id: user.id,
+                email: user.email,
+                full_name: fullName,
+                phone: user.user_metadata?.phone || '',
+                city: '',
+                total_investment: 0,
+                total_profit: 0,
+                available_balance: 0,
+                created_at: new Date().toISOString()
+            }]);
+            
+            if (insertResult.error) {
+                console.error('Error creating investor:', insertResult.error);
+                return false;
+            }
+            return true;
+        }
+
+        async function checkAuth() {
+            var result = await supabase.auth.getUser();
+            var user = result.data.user;
+            var error = result.error;
+            
+            if (error || !user) {
+                window.location.href = 'investor-auth.html';
                 return;
             }
             
-            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            // Ensure investor exists in the database - THIS IS THE FIX
+            var investorExists = await ensureInvestorExists(user);
+            if (!investorExists) {
+                showToast('Error creating investor profile. Please contact admin.', true);
+                return;
+            }
             
-            let currentUser = null;
-            let currentInvestorId = null;
+            currentInvestorId = user.id;
+            document.getElementById('userName').innerHTML = '<i class="fas fa-user-circle"></i> ' + user.email.split('@')[0];
+            
+            await loadInvestments();
+            await loadInvestmentRequests();
+            await loadProfits();
+            await loadWithdrawals();
+            await loadProfile();
+            await loadStats();
+        }
 
-            function showToast(message, isError) {
-                var toast = document.createElement('div');
-                toast.className = 'toast ' + (isError ? 'error' : 'success');
-                toast.innerHTML = isError ? '❌ ' + message : '✅ ' + message;
-                document.body.appendChild(toast);
-                setTimeout(function() { toast.remove(); }, 3000);
+        async function loadStats() {
+            var investmentsData = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+            var investments = investmentsData.data || [];
+            var totalInvested = 0;
+            for (var i = 0; i < investments.length; i++) {
+                totalInvested += investments[i].amount || 0;
+            }
+            document.getElementById('totalInvestment').innerHTML = 'Rs. ' + totalInvested.toLocaleString();
+            document.getElementById('activeInvestments').innerHTML = investments.length;
+
+            var profitsData = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
+            var profits = profitsData.data || [];
+            var totalProfit = 0;
+            for (var i = 0; i < profits.length; i++) {
+                totalProfit += profits[i].amount || 0;
+            }
+            document.getElementById('totalProfit').innerHTML = 'Rs. ' + totalProfit.toLocaleString();
+            document.getElementById('availableBalance').innerHTML = 'Rs. ' + totalProfit.toLocaleString();
+        }
+
+        async function loadInvestments() {
+            var result = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
+            var data = result.data || [];
+            var tbody = document.getElementById('investmentsList');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet</td></tr>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var inv = data[i];
+                html += '<tr>';
+                html += '<td>' + new Date(inv.investment_date).toLocaleDateString() + '</td>';
+                html += '<td>Rs. ' + (inv.amount || 0).toLocaleString() + '</td>';
+                html += '<td>' + (inv.payment_method || '-') + '</td>';
+                html += '<td>' + (inv.transaction_id || '-') + '</td>';
+                html += '<td><span class="status-badge status-active">Approved</span></td>';
+                html += '<td>' + (inv.notes || '-') + '</td>';
+                html += '</tr>';
+            }
+            tbody.innerHTML = html;
+        }
+
+        async function loadInvestmentRequests() {
+            var result = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
+            var data = result.data || [];
+            var tbody = document.getElementById('investmentRequestsList');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests</td></tr>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var inv = data[i];
+                html += '<tr>';
+                html += '<td>' + new Date(inv.created_at).toLocaleDateString() + '</td>';
+                html += '<td>Rs. ' + (inv.amount || 0).toLocaleString() + '</td>';
+                html += '<td>' + (inv.payment_method || '-') + '</td>';
+                html += '<td>' + (inv.transaction_id || '-') + '</td>';
+                html += '<td><span class="status-badge status-pending">Pending</span></td>';
+                html += '<td>' + (inv.notes || '-') + '</td>';
+                html += '</tr>';
+            }
+            tbody.innerHTML = html;
+        }
+
+        async function loadProfits() {
+            var result = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
+            var data = result.data || [];
+            var tbody = document.getElementById('profitsList');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var p = data[i];
+                var monthName = new Date(p.month).toLocaleDateString('default', { year: 'numeric', month: 'long' });
+                var statusClass = p.paid ? 'status-active' : 'status-pending';
+                var statusText = p.paid ? 'Paid' : 'Pending';
+                var paidDate = p.paid_date ? new Date(p.paid_date).toLocaleDateString() : '-';
+                html += '<tr>';
+                html += '<td>' + monthName + '</td>';
+                html += '<td>Rs. ' + (p.amount || 0).toLocaleString() + '</td>';
+                html += '<td>' + (p.profit_percentage || 10) + '%</td>';
+                html += '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>';
+                html += '<td>' + paidDate + '</td>';
+                html += '</tr>';
+            }
+            tbody.innerHTML = html;
+        }
+
+        async function loadWithdrawals() {
+            var result = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
+            var data = result.data || [];
+            var tbody = document.getElementById('withdrawalsList');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet</td></tr>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < data.length; i++) {
+                var w = data[i];
+                html += '<tr>';
+                html += '<td>' + new Date(w.request_date).toLocaleDateString() + '</td>';
+                html += '<td>Rs. ' + (w.amount || 0).toLocaleString() + '</td>';
+                html += '<td>' + (w.payment_method || '-') + '</td>';
+                html += '<td>' + (w.account_details || '-') + '</td>';
+                html += '<td><span class="status-badge status-' + w.status + '">' + w.status + '</span></td>';
+                html += '<td>' + (w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-') + '</td>';
+                html += '</tr>';
+            }
+            tbody.innerHTML = html;
+        }
+
+        async function loadProfile() {
+            var result = await supabase.from('investors').select('*').eq('id', currentInvestorId);
+            var data = result.data;
+            if (data && data.length > 0) {
+                var investor = data[0];
+                document.getElementById('profileName').value = investor.full_name || '';
+                document.getElementById('profileEmail').value = investor.email || '';
+                document.getElementById('profilePhone').value = investor.phone || '';
+                document.getElementById('profileCity').value = investor.city || '';
+                document.getElementById('profileTotalInvestment').value = 'Rs. ' + (investor.total_investment || 0).toLocaleString();
+                document.getElementById('profileTotalProfit').value = 'Rs. ' + (investor.total_profit || 0).toLocaleString();
+                document.getElementById('profileBalance').value = 'Rs. ' + (investor.available_balance || 0).toLocaleString();
+            }
+        }
+
+        window.submitInvestmentRequest = async function() {
+            var amount = document.getElementById('investmentAmount').value;
+            var paymentMethod = document.getElementById('investmentPaymentMethod').value;
+            var transactionId = document.getElementById('investmentTransactionId').value;
+            var notes = document.getElementById('investmentNotes').value;
+
+            if (!amount || !transactionId) {
+                showToast('Please enter amount and transaction ID', true);
+                return;
+            }
+            if (parseFloat(amount) < 1000) {
+                showToast('Minimum investment amount is Rs. 1,000', true);
+                return;
             }
 
-            window.closeModal = function(modalId) {
-                document.getElementById(modalId).style.display = 'none';
-            }
+            var result = await supabase.from('investments').insert([{
+                investor_id: currentInvestorId,
+                amount: parseFloat(amount),
+                investment_date: new Date().toISOString().split('T')[0],
+                payment_method: paymentMethod,
+                transaction_id: transactionId,
+                status: 'pending',
+                notes: notes || ('Payment via ' + paymentMethod + ' - TXN: ' + transactionId)
+            }]);
 
-            window.showTab = function(tabName) {
-                var tabs = document.querySelectorAll('.tab-content');
-                for (var i = 0; i < tabs.length; i++) {
-                    tabs[i].classList.remove('active');
-                }
-                var btns = document.querySelectorAll('.tab-btn');
-                for (var i = 0; i < btns.length; i++) {
-                    btns[i].classList.remove('active');
-                }
-                var targetTab = document.getElementById(tabName + 'Tab');
-                if (targetTab) {
-                    targetTab.classList.add('active');
-                }
-                if (event && event.target) {
-                    event.target.classList.add('active');
-                }
-            }
-
-            // Function to ensure investor exists in the database
-            async function ensureInvestorExists(user) {
-                // Check if investor exists
-                var checkResult = await supabaseClient.from('investors').select('id').eq('id', user.id).single();
-                
-                if (!checkResult.data) {
-                    // Create investor record
-                    var fullName = user.user_metadata?.full_name || user.email.split('@')[0];
-                    var insertResult = await supabaseClient.from('investors').insert([{
-                        id: user.id,
-                        email: user.email,
-                        full_name: fullName,
-                        phone: user.user_metadata?.phone || '',
-                        city: '',
-                        total_investment: 0,
-                        total_profit: 0,
-                        available_balance: 0,
-                        created_at: new Date().toISOString()
-                    }]);
-                    
-                    if (insertResult.error) {
-                        console.error('Error creating investor:', insertResult.error);
-                        return false;
-                    }
-                    return true;
-                }
-                return true;
-            }
-
-            async function checkAuth() {
-                var result = await supabaseClient.auth.getUser();
-                var user = result.data.user;
-                var error = result.error;
-                if (error || !user) {
-                    window.location.href = 'investor-auth.html';
-                    return;
-                }
-                currentUser = user;
-                
-                // Ensure investor exists in the database
-                var investorExists = await ensureInvestorExists(user);
-                if (!investorExists) {
-                    showToast('Error creating investor profile. Please contact admin.', true);
-                    return;
-                }
-                
-                currentInvestorId = user.id;
-                
-                document.getElementById('userName').innerHTML = '<i class="fas fa-user-circle"></i> ' + user.email.split('@')[0];
-                
-                await loadInvestments();
+            if (result.error) {
+                showToast(result.error.message, true);
+            } else {
+                showToast('Investment request submitted! Admin will verify.', false);
+                closeModal('investmentModal');
+                document.getElementById('investmentAmount').value = '';
+                document.getElementById('investmentTransactionId').value = '';
+                document.getElementById('investmentNotes').value = '';
                 await loadInvestmentRequests();
-                await loadProfits();
-                await loadWithdrawals();
-                await loadProfile();
-                await loadStats();
+            }
+        }
+
+        window.submitWithdrawalRequest = async function() {
+            var amount = document.getElementById('withdrawAmount').value;
+            var method = document.getElementById('withdrawMethod').value;
+            var accountDetails = document.getElementById('accountDetails').value;
+
+            if (!amount || !accountDetails) {
+                showToast('Please fill all fields', true);
+                return;
+            }
+            if (parseFloat(amount) < 1000) {
+                showToast('Minimum withdrawal amount is Rs. 1,000', true);
+                return;
             }
 
-            async function loadStats() {
-                var investmentsData = await supabaseClient.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-                var investments = investmentsData.data || [];
-                var totalInvested = 0;
-                for (var i = 0; i < investments.length; i++) {
-                    totalInvested += investments[i].amount || 0;
-                }
-                document.getElementById('totalInvestment').innerHTML = 'Rs. ' + totalInvested.toLocaleString();
-                document.getElementById('activeInvestments').innerHTML = investments.length;
-
-                var profitsData = await supabaseClient.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
-                var profits = profitsData.data || [];
-                var totalProfit = 0;
-                for (var i = 0; i < profits.length; i++) {
-                    totalProfit += profits[i].amount || 0;
-                }
-                document.getElementById('totalProfit').innerHTML = 'Rs. ' + totalProfit.toLocaleString();
-                document.getElementById('availableBalance').innerHTML = 'Rs. ' + totalProfit.toLocaleString();
-            }
-
-            async function loadInvestments() {
-                var result = await supabaseClient.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
-                var data = result.data || [];
-                var tbody = document.getElementById('investmentsList');
-                if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet</td></tr>';
-                    return;
-                }
-                var html = '';
-                for (var i = 0; i < data.length; i++) {
-                    var inv = data[i];
-                    html += '<tr>';
-                    html += '<td>' + new Date(inv.investment_date).toLocaleDateString() + '</td>';
-                    html += '<td>Rs. ' + (inv.amount || 0).toLocaleString() + '</td>';
-                    html += '<td>' + (inv.payment_method || '-') + '</td>';
-                    html += '<td>' + (inv.transaction_id || '-') + '</td>';
-                    html += '<td><span class="status-badge status-active">Approved</span></td>';
-                    html += '<td>' + (inv.notes || '-') + '</td>';
-                    html += '</tr>';
-                }
-                tbody.innerHTML = html;
-            }
-
-            async function loadInvestmentRequests() {
-                var result = await supabaseClient.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
-                var data = result.data || [];
-                var tbody = document.getElementById('investmentRequestsList');
-                if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests</td></tr>';
-                    return;
-                }
-                var html = '';
-                for (var i = 0; i < data.length; i++) {
-                    var inv = data[i];
-                    html += '<tr>';
-                    html += '<td>' + new Date(inv.created_at).toLocaleDateString() + '</td>';
-                    html += '<td>Rs. ' + (inv.amount || 0).toLocaleString() + '</td>';
-                    html += '<td>' + (inv.payment_method || '-') + '</td>';
-                    html += '<td>' + (inv.transaction_id || '-') + '</td>';
-                    html += '<td><span class="status-badge status-pending">Pending</span></td>';
-                    html += '<td>' + (inv.notes || '-') + '</td>';
-                    html += '</tr>';
-                }
-                tbody.innerHTML = html;
-            }
-
-            async function loadProfits() {
-                var result = await supabaseClient.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
-                var data = result.data || [];
-                var tbody = document.getElementById('profitsList');
-                if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>';
-                    return;
-                }
-                var html = '';
-                for (var i = 0; i < data.length; i++) {
-                    var p = data[i];
-                    var monthName = new Date(p.month).toLocaleDateString('default', { year: 'numeric', month: 'long' });
-                    var statusClass = p.paid ? 'status-active' : 'status-pending';
-                    var statusText = p.paid ? 'Paid' : 'Pending';
-                    var paidDate = p.paid_date ? new Date(p.paid_date).toLocaleDateString() : '-';
-                    html += '<tr>';
-                    html += '<td>' + monthName + '</td>';
-                    html += '<td>Rs. ' + (p.amount || 0).toLocaleString() + '</td>';
-                    html += '<td>' + (p.profit_percentage || 10) + '%</td>';
-                    html += '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>';
-                    html += '<td>' + paidDate + '</td>';
-                    html += '</tr>';
-                }
-                tbody.innerHTML = html;
-            }
-
-            async function loadWithdrawals() {
-                var result = await supabaseClient.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
-                var data = result.data || [];
-                var tbody = document.getElementById('withdrawalsList');
-                if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet</td></tr>';
-                    return;
-                }
-                var html = '';
-                for (var i = 0; i < data.length; i++) {
-                    var w = data[i];
-                    html += '<tr>';
-                    html += '<td>' + new Date(w.request_date).toLocaleDateString() + '</td>';
-                    html += '<td>Rs. ' + (w.amount || 0).toLocaleString() + '</td>';
-                    html += '<td>' + (w.payment_method || '-') + '</td>';
-                    html += '<td>' + (w.account_details || '-') + '</td>';
-                    html += '<td><span class="status-badge status-' + w.status + '">' + w.status + '</span></td>';
-                    html += '<td>' + (w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-') + '</td>';
-                    html += '</tr>';
-                }
-                tbody.innerHTML = html;
-            }
-
-            async function loadProfile() {
-                var result = await supabaseClient.from('investors').select('*').eq('id', currentInvestorId).single();
-                var data = result.data;
-                if (data) {
-                    document.getElementById('profileName').value = data.full_name || '';
-                    document.getElementById('profileEmail').value = data.email || '';
-                    document.getElementById('profilePhone').value = data.phone || '';
-                    document.getElementById('profileCity').value = data.city || '';
-                    document.getElementById('profileTotalInvestment').value = 'Rs. ' + (data.total_investment || 0).toLocaleString();
-                    document.getElementById('profileTotalProfit').value = 'Rs. ' + (data.total_profit || 0).toLocaleString();
-                    document.getElementById('profileBalance').value = 'Rs. ' + (data.available_balance || 0).toLocaleString();
-                }
-            }
-
-            window.submitInvestmentRequest = async function() {
-                var amount = document.getElementById('investmentAmount').value;
-                var paymentMethod = document.getElementById('investmentPaymentMethod').value;
-                var transactionId = document.getElementById('investmentTransactionId').value;
-                var notes = document.getElementById('investmentNotes').value;
-
-                if (!amount || !transactionId) {
-                    showToast('Please enter amount and transaction ID', true);
-                    return;
-                }
-                if (parseFloat(amount) < 1000) {
-                    showToast('Minimum investment amount is Rs. 1,000', true);
-                    return;
-                }
-
-                var result = await supabaseClient.from('investments').insert([{
-                    investor_id: currentInvestorId,
-                    amount: parseFloat(amount),
-                    investment_date: new Date().toISOString().split('T')[0],
-                    payment_method: paymentMethod,
-                    transaction_id: transactionId,
-                    status: 'pending',
-                    notes: notes || ('Payment via ' + paymentMethod + ' - TXN: ' + transactionId)
-                }]);
-
-                if (result.error) {
-                    showToast(result.error.message, true);
-                } else {
-                    showToast('Investment request submitted! Admin will verify.', false);
-                    closeModal('investmentModal');
-                    document.getElementById('investmentAmount').value = '';
-                    document.getElementById('investmentTransactionId').value = '';
-                    document.getElementById('investmentNotes').value = '';
-                    await loadInvestmentRequests();
-                }
-            }
-
-            window.submitWithdrawalRequest = async function() {
-                var amount = document.getElementById('withdrawAmount').value;
-                var method = document.getElementById('withdrawMethod').value;
-                var accountDetails = document.getElementById('accountDetails').value;
-
-                if (!amount || !accountDetails) {
-                    showToast('Please fill all fields', true);
-                    return;
-                }
-                if (parseFloat(amount) < 1000) {
-                    showToast('Minimum withdrawal amount is Rs. 1,000', true);
-                    return;
-                }
-
-                // Get current balance
-                var balanceResult = await supabaseClient.from('investors').select('available_balance').eq('id', currentInvestorId).single();
-                
-                if (!balanceResult.data) {
-                    showToast('Investor profile not found. Please refresh the page.', true);
-                    return;
-                }
-                
-                var currentBalance = balanceResult.data.available_balance || 0;
-                
-                if (parseFloat(amount) > currentBalance) {
-                    showToast('Insufficient balance! Your available balance is Rs. ' + currentBalance.toLocaleString(), true);
-                    return;
-                }
-
-                var result = await supabaseClient.from('withdrawals').insert([{
-                    investor_id: currentInvestorId,
-                    amount: parseFloat(amount),
-                    request_date: new Date().toISOString().split('T')[0],
-                    payment_method: method,
-                    account_details: accountDetails,
-                    status: 'pending'
-                }]);
-
-                if (result.error) {
-                    showToast(result.error.message, true);
-                } else {
-                    showToast('Withdrawal request submitted!', false);
-                    closeModal('withdrawalModal');
-                    document.getElementById('withdrawAmount').value = '';
-                    document.getElementById('accountDetails').value = '';
-                    await loadWithdrawals();
-                }
-            }
-
-            window.openInvestmentModal = function() { 
-                document.getElementById('investmentModal').style.display = 'block'; 
-            }
+            // Get current balance
+            var balanceResult = await supabase.from('investors').select('available_balance').eq('id', currentInvestorId);
+            var currentBalance = (balanceResult.data && balanceResult.data.length > 0) ? (balanceResult.data[0].available_balance || 0) : 0;
             
-            window.openWithdrawalModal = function() { 
-                document.getElementById('withdrawalModal').style.display = 'block'; 
+            if (parseFloat(amount) > currentBalance) {
+                showToast('Insufficient balance! Your available balance is Rs. ' + currentBalance.toLocaleString(), true);
+                return;
             }
 
-            window.logout = async function() {
-                await supabaseClient.auth.signOut();
-                window.location.href = 'investor-auth.html';
-            }
+            var result = await supabase.from('withdrawals').insert([{
+                investor_id: currentInvestorId,
+                amount: parseFloat(amount),
+                request_date: new Date().toISOString().split('T')[0],
+                payment_method: method,
+                account_details: accountDetails,
+                status: 'pending'
+            }]);
 
-            checkAuth();
-        }, 100);
+            if (result.error) {
+                showToast(result.error.message, true);
+            } else {
+                showToast('Withdrawal request submitted!', false);
+                closeModal('withdrawalModal');
+                document.getElementById('withdrawAmount').value = '';
+                document.getElementById('accountDetails').value = '';
+                await loadWithdrawals();
+            }
+        }
+
+        window.openInvestmentModal = function() { 
+            document.getElementById('investmentModal').style.display = 'block'; 
+        }
+        
+        window.openWithdrawalModal = function() { 
+            document.getElementById('withdrawalModal').style.display = 'block'; 
+        }
+
+        window.logout = async function() {
+            await supabase.auth.signOut();
+            window.location.href = 'investor-auth.html';
+        }
+
+        checkAuth();
     </script>
 </body>
 </html>
