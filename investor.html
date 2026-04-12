@@ -403,7 +403,7 @@
         <div id="profitsTab" class="tab-content">
             <h2><i class="fas fa-gift"></i> Profit Distribution History</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead>
                         <tr><th>Month</th><th>Amount</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr>
                     </thead>
@@ -419,7 +419,7 @@
                 <button onclick="openWithdrawalModal()" class="btn-primary"><i class="fas fa-plus"></i> Request Withdrawal</button>
             </div>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead>
                         <tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr>
                     </thead>
@@ -481,246 +481,246 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let currentUser = null;
-        let currentInvestorId = null;
-
-        function showToast(message, isError) {
-            const toast = document.createElement('div');
-            toast.className = `toast ${isError ? 'error' : 'success'}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`${tabName}Tab`).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        async function checkAuth() {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (error || !user) {
-                window.location.href = 'investor-auth.html';
-                return;
-            }
-            currentUser = user;
-            currentInvestorId = user.id;
-            document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
+        // Wait for Supabase to load
+        setTimeout(function() {
+            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             
-            await loadInvestments();
-            await loadInvestmentRequests();
-            await loadProfits();
-            await loadWithdrawals();
-            await loadProfile();
-            await loadStats();
-        }
-
-        async function loadStats() {
-            const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-            const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
-            document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-            document.getElementById('activeInvestments').innerHTML = investments?.length || 0;
-
-            const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
-            const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
-            document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-            document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-        }
-
-        // Load APPROVED investments only
-        async function loadInvestments() {
-            const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
-            const tbody = document.getElementById('investmentsList');
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet</td></tr>';
+            if (typeof supabase === 'undefined') {
+                console.error('Supabase not loaded');
                 return;
             }
-            tbody.innerHTML = data.map(inv => `
-                <tr>
-                    <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
-                    <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
-                    <td>${inv.payment_method || '-'}</td>
-                    <td>${inv.transaction_id || '-'}</td>
-                    <td><span class="status-badge status-active">Approved</span></td>
-                    <td>${inv.notes || '-'}</td>
-                </tr>
-            `).join('');
-        }
+            
+            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            let currentUser = null;
+            let currentInvestorId = null;
 
-        // Load PENDING investment requests
-        async function loadInvestmentRequests() {
-            const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
-            const tbody = document.getElementById('investmentRequestsList');
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests</td></tr>';
-                return;
-            }
-            tbody.innerHTML = data.map(inv => `
-                <tr>
-                    <td>${new Date(inv.created_at).toLocaleDateString()}</td>
-                    <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
-                    <td>${inv.payment_method || '-'}</td>
-                    <td>${inv.transaction_id || '-'}</td>
-                    <td><span class="status-badge status-pending">Pending</span></td>
-                    <td>${inv.notes || '-'}</td>
-                </tr>
-            `).join('');
-        }
-
-        async function loadProfits() {
-            const { data, error } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
-            const tbody = document.getElementById('profitsList');
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>';
-                return;
-            }
-            tbody.innerHTML = data.map(p => `
-                <tr>
-                    <td>${new Date(p.month).toLocaleDateString('default', { year: 'numeric', month: 'long' })}</td>
-                    <td>Rs. ${(p.amount || 0).toLocaleString()}</td>
-                    <td>${p.profit_percentage || 10}%</td>
-                    <td><span class="status-badge ${p.paid ? 'status-active' : 'status-pending'}">${p.paid ? 'Paid' : 'Pending'}</span></td>
-                    <td>${p.paid_date ? new Date(p.paid_date).toLocaleDateString() : '-'}</td>
-                </tr>
-            `).join('');
-        }
-
-        async function loadWithdrawals() {
-            const { data, error } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
-            const tbody = document.getElementById('withdrawalsList');
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet</td></tr>';
-                return;
-            }
-            tbody.innerHTML = data.map(w => `
-                <tr>
-                    <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                    <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                    <td>${w.payment_method || '-'}</td>
-                    <td>${w.account_details || '-'}</td>
-                    <td><span class="status-badge status-${w.status}">${w.status}</span></td>
-                    <td>${w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-'}</td>
-                </tr>
-            `).join('');
-        }
-
-        async function loadProfile() {
-            const { data, error } = await supabase.from('investors').select('*').eq('id', currentInvestorId).single();
-            if (data) {
-                document.getElementById('profileName').value = data.full_name || '';
-                document.getElementById('profileEmail').value = data.email || '';
-                document.getElementById('profilePhone').value = data.phone || '';
-                document.getElementById('profileCity').value = data.city || '';
-                document.getElementById('profileTotalInvestment').value = `Rs. ${(data.total_investment || 0).toLocaleString()}`;
-                document.getElementById('profileTotalProfit').value = `Rs. ${(data.total_profit || 0).toLocaleString()}`;
-                document.getElementById('profileBalance').value = `Rs. ${(data.available_balance || 0).toLocaleString()}`;
-            }
-        }
-
-        async function submitInvestmentRequest() {
-            const amount = document.getElementById('investmentAmount').value;
-            const paymentMethod = document.getElementById('investmentPaymentMethod').value;
-            const transactionId = document.getElementById('investmentTransactionId').value;
-            const notes = document.getElementById('investmentNotes').value;
-
-            if (!amount || !transactionId) {
-                showToast('Please enter amount and transaction ID', true);
-                return;
-            }
-            if (parseFloat(amount) < 1000) {
-                showToast('Minimum investment amount is Rs. 1,000', true);
-                return;
+            function showToast(message, isError) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${isError ? 'error' : 'success'}`;
+                toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
             }
 
-            const { error } = await supabase.from('investments').insert([{
-                investor_id: currentInvestorId,
-                amount: parseFloat(amount),
-                investment_date: new Date().toISOString().split('T')[0],
-                payment_method: paymentMethod,
-                transaction_id: transactionId,
-                status: 'pending',
-                notes: notes || `Payment via ${paymentMethod} - TXN: ${transactionId}`
-            }]);
+            window.closeModal = function(modalId) {
+                document.getElementById(modalId).style.display = 'none';
+            }
 
-            if (error) {
-                showToast(error.message, true);
-            } else {
-                showToast('Investment request submitted! Admin will verify.', false);
-                closeModal('investmentModal');
-                document.getElementById('investmentAmount').value = '';
-                document.getElementById('investmentTransactionId').value = '';
-                document.getElementById('investmentNotes').value = '';
+            window.showTab = function(tabName) {
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                const targetTab = document.getElementById(`${tabName}Tab`);
+                if (targetTab) targetTab.classList.add('active');
+                if (event && event.target) event.target.classList.add('active');
+            }
+
+            async function checkAuth() {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                if (error || !user) {
+                    window.location.href = 'investor-auth.html';
+                    return;
+                }
+                currentUser = user;
+                currentInvestorId = user.id;
+                document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
+                
+                await loadInvestments();
                 await loadInvestmentRequests();
-            }
-        }
-
-        async function submitWithdrawalRequest() {
-            const amount = document.getElementById('withdrawAmount').value;
-            const method = document.getElementById('withdrawMethod').value;
-            const accountDetails = document.getElementById('accountDetails').value;
-
-            if (!amount || !accountDetails) {
-                showToast('Please fill all fields', true);
-                return;
-            }
-            if (parseFloat(amount) < 1000) {
-                showToast('Minimum withdrawal amount is Rs. 1,000', true);
-                return;
-            }
-
-            const { data: balance } = await supabase.from('investors').select('available_balance').eq('id', currentInvestorId).single();
-            if (balance && parseFloat(amount) > (balance.available_balance || 0)) {
-                showToast('Insufficient balance!', true);
-                return;
-            }
-
-            const { error } = await supabase.from('withdrawals').insert([{
-                investor_id: currentInvestorId,
-                amount: parseFloat(amount),
-                request_date: new Date().toISOString().split('T')[0],
-                payment_method: method,
-                account_details: accountDetails,
-                status: 'pending'
-            }]);
-
-            if (error) {
-                showToast(error.message, true);
-            } else {
-                showToast('Withdrawal request submitted!', false);
-                closeModal('withdrawalModal');
-                document.getElementById('withdrawAmount').value = '';
-                document.getElementById('accountDetails').value = '';
+                await loadProfits();
                 await loadWithdrawals();
+                await loadProfile();
+                await loadStats();
             }
-        }
 
-        function openInvestmentModal() { document.getElementById('investmentModal').style.display = 'block'; }
-        function openWithdrawalModal() { document.getElementById('withdrawalModal').style.display = 'block'; }
+            async function loadStats() {
+                const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+                const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
+                document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
+                document.getElementById('activeInvestments').innerHTML = investments?.length || 0;
 
-        async function logout() {
-            await supabase.auth.signOut();
-            window.location.href = 'investor-auth.html';
-        }
+                const { data: profits } = await supabaseClient.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
+                const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
+                document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+                document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+            }
 
-        window.showTab = showTab;
-        window.logout = logout;
-        window.closeModal = closeModal;
-        window.openInvestmentModal = openInvestmentModal;
-        window.openWithdrawalModal = openWithdrawalModal;
-        window.submitInvestmentRequest = submitInvestmentRequest;
-        window.submitWithdrawalRequest = submitWithdrawalRequest;
+            async function loadInvestments() {
+                const { data, error } = await supabaseClient.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
+                const tbody = document.getElementById('investmentsList');
+                if (error || !data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet</td></tr>'；
+                    return;
+                }
+                tbody.innerHTML = data.map(inv => `
+                    <tr>
+                        <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
+                        <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
+                        <td>${inv.payment_method || '-'}</td>
+                        <td>${inv.transaction_id || '-'}</td>
+                        <td><span class="status-badge status-active">Approved</span></td>
+                        <td>${inv.notes || '-'}</td>
+                    </tr>
+                `).join('');
+            }
 
-        checkAuth();
+            async function loadInvestmentRequests() {
+                const { data, error } = await supabaseClient.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
+                const tbody = document.getElementById('investmentRequestsList');
+                if (error || !data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests</td></tr>'；
+                    return;
+                }
+                tbody.innerHTML = data.map(inv => `
+                    <tr>
+                        <td>${new Date(inv.created_at).toLocaleDateString()}</td>
+                        <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
+                        <td>${inv.payment_method || '-'}</td>
+                        <td>${inv.transaction_id || '-'}</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>${inv.notes || '-'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            async function loadProfits() {
+                const { data, error } = await supabaseClient.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
+                const tbody = document.getElementById('profitsList');
+                if (error || !data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'；
+                    return;
+                }
+                tbody.innerHTML = data.map(p => `
+                    <tr>
+                        <td>${new Date(p.month).toLocaleDateString('default', { year: 'numeric', month: 'long' })}</td>
+                        <td>Rs. ${(p.amount || 0).toLocaleString()}</td>
+                        <td>${p.profit_percentage || 10}%</td>
+                        <td><span class="status-badge ${p.paid ? 'status-active' : 'status-pending'}">${p.paid ? 'Paid' : 'Pending'}</span></td>
+                        <td>${p.paid_date ? new Date(p.paid_date).toLocaleDateString() : '-'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            async function loadWithdrawals() {
+                const { data, error } = await supabaseClient.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
+                const tbody = document.getElementById('withdrawalsList');
+                if (error || !data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet</td></tr>'；
+                    return;
+                }
+                tbody.innerHTML = data.map(w => `
+                    <tr>
+                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                        <td>${w.payment_method || '-'}</td>
+                        <td>${w.account_details || '-'}</td>
+                        <td><span class="status-badge status-${w.status}">${w.status}</span></td>
+                        <td>${w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            async function loadProfile() {
+                const { data, error } = await supabaseClient.from('investors').select('*').eq('id', currentInvestorId).single();
+                if (data) {
+                    document.getElementById('profileName').value = data.full_name || '';
+                    document.getElementById('profileEmail').value = data.email || '';
+                    document.getElementById('profilePhone').value = data.phone || '';
+                    document.getElementById('profileCity').value = data.city || '';
+                    document.getElementById('profileTotalInvestment').value = `Rs. ${(data.total_investment || 0).toLocaleString()}`;
+                    document.getElementById('profileTotalProfit').value = `Rs. ${(data.total_profit || 0).toLocaleString()}`;
+                    document.getElementById('profileBalance').value = `Rs. ${(data.available_balance || 0).toLocaleString()}`;
+                }
+            }
+
+            window.submitInvestmentRequest = async function() {
+                const amount = document.getElementById('investmentAmount').value;
+                const paymentMethod = document.getElementById('investmentPaymentMethod').value;
+                const transactionId = document.getElementById('investmentTransactionId').value;
+                const notes = document.getElementById('investmentNotes').value;
+
+                if (!amount || !transactionId) {
+                    showToast('Please enter amount and transaction ID', true);
+                    return;
+                }
+                if (parseFloat(amount) < 1000) {
+                    showToast('Minimum investment amount is Rs. 1,000', true);
+                    return;
+                }
+
+                const { error } = await supabaseClient.from('investments').insert([{
+                    investor_id: currentInvestorId,
+                    amount: parseFloat(amount),
+                    investment_date: new Date().toISOString().split('T')[0],
+                    payment_method: paymentMethod,
+                    transaction_id: transactionId,
+                    status: 'pending',
+                    notes: notes || `Payment via ${paymentMethod} - TXN: ${transactionId}`
+                }]);
+
+                if (error) {
+                    showToast(error.message, true);
+                } else {
+                    showToast('Investment request submitted! Admin will verify.', false);
+                    window.closeModal('investmentModal');
+                    document.getElementById('investmentAmount').value = '';
+                    document.getElementById('investmentTransactionId').value = '';
+                    document.getElementById('investmentNotes').value = '';
+                    await loadInvestmentRequests();
+                }
+            }
+
+            window.submitWithdrawalRequest = async function() {
+                const amount = document.getElementById('withdrawAmount').value;
+                const method = document.getElementById('withdrawMethod').value;
+                const accountDetails = document.getElementById('accountDetails').value;
+
+                if (!amount || !accountDetails) {
+                    showToast('Please fill all fields', true);
+                    return;
+                }
+                if (parseFloat(amount) < 1000) {
+                    showToast('Minimum withdrawal amount is Rs. 1,000', true);
+                    return;
+                }
+
+                const { data: balance } = await supabaseClient.from('investors').select('available_balance').eq('id', currentInvestorId).single();
+                if (balance && parseFloat(amount) > (balance.available_balance || 0)) {
+                    showToast('Insufficient balance!', true);
+                    return;
+                }
+
+                const { error } = await supabaseClient.from('withdrawals').insert([{
+                    investor_id: currentInvestorId,
+                    amount: parseFloat(amount),
+                    request_date: new Date().toISOString().split('T')[0],
+                    payment_method: method,
+                    account_details: accountDetails,
+                    status: 'pending'
+                }]);
+
+                if (error) {
+                    showToast(error.message, true);
+                } else {
+                    showToast('Withdrawal request submitted!', false);
+                    window.closeModal('withdrawalModal');
+                    document.getElementById('withdrawAmount').value = '';
+                    document.getElementById('accountDetails').value = '';
+                    await loadWithdrawals();
+                }
+            }
+
+            window.openInvestmentModal = function() { document.getElementById('investmentModal').style.display = 'block'; }
+            window.openWithdrawalModal = function() { document.getElementById('withdrawalModal').style.display = 'block'; }
+
+            window.logout = async function() {
+                await supabaseClient.auth.signOut();
+                window.location.href = 'investor-auth.html';
+            }
+
+            checkAuth();
+        }, 100);
     </script>
 </body>
 </html>
