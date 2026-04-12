@@ -186,7 +186,7 @@
             display: inline-block;
         }
 
-        .status-active {
+        .status-active, .status-approved {
             background: #d4edda;
             color: #155724;
         }
@@ -194,11 +194,6 @@
         .status-pending {
             background: #fff3cd;
             color: #856404;
-        }
-
-        .status-approved {
-            background: #d4edda;
-            color: #155724;
         }
 
         .status-rejected {
@@ -215,7 +210,6 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
-            margin-top: 10px;
         }
 
         .btn-primary:hover {
@@ -273,7 +267,7 @@
             color: #333;
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -370,15 +364,16 @@
 
         <div class="tabs">
             <button class="tab-btn active" onclick="showTab('investments')"><i class="fas fa-chart-line"></i> My Investments</button>
+            <button class="tab-btn" onclick="showTab('investmentRequests')"><i class="fas fa-clock"></i> Investment Requests</button>
             <button class="tab-btn" onclick="showTab('profits')"><i class="fas fa-coins"></i> Profit History</button>
             <button class="tab-btn" onclick="showTab('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="tab-btn" onclick="showTab('profile')"><i class="fas fa-user"></i> My Profile</button>
         </div>
 
-        <!-- Investments Tab -->
+        <!-- Investments Tab (Approved Investments) -->
         <div id="investmentsTab" class="tab-content active">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                <h2><i class="fas fa-history"></i> Your Investment History</h2>
+                <h2><i class="fas fa-check-circle"></i> Approved Investments</h2>
                 <button onclick="openInvestmentModal()" class="btn-primary"><i class="fas fa-plus"></i> New Investment Request</button>
             </div>
             <div class="table-container">
@@ -387,6 +382,19 @@
                         <tr><th>Date</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
                     </thead>
                     <tbody id="investmentsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Investment Requests Tab (Pending Requests) -->
+        <div id="investmentRequestsTab" class="tab-content">
+            <h2><i class="fas fa-clock"></i> Pending Investment Requests</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Admin Notes</th></tr>
+                    </thead>
+                    <tbody id="investmentRequestsList"></tbody>
                 </table>
             </div>
         </div>
@@ -439,18 +447,19 @@
     <div id="investmentModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('investmentModal')">&times;</span>
-            <h2><i class="fas fa-plus-circle"></i> Request New Investment</h2>
+            <h2><i class="fas fa-plus-circle"></i> Submit Investment Request</h2>
             <div class="payment-info">
                 <i class="fas fa-info-circle"></i> Send payment to:<br>
                 <strong>🏦 EasyPaisa:</strong> 03XX-XXXXXXX<br>
                 <strong>🏦 JazzCash:</strong> 03XX-XXXXXXX<br>
-                <strong>🏦 Bank Transfer:</strong> HBL/UBL Account #XXXX-XXXX<br>
-                After payment, admin will verify and update your investment.
+                <strong>🏦 Bank Transfer:</strong> HBL Account #XXXX-XXXX<br>
+                After payment, admin will verify and approve your investment.
             </div>
-            <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="investmentAmount" placeholder="Enter amount"></div>
+            <div class="form-group"><label>Investment Amount (Rs.)</label><input type="number" id="investmentAmount" placeholder="Enter amount" required></div>
             <div class="form-group"><label>Payment Method</label><select id="investmentPaymentMethod"><option>EasyPaisa</option><option>JazzCash</option><option>Bank Transfer</option></select></div>
-            <div class="form-group"><label>Transaction ID / Reference</label><input type="text" id="investmentTransactionId" placeholder="Enter transaction ID"></div>
-            <button onclick="submitInvestmentRequest()" class="btn-primary">Submit Investment Request</button>
+            <div class="form-group"><label>Transaction ID / Reference Number</label><input type="text" id="investmentTransactionId" placeholder="Enter transaction ID" required></div>
+            <div class="form-group"><label>Additional Notes (Optional)</label><textarea id="investmentNotes" rows="2" placeholder="Any additional information"></textarea></div>
+            <button onclick="submitInvestmentRequest()" class="btn-primary">Submit Request</button>
         </div>
     </div>
 
@@ -509,6 +518,7 @@
             document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
             
             await loadInvestments();
+            await loadInvestmentRequests();
             await loadProfits();
             await loadWithdrawals();
             await loadProfile();
@@ -527,11 +537,12 @@
             document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
         }
 
+        // Load APPROVED investments only
         async function loadInvestments() {
-            const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).order('investment_date', { ascending: false });
+            const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
             const tbody = document.getElementById('investmentsList');
             if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No investments yet</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet</td></tr>';
                 return;
             }
             tbody.innerHTML = data.map(inv => `
@@ -540,7 +551,27 @@
                     <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
                     <td>${inv.payment_method || '-'}</td>
                     <td>${inv.transaction_id || '-'}</td>
-                    <td><span class="status-badge status-${inv.status === 'active' ? 'active' : 'pending'}">${inv.status || 'Pending'}</span></td>
+                    <td><span class="status-badge status-active">Approved</span></td>
+                    <td>${inv.notes || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Load PENDING investment requests
+        async function loadInvestmentRequests() {
+            const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
+            const tbody = document.getElementById('investmentRequestsList');
+            if (error || !data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(inv => `
+                <tr>
+                    <td>${new Date(inv.created_at).toLocaleDateString()}</td>
+                    <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
+                    <td>${inv.payment_method || '-'}</td>
+                    <td>${inv.transaction_id || '-'}</td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
                     <td>${inv.notes || '-'}</td>
                 </tr>
             `).join('');
@@ -600,9 +631,14 @@
             const amount = document.getElementById('investmentAmount').value;
             const paymentMethod = document.getElementById('investmentPaymentMethod').value;
             const transactionId = document.getElementById('investmentTransactionId').value;
+            const notes = document.getElementById('investmentNotes').value;
 
             if (!amount || !transactionId) {
                 showToast('Please enter amount and transaction ID', true);
+                return;
+            }
+            if (parseFloat(amount) < 1000) {
+                showToast('Minimum investment amount is Rs. 1,000', true);
                 return;
             }
 
@@ -613,7 +649,7 @@
                 payment_method: paymentMethod,
                 transaction_id: transactionId,
                 status: 'pending',
-                notes: `Payment via ${paymentMethod}`
+                notes: notes || `Payment via ${paymentMethod} - TXN: ${transactionId}`
             }]);
 
             if (error) {
@@ -623,7 +659,8 @@
                 closeModal('investmentModal');
                 document.getElementById('investmentAmount').value = '';
                 document.getElementById('investmentTransactionId').value = '';
-                await loadInvestments();
+                document.getElementById('investmentNotes').value = '';
+                await loadInvestmentRequests();
             }
         }
 
