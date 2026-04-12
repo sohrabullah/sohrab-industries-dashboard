@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sohrab Industries | Buyer Portal - Shop in PKR</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -19,9 +20,9 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 5%;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -58,9 +59,9 @@
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
         .toggle-link { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
         .toggle-link a { color: #E8B13C; text-decoration: none; font-weight: 600; cursor: pointer; }
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 1000; animation: slideUp 0.3s ease; text-align: center; font-weight: 500; }
-        .toast.success { background: #28a745; }
-        .toast.error { background: #dc3545; }
+        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 1000; animation: slideUp 0.3s ease; text-align: center; font-weight: 500; }
+        .toast-success { background: #28a745; }
+        .toast-error { background: #dc3545; }
         @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; gap: 2rem; } .hero-content h1 { font-size: 2rem; text-align: center; } .hero-content p { text-align: center; } }
         @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -85,11 +86,6 @@
                 <div class="stat-card"><div class="currency-icon">💡</div><div class="number">50+</div><div class="label">Products</div></div>
                 <div class="stat-card"><div class="currency-icon">🚚</div><div class="number">Free</div><div class="label">Delivery</div></div>
                 <div class="stat-card"><div class="currency-icon">⭐</div><div class="number">1 Year</div><div class="label">Warranty</div></div>
-            </div>
-            <div class="stats-grid" style="margin-top: 1rem;">
-                <div class="stat-card"><div class="currency-icon">💰</div><div class="number">Best Price</div><div class="label">in Pakistan</div></div>
-                <div class="stat-card"><div class="currency-icon">🔋</div><div class="number">Energy Save</div><div class="label">Up to 80%</div></div>
-                <div class="stat-card"><div class="currency-icon">📦</div><div class="number">COD Available</div><div class="label">Easy Payment</div></div>
             </div>
         </div>
 
@@ -123,51 +119,84 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Check if already logged in
+        async function checkSession() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) window.location.href = 'buyer.html';
+        }
+        checkSession();
 
         const signupSection = document.getElementById('signupSection');
         const loginSection = document.getElementById('loginSection');
-        const loginTabBtn = document.getElementById('loginTabBtn');
-        const signupTabBtn = document.getElementById('signupTabBtn');
-        const toggleFormLink = document.getElementById('toggleFormLink');
+        const loginTab = document.getElementById('loginTabBtn');
+        const signupTab = document.getElementById('signupTabBtn');
+        const toggleLink = document.getElementById('toggleFormLink');
 
-        function showLoginForm() { signupSection.style.display = 'none'; loginSection.style.display = 'block'; loginTabBtn.classList.add('active'); signupTabBtn.classList.remove('active'); toggleFormLink.innerHTML = "Don't have an account? Sign Up →"; }
-        function showSignupForm() { loginSection.style.display = 'none'; signupSection.style.display = 'block'; signupTabBtn.classList.add('active'); loginTabBtn.classList.remove('active'); toggleFormLink.innerHTML = "Already have an account? Login →"; }
+        function showLogin() { signupSection.style.display = 'none'; loginSection.style.display = 'block'; loginTab.classList.add('active'); signupTab.classList.remove('active'); toggleLink.innerHTML = "Don't have an account? Sign Up →"; }
+        function showSignup() { loginSection.style.display = 'none'; signupSection.style.display = 'block'; signupTab.classList.add('active'); loginTab.classList.remove('active'); toggleLink.innerHTML = "Already have an account? Login →"; }
 
-        loginTabBtn.addEventListener('click', showLoginForm);
-        signupTabBtn.addEventListener('click', showSignupForm);
-        toggleFormLink.addEventListener('click', () => { if (loginSection.style.display === 'none') showLoginForm(); else showSignupForm(); });
+        loginTab.onclick = showLogin;
+        signupTab.onclick = showSignup;
+        toggleLink.onclick = () => { if (loginSection.style.display === 'none') showLogin(); else showSignup(); };
 
-        function showToast(msg, isError) { const t = document.createElement('div'); t.className = `toast ${isError ? 'error' : 'success'}`; t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+        function showToast(msg, isError) { 
+            const t = document.createElement('div'); 
+            t.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`; 
+            t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; 
+            document.body.appendChild(t); 
+            setTimeout(() => t.remove(), 3000); 
+        }
 
-        document.getElementById('signupBtn').addEventListener('click', async () => {
+        // Signup
+        document.getElementById('signupBtn').onclick = async () => {
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const phone = document.getElementById('signupPhone').value.trim();
             const address = document.getElementById('signupAddress').value.trim();
             const password = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirm').value;
+
             if (!name || !email || !phone || !address || !password) { showToast('Please fill all fields', true); return; }
             if (password !== confirm) { showToast('Passwords do not match', true); return; }
             if (password.length < 6) { showToast('Password must be at least 6 characters', true); return; }
-            const btn = document.getElementById('signupBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating...';
+
+            const btn = document.getElementById('signupBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating...';
+
             const { data: authData, error: authError } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name, phone, address, role: 'buyer' } } });
             if (authError) { showToast(authError.message, true); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account'; return; }
-            if (authData.user) { await supabase.from('buyers').insert([{ id: authData.user.id, email, full_name: name, phone, address, created_at: new Date().toISOString() }]); showToast('Account created! Please login.', false); document.querySelectorAll('#signupSection input').forEach(i => i.value = ''); showLoginForm(); }
-            btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
-        });
 
-        document.getElementById('loginBtn').addEventListener('click', async () => {
+            if (authData.user) {
+                await supabase.from('buyers').insert([{ id: authData.user.id, email, full_name: name, phone, address, created_at: new Date().toISOString() }]);
+                showToast('Account created! Please login.', false);
+                document.querySelectorAll('#signupSection input').forEach(i => i.value = '');
+                showLogin();
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
+        };
+
+        // Login
+        document.getElementById('loginBtn').onclick = async () => {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             if (!email || !password) { showToast('Please enter email and password', true); return; }
-            const btn = document.getElementById('loginBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) { showToast('Invalid email or password', true); btn.disabled = false; btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop'; return; }
-            if (data.user) { localStorage.setItem('user', JSON.stringify(data.user)); localStorage.setItem('userType', 'buyer'); showToast('Login successful! Redirecting...', false); setTimeout(() => window.location.href = 'buyer.html', 1500); }
-        });
+
+            if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('userType', 'buyer');
+                showToast('Login successful! Redirecting...', false);
+                setTimeout(() => window.location.href = 'buyer.html', 1500);
+            }
+        };
     </script>
 </body>
 </html>
