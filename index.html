@@ -176,7 +176,7 @@
             z-index: 1;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 0.85rem 1rem 0.85rem 2.8rem;
             font-size: 0.95rem;
@@ -188,7 +188,7 @@
             outline: none;
         }
 
-        input:focus {
+        input:focus, select:focus {
             border-color: #E8B13C;
             box-shadow: 0 0 0 4px rgba(232, 177, 60, 0.2);
         }
@@ -268,6 +268,7 @@
 
         .toast-success { background: #28a745; }
         .toast-error { background: #dc3545; }
+        .toast-warning { background: #ffc107; color: #333; }
 
         @keyframes slideUp {
             from { transform: translateX(-50%) translateY(100px); opacity: 0; }
@@ -282,6 +283,16 @@
             font-size: 0.75rem;
             text-align: center;
             color: #856404;
+        }
+
+        .pending-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #333;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            margin-left: 8px;
         }
 
         @media (max-width: 480px) {
@@ -349,17 +360,21 @@
                     </div>
                     <div class="input-group">
                         <i class="fas fa-phone-alt"></i>
-                        <input type="tel" id="investorPhone" placeholder="Phone Number">
+                        <input type="tel" id="investorPhone" placeholder="Phone Number" required>
                     </div>
                     <div class="input-group">
                         <i class="fas fa-city"></i>
-                        <input type="text" id="investorCity" placeholder="City">
+                        <input type="text" id="investorCity" placeholder="City" required>
                     </div>
                     <div class="input-group">
                         <i class="fas fa-key"></i>
                         <input type="password" id="investorPassword" placeholder="Password (min 6 characters)" required>
                     </div>
-                    <button type="submit"><i class="fas fa-gem"></i> Start Investing</button>
+                    <div class="input-group">
+                        <i class="fas fa-eye"></i>
+                        <input type="password" id="investorConfirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit"><i class="fas fa-gem"></i> Submit for Approval</button>
                 </form>
                 <p class="toggle-text">Already have an account? <a onclick="showInvestorLogin()">Login →</a></p>
             </div>
@@ -396,17 +411,21 @@
                     </div>
                     <div class="input-group">
                         <i class="fas fa-phone-alt"></i>
-                        <input type="tel" id="buyerPhone" placeholder="Phone Number">
+                        <input type="tel" id="buyerPhone" placeholder="Phone Number" required>
                     </div>
                     <div class="input-group">
                         <i class="fas fa-map-marker-alt"></i>
-                        <input type="text" id="buyerAddress" placeholder="Delivery Address">
+                        <input type="text" id="buyerAddress" placeholder="Delivery Address" required>
                     </div>
                     <div class="input-group">
                         <i class="fas fa-key"></i>
                         <input type="password" id="buyerPassword" placeholder="Password (min 6 characters)" required>
                     </div>
-                    <button type="submit"><i class="fas fa-shopping-cart"></i> Sign Up & Shop</button>
+                    <div class="input-group">
+                        <i class="fas fa-eye"></i>
+                        <input type="password" id="buyerConfirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit"><i class="fas fa-shopping-cart"></i> Submit for Approval</button>
                 </form>
                 <p class="toggle-text">Already have an account? <a onclick="showBuyerLogin()">Login →</a></p>
             </div>
@@ -442,29 +461,34 @@
 
 <script>
     // ============================================
-    // SUPABASE CONFIGURATION - YOUR REAL KEYS
+    // SUPABASE CONFIGURATION
     // ============================================
     const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // Toast Notification
-    function showNotification(message, isError = false) {
+    function showNotification(message, isError = false, isWarning = false) {
         const existingToast = document.querySelector('.toast-notification');
         if (existingToast) existingToast.remove();
         
         const toast = document.createElement('div');
-        toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
-        toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
+        if (isWarning) {
+            toast.className = 'toast-notification toast-warning';
+            toast.innerHTML = `⚠️ ${message}`;
+        } else {
+            toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
+            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
+        }
         document.body.appendChild(toast);
         
         setTimeout(() => {
             toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 500);
-        }, 3000);
+        }, 4000);
     }
 
-    // User Type Selection
+    // User Type Selection - FIXED
     function selectUserType(type) {
         // Update button styles
         document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
@@ -479,7 +503,7 @@
             document.getElementById('investorForms').classList.add('active');
         } else if (type === 'buyer') {
             document.getElementById('buyerForms').classList.add('active');
-        } else {
+        } else if (type === 'admin') {
             document.getElementById('adminForms').classList.add('active');
         }
     }
@@ -507,26 +531,7 @@
     }
 
     // ============================================
-    // INVESTOR LOGIN
-    // ============================================
-    document.getElementById('investorLoginFormElement')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('investorLoginEmail').value.trim();
-        const password = document.getElementById('investorLoginPassword').value;
-        
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        
-        if (error) {
-            showNotification('Login failed: ' + error.message, true);
-        } else if (data.user) {
-            localStorage.setItem('user', JSON.stringify(data.user));
-            showNotification('Welcome back, Investor! Redirecting...', false);
-            setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
-        }
-    });
-
-    // ============================================
-    // INVESTOR SIGNUP
+    // INVESTOR SIGNUP (Pending Approval)
     // ============================================
     document.getElementById('investorSignupFormElement')?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -536,15 +541,42 @@
         const phone = document.getElementById('investorPhone').value.trim();
         const city = document.getElementById('investorCity').value.trim();
         const password = document.getElementById('investorPassword').value;
+        const confirmPassword = document.getElementById('investorConfirmPassword').value;
         
         if (password.length < 6) {
             showNotification('Password must be at least 6 characters', true);
             return;
         }
         
+        if (password !== confirmPassword) {
+            showNotification('Passwords do not match', true);
+            return;
+        }
+        
+        // Check if email already exists in pending_investors or investors
+        const { data: existingInvestor } = await supabase
+            .from('investors')
+            .select('email')
+            .eq('email', email)
+            .single();
+        
+        if (existingInvestor) {
+            showNotification('This email is already registered. Please login.', true);
+            return;
+        }
+        
+        // Create auth user (will be disabled until admin approves)
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email, password,
-            options: { data: { full_name: fullName, phone, city, role: 'investor' } }
+            options: { 
+                data: { 
+                    full_name: fullName, 
+                    phone, 
+                    city, 
+                    role: 'investor',
+                    status: 'pending'
+                } 
+            }
         });
         
         if (authError) {
@@ -553,12 +585,15 @@
         }
         
         if (authData.user) {
+            // Insert into investors table with pending status
             const { error: insertError } = await supabase.from('investors').insert([{
                 id: authData.user.id,
                 email: email,
                 full_name: fullName,
-                phone: phone || null,
-                city: city || null,
+                phone: phone,
+                city: city,
+                status: 'pending',
+                is_approved: false,
                 created_at: new Date().toISOString()
             }]);
             
@@ -566,19 +601,31 @@
                 console.error('Insert error:', insertError);
             }
             
-            showNotification('Account created! Please login.', false);
+            showNotification('Registration submitted! Awaiting admin approval (within 24 hours).', false);
             showInvestorLogin();
             document.getElementById('investorSignupFormElement').reset();
         }
     });
 
     // ============================================
-    // BUYER LOGIN
+    // INVESTOR LOGIN (Check Approval Status)
     // ============================================
-    document.getElementById('buyerLoginFormElement')?.addEventListener('submit', async (e) => {
+    document.getElementById('investorLoginFormElement')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('buyerLoginEmail').value.trim();
-        const password = document.getElementById('buyerLoginPassword').value;
+        const email = document.getElementById('investorLoginEmail').value.trim();
+        const password = document.getElementById('investorLoginPassword').value;
+        
+        // First check if investor is approved
+        const { data: investor, error: investorError } = await supabase
+            .from('investors')
+            .select('status, is_approved')
+            .eq('email', email)
+            .single();
+        
+        if (investor && (!investor.is_approved || investor.status === 'pending')) {
+            showNotification('Your account is pending admin approval. Please wait for approval email.', true);
+            return;
+        }
         
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         
@@ -586,13 +633,14 @@
             showNotification('Login failed: ' + error.message, true);
         } else if (data.user) {
             localStorage.setItem('user', JSON.stringify(data.user));
-            showNotification('Welcome back! Redirecting to shop...', false);
-            setTimeout(() => { window.location.href = 'buyer.html'; }, 1000);
+            localStorage.setItem('userType', 'investor');
+            showNotification('Welcome back, Investor! Redirecting...', false);
+            setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
         }
     });
 
     // ============================================
-    // BUYER SIGNUP
+    // BUYER SIGNUP (Pending Approval)
     // ============================================
     document.getElementById('buyerSignupFormElement')?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -602,15 +650,41 @@
         const phone = document.getElementById('buyerPhone').value.trim();
         const address = document.getElementById('buyerAddress').value.trim();
         const password = document.getElementById('buyerPassword').value;
+        const confirmPassword = document.getElementById('buyerConfirmPassword').value;
         
         if (password.length < 6) {
             showNotification('Password must be at least 6 characters', true);
             return;
         }
         
+        if (password !== confirmPassword) {
+            showNotification('Passwords do not match', true);
+            return;
+        }
+        
+        // Check if email already exists
+        const { data: existingBuyer } = await supabase
+            .from('buyers')
+            .select('email')
+            .eq('email', email)
+            .single();
+        
+        if (existingBuyer) {
+            showNotification('This email is already registered. Please login.', true);
+            return;
+        }
+        
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email, password,
-            options: { data: { full_name: fullName, phone, address, role: 'buyer' } }
+            options: { 
+                data: { 
+                    full_name: fullName, 
+                    phone, 
+                    address, 
+                    role: 'buyer',
+                    status: 'pending'
+                } 
+            }
         });
         
         if (authError) {
@@ -623,8 +697,10 @@
                 id: authData.user.id,
                 email: email,
                 full_name: fullName,
-                phone: phone || null,
-                address: address || null,
+                phone: phone,
+                address: address,
+                status: 'pending',
+                is_approved: false,
                 created_at: new Date().toISOString()
             }]);
             
@@ -632,9 +708,41 @@
                 console.error('Insert error:', insertError);
             }
             
-            showNotification('Account created! Please login.', false);
+            showNotification('Registration submitted! Awaiting admin approval (within 24 hours).', false);
             showBuyerLogin();
             document.getElementById('buyerSignupFormElement').reset();
+        }
+    });
+
+    // ============================================
+    // BUYER LOGIN (Check Approval Status)
+    // ============================================
+    document.getElementById('buyerLoginFormElement')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('buyerLoginEmail').value.trim();
+        const password = document.getElementById('buyerLoginPassword').value;
+        
+        // First check if buyer is approved
+        const { data: buyer, error: buyerError } = await supabase
+            .from('buyers')
+            .select('status, is_approved')
+            .eq('email', email)
+            .single();
+        
+        if (buyer && (!buyer.is_approved || buyer.status === 'pending')) {
+            showNotification('Your account is pending admin approval. Please wait for approval email.', true);
+            return;
+        }
+        
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        
+        if (error) {
+            showNotification('Login failed: ' + error.message, true);
+        } else if (data.user) {
+            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('userType', 'buyer');
+            showNotification('Welcome back! Redirecting to shop...', false);
+            setTimeout(() => { window.location.href = 'buyer.html'; }, 1000);
         }
     });
 
@@ -646,19 +754,19 @@
         const email = document.getElementById('adminEmail').value.trim();
         const password = document.getElementById('adminPassword').value;
         
+        const adminEmails = ['admin@sohrab.com', 'sohrabullahkn786@gmail.com'];
+        if (!adminEmails.includes(email)) {
+            showNotification('Unauthorized. Admin access only.', true);
+            return;
+        }
+        
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         
         if (error) {
             showNotification('Login failed: ' + error.message, true);
         } else if (data.user) {
-            const adminEmails = ['admin@sohrab.com', 'sohrabullahkn786@gmail.com'];
-            if (!adminEmails.includes(email)) {
-                showNotification('Unauthorized. Admin access only.', true);
-                await supabase.auth.signOut();
-                return;
-            }
-            
             localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('userType', 'admin');
             showNotification('Welcome Admin! Redirecting to panel...', false);
             setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
         }
