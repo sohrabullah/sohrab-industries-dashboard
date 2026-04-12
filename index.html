@@ -108,6 +108,7 @@
             font-weight: 500;
         }
 
+        /* User Type Selector - Improved */
         .user-type-selector {
             display: flex;
             gap: 12px;
@@ -121,18 +122,54 @@
             flex: 1;
             padding: 12px 8px;
             border: none;
-            background: transparent;
+            background: #e0e4e8;
             border-radius: 50px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
+            color: #555;
         }
 
-        .type-btn.investor.active { background: #1E4E3E; color: white; }
-        .type-btn.buyer.active { background: #E8B13C; color: #1E4E3E; }
-        .type-btn.admin.active { background: #dc3545; color: white; }
+        .type-btn i {
+            margin-right: 6px;
+        }
+
+        /* Individual button colors when active */
+        .type-btn.investor.active {
+            background: #1E4E3E;
+            color: white;
+            box-shadow: 0 4px 12px rgba(30, 78, 62, 0.3);
+        }
+
+        .type-btn.buyer.active {
+            background: #E8B13C;
+            color: #1E4E3E;
+            box-shadow: 0 4px 12px rgba(232, 177, 60, 0.3);
+        }
+
+        .type-btn.admin.active {
+            background: #dc3545;
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Hover effects */
+        .type-btn.investor:hover:not(.active) {
+            background: #2A6B58;
+            color: white;
+        }
+
+        .type-btn.buyer:hover:not(.active) {
+            background: #f0c45a;
+            color: #1E4E3E;
+        }
+
+        .type-btn.admin:hover:not(.active) {
+            background: #e04e5e;
+            color: white;
+        }
 
         .form-panel {
             padding: 2rem 2rem 2.2rem;
@@ -236,6 +273,10 @@
             cursor: pointer;
         }
 
+        .toggle-text a:hover {
+            text-decoration: underline;
+        }
+
         .feature-badges {
             display: flex;
             justify-content: center;
@@ -269,7 +310,6 @@
 
         .toast-success { background: #28a745; }
         .toast-error { background: #dc3545; }
-        .toast-warning { background: #ffc107; color: #333; }
 
         @keyframes slideUp {
             from { transform: translateX(-50%) translateY(100px); opacity: 0; }
@@ -291,7 +331,7 @@
             .form-panel { padding: 1.5rem; }
             .brand-header h1 { font-size: 1.4rem; }
             .toast-notification { white-space: normal; max-width: 90%; font-size: 0.85rem; }
-            .type-btn { font-size: 0.75rem; padding: 10px 4px; }
+            .type-btn { font-size: 0.7rem; padding: 10px 4px; }
         }
     </style>
 </head>
@@ -310,13 +350,13 @@
 
     <!-- User Type Selection Buttons -->
     <div class="user-type-selector">
-        <button class="type-btn investor active" id="investorTabBtn" onclick="selectUserType('investor')">
+        <button class="type-btn investor active" id="btnInvestor">
             <i class="fas fa-chart-line"></i> Investor
         </button>
-        <button class="type-btn buyer" id="buyerTabBtn" onclick="selectUserType('buyer')">
+        <button class="type-btn buyer" id="btnBuyer">
             <i class="fas fa-shopping-cart"></i> Buyer
         </button>
-        <button class="type-btn admin" id="adminTabBtn" onclick="selectUserType('admin')">
+        <button class="type-btn admin" id="btnAdmin">
             <i class="fas fa-shield-alt"></i> Admin
         </button>
     </div>
@@ -338,7 +378,7 @@
                     </div>
                     <button type="submit"><i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard</button>
                 </form>
-                <p class="toggle-text">New Investor? <a id="showInvestorSignupLink" style="cursor:pointer;">Create Investment Account →</a></p>
+                <p class="toggle-text">New Investor? <a id="showInvestorSignupLink">Create Investment Account →</a></p>
             </div>
 
             <!-- Investor Signup -->
@@ -371,7 +411,7 @@
                     </div>
                     <button type="submit"><i class="fas fa-gem"></i> Register as Investor</button>
                 </form>
-                <p class="toggle-text">Already have an account? <a id="showInvestorLoginLink" style="cursor:pointer;">Login →</a></p>
+                <p class="toggle-text">Already have an account? <a id="showInvestorLoginLink">Login →</a></p>
             </div>
         </div>
 
@@ -391,7 +431,7 @@
                     </div>
                     <button type="submit"><i class="fas fa-store"></i> Login to Shop</button>
                 </form>
-                <p class="toggle-text">New Customer? <a id="showBuyerSignupLink" style="cursor:pointer;">Create Account →</a></p>
+                <p class="toggle-text">New Customer? <a id="showBuyerSignupLink">Create Account →</a></p>
             </div>
 
             <!-- Buyer Signup -->
@@ -424,7 +464,7 @@
                     </div>
                     <button type="submit"><i class="fas fa-shopping-cart"></i> Register as Buyer</button>
                 </form>
-                <p class="toggle-text">Already have an account? <a id="showBuyerLoginLink" style="cursor:pointer;">Login →</a></p>
+                <p class="toggle-text">Already have an account? <a id="showBuyerLoginLink">Login →</a></p>
             </div>
         </div>
 
@@ -459,7 +499,7 @@
 
 <script>
     // ============================================
-    // SUPABASE CONFIGURATION - YOUR REAL KEYS
+    // SUPABASE CONFIGURATION
     // ============================================
     const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -484,27 +524,46 @@
     // ============================================
     // USER TYPE SELECTION - FULLY WORKING
     // ============================================
-    function selectUserType(type) {
-        // Update button active states
-        document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
-        if (type === 'investor') document.querySelector('.type-btn.investor').classList.add('active');
-        if (type === 'buyer') document.querySelector('.type-btn.buyer').classList.add('active');
-        if (type === 'admin') document.querySelector('.type-btn.admin').classList.add('active');
+    function selectInvestor() {
+        // Update button classes
+        document.getElementById('btnInvestor').classList.add('active');
+        document.getElementById('btnBuyer').classList.remove('active');
+        document.getElementById('btnAdmin').classList.remove('active');
         
-        // Hide all form containers
-        document.getElementById('investorForms').classList.remove('active');
+        // Show investor forms, hide others
+        document.getElementById('investorForms').classList.add('active');
         document.getElementById('buyerForms').classList.remove('active');
         document.getElementById('adminForms').classList.remove('active');
-        
-        // Show selected form container
-        if (type === 'investor') {
-            document.getElementById('investorForms').classList.add('active');
-        } else if (type === 'buyer') {
-            document.getElementById('buyerForms').classList.add('active');
-        } else if (type === 'admin') {
-            document.getElementById('adminForms').classList.add('active');
-        }
     }
+    
+    function selectBuyer() {
+        // Update button classes
+        document.getElementById('btnInvestor').classList.remove('active');
+        document.getElementById('btnBuyer').classList.add('active');
+        document.getElementById('btnAdmin').classList.remove('active');
+        
+        // Show buyer forms, hide others
+        document.getElementById('investorForms').classList.remove('active');
+        document.getElementById('buyerForms').classList.add('active');
+        document.getElementById('adminForms').classList.remove('active');
+    }
+    
+    function selectAdmin() {
+        // Update button classes
+        document.getElementById('btnInvestor').classList.remove('active');
+        document.getElementById('btnBuyer').classList.remove('active');
+        document.getElementById('btnAdmin').classList.add('active');
+        
+        // Show admin forms, hide others
+        document.getElementById('investorForms').classList.remove('active');
+        document.getElementById('buyerForms').classList.remove('active');
+        document.getElementById('adminForms').classList.add('active');
+    }
+
+    // Attach click event listeners to buttons
+    document.getElementById('btnInvestor').addEventListener('click', selectInvestor);
+    document.getElementById('btnBuyer').addEventListener('click', selectBuyer);
+    document.getElementById('btnAdmin').addEventListener('click', selectAdmin);
 
     // ============================================
     // INVESTOR FORM TOGGLES
@@ -741,7 +800,9 @@
     });
     
     // Make functions globally available
-    window.selectUserType = selectUserType;
+    window.selectInvestor = selectInvestor;
+    window.selectBuyer = selectBuyer;
+    window.selectAdmin = selectAdmin;
     window.showInvestorLogin = showInvestorLogin;
     window.showInvestorSignup = showInvestorSignup;
     window.showBuyerLogin = showBuyerLogin;
