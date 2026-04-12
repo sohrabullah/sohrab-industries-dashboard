@@ -54,8 +54,10 @@
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
         }
-        .toggle-btn.login-btn.active { background: #1E4E3E; color: white; }
-        .toggle-btn.signup-btn.active { background: #1E4E3E; color: white; }
+        .toggle-btn.active {
+            background: #1E4E3E;
+            color: white;
+        }
         .form-container { transition: all 0.3s ease; }
         .form-group { margin-bottom: 1.2rem; position: relative; }
         .form-group i {
@@ -87,7 +89,7 @@
             transition: all 0.3s;
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30,78,62,0.3); }
-        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
         .footer-links { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
         .footer-links a { color: #1E4E3E; text-decoration: none; font-weight: 600; cursor: pointer; }
         .back-home { text-align: center; margin-top: 1rem; }
@@ -103,9 +105,11 @@
             z-index: 1000;
             animation: slideUp 0.3s ease;
             text-align: center;
+            font-weight: 500;
         }
         .toast.success { background: #28a745; }
         .toast.error { background: #dc3545; }
+        .toast.info { background: #17a2b8; }
         @keyframes slideUp {
             from { transform: translateX(-50%) translateY(100px); opacity: 0; }
             to { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -133,19 +137,19 @@
             </div>
             <div class="card-body">
                 <div class="toggle-buttons">
-                    <button class="toggle-btn login-btn" id="loginTabBtn">Login</button>
-                    <button class="toggle-btn signup-btn active" id="signupTabBtn">Sign Up</button>
+                    <button class="toggle-btn" id="loginTabBtn">Login</button>
+                    <button class="toggle-btn active" id="signupTabBtn">Sign Up</button>
                 </div>
 
                 <!-- Login Form -->
-                <div id="loginContainer" class="form-container" style="display: none;">
+                <div id="loginForm">
                     <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address" required></div>
                     <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password" required></div>
                     <button class="btn-primary" id="loginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard</button>
                 </div>
 
                 <!-- Signup Form -->
-                <div id="signupContainer" class="form-container">
+                <div id="signupForm">
                     <div class="form-group"><i class="fas fa-user"></i><input type="text" id="fullName" placeholder="Full Name" required></div>
                     <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="email" placeholder="Email Address" required></div>
                     <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="phone" placeholder="Phone Number" required></div>
@@ -156,7 +160,7 @@
                 </div>
 
                 <div class="footer-links">
-                    <a id="toggleFormLink">Already have an account? Login →</a>
+                    <a id="toggleLink">Already have an account? Login →</a>
                 </div>
                 <div class="back-home"><a href="index.html">← Back to Home</a></div>
             </div>
@@ -180,43 +184,43 @@
         }
 
         // Get elements
-        const loginContainer = document.getElementById('loginContainer');
-        const signupContainer = document.getElementById('signupContainer');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
         const loginTab = document.getElementById('loginTabBtn');
         const signupTab = document.getElementById('signupTabBtn');
-        const toggleLink = document.getElementById('toggleFormLink');
+        const toggleLink = document.getElementById('toggleLink');
 
-        // Show Login Form
+        // Function to show login form
         function showLoginForm() {
-            loginContainer.style.display = 'block';
-            signupContainer.style.display = 'none';
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
             loginTab.classList.add('active');
             signupTab.classList.remove('active');
             toggleLink.innerHTML = "Don't have an account? Sign Up →";
         }
 
-        // Show Signup Form
+        // Function to show signup form
         function showSignupForm() {
-            loginContainer.style.display = 'none';
-            signupContainer.style.display = 'block';
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
             signupTab.classList.add('active');
             loginTab.classList.remove('active');
-            toggleLink.innerHTML = 'Already have an account? Login →';
+            toggleLink.innerHTML = "Already have an account? Login →";
         }
 
-        // Tab click events
+        // Add click event listeners
         loginTab.addEventListener('click', showLoginForm);
         signupTab.addEventListener('click', showSignupForm);
-        toggleLink.addEventListener('click', () => {
-            if (loginContainer.style.display === 'none') {
+        toggleLink.addEventListener('click', function() {
+            if (loginForm.style.display === 'none' || loginForm.style.display === '') {
                 showLoginForm();
             } else {
                 showSignupForm();
             }
         });
 
-        // SIGNUP FUNCTION
-        document.getElementById('signupBtn').addEventListener('click', async () => {
+        // SIGNUP FUNCTION - Submit to Database
+        document.getElementById('signupBtn').addEventListener('click', async function() {
             const signupBtn = document.getElementById('signupBtn');
             const fullName = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
@@ -239,17 +243,17 @@
                 return;
             }
 
-            // Disable button
+            // Disable button and show loading
             signupBtn.disabled = true;
             signupBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
 
             try {
-                // Check if email already exists
-                const { data: existingUser } = await supabase
+                // Check if email already exists in investors table
+                const { data: existingUser, error: checkError } = await supabase
                     .from('investors')
                     .select('email')
                     .eq('email', email)
-                    .maybeSingle();
+                    .single();
 
                 if (existingUser) {
                     showToast('Email already registered. Please login.', true);
@@ -258,10 +262,18 @@
                     return;
                 }
 
-                // Create auth user
+                // Create user in Supabase Auth
                 const { data: authData, error: authError } = await supabase.auth.signUp({
-                    email, password,
-                    options: { data: { full_name: fullName, phone, city, role: 'investor' } }
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            phone: phone,
+                            city: city,
+                            role: 'investor'
+                        }
+                    }
                 });
 
                 if (authError) {
@@ -273,26 +285,35 @@
 
                 if (authData.user) {
                     // Insert into investors table
-                    const { error: insertError } = await supabase.from('investors').insert([{
-                        id: authData.user.id,
-                        email: email,
-                        full_name: fullName,
-                        phone: phone,
-                        city: city,
-                        status: 'approved',
-                        is_approved: true,
-                        created_at: new Date().toISOString()
-                    }]);
+                    const { error: insertError } = await supabase
+                        .from('investors')
+                        .insert([{
+                            id: authData.user.id,
+                            email: email,
+                            full_name: fullName,
+                            phone: phone,
+                            city: city,
+                            status: 'approved',
+                            is_approved: true,
+                            created_at: new Date().toISOString()
+                        }]);
 
                     if (insertError) {
                         console.error('Insert error:', insertError);
-                        showToast('Account created but profile sync pending. Please login.', false);
+                        showToast('Account created but profile needs update. Please login.', false);
                     } else {
                         showToast('Account created successfully! Please login.', false);
                     }
 
-                    // Reset form and show login
-                    document.getElementById('signupContainer').querySelectorAll('input').forEach(input => input.value = '');
+                    // Clear form
+                    document.getElementById('fullName').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('phone').value = '';
+                    document.getElementById('city').value = '';
+                    document.getElementById('password').value = '';
+                    document.getElementById('confirmPassword').value = '';
+
+                    // Switch to login form
                     showLoginForm();
                 }
             } catch (error) {
@@ -305,7 +326,7 @@
         });
 
         // LOGIN FUNCTION
-        document.getElementById('loginBtn').addEventListener('click', async () => {
+        document.getElementById('loginBtn').addEventListener('click', async function() {
             const loginBtn = document.getElementById('loginBtn');
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -315,11 +336,15 @@
                 return;
             }
 
+            // Disable button and show loading
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                const { data, error } = await supabase.auth.signInWithPassword({ 
+                    email: email, 
+                    password: password 
+                });
 
                 if (error) {
                     showToast('Invalid email or password', true);
@@ -345,9 +370,9 @@
 
         // Enter key support
         document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('keypress', (e) => {
+            input.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    if (loginContainer.style.display !== 'none') {
+                    if (loginForm.style.display !== 'none') {
                         document.getElementById('loginBtn').click();
                     } else {
                         document.getElementById('signupBtn').click();
@@ -355,6 +380,10 @@
                 }
             });
         });
+
+        // Initially show signup form
+        signupForm.style.display = 'block';
+        loginForm.style.display = 'none';
     </script>
 </body>
 </html>
