@@ -416,7 +416,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                </table>
+                <tr>
                     <thead>
                         <tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
                     </thead>
@@ -429,7 +429,7 @@
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Distribution History</h2>
             <div class="table-container">
-                <table>
+                </table>
                     <thead>
                         <tr><th>Month</th><th>Amount</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr>
                     </thead>
@@ -556,6 +556,35 @@
                 }
             }
 
+            // Function to ensure investor exists in the database
+            async function ensureInvestorExists(user) {
+                // Check if investor exists
+                var checkResult = await supabaseClient.from('investors').select('id').eq('id', user.id).single();
+                
+                if (!checkResult.data) {
+                    // Create investor record
+                    var fullName = user.user_metadata?.full_name || user.email.split('@')[0];
+                    var insertResult = await supabaseClient.from('investors').insert([{
+                        id: user.id,
+                        email: user.email,
+                        full_name: fullName,
+                        phone: user.user_metadata?.phone || '',
+                        city: '',
+                        total_investment: 0,
+                        total_profit: 0,
+                        available_balance: 0,
+                        created_at: new Date().toISOString()
+                    }]);
+                    
+                    if (insertResult.error) {
+                        console.error('Error creating investor:', insertResult.error);
+                        return false;
+                    }
+                    return true;
+                }
+                return true;
+            }
+
             async function checkAuth() {
                 var result = await supabaseClient.auth.getUser();
                 var user = result.data.user;
@@ -566,26 +595,14 @@
                 }
                 currentUser = user;
                 
-                // Get the investor record from the investors table using the auth user id
-                var investorResult = await supabaseClient.from('investors').select('id').eq('id', user.id).single();
-                if (investorResult.data) {
-                    currentInvestorId = investorResult.data.id;
-                } else {
-                    // If no investor record exists, create one
-                    var newId = user.id;
-                    var insertResult = await supabaseClient.from('investors').insert([{
-                        id: newId,
-                        email: user.email,
-                        full_name: user.user_metadata?.full_name || user.email.split('@')[0],
-                        phone: '',
-                        city: '',
-                        total_investment: 0,
-                        total_profit: 0,
-                        available_balance: 0,
-                        created_at: new Date().toISOString()
-                    }]);
-                    currentInvestorId = newId;
+                // Ensure investor exists in the database
+                var investorExists = await ensureInvestorExists(user);
+                if (!investorExists) {
+                    showToast('Error creating investor profile. Please contact admin.', true);
+                    return;
                 }
+                
+                currentInvestorId = user.id;
                 
                 document.getElementById('userName').innerHTML = '<i class="fas fa-user-circle"></i> ' + user.email.split('@')[0];
                 
@@ -645,7 +662,7 @@
                 var data = result.data || [];
                 var tbody = document.getElementById('investmentRequestsList');
                 if (data.length === 0) {
-                    tbody.innerHTML = '<td><td colspan="6" class="empty-state">No pending investment requests</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests</td></tr>';
                     return;
                 }
                 var html = '';
@@ -777,16 +794,18 @@
                     return;
                 }
 
-                // Check if investor exists in the investors table
-                var investorCheck = await supabaseClient.from('investors').select('id, available_balance').eq('id', currentInvestorId).single();
+                // Get current balance
+                var balanceResult = await supabaseClient.from('investors').select('available_balance').eq('id', currentInvestorId).single();
                 
-                if (!investorCheck.data) {
-                    showToast('Investor profile not found. Please contact admin.', true);
+                if (!balanceResult.data) {
+                    showToast('Investor profile not found. Please refresh the page.', true);
                     return;
                 }
                 
-                if (investorCheck.data && parseFloat(amount) > (investorCheck.data.available_balance || 0)) {
-                    showToast('Insufficient balance! Your available balance is Rs. ' + (investorCheck.data.available_balance || 0).toLocaleString(), true);
+                var currentBalance = balanceResult.data.available_balance || 0;
+                
+                if (parseFloat(amount) > currentBalance) {
+                    showToast('Insufficient balance! Your available balance is Rs. ' + currentBalance.toLocaleString(), true);
                     return;
                 }
 
