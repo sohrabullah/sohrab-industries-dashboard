@@ -118,68 +118,33 @@
     </div>
 
     <script>
-        // Supabase Configuration
         const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ========== TOGGLE SYSTEM ==========
         const signupSection = document.getElementById('signupSection');
         const loginSection = document.getElementById('loginSection');
         const loginTab = document.getElementById('loginTabBtn');
         const signupTab = document.getElementById('signupTabBtn');
         const toggleLink = document.getElementById('toggleFormLink');
 
-        function showLoginForm() {
-            signupSection.style.display = 'none';
-            loginSection.style.display = 'block';
-            loginTab.classList.add('active');
-            signupTab.classList.remove('active');
-            toggleLink.innerHTML = "Don't have an account? Sign Up →";
+        function showLogin() { signupSection.style.display = 'none'; loginSection.style.display = 'block'; loginTab.classList.add('active'); signupTab.classList.remove('active'); toggleLink.innerHTML = "Don't have an account? Sign Up →"; }
+        function showSignup() { loginSection.style.display = 'none'; signupSection.style.display = 'block'; signupTab.classList.add('active'); loginTab.classList.remove('active'); toggleLink.innerHTML = "Already have an account? Login →"; }
+
+        loginTab.onclick = showLogin;
+        signupTab.onclick = showSignup;
+        toggleLink.onclick = () => { if (loginSection.style.display === 'none') showLogin(); else showSignup(); };
+
+        function showToast(msg, isError) { 
+            const t = document.createElement('div'); 
+            t.className = `toast ${isError ? 'error' : 'success'}`; 
+            t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; 
+            document.body.appendChild(t); 
+            setTimeout(() => t.remove(), 3000); 
         }
 
-        function showSignupForm() {
-            loginSection.style.display = 'none';
-            signupSection.style.display = 'block';
-            signupTab.classList.add('active');
-            loginTab.classList.remove('active');
-            toggleLink.innerHTML = "Already have an account? Login →";
-        }
-
-        loginTab.onclick = showLoginForm;
-        signupTab.onclick = showSignupForm;
-        toggleLink.onclick = function() {
-            if (loginSection.style.display === 'none') {
-                showLoginForm();
-            } else {
-                showSignupForm();
-            }
-        };
-
-        // ========== TOAST NOTIFICATION ==========
-        function showToast(message, isError) {
-            const toast = document.createElement('div');
-            toast.className = `toast ${isError ? 'error' : 'success'}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
-            document.body.appendChild(toast);
-            setTimeout(function() { toast.remove(); }, 3000);
-        }
-
-        // ========== CHECK EXISTING SESSION ==========
-        async function checkExistingSession() {
-            try {
-                const { data: { user } } = await supabase.auth.getSession();
-                if (user) {
-                    window.location.href = 'buyer.html';
-                }
-            } catch(e) {
-                console.log('Session check error:', e);
-            }
-        }
-        checkExistingSession();
-
-        // ========== SIGNUP FUNCTION ==========
-        async function handleSignup() {
+        // SIGNUP - FIXED with timeout and error handling
+        document.getElementById('signupBtn').onclick = async () => {
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const phone = document.getElementById('signupPhone').value.trim();
@@ -187,152 +152,92 @@
             const password = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirm').value;
 
-            // Validation
-            if (!name || !email || !phone || !address || !password) {
-                showToast('Please fill all fields', true);
-                return;
-            }
-            if (password !== confirm) {
-                showToast('Passwords do not match', true);
-                return;
-            }
-            if (password.length < 6) {
-                showToast('Password must be at least 6 characters', true);
-                return;
-            }
+            if (!name || !email || !phone || !address || !password) { showToast('Please fill all fields', true); return; }
+            if (password !== confirm) { showToast('Passwords do not match', true); return; }
+            if (password.length < 6) { showToast('Password must be at least 6 characters', true); return; }
 
             const btn = document.getElementById('signupBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating...';
 
             try {
-                // Set timeout to prevent infinite loading
+                // Add timeout to prevent infinite loading
                 const timeoutPromise = new Promise((_, reject) => 
                     setTimeout(() => reject(new Error('Request timeout')), 15000)
                 );
 
                 const signupPromise = supabase.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: { full_name: name, phone: phone, address: address, role: 'buyer' }
-                    }
+                    email, password,
+                    options: { data: { full_name: name, phone, address, role: 'buyer' } }
                 });
 
-                const { data, error } = await Promise.race([signupPromise, timeoutPromise]);
+                const { data: authData, error: authError } = await Promise.race([signupPromise, timeoutPromise]);
 
-                if (error) {
-                    showToast(error.message, true);
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
-                    return;
+                if (authError) { 
+                    showToast(authError.message, true); 
+                    btn.disabled = false; 
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account'; 
+                    return; 
                 }
 
-                if (data.user) {
-                    // Try to insert into buyers table (ignore error if table doesn't exist)
+                if (authData.user) { 
                     try {
-                        await supabase.from('buyers').insert([{
-                            id: data.user.id,
-                            email: email,
-                            full_name: name,
-                            phone: phone,
-                            address: address,
-                            created_at: new Date().toISOString()
+                        await supabase.from('buyers').insert([{ 
+                            id: authData.user.id, email, full_name: name, phone, address, 
+                            created_at: new Date().toISOString() 
                         }]);
-                    } catch(dbError) {
-                        console.log('Buyers table not ready yet, but auth works');
+                    } catch(dbErr) {
+                        console.log('DB insert skipped');
                     }
-                    
-                    showToast('Account created successfully! Please login.', false);
-                    
-                    // Clear form
-                    document.getElementById('signupName').value = '';
-                    document.getElementById('signupEmail').value = '';
-                    document.getElementById('signupPhone').value = '';
-                    document.getElementById('signupAddress').value = '';
-                    document.getElementById('signupPassword').value = '';
-                    document.getElementById('signupConfirm').value = '';
-                    
-                    // Switch to login form
-                    showLoginForm();
+                    showToast('Account created! Please login.', false); 
+                    document.querySelectorAll('#signupSection input').forEach(i => i.value = ''); 
+                    showLogin(); 
                 }
-            } catch (err) {
-                console.error('Signup error:', err);
-                showToast(err.message || 'Connection error. Please try again.', true);
+            } catch(err) {
+                showToast(err.message || 'Connection error. Try again.', true);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
             }
-        }
+        };
 
-        // ========== LOGIN FUNCTION ==========
-        async function handleLogin() {
+        // LOGIN - FIXED with timeout and error handling
+        document.getElementById('loginBtn').onclick = async () => {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-
-            if (!email || !password) {
-                showToast('Please enter email and password', true);
-                return;
-            }
+            if (!email || !password) { showToast('Please enter email and password', true); return; }
 
             const btn = document.getElementById('loginBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
 
             try {
-                // Set timeout to prevent infinite loading
                 const timeoutPromise = new Promise((_, reject) => 
                     setTimeout(() => reject(new Error('Request timeout')), 15000)
                 );
 
-                const loginPromise = supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
-
+                const loginPromise = supabase.auth.signInWithPassword({ email, password });
                 const { data, error } = await Promise.race([loginPromise, timeoutPromise]);
 
-                if (error) {
-                    showToast('Invalid email or password', true);
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop';
-                    return;
+                if (error) { 
+                    showToast('Invalid email or password', true); 
+                    btn.disabled = false; 
+                    btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop'; 
+                    return; 
                 }
 
-                if (data.user) {
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    localStorage.setItem('userType', 'buyer');
-                    showToast('Login successful! Redirecting...', false);
-                    setTimeout(function() {
-                        window.location.href = 'buyer.html';
-                    }, 1500);
+                if (data.user) { 
+                    localStorage.setItem('user', JSON.stringify(data.user)); 
+                    localStorage.setItem('userType', 'buyer'); 
+                    showToast('Login successful! Redirecting...', false); 
+                    setTimeout(() => window.location.href = 'buyer.html', 1500); 
                 }
-            } catch (err) {
-                console.error('Login error:', err);
-                showToast(err.message || 'Connection error. Please try again.', true);
+            } catch(err) {
+                showToast(err.message || 'Connection error. Try again.', true);
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop';
             }
-        }
-
-        // Attach button events
-        document.getElementById('signupBtn').onclick = handleSignup;
-        document.getElementById('loginBtn').onclick = handleLogin;
-
-        // Enter key support
-        document.querySelectorAll('input').forEach(function(input) {
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    if (loginSection.style.display !== 'none') {
-                        handleLogin();
-                    } else {
-                        handleSignup();
-                    }
-                }
-            });
-        });
-
-        console.log('Buyer auth page loaded');
+        };
     </script>
 </body>
 </html>
