@@ -25,7 +25,8 @@
         .logo { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 700; color: #1E4E3E; }
         .logo i { color: #E8B13C; }
         .nav-links { display: flex; gap: 20px; }
-        .nav-links a { text-decoration: none; color: #1E4E3E; font-weight: 500; }
+        .nav-links a { text-decoration: none; color: #1E4E3E; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: #E8B13C; }
         .container { max-width: 500px; margin: 2rem auto; padding: 0 1rem; }
         .auth-card { background: white; border-radius: 2rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); }
         .card-header { background: linear-gradient(112deg, #dc3545 0%, #c82333 100%); padding: 2rem; text-align: center; color: white; }
@@ -33,7 +34,7 @@
         .card-header h2 { font-size: 1.8rem; margin-bottom: 0.5rem; }
         .card-header p { font-size: 0.9rem; opacity: 0.9; }
         .card-body { padding: 2rem; }
-        .admin-notice { background: #fff3cd; padding: 12px; border-radius: 10px; margin-bottom: 1.5rem; text-align: center; font-size: 0.8rem; color: #856404; }
+        .admin-notice { background: #fff3cd; padding: 12px; border-radius: 10px; margin-bottom: 1.5rem; text-align: center; font-size: 0.8rem; color: #856404; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .form-group { margin-bottom: 1.2rem; position: relative; }
         .form-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9CA3AF; }
         .form-group input {
@@ -42,6 +43,7 @@
             border: 1.5px solid #E2E8F0;
             border-radius: 1rem;
             font-size: 1rem;
+            transition: all 0.2s;
         }
         .form-group input:focus { outline: none; border-color: #dc3545; }
         .btn-primary {
@@ -57,8 +59,9 @@
             transition: all 0.3s;
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(220,53,69,0.3); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
         .back-home { text-align: center; margin-top: 1.5rem; }
-        .back-home a { color: #666; text-decoration: none; }
+        .back-home a { color: #666; text-decoration: none; font-size: 0.9rem; }
         .toast {
             position: fixed;
             bottom: 30px;
@@ -69,6 +72,8 @@
             color: white;
             z-index: 1000;
             animation: slideUp 0.3s ease;
+            text-align: center;
+            font-weight: 500;
         }
         .toast.success { background: #28a745; }
         .toast.error { background: #dc3545; }
@@ -125,6 +130,7 @@
         }
 
         document.getElementById('loginBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('loginBtn');
             const email = document.getElementById('adminEmail').value.trim();
             const password = document.getElementById('adminPassword').value;
 
@@ -139,10 +145,15 @@
                 return;
             }
 
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Verifying...';
+
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
                 showToast('Invalid admin credentials', true);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-shield-alt"></i> Access Admin Panel';
                 return;
             }
 
