@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sohrab Industries | Buyer Portal - Shop in PKR</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -56,14 +55,14 @@
         .form-group input:focus { outline: none; border-color: #E8B13C; box-shadow: 0 0 0 3px rgba(232, 177, 60, 0.1); }
         .btn-primary { width: 100%; padding: 0.9rem; background: #E8B13C; color: #1E4E3E; border: none; border-radius: 2rem; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; margin-top: 0.5rem; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(232, 177, 60, 0.3); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .toggle-link { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
         .toggle-link a { color: #E8B13C; text-decoration: none; font-weight: 600; cursor: pointer; }
-        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 1000; animation: slideUp 0.3s ease; text-align: center; font-weight: 500; }
-        .toast-success { background: #28a745; }
-        .toast-error { background: #dc3545; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 1000; animation: slideUp 0.3s ease; text-align: center; font-weight: 500; }
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
         @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
-        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; gap: 2rem; } .hero-content h1 { font-size: 2rem; text-align: center; } .hero-content p { text-align: center; } }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .hero-content h1 { font-size: 2rem; text-align: center; } .hero-content p { text-align: center; } }
         @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
@@ -119,36 +118,68 @@
     </div>
 
     <script>
-        // Check if already logged in
-        async function checkSession() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) window.location.href = 'buyer.html';
-        }
-        checkSession();
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // ========== TOGGLE SYSTEM ==========
         const signupSection = document.getElementById('signupSection');
         const loginSection = document.getElementById('loginSection');
         const loginTab = document.getElementById('loginTabBtn');
         const signupTab = document.getElementById('signupTabBtn');
         const toggleLink = document.getElementById('toggleFormLink');
 
-        function showLogin() { signupSection.style.display = 'none'; loginSection.style.display = 'block'; loginTab.classList.add('active'); signupTab.classList.remove('active'); toggleLink.innerHTML = "Don't have an account? Sign Up →"; }
-        function showSignup() { loginSection.style.display = 'none'; signupSection.style.display = 'block'; signupTab.classList.add('active'); loginTab.classList.remove('active'); toggleLink.innerHTML = "Already have an account? Login →"; }
-
-        loginTab.onclick = showLogin;
-        signupTab.onclick = showSignup;
-        toggleLink.onclick = () => { if (loginSection.style.display === 'none') showLogin(); else showSignup(); };
-
-        function showToast(msg, isError) { 
-            const t = document.createElement('div'); 
-            t.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`; 
-            t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; 
-            document.body.appendChild(t); 
-            setTimeout(() => t.remove(), 3000); 
+        function showLoginForm() {
+            signupSection.style.display = 'none';
+            loginSection.style.display = 'block';
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            toggleLink.innerHTML = "Don't have an account? Sign Up →";
         }
 
-        // Signup
-        document.getElementById('signupBtn').onclick = async () => {
+        function showSignupForm() {
+            loginSection.style.display = 'none';
+            signupSection.style.display = 'block';
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            toggleLink.innerHTML = "Already have an account? Login →";
+        }
+
+        loginTab.onclick = showLoginForm;
+        signupTab.onclick = showSignupForm;
+        toggleLink.onclick = function() {
+            if (loginSection.style.display === 'none') {
+                showLoginForm();
+            } else {
+                showSignupForm();
+            }
+        };
+
+        // ========== TOAST NOTIFICATION ==========
+        function showToast(message, isError) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'error' : 'success'}`;
+            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(function() { toast.remove(); }, 3000);
+        }
+
+        // ========== CHECK EXISTING SESSION ==========
+        async function checkExistingSession() {
+            try {
+                const { data: { user } } = await supabase.auth.getSession();
+                if (user) {
+                    window.location.href = 'buyer.html';
+                }
+            } catch(e) {
+                console.log('Session check error:', e);
+            }
+        }
+        checkExistingSession();
+
+        // ========== SIGNUP FUNCTION ==========
+        async function handleSignup() {
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const phone = document.getElementById('signupPhone').value.trim();
@@ -156,47 +187,152 @@
             const password = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirm').value;
 
-            if (!name || !email || !phone || !address || !password) { showToast('Please fill all fields', true); return; }
-            if (password !== confirm) { showToast('Passwords do not match', true); return; }
-            if (password.length < 6) { showToast('Password must be at least 6 characters', true); return; }
+            // Validation
+            if (!name || !email || !phone || !address || !password) {
+                showToast('Please fill all fields', true);
+                return;
+            }
+            if (password !== confirm) {
+                showToast('Passwords do not match', true);
+                return;
+            }
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', true);
+                return;
+            }
 
             const btn = document.getElementById('signupBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating...';
 
-            const { data: authData, error: authError } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name, phone, address, role: 'buyer' } } });
-            if (authError) { showToast(authError.message, true); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account'; return; }
+            try {
+                // Set timeout to prevent infinite loading
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Request timeout')), 15000)
+                );
 
-            if (authData.user) {
-                await supabase.from('buyers').insert([{ id: authData.user.id, email, full_name: name, phone, address, created_at: new Date().toISOString() }]);
-                showToast('Account created! Please login.', false);
-                document.querySelectorAll('#signupSection input').forEach(i => i.value = '');
-                showLogin();
+                const signupPromise = supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: { full_name: name, phone: phone, address: address, role: 'buyer' }
+                    }
+                });
+
+                const { data, error } = await Promise.race([signupPromise, timeoutPromise]);
+
+                if (error) {
+                    showToast(error.message, true);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
+                    return;
+                }
+
+                if (data.user) {
+                    // Try to insert into buyers table (ignore error if table doesn't exist)
+                    try {
+                        await supabase.from('buyers').insert([{
+                            id: data.user.id,
+                            email: email,
+                            full_name: name,
+                            phone: phone,
+                            address: address,
+                            created_at: new Date().toISOString()
+                        }]);
+                    } catch(dbError) {
+                        console.log('Buyers table not ready yet, but auth works');
+                    }
+                    
+                    showToast('Account created successfully! Please login.', false);
+                    
+                    // Clear form
+                    document.getElementById('signupName').value = '';
+                    document.getElementById('signupEmail').value = '';
+                    document.getElementById('signupPhone').value = '';
+                    document.getElementById('signupAddress').value = '';
+                    document.getElementById('signupPassword').value = '';
+                    document.getElementById('signupConfirm').value = '';
+                    
+                    // Switch to login form
+                    showLoginForm();
+                }
+            } catch (err) {
+                console.error('Signup error:', err);
+                showToast(err.message || 'Connection error. Please try again.', true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
             }
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
-        };
+        }
 
-        // Login
-        document.getElementById('loginBtn').onclick = async () => {
+        // ========== LOGIN FUNCTION ==========
+        async function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            if (!email || !password) { showToast('Please enter email and password', true); return; }
+
+            if (!email || !password) {
+                showToast('Please enter email and password', true);
+                return;
+            }
 
             const btn = document.getElementById('loginBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) { showToast('Invalid email or password', true); btn.disabled = false; btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop'; return; }
+            try {
+                // Set timeout to prevent infinite loading
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Request timeout')), 15000)
+                );
 
-            if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
-                localStorage.setItem('userType', 'buyer');
-                showToast('Login successful! Redirecting...', false);
-                setTimeout(() => window.location.href = 'buyer.html', 1500);
+                const loginPromise = supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                const { data, error } = await Promise.race([loginPromise, timeoutPromise]);
+
+                if (error) {
+                    showToast('Invalid email or password', true);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop';
+                    return;
+                }
+
+                if (data.user) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('userType', 'buyer');
+                    showToast('Login successful! Redirecting...', false);
+                    setTimeout(function() {
+                        window.location.href = 'buyer.html';
+                    }, 1500);
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                showToast(err.message || 'Connection error. Please try again.', true);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop';
             }
-        };
+        }
+
+        // Attach button events
+        document.getElementById('signupBtn').onclick = handleSignup;
+        document.getElementById('loginBtn').onclick = handleLogin;
+
+        // Enter key support
+        document.querySelectorAll('input').forEach(function(input) {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (loginSection.style.display !== 'none') {
+                        handleLogin();
+                    } else {
+                        handleSignup();
+                    }
+                }
+            });
+        });
+
+        console.log('Buyer auth page loaded');
     </script>
 </body>
 </html>
