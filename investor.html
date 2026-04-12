@@ -4,11 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Investor Dashboard - Sohrab Industries</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f0f2f5; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #f0f2f5 0%, #e9ecef 100%);
+            min-height: 100vh; 
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #1E4E3E; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #E8B13C; }
         
         .header {
             background: linear-gradient(135deg, #1E4E3E 0%, #2A6B58 100%);
@@ -19,22 +29,36 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
-        .header h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
-        .header h1 i { color: #E8B13C; }
+        .header h1 { 
+            font-size: 1.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            transition: transform 0.3s;
+        }
+        .header h1:hover { transform: scale(1.02); }
+        .header h1 i { 
+            color: #E8B13C;
+            text-shadow: 0 0 5px rgba(232,177,60,0.5);
+        }
         .user-info { display: flex; align-items: center; gap: 20px; }
         .logout-btn {
             background: #dc3545;
             color: white;
             padding: 8px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 30px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
         }
-        .logout-btn:hover { background: #c82333; transform: translateY(-2px); }
+        .logout-btn:hover { 
+            background: #c82333; 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220,53,69,0.3);
+        }
         
         .container { max-width: 1400px; margin: 2rem auto; padding: 0 5%; }
         
@@ -47,16 +71,19 @@
         .stat-card {
             background: white;
             padding: 1.5rem;
-            border-radius: 1rem;
+            border-radius: 20px;
             text-align: center;
             border-bottom: 4px solid #E8B13C;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             transition: all 0.3s;
             cursor: pointer;
         }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .stat-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
         .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
-        .stat-number { font-size: 1.8rem; font-weight: bold; color: #1E4E3E; }
+        .stat-number { font-size: 1.8rem; font-weight: 800; color: #1E4E3E; }
         
         .tabs {
             display: flex;
@@ -64,29 +91,39 @@
             margin-bottom: 1.5rem;
             background: white;
             padding: 10px;
-            border-radius: 15px;
+            border-radius: 60px;
             flex-wrap: wrap;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
         .tab-btn {
-            padding: 10px 24px;
+            padding: 12px 28px;
             background: none;
             border: none;
             cursor: pointer;
-            border-radius: 10px;
+            border-radius: 50px;
             font-weight: 600;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .tab-btn:hover { background: #f0f2f5; transform: translateY(-2px); }
-        .tab-btn.active { background: #1E4E3E; color: white; }
+        .tab-btn:hover { 
+            background: #f0f2f5; 
+            transform: translateY(-2px);
+        }
+        .tab-btn.active { 
+            background: linear-gradient(135deg, #1E4E3E, #2A6B58);
+            color: white; 
+            box-shadow: 0 4px 12px rgba(30,78,62,0.3);
+        }
         
         .tab-content {
             display: none;
             background: white;
-            border-radius: 1rem;
+            border-radius: 20px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             animation: fadeIn 0.3s ease;
         }
         .tab-content.active { display: block; }
@@ -100,35 +137,48 @@
             padding-left: 15px;
         }
         
-        .table-container { overflow-x: auto; margin-top: 15px; }
+        .table-container { overflow-x: auto; margin-top: 15px; border-radius: 15px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; font-weight: 600; }
+        th { 
+            background: linear-gradient(135deg, #1E4E3E, #2A6B58);
+            color: white;
+            font-weight: 600;
+        }
         tr:hover { background: #f8f9fa; }
         
-        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; display: inline-block; }
+        .status-badge { 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            display: inline-block;
+            font-weight: 600;
+        }
         .status-active, .status-approved { background: #d4edda; color: #155724; }
         .status-pending { background: #fff3cd; color: #856404; }
         .status-rejected { background: #f8d7da; color: #721c24; }
         
         .btn-primary {
-            background: #1E4E3E;
+            background: linear-gradient(135deg, #1E4E3E, #2A6B58);
             color: white;
-            padding: 10px 20px;
+            padding: 10px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
         }
-        .btn-primary:hover { background: #2A6B58; transform: translateY(-2px); }
+        .btn-primary:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30,78,62,0.3);
+        }
         
         .form-card {
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
+            padding: 25px;
+            border-radius: 20px;
             margin-bottom: 25px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid rgba(0,0,0,0.05);
         }
         .form-row {
             display: grid;
@@ -137,21 +187,28 @@
             margin-bottom: 20px;
         }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #333; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #1E4E3E; }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
             font-size: 14px;
+            transition: all 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #E8B13C;
+            box-shadow: 0 0 0 3px rgba(232,177,60,0.1);
         }
         
         .payment-info {
-            background: #e7f3ff;
+            background: linear-gradient(135deg, #e7f3ff, #d4e6f1);
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin: 15px 0;
             font-size: 14px;
+            border-left: 4px solid #E8B13C;
         }
         
         .modal {
@@ -162,8 +219,8 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
         }
         .modal-content {
             background: white;
@@ -171,12 +228,28 @@
             padding: 30px;
             width: 90%;
             max-width: 500px;
-            border-radius: 20px;
+            border-radius: 25px;
             animation: slideIn 0.3s ease;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
         }
         @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .close { float: right; font-size: 28px; cursor: pointer; color: #999; transition: all 0.3s; }
-        .close:hover { color: #333; }
+        .close { 
+            float: right; 
+            font-size: 28px; 
+            cursor: pointer; 
+            color: #999; 
+            transition: all 0.3s;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .close:hover { 
+            color: #333; 
+            background: #f0f2f5;
+        }
         
         .toast {
             position: fixed;
@@ -189,10 +262,12 @@
             z-index: 1000;
             text-align: center;
             animation: slideUp 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            font-weight: 500;
         }
-        .toast.success { background: #28a745; }
-        .toast.error { background: #dc3545; }
-        .toast.info { background: #17a2b8; }
+        .toast.success { background: linear-gradient(135deg, #28a745, #20c997); }
+        .toast.error { background: linear-gradient(135deg, #dc3545, #c82333); }
+        .toast.info { background: linear-gradient(135deg, #17a2b8, #138496); }
         @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
         
         .empty-state { text-align: center; padding: 40px; color: #999; }
@@ -200,10 +275,16 @@
         .edit-icon {
             cursor: pointer;
             color: #1E4E3E;
-            margin-left: 10px;
-            font-size: 14px;
+            background: #f0f2f5;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s;
         }
-        .edit-icon:hover { color: #E8B13C; }
+        .edit-icon:hover { 
+            background: #E8B13C; 
+            color: white; 
+            transform: rotate(15deg);
+        }
         .profile-field {
             display: flex;
             align-items: center;
@@ -264,7 +345,7 @@
                 <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> New Investment Request</button>
             </div>
             <div class="table-container">
-                <tr><thead><tr><th>Date</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead>
+                <table><thead><tr><th>Date</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead>
                 <tbody id="investmentsList"></tbody>
             </table>
             </div>
@@ -273,7 +354,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                <table><thead><tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead>
+                <tr><thead><tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead>
                 <tbody id="investmentRequestsList"></tbody>
             </table>
             </div>
@@ -294,7 +375,7 @@
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> Request Withdrawal</button>
             </div>
             <div class="table-container">
-                <table><thead><tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead>
+                <tr><thead><tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead>
                 <tbody id="withdrawalsList"></tbody>
             </table>
             </div>
@@ -388,7 +469,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Wait for DOM to load
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -427,23 +507,13 @@
                 });
             }
 
-            // Function to ensure investor exists - only creates if not exists
             async function ensureInvestorExists(user) {
-                // First check if investor already exists
-                const { data: existing, error: checkError } = await supabaseClient.from('investors').select('*').eq('id', user.id);
-                
-                if (checkError) {
-                    console.error('Error checking investor:', checkError);
-                    showToast('Error loading profile. Please refresh.', true);
-                    return null;
-                }
+                const { data: existing } = await supabaseClient.from('investors').select('*').eq('id', user.id);
                 
                 if (existing && existing.length > 0) {
-                    // Investor exists, return the data
                     return existing[0];
                 }
                 
-                // Investor doesn't exist, create new profile
                 const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
                 const newInvestor = {
                     id: user.id,
@@ -457,16 +527,15 @@
                     created_at: new Date().toISOString()
                 };
                 
-                const { error: insertError, data: insertedData } = await supabaseClient.from('investors').insert([newInvestor]).select();
+                const { error: insertError } = await supabaseClient.from('investors').insert([newInvestor]);
                 
                 if (insertError) {
                     console.error('Error creating investor:', insertError);
-                    showToast('Error creating profile. Please contact admin.', true);
                     return null;
                 }
                 
                 showToast('Welcome! Your investor profile has been created.', false, true);
-                return insertedData?.[0] || newInvestor;
+                return newInvestor;
             }
 
             async function checkAuth() {
@@ -478,13 +547,7 @@
                 currentInvestorId = user.id;
                 document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
                 
-                // Ensure investor exists (creates only if not exists)
-                const investor = await ensureInvestorExists(user);
-                if (!investor) {
-                    // Still show basic UI even if profile creation failed
-                    showToast('Profile loading issue. Some features may be limited.', true);
-                }
-                
+                await ensureInvestorExists(user);
                 await loadAllData();
             }
 
@@ -499,19 +562,16 @@
 
             async function loadStats() {
                 try {
-                    // Get total investment from approved investments
                     const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
                     const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
                     document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
                     document.getElementById('activeInvestments').innerHTML = investments?.length || 0;
 
-                    // Get total profit from paid profits
                     const { data: profits } = await supabaseClient.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
                     const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
                     document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
                     document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
                     
-                    // Update investor table with latest stats
                     await supabaseClient.from('investors').update({
                         total_investment: totalInvested,
                         total_profit: totalProfit,
@@ -523,9 +583,11 @@
             }
 
             async function loadInvestments() {
+                const tbody = document.getElementById('investmentsList');
+                if (!tbody) return;
+                
                 try {
                     const { data } = await supabaseClient.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
-                    const tbody = document.getElementById('investmentsList');
                     if (!data || data.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet. Your pending requests will appear here after admin approval.</td></tr>';
                         return;
@@ -542,13 +604,16 @@
                     `).join('');
                 } catch (err) {
                     console.error('Error loading investments:', err);
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Error loading investments. Please refresh.</td></tr>';
                 }
             }
 
             async function loadInvestmentRequests() {
+                const tbody = document.getElementById('investmentRequestsList');
+                if (!tbody) return;
+                
                 try {
                     const { data } = await supabaseClient.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
-                    const tbody = document.getElementById('investmentRequestsList');
                     if (!data || data.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests. Submit a new request above.</td></tr>';
                         return;
@@ -569,9 +634,11 @@
             }
 
             async function loadProfits() {
+                const tbody = document.getElementById('profitsList');
+                if (!tbody) return;
+                
                 try {
                     const { data } = await supabaseClient.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
-                    const tbody = document.getElementById('profitsList');
                     if (!data || data.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet. Profits will appear here once distributed.</td></tr>';
                         return;
@@ -591,9 +658,11 @@
             }
 
             async function loadWithdrawals() {
+                const tbody = document.getElementById('withdrawalsList');
+                if (!tbody) return;
+                
                 try {
                     const { data } = await supabaseClient.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
-                    const tbody = document.getElementById('withdrawalsList');
                     if (!data || data.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet. Request a withdrawal above.</td></tr>';
                         return;
@@ -626,18 +695,12 @@
                         document.getElementById('profileTotalProfit').value = `Rs. ${(i.total_profit || 0).toLocaleString()}`;
                         document.getElementById('profileBalance').value = `Rs. ${(i.available_balance || 0).toLocaleString()}`;
                         document.getElementById('profileMemberSince').value = i.created_at ? new Date(i.created_at).toLocaleDateString() : new Date().toLocaleDateString();
-                    } else {
-                        // If no profile found, show message
-                        document.getElementById('profileName').value = 'Loading...';
-                        document.getElementById('profileEmail').value = 'Loading...';
                     }
                 } catch (err) {
                     console.error('Error loading profile:', err);
-                    showToast('Error loading profile data', true);
                 }
             }
 
-            // Edit Profile Field
             window.editField = async function(inputId, dbField) {
                 const input = document.getElementById(inputId);
                 const currentValue = input.value;
