@@ -1,6 +1,6 @@
 // ============================================
 // SOHRAB INDUSTRIES - COMPLETE MASTER SCRIPT
-// Handles Investors, Buyers, and Admin Functionality
+// UPDATED WITH WORKING TOGGLE AND FORM SUBMISSION
 // ============================================
 
 // Supabase Configuration - Your Real Keys
@@ -12,7 +12,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Global variables
 let currentUser = null;
-let currentUserType = null; // 'investor', 'buyer', 'admin'
+let currentUserType = null;
 
 // ============================================
 // TOAST NOTIFICATION SYSTEM
@@ -25,17 +25,17 @@ function showNotification(message, isError = false, duration = 3000) {
     toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
     toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
     
-    // Add styles if not already in CSS
     toast.style.position = 'fixed';
     toast.style.bottom = '30px';
-    toast.style.right = '30px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
     toast.style.padding = '12px 24px';
-    toast.style.borderRadius = '10px';
+    toast.style.borderRadius = '40px';
     toast.style.color = 'white';
     toast.style.fontWeight = '500';
     toast.style.zIndex = '10000';
-    toast.style.animation = 'slideInRight 0.3s ease';
     toast.style.fontFamily = "'Inter', sans-serif";
+    toast.style.textAlign = 'center';
     
     if (isError) {
         toast.style.background = '#dc3545';
@@ -53,25 +53,6 @@ function showNotification(message, isError = false, duration = 3000) {
 }
 
 // ============================================
-// LOADING SPINNER
-// ============================================
-function showLoading(elementId, show) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-    
-    if (show) {
-        const originalHtml = element.innerHTML;
-        element.setAttribute('data-original', originalHtml);
-        element.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Loading...';
-        element.disabled = true;
-    } else {
-        const original = element.getAttribute('data-original');
-        if (original) element.innerHTML = original;
-        element.disabled = false;
-    }
-}
-
-// ============================================
 // AUTHENTICATION CHECK
 // ============================================
 async function checkAuth(requiredUserType = null) {
@@ -85,12 +66,10 @@ async function checkAuth(requiredUserType = null) {
         
         currentUser = user;
         
-        // Determine user type from email or database
         const adminEmails = ['admin@sohrab.com', 'sohrabullahkn786@gmail.com'];
         if (adminEmails.includes(user.email)) {
             currentUserType = 'admin';
         } else {
-            // Check if user exists in investors table
             const { data: investor } = await supabase
                 .from('investors')
                 .select('id')
@@ -104,7 +83,6 @@ async function checkAuth(requiredUserType = null) {
             }
         }
         
-        // If specific user type required, validate
         if (requiredUserType && currentUserType !== requiredUserType) {
             if (requiredUserType === 'investor') {
                 window.location.href = 'dashboard.html';
@@ -116,7 +94,6 @@ async function checkAuth(requiredUserType = null) {
             return null;
         }
         
-        // Update UI elements
         const userNameSpan = document.getElementById('userName');
         if (userNameSpan) {
             userNameSpan.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
@@ -177,10 +154,292 @@ function formatDate(dateString) {
 }
 
 // ============================================
+// AUTH PAGE TOGGLE FUNCTIONS - FOR investor-auth.html and buyer-auth.html
+// ============================================
+function initAuthPage() {
+    console.log('Initializing auth page...');
+    
+    // Get elements
+    const signupSection = document.getElementById('signupSection');
+    const loginSection = document.getElementById('loginSection');
+    const loginTabBtn = document.getElementById('loginTabBtn');
+    const signupTabBtn = document.getElementById('signupTabBtn');
+    const toggleFormLink = document.getElementById('toggleFormLink');
+    
+    // If elements don't exist, we're not on an auth page
+    if (!signupSection || !loginSection) {
+        console.log('Not on auth page, skipping init');
+        return;
+    }
+    
+    console.log('Auth page detected, setting up toggles');
+    
+    // Function to show Login Form (HIDE Signup, SHOW Login)
+    function showLoginForm() {
+        console.log('Showing login form');
+        signupSection.style.display = 'none';
+        loginSection.style.display = 'block';
+        if (loginTabBtn) loginTabBtn.classList.add('active');
+        if (signupTabBtn) signupTabBtn.classList.remove('active');
+        if (toggleFormLink) toggleFormLink.innerHTML = "Don't have an account? Sign Up →";
+    }
+    
+    // Function to show Signup Form (HIDE Login, SHOW Signup)
+    function showSignupForm() {
+        console.log('Showing signup form');
+        loginSection.style.display = 'none';
+        signupSection.style.display = 'block';
+        if (signupTabBtn) signupTabBtn.classList.add('active');
+        if (loginTabBtn) loginTabBtn.classList.remove('active');
+        if (toggleFormLink) toggleFormLink.innerHTML = "Already have an account? Login →";
+    }
+    
+    // Add click event listeners
+    if (loginTabBtn) {
+        loginTabBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoginForm();
+        });
+    }
+    
+    if (signupTabBtn) {
+        signupTabBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showSignupForm();
+        });
+    }
+    
+    if (toggleFormLink) {
+        toggleFormLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (loginSection.style.display === 'none' || loginSection.style.display === '') {
+                showLoginForm();
+            } else {
+                showSignupForm();
+            }
+        });
+    }
+    
+    // Setup signup button if it exists
+    const signupBtn = document.getElementById('signupBtn');
+    if (signupBtn) {
+        signupBtn.addEventListener('click', handleSignup);
+    }
+    
+    // Setup login button if it exists
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', handleLogin);
+    }
+    
+    // Enter key support
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (loginSection && loginSection.style.display !== 'none') {
+                    const btn = document.getElementById('loginBtn');
+                    if (btn) btn.click();
+                } else {
+                    const btn = document.getElementById('signupBtn');
+                    if (btn) btn.click();
+                }
+            }
+        });
+    });
+}
+
+// ============================================
+// HANDLE SIGNUP - For investor-auth.html
+// ============================================
+async function handleSignup() {
+    console.log('Signup button clicked');
+    
+    // Get form values based on which form is visible (investor or buyer)
+    const isInvestorPage = window.location.pathname.includes('investor-auth');
+    const isBuyerPage = window.location.pathname.includes('buyer-auth');
+    
+    let name, email, phone, password, confirm, extraField;
+    
+    if (isInvestorPage) {
+        name = document.getElementById('signupName')?.value.trim();
+        email = document.getElementById('signupEmail')?.value.trim();
+        phone = document.getElementById('signupPhone')?.value.trim();
+        const city = document.getElementById('signupCity')?.value.trim();
+        extraField = city;
+        password = document.getElementById('signupPassword')?.value;
+        confirm = document.getElementById('signupConfirm')?.value;
+    } else {
+        name = document.getElementById('signupName')?.value.trim();
+        email = document.getElementById('signupEmail')?.value.trim();
+        phone = document.getElementById('signupPhone')?.value.trim();
+        const address = document.getElementById('signupAddress')?.value.trim();
+        extraField = address;
+        password = document.getElementById('signupPassword')?.value;
+        confirm = document.getElementById('signupConfirm')?.value;
+    }
+    
+    // Validation
+    if (!name || !email || !phone || !extraField || !password) {
+        showNotification('Please fill all fields', true);
+        return;
+    }
+    if (password !== confirm) {
+        showNotification('Passwords do not match', true);
+        return;
+    }
+    if (password.length < 6) {
+        showNotification('Password must be at least 6 characters', true);
+        return;
+    }
+    
+    const btn = document.getElementById('signupBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
+    
+    try {
+        // Create user in Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    full_name: name,
+                    phone: phone,
+                    role: isInvestorPage ? 'investor' : 'buyer'
+                }
+            }
+        });
+        
+        if (authError) {
+            showNotification(authError.message, true);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+            return;
+        }
+        
+        if (authData.user) {
+            // Insert into appropriate table
+            if (isInvestorPage) {
+                const { error: insertError } = await supabase
+                    .from('investors')
+                    .insert([{
+                        id: authData.user.id,
+                        email: email,
+                        full_name: name,
+                        phone: phone,
+                        city: extraField,
+                        created_at: new Date().toISOString()
+                    }]);
+                if (insertError) console.error('Insert error:', insertError);
+            } else {
+                const { error: insertError } = await supabase
+                    .from('buyers')
+                    .insert([{
+                        id: authData.user.id,
+                        email: email,
+                        full_name: name,
+                        phone: phone,
+                        address: extraField,
+                        created_at: new Date().toISOString()
+                    }]);
+                if (insertError) console.error('Insert error:', insertError);
+            }
+            
+            showNotification('Account created successfully! Please login.', false);
+            
+            // Clear form
+            document.querySelectorAll('#signupSection input').forEach(input => input.value = '');
+            
+            // Switch to login form
+            const loginSection = document.getElementById('loginSection');
+            const signupSection = document.getElementById('signupSection');
+            const loginTabBtn = document.getElementById('loginTabBtn');
+            const signupTabBtn = document.getElementById('signupTabBtn');
+            const toggleLink = document.getElementById('toggleFormLink');
+            
+            if (signupSection && loginSection) {
+                signupSection.style.display = 'none';
+                loginSection.style.display = 'block';
+                if (loginTabBtn) loginTabBtn.classList.add('active');
+                if (signupTabBtn) signupTabBtn.classList.remove('active');
+                if (toggleLink) toggleLink.innerHTML = "Don't have an account? Sign Up →";
+            }
+        }
+    } catch (err) {
+        console.error('Error:', err);
+        showNotification('An error occurred. Please try again.', true);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+    }
+}
+
+// ============================================
+// HANDLE LOGIN - For investor-auth.html and buyer-auth.html
+// ============================================
+async function handleLogin() {
+    console.log('Login button clicked');
+    
+    const email = document.getElementById('loginEmail')?.value.trim();
+    const password = document.getElementById('loginPassword')?.value;
+    
+    if (!email || !password) {
+        showNotification('Please enter email and password', true);
+        return;
+    }
+    
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+    
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+        
+        if (error) {
+            showNotification('Invalid email or password', true);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login';
+            return;
+        }
+        
+        if (data.user) {
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            // Determine redirect based on page type
+            const isInvestorPage = window.location.pathname.includes('investor-auth');
+            const isBuyerPage = window.location.pathname.includes('buyer-auth');
+            
+            if (isInvestorPage) {
+                localStorage.setItem('userType', 'investor');
+                showNotification('Login successful! Redirecting to Investor Dashboard...', false);
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } else if (isBuyerPage) {
+                localStorage.setItem('userType', 'buyer');
+                showNotification('Login successful! Redirecting to Buyer Dashboard...', false);
+                setTimeout(() => {
+                    window.location.href = 'buyer.html';
+                }, 1500);
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        }
+    } catch (err) {
+        console.error('Error:', err);
+        showNotification('An error occurred. Please try again.', true);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login';
+    }
+}
+
+// ============================================
 // INVESTOR FUNCTIONS
 // ============================================
-
-// Load investor investments
 async function loadInvestments(investorId) {
     try {
         const { data, error } = await supabase
@@ -197,7 +456,6 @@ async function loadInvestments(investorId) {
     }
 }
 
-// Load investor profits
 async function loadProfits(investorId) {
     try {
         const { data, error } = await supabase
@@ -214,7 +472,6 @@ async function loadProfits(investorId) {
     }
 }
 
-// Load investor withdrawals
 async function loadWithdrawals(investorId) {
     try {
         const { data, error } = await supabase
@@ -231,7 +488,6 @@ async function loadWithdrawals(investorId) {
     }
 }
 
-// Request withdrawal
 async function requestWithdrawal(investorId, amount, paymentMethod, accountDetails) {
     try {
         const { error } = await supabase
@@ -254,7 +510,6 @@ async function requestWithdrawal(investorId, amount, paymentMethod, accountDetai
     }
 }
 
-// Calculate investor stats
 function calculateInvestorStats(investments, profits) {
     const activeInvestments = investments.filter(i => i.status === 'active');
     const totalInvested = activeInvestments.reduce((sum, i) => sum + (i.amount || 0), 0);
@@ -272,8 +527,6 @@ function calculateInvestorStats(investments, profits) {
 // ============================================
 // BUYER FUNCTIONS
 // ============================================
-
-// Load all products
 async function loadProducts(category = null) {
     try {
         let query = supabase
@@ -295,7 +548,6 @@ async function loadProducts(category = null) {
     }
 }
 
-// Load product categories
 async function loadCategories() {
     try {
         const { data, error } = await supabase
@@ -311,7 +563,6 @@ async function loadCategories() {
     }
 }
 
-// Load buyer orders
 async function loadBuyerOrders(buyerId) {
     try {
         const { data, error } = await supabase
@@ -329,7 +580,6 @@ async function loadBuyerOrders(buyerId) {
     }
 }
 
-// Place order
 async function placeOrder(buyerId, cartItems, address, paymentMethod) {
     try {
         const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -350,7 +600,6 @@ async function placeOrder(buyerId, cartItems, address, paymentMethod) {
         
         if (error) throw error;
         
-        // Update product stock
         for (const item of cartItems) {
             const { data: product } = await supabase
                 .from('products')
@@ -374,48 +623,9 @@ async function placeOrder(buyerId, cartItems, address, paymentMethod) {
     }
 }
 
-// Add to wishlist
-async function addToWishlist(userId, userType, productId) {
-    try {
-        const { error } = await supabase
-            .from('wishlist')
-            .insert([{
-                user_id: userId,
-                user_type: userType,
-                product_id: productId
-            }]);
-        
-        if (error) throw error;
-        showNotification('Added to wishlist!', false);
-        return true;
-    } catch (error) {
-        showNotification('Error: ' + error.message, true);
-        return false;
-    }
-}
-
-// Load wishlist
-async function loadWishlist(userId, userType) {
-    try {
-        const { data, error } = await supabase
-            .from('wishlist')
-            .select('*, products(*)')
-            .eq('user_id', userId)
-            .eq('user_type', userType);
-        
-        if (error) throw error;
-        return data || [];
-    } catch (error) {
-        console.error('Error loading wishlist:', error);
-        return [];
-    }
-}
-
 // ============================================
 // ADMIN FUNCTIONS
 // ============================================
-
-// Load all investors (admin)
 async function loadAllInvestors() {
     try {
         const { data, error } = await supabase
@@ -431,7 +641,6 @@ async function loadAllInvestors() {
     }
 }
 
-// Load all buyers (admin)
 async function loadAllBuyers() {
     try {
         const { data, error } = await supabase
@@ -447,7 +656,6 @@ async function loadAllBuyers() {
     }
 }
 
-// Add investment (admin)
 async function addInvestment(investorId, amount, date, notes = '') {
     try {
         const { error } = await supabase
@@ -462,7 +670,6 @@ async function addInvestment(investorId, amount, date, notes = '') {
         
         if (error) throw error;
         
-        // Update investor's total investment
         const { data: investments } = await supabase
             .from('investments')
             .select('amount')
@@ -484,7 +691,6 @@ async function addInvestment(investorId, amount, date, notes = '') {
     }
 }
 
-// Add profit (admin)
 async function addProfit(investorId, amount, month) {
     try {
         const { error } = await supabase
@@ -499,7 +705,6 @@ async function addProfit(investorId, amount, month) {
         
         if (error) throw error;
         
-        // Update investor's total profit
         const { data: profits } = await supabase
             .from('profits')
             .select('amount')
@@ -521,7 +726,6 @@ async function addProfit(investorId, amount, month) {
     }
 }
 
-// Approve withdrawal (admin)
 async function approveWithdrawal(withdrawalId, amount, investorId) {
     try {
         const { error } = await supabase
@@ -534,7 +738,6 @@ async function approveWithdrawal(withdrawalId, amount, investorId) {
         
         if (error) throw error;
         
-        // Update investor's available balance
         const { data: investor } = await supabase
             .from('investors')
             .select('available_balance')
@@ -557,7 +760,6 @@ async function approveWithdrawal(withdrawalId, amount, investorId) {
     }
 }
 
-// Reject withdrawal (admin)
 async function rejectWithdrawal(withdrawalId) {
     try {
         const { error } = await supabase
@@ -574,72 +776,6 @@ async function rejectWithdrawal(withdrawalId) {
     }
 }
 
-// Add product (admin)
-async function addProduct(productData) {
-    try {
-        const { error } = await supabase
-            .from('products')
-            .insert([{
-                name: productData.name,
-                category: productData.category,
-                wattage: productData.wattage,
-                price: parseFloat(productData.price),
-                stock_quantity: parseInt(productData.stock) || 0,
-                description: productData.description || '',
-                is_active: true
-            }]);
-        
-        if (error) throw error;
-        showNotification('Product added successfully!', false);
-        return true;
-    } catch (error) {
-        showNotification('Error: ' + error.message, true);
-        return false;
-    }
-}
-
-// Update product (admin)
-async function updateProduct(productId, productData) {
-    try {
-        const { error } = await supabase
-            .from('products')
-            .update({
-                name: productData.name,
-                category: productData.category,
-                wattage: productData.wattage,
-                price: parseFloat(productData.price),
-                stock_quantity: parseInt(productData.stock) || 0,
-                description: productData.description || ''
-            })
-            .eq('id', productId);
-        
-        if (error) throw error;
-        showNotification('Product updated successfully!', false);
-        return true;
-    } catch (error) {
-        showNotification('Error: ' + error.message, true);
-        return false;
-    }
-}
-
-// Delete product (admin)
-async function deleteProduct(productId) {
-    try {
-        const { error } = await supabase
-            .from('products')
-            .update({ is_active: false })
-            .eq('id', productId);
-        
-        if (error) throw error;
-        showNotification('Product deleted successfully!', false);
-        return true;
-    } catch (error) {
-        showNotification('Error: ' + error.message, true);
-        return false;
-    }
-}
-
-// Update order status (admin)
 async function updateOrderStatus(orderId, status) {
     try {
         const { error } = await supabase
@@ -656,10 +792,8 @@ async function updateOrderStatus(orderId, status) {
     }
 }
 
-// Get dashboard statistics (admin)
 async function getDashboardStats() {
     try {
-        // Get counts
         const { count: investorCount } = await supabase
             .from('investors')
             .select('*', { count: 'exact', head: true });
@@ -677,7 +811,6 @@ async function getDashboardStats() {
             .select('*', { count: 'exact', head: true })
             .eq('status', 'pending');
         
-        // Get totals
         const { data: investments } = await supabase
             .from('investments')
             .select('amount');
@@ -711,9 +844,8 @@ async function getDashboardStats() {
 }
 
 // ============================================
-// CART MANAGEMENT (Local Storage)
+// CART MANAGEMENT
 // ============================================
-
 function getCart(userId) {
     const cart = localStorage.getItem(`cart_${userId}`);
     return cart ? JSON.parse(cart) : [];
@@ -778,10 +910,6 @@ function getCartTotal(cart) {
     return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 }
 
-// ============================================
-// EXPORT FUNCTIONS (CSV)
-// ============================================
-
 function exportToCSV(data, filename) {
     if (!data || data.length === 0) {
         showNotification('No data to export', true);
@@ -816,6 +944,8 @@ function exportToCSV(data, filename) {
 document.addEventListener('DOMContentLoaded', async function() {
     const currentPage = window.location.pathname.split('/').pop();
     
+    console.log('Page loaded:', currentPage);
+    
     // Add animation styles if not present
     if (!document.querySelector('#dynamic-styles')) {
         const style = document.createElement('style');
@@ -828,7 +958,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             .toast-notification {
                 position: fixed;
                 bottom: 30px;
-                right: 30px;
+                left: 50%;
+                transform: translateX(-50%);
                 z-index: 10000;
                 font-family: 'Inter', sans-serif;
             }
@@ -855,21 +986,23 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.head.appendChild(style);
     }
     
-    // Initialize based on page
+    // Initialize auth page if this is an auth page
+    if (currentPage === 'investor-auth.html' || currentPage === 'buyer-auth.html') {
+        initAuthPage();
+    }
+    
+    // Initialize dashboards
     if (currentPage === 'dashboard.html' || currentPage === 'dashboard') {
-        // Investor dashboard initialization
         const user = await checkAuth('investor');
         if (user) {
             console.log('Investor dashboard initialized for:', user.email);
         }
     } else if (currentPage === 'buyer.html' || currentPage === 'buyer') {
-        // Buyer dashboard initialization
         const user = await checkAuth('buyer');
         if (user) {
             console.log('Buyer dashboard initialized for:', user.email);
         }
     } else if (currentPage === 'admin.html' || currentPage === 'admin') {
-        // Admin panel initialization
         const user = await checkAuth('admin');
         if (user) {
             console.log('Admin panel initialized for:', user.email);
@@ -880,11 +1013,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Make all functions globally available
 window.supabase = supabase;
 window.showNotification = showNotification;
-window.showLoading = showLoading;
 window.checkAuth = checkAuth;
 window.logout = logout;
 window.formatCurrency = formatCurrency;
 window.formatDate = formatDate;
+window.initAuthPage = initAuthPage;
+window.handleSignup = handleSignup;
+window.handleLogin = handleLogin;
 
 // Investor functions
 window.loadInvestments = loadInvestments;
@@ -898,8 +1033,6 @@ window.loadProducts = loadProducts;
 window.loadCategories = loadCategories;
 window.loadBuyerOrders = loadBuyerOrders;
 window.placeOrder = placeOrder;
-window.addToWishlist = addToWishlist;
-window.loadWishlist = loadWishlist;
 
 // Admin functions
 window.loadAllInvestors = loadAllInvestors;
@@ -908,9 +1041,6 @@ window.addInvestment = addInvestment;
 window.addProfit = addProfit;
 window.approveWithdrawal = approveWithdrawal;
 window.rejectWithdrawal = rejectWithdrawal;
-window.addProduct = addProduct;
-window.updateProduct = updateProduct;
-window.deleteProduct = deleteProduct;
 window.updateOrderStatus = updateOrderStatus;
 window.getDashboardStats = getDashboardStats;
 
