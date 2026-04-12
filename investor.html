@@ -9,236 +9,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
-            min-height: 100vh;
-        }
+        body { font-family: 'Inter', sans-serif; background: #f5f7fa; min-height: 100vh; }
         .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         .dashboard-header {
             background: linear-gradient(135deg, #1E4E3E 0%, #2A6B58 100%);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: white; padding: 20px 30px; border-radius: 20px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
         }
         .dashboard-header h1 { font-size: 1.8rem; display: flex; align-items: center; gap: 10px; }
         .dashboard-header h1 i { color: #E8B13C; }
-        .user-info { display: flex; align-items: center; gap: 20px; }
-        #userName { background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 30px; }
         .logout-btn { background: #dc3545; color: white; padding: 8px 20px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            text-align: center;
-            border-bottom: 4px solid #E8B13C;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 20px; text-align: center; border-bottom: 4px solid #E8B13C; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 15px; }
         .stat-amount { font-size: 32px; font-weight: 700; color: #1E4E3E; }
-        .stat-amount.profit { color: #28a745; }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            background: white;
-            padding: 10px;
-            border-radius: 15px;
-            flex-wrap: wrap;
-        }
-        .tab-btn {
-            padding: 12px 24px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .tab-btn:hover { background: #f0f2f5; }
-        .tab-btn.active { background: #1E4E3E; color: white; }
-        .tab-content {
-            display: none;
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .tab-content.active { display: block; }
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; font-weight: 600; }
-        .status {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-        }
-        .status.active, .status.approved { background: #d4edda; color: #155724; }
-        .status.pending { background: #fff3cd; color: #856404; }
-        .btn-primary {
-            background: #1E4E3E;
-            color: white;
-            padding: 10px 24px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background: white;
-            margin: 5% auto;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            border-radius: 20px;
-        }
-        .modal-content input, .modal-content select {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-        }
-        .close {
-            float: right;
-            font-size: 28px;
-            cursor: pointer;
-        }
-        .toast-notification {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 40px;
-            color: white;
-            z-index: 10000;
-            text-align: center;
-        }
+        .welcome-message { background: white; padding: 20px; border-radius: 15px; margin-bottom: 30px; text-align: center; }
+        .welcome-message h2 { color: #1E4E3E; }
+        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 10000; text-align: center; }
         .toast-success { background: #28a745; }
         .toast-error { background: #dc3545; }
-        @media (max-width: 768px) {
-            .dashboard-header { flex-direction: column; text-align: center; gap: 15px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-        }
+        @media (max-width: 768px) { .dashboard-header { flex-direction: column; text-align: center; gap: 15px; } }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <div class="dashboard-header">
             <h1><i class="fas fa-lightbulb"></i> Sohrab Industries</h1>
-            <div class="user-info">
-                <span id="userName"><i class="fas fa-user-circle"></i> Loading...</span>
+            <div>
+                <span id="userName" style="margin-right: 20px;"><i class="fas fa-user-circle"></i> Loading...</span>
                 <button onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
         </div>
 
+        <div class="welcome-message">
+            <h2>Welcome to Your Investor Dashboard</h2>
+            <p>Track your investments, profits, and withdrawals here.</p>
+        </div>
+
         <div class="stats-grid">
             <div class="stat-card"><h3><i class="fas fa-chart-line"></i> Total Investment</h3><p class="stat-amount" id="totalInvestment">Rs. 0</p></div>
-            <div class="stat-card"><h3><i class="fas fa-coins"></i> Total Profit Earned</h3><p class="stat-amount profit" id="totalProfit">Rs. 0</p></div>
-            <div class="stat-card"><h3><i class="fas fa-chart-simple"></i> Active Investments</h3><p class="stat-amount" id="activeInvestments">0</p></div>
+            <div class="stat-card"><h3><i class="fas fa-coins"></i> Total Profit</h3><p class="stat-amount" id="totalProfit">Rs. 0</p></div>
             <div class="stat-card"><h3><i class="fas fa-wallet"></i> Available Balance</h3><p class="stat-amount" id="availableBalance">Rs. 0</p></div>
         </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('investments')"><i class="fas fa-chart-line"></i> My Investments</button>
-            <button class="tab-btn" onclick="showTab('profits')"><i class="fas fa-coins"></i> Profit History</button>
-            <button class="tab-btn" onclick="showTab('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
+        <div style="background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+            <h3 style="color: #1E4E3E; margin-bottom: 15px;">Your Investments</h3>
+            <div id="investmentsList" style="color: #666;">Loading investments...</div>
         </div>
 
-        <div id="investmentsTab" class="tab-content active">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <h2><i class="fas fa-history"></i> Investment History</h2>
-                <button onclick="showInvestmentModal()" class="btn-primary"><i class="fas fa-plus"></i> New Investment</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Date</th><th>Amount</th><th>Status</th><th>Notes</th></tr></thead>
-                    <tbody id="investmentsList"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="profitsTab" class="tab-content">
-            <h2><i class="fas fa-gift"></i> Profit History</h2>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Month</th><th>Amount</th><th>Status</th><th>Paid Date</th></tr></thead>
-                    <tbody id="profitsList"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="withdrawalsTab" class="tab-content">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <h2><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</h2>
-                <button onclick="showWithdrawalModal()" class="btn-primary"><i class="fas fa-plus"></i> Request Withdrawal</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Request Date</th><th>Amount</th><th>Status</th><th>Processed Date</th></tr></thead>
-                    <tbody id="withdrawalsList"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Investment Modal -->
-    <div id="investmentModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('investmentModal')">&times;</span>
-            <h2>Request Investment</h2>
-            <p style="background: #e7f3ff; padding: 10px; border-radius: 10px; margin: 10px 0;">
-                Send payment via EasyPaisa/JazzCash to: <strong>03XX-XXXXXXX</strong>
-            </p>
-            <input type="number" id="investmentAmount" placeholder="Amount (Rs.)">
-            <select id="paymentMethod">
-                <option value="EasyPaisa">EasyPaisa</option>
-                <option value="JazzCash">JazzCash</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-            </select>
-            <input type="text" id="transactionId" placeholder="Transaction ID">
-            <button onclick="submitInvestmentRequest()" class="btn-primary">Submit Request</button>
-        </div>
-    </div>
-
-    <!-- Withdrawal Modal -->
-    <div id="withdrawalModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('withdrawalModal')">&times;</span>
-            <h2>Request Withdrawal</h2>
-            <input type="number" id="withdrawAmount" placeholder="Amount (Rs.)">
-            <select id="withdrawMethod">
-                <option value="EasyPaisa">EasyPaisa</option>
-                <option value="JazzCash">JazzCash</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-            </select>
-            <input type="text" id="accountDetails" placeholder="Account Number / Mobile Number">
-            <button onclick="submitWithdrawalRequest()" class="btn-primary">Submit Request</button>
+        <div style="background: white; padding: 20px; border-radius: 15px;">
+            <h3 style="color: #1E4E3E; margin-bottom: 15px;">Recent Profit History</h3>
+            <div id="profitsList" style="color: #666;">Loading profits...</div>
         </div>
     </div>
 
@@ -247,7 +68,7 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        let currentInvestorId = null;
+        let currentUser = null;
         
         function showNotification(message, isError) {
             const toast = document.createElement('div');
@@ -258,198 +79,100 @@
         }
         
         async function checkAuth() {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (error || !user) {
+            try {
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (error || !user) {
+                    console.log('No user found, redirecting to login');
+                    window.location.href = 'investor-auth.html';
+                    return null;
+                }
+                currentUser = user;
+                document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
+                await loadInvestorData();
+                return user;
+            } catch (err) {
+                console.error('Auth error:', err);
                 window.location.href = 'investor-auth.html';
                 return null;
             }
-            currentInvestorId = user.id;
-            document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
-            
-            await loadInvestments();
-            await loadProfits();
-            await loadWithdrawals();
-            await loadStats();
-            return user;
         }
         
-        async function loadInvestments() {
-            const { data, error } = await supabase
-                .from('investments')
-                .select('*')
-                .eq('investor_id', currentInvestorId)
-                .order('investment_date', { ascending: false });
-            
-            const tbody = document.getElementById('investmentsList');
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">No investments yet</td></tr>';
-                return;
+        async function loadInvestorData() {
+            try {
+                // Load investments
+                const { data: investments, error: invError } = await supabase
+                    .from('investments')
+                    .select('*')
+                    .eq('investor_id', currentUser.id)
+                    .order('investment_date', { ascending: false });
+                
+                if (invError) console.error('Investments error:', invError);
+                
+                const investmentsList = document.getElementById('investmentsList');
+                if (investments && investments.length > 0) {
+                    let totalInvested = 0;
+                    let html = '<table style="width:100%; border-collapse: collapse;">';
+                    html += '<tr style="background:#f8f9fa;"><th style="padding:10px; text-align:left;">Date</th><th style="padding:10px; text-align:left;">Amount</th><th style="padding:10px; text-align:left;">Status</th></tr>';
+                    investments.forEach(inv => {
+                        totalInvested += inv.amount || 0;
+                        html += `<tr>
+                            <td style="padding:10px; border-bottom:1px solid #eee;">${new Date(inv.investment_date).toLocaleDateString()}</td>
+                            <td style="padding:10px; border-bottom:1px solid #eee;">Rs. ${(inv.amount || 0).toLocaleString()}</td>
+                            <td style="padding:10px; border-bottom:1px solid #eee;"><span style="background:#d4edda; color:#155724; padding:4px 12px; border-radius:20px;">${inv.status || 'Pending'}</span></td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    investmentsList.innerHTML = html;
+                    document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
+                } else {
+                    investmentsList.innerHTML = '<p>No investments yet. Contact admin to make your first investment.</p>';
+                }
+                
+                // Load profits
+                const { data: profits, error: profError } = await supabase
+                    .from('profits')
+                    .select('*')
+                    .eq('investor_id', currentUser.id)
+                    .order('month', { ascending: false });
+                
+                if (profError) console.error('Profits error:', profError);
+                
+                const profitsList = document.getElementById('profitsList');
+                if (profits && profits.length > 0) {
+                    let totalProfit = 0;
+                    let html = '<table style="width:100%; border-collapse: collapse;">';
+                    html += '<tr style="background:#f8f9fa;"><th style="padding:10px; text-align:left;">Month</th><th style="padding:10px; text-align:left;">Amount</th><th style="padding:10px; text-align:left;">Status</th></tr>';
+                    profits.forEach(p => {
+                        if (p.paid) totalProfit += p.amount || 0;
+                        html += `<tr>
+                            <td style="padding:10px; border-bottom:1px solid #eee;">${new Date(p.month).toLocaleDateString('default', { year: 'numeric', month: 'long' })}</td>
+                            <td style="padding:10px; border-bottom:1px solid #eee;">Rs. ${(p.amount || 0).toLocaleString()}</td>
+                            <td style="padding:10px; border-bottom:1px solid #eee;"><span style="background:${p.paid ? '#d4edda' : '#fff3cd'}; color:${p.paid ? '#155724' : '#856404'}; padding:4px 12px; border-radius:20px;">${p.paid ? 'Paid' : 'Pending'}</span></td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    profitsList.innerHTML = html;
+                    document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+                    document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+                } else {
+                    profitsList.innerHTML = '<p>No profit records yet.</p>';
+                }
+            } catch (err) {
+                console.error('Load data error:', err);
+                showNotification('Error loading data', true);
             }
-            tbody.innerHTML = data.map(inv => `
-                <tr>
-                    <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
-                    <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
-                    <td><span class="status ${inv.status}">${inv.status}</span></td>
-                    <td>${inv.notes || '-'}</td>
-                </tr>
-            `).join('');
-        }
-        
-        async function loadProfits() {
-            const { data, error } = await supabase
-                .from('profits')
-                .select('*')
-                .eq('investor_id', currentInvestorId)
-                .order('month', { ascending: false });
-            
-            const tbody = document.getElementById('profitsList');
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">No profits recorded</td></tr>';
-                return;
-            }
-            tbody.innerHTML = data.map(p => `
-                <tr>
-                    <td>${new Date(p.month).toLocaleDateString('default', { year: 'numeric', month: 'long' })}</td>
-                    <td>Rs. ${(p.amount || 0).toLocaleString()}</td>
-                    <td><span class="status ${p.paid ? 'active' : 'pending'}">${p.paid ? 'Paid' : 'Pending'}</span></td>
-                    <td>${p.paid_date ? new Date(p.paid_date).toLocaleDateString() : '-'}</td>
-                </tr>
-            `).join('');
-        }
-        
-        async function loadWithdrawals() {
-            const { data, error } = await supabase
-                .from('withdrawals')
-                .select('*')
-                .eq('investor_id', currentInvestorId)
-                .order('request_date', { ascending: false });
-            
-            const tbody = document.getElementById('withdrawalsList');
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">No withdrawal requests</td></tr>';
-                return;
-            }
-            tbody.innerHTML = data.map(w => `
-                <tr>
-                    <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                    <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                    <td><span class="status ${w.status}">${w.status}</span></td>
-                    <td>${w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-'}</td>
-                </tr>
-            `).join('');
-        }
-        
-        async function loadStats() {
-            const { data: investments } = await supabase
-                .from('investments')
-                .select('amount')
-                .eq('investor_id', currentInvestorId)
-                .eq('status', 'active');
-            
-            const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
-            document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-            document.getElementById('activeInvestments').innerHTML = investments?.length || 0;
-            
-            const { data: profits } = await supabase
-                .from('profits')
-                .select('amount')
-                .eq('investor_id', currentInvestorId)
-                .eq('paid', true);
-            
-            const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
-            document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-            document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-        }
-        
-        async function submitInvestmentRequest() {
-            const amount = document.getElementById('investmentAmount').value;
-            const method = document.getElementById('paymentMethod').value;
-            const transactionId = document.getElementById('transactionId').value;
-            
-            if (!amount) {
-                showNotification('Please enter amount', true);
-                return;
-            }
-            
-            const { error } = await supabase.from('investments').insert([{
-                investor_id: currentInvestorId,
-                amount: parseFloat(amount),
-                investment_date: new Date().toISOString().split('T')[0],
-                status: 'pending',
-                notes: `Payment Method: ${method}, Transaction ID: ${transactionId}`
-            }]);
-            
-            if (error) {
-                showNotification(error.message, true);
-            } else {
-                showNotification('Investment request submitted! Admin will verify.', false);
-                closeModal('investmentModal');
-                document.getElementById('investmentAmount').value = '';
-                document.getElementById('transactionId').value = '';
-                await loadInvestments();
-                await loadStats();
-            }
-        }
-        
-        async function submitWithdrawalRequest() {
-            const amount = document.getElementById('withdrawAmount').value;
-            const method = document.getElementById('withdrawMethod').value;
-            const accountDetails = document.getElementById('accountDetails').value;
-            
-            if (!amount || !accountDetails) {
-                showNotification('Please fill all fields', true);
-                return;
-            }
-            
-            if (parseFloat(amount) < 1000) {
-                showNotification('Minimum withdrawal is Rs. 1,000', true);
-                return;
-            }
-            
-            const { error } = await supabase.from('withdrawals').insert([{
-                investor_id: currentInvestorId,
-                amount: parseFloat(amount),
-                request_date: new Date().toISOString().split('T')[0],
-                status: 'pending',
-                payment_method: method,
-                notes: accountDetails
-            }]);
-            
-            if (error) {
-                showNotification(error.message, true);
-            } else {
-                showNotification('Withdrawal request submitted!', false);
-                closeModal('withdrawalModal');
-                document.getElementById('withdrawAmount').value = '';
-                document.getElementById('accountDetails').value = '';
-                await loadWithdrawals();
-            }
-        }
-        
-        function showInvestmentModal() { document.getElementById('investmentModal').style.display = 'block'; }
-        function showWithdrawalModal() { document.getElementById('withdrawalModal').style.display = 'block'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`${tabName}Tab`).classList.add('active');
-            event.target.classList.add('active');
         }
         
         async function handleLogout() {
             await supabase.auth.signOut();
             localStorage.clear();
-            window.location.href = 'investor-auth.html';
+            showNotification('Logged out successfully!', false);
+            setTimeout(() => {
+                window.location.href = 'investor-auth.html';
+            }, 1000);
         }
         
-        window.showTab = showTab;
         window.handleLogout = handleLogout;
-        window.showInvestmentModal = showInvestmentModal;
-        window.showWithdrawalModal = showWithdrawalModal;
-        window.closeModal = closeModal;
-        window.submitInvestmentRequest = submitInvestmentRequest;
-        window.submitWithdrawalRequest = submitWithdrawalRequest;
         
         checkAuth();
     </script>
