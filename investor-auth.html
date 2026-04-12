@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sohrab Industries | Investor Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0B2B26 0%, #1A4D3E 50%, #0F3B32 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1E4E3E;
+        }
+
+        .logo i { color: #E8B13C; }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #1E4E3E;
+            font-weight: 500;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .card-header i {
+            font-size: 3rem;
+            color: #E8B13C;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .toggle-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: #f0f2f5;
+            padding: 0.5rem;
+            border-radius: 3rem;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+        }
+
+        .toggle-btn.active {
+            background: #1E4E3E;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem 0.9rem 2.8rem;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 1rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #E8B13C;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(95deg, #1F4E41, #2A6B58);
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30,78,62,0.3);
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .footer-links a {
+            color: #E8B13C;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .back-home a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 40px;
+            color: white;
+            z-index: 1000;
+        }
+
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            .container { margin: 1rem auto; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-lightbulb"></i>
+            <span>Sohrab Industries</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="investor-auth.html">Investor</a>
+            <a href="buyer-auth.html">Buyer</a>
+            <a href="admin-auth.html">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="auth-card">
+            <div class="card-header">
+                <i class="fas fa-chart-line"></i>
+                <h2>Investor Portal</h2>
+                <p>Grow your wealth with Sohrab Industries</p>
+            </div>
+            <div class="card-body">
+                <div class="toggle-buttons">
+                    <button class="toggle-btn active" id="showLoginBtn">Login</button>
+                    <button class="toggle-btn" id="showSignupBtn">Sign Up</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <div class="form-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                    </div>
+                    <button class="btn-primary" id="loginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard</button>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="signupForm" style="display: none;">
+                    <div class="form-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="fullName" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="phone" placeholder="Phone Number" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-city"></i>
+                        <input type="text" id="city" placeholder="City" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Password (min 6 characters)" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-check-circle"></i>
+                        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <button class="btn-primary" id="signupBtn"><i class="fas fa-user-plus"></i> Create Investor Account</button>
+                </div>
+
+                <div class="footer-links">
+                    <a href="index.html">← Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'error' : 'success'}`;
+            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Toggle between login and signup
+        document.getElementById('showLoginBtn').addEventListener('click', () => {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('showLoginBtn').classList.add('active');
+            document.getElementById('showSignupBtn').classList.remove('active');
+        });
+
+        document.getElementById('showSignupBtn').addEventListener('click', () => {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'block';
+            document.getElementById('showSignupBtn').classList.add('active');
+            document.getElementById('showLoginBtn').classList.remove('active');
+        });
+
+        // Login
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) { showToast(error.message, true); return; }
+            
+            localStorage.setItem('user', JSON.stringify(data.user));
+            showToast('Login successful! Redirecting...');
+            setTimeout(() => window.location.href = 'dashboard.html', 1000);
+        });
+
+        // Signup
+        document.getElementById('signupBtn').addEventListener('click', async () => {
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const city = document.getElementById('city').value;
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirm) { showToast('Passwords do not match', true); return; }
+            if (password.length < 6) { showToast('Password must be at least 6 characters', true); return; }
+            
+            const { data, error } = await supabase.auth.signUp({
+                email, password,
+                options: { data: { full_name: fullName, phone, city, role: 'investor' } }
+            });
+            
+            if (error) { showToast(error.message, true); return; }
+            
+            if (data.user) {
+                await supabase.from('investors').insert([{ id: data.user.id, email, full_name: fullName, phone, city }]);
+                showToast('Account created! Please login.');
+                document.getElementById('showLoginBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>
