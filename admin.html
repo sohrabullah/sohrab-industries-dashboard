@@ -104,7 +104,7 @@
             <div class="table-container">
                 <h3>Recent Activities</h3>
                 <table><thead><tr><th>Action</th><th>Details</th><th>Time</th></tr></thead><tbody id="recentActivities"></tbody>
-                </table>
+                <tr>
             </div>
         </div>
 
@@ -123,7 +123,7 @@
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
             <div class="search-box"><input type="text" id="investorSearch" placeholder="Search investors..."><button onclick="searchInvestors()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetInvestorSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
@@ -139,13 +139,13 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"></tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -178,13 +178,34 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></td></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
-        <!-- Withdrawals Section -->
+        <!-- Withdrawals Section - FIXED -->
         <div id="withdrawalsSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
+            <div class="search-box">
+                <input type="text" id="withdrawalSearch" placeholder="Search by investor name...">
+                <button onclick="searchWithdrawals()" class="btn-primary"><i class="fas fa-search"></i> Search</button>
+                <button onclick="resetWithdrawalSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Investor Name</th>
+                            <th>Email</th>
+                            <th>Amount</th>
+                            <th>Request Date</th>
+                            <th>Payment Method</th>
+                            <th>Account Details</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdrawalsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Products Section -->
@@ -239,7 +260,7 @@
             
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            let allInvestors = [], allBuyers = [], allOrders = [];
+            let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [];
 
             function showNotification(msg, isError) { 
                 const t = document.createElement('div'); 
@@ -389,7 +410,7 @@
                 const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
                 const productsList = document.getElementById('productsList');
                 if (productsList) {
-                    productsList.innerHTML = (data||[]).map(p=>`<tr>
+                    productsList.innerHTML = (data||[]).map(p=>`<td>
                         <td><strong>${p.name}</strong></td>
                         <td>${p.category}</td>
                         <td>Rs.${(p.price||0).toLocaleString()}</td>
@@ -491,20 +512,76 @@
                 }
             }
             
+            // WITHDRAWALS FUNCTIONS - FIXED
             async function loadWithdrawals() { 
-                const { data } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('request_date',{ascending:false}); 
+                const { data } = await supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false });
+                allWithdrawals = data || [];
                 const withdrawalsList = document.getElementById('withdrawalsList');
-                if (withdrawalsList) {
-                    withdrawalsList.innerHTML = (data||[]).map(w=>`<tr>
-                        <td>${w.investors?.full_name||'-'}</td>
-                        <td>Rs.${(w.amount||0).toLocaleString()}</td>
-                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                        <td>${w.payment_method||'-'}</td>
-                        <td><span class="status-badge status-${w.status}">${w.status}</span></td>
-                        <td class="action-buttons">${w.status==='pending'?`<button onclick="approveWithdrawal('${w.id}',${w.amount},'${w.investor_id}')" class="btn-success">Approve</button> <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>`:'-'}</td>
-                    </tr>`).join('');
+                if (!withdrawalsList) return;
+                
+                if (!allWithdrawals || allWithdrawals.length === 0) {
+                    withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state" style="text-align:center;padding:40px;">No withdrawal requests found</td></tr>';
+                    return;
                 }
+                
+                withdrawalsList.innerHTML = allWithdrawals.map(w => `
+                    <tr>
+                        <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
+                        <td><small>${w.investors?.email || '-'}</small></td>
+                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                        <td>${w.payment_method || '-'}</td>
+                        <td><small>${w.account_details || '-'}</small></td>
+                        <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
+                        <td class="action-buttons">
+                            ${w.status === 'pending' ? `
+                                <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button>
+                                <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>
+                            ` : `
+                                <span class="status-badge status-active">Processed</span>
+                            `}
+                        </td>
+                    </tr>
+                `).join('');
             }
+            
+            window.searchWithdrawals = function() {
+                const term = document.getElementById('withdrawalSearch').value.toLowerCase();
+                const filtered = allWithdrawals.filter(w => 
+                    w.investors?.full_name?.toLowerCase().includes(term) || 
+                    w.investors?.email?.toLowerCase().includes(term)
+                );
+                const withdrawalsList = document.getElementById('withdrawalsList');
+                if (!withdrawalsList) return;
+                
+                if (filtered.length === 0) {
+                    withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state" style="text-align:center;padding:40px;">No withdrawal requests found</td></tr>';
+                    return;
+                }
+                
+                withdrawalsList.innerHTML = filtered.map(w => `
+                    <tr>
+                        <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
+                        <td><small>${w.investors?.email || '-'}</small></td>
+                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                        <td>${w.payment_method || '-'}</td>
+                        <td><small>${w.account_details || '-'}</small></td>
+                        <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
+                        <td class="action-buttons">
+                            ${w.status === 'pending' ? `
+                                <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button>
+                                <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>
+                            ` : `<span class="status-badge status-active">Processed</span>`}
+                        </td>
+                    </tr>
+                `).join('');
+            };
+            
+            window.resetWithdrawalSearch = function() {
+                document.getElementById('withdrawalSearch').value = '';
+                loadWithdrawals();
+            };
             
             // ORDERS FUNCTIONS
             async function loadOrders() { 
@@ -514,7 +591,7 @@
                 if (!ordersList) return;
                 
                 if (!allOrders || allOrders.length === 0) {
-                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state" style="text-align:center;padding:40px;">No orders found</td></tr>';
+                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state" style="text-align:center;padding:40px;">No orders found</td></td>';
                     return;
                 }
                 
@@ -611,7 +688,7 @@
                 if (!ordersList) return;
                 
                 if (filtered.length === 0) {
-                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state" style="text-align:center;padding:40px;">No orders found</td></table>';
+                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state" style="text-align:center;padding:40px;">No orders found</td></td>';
                     return;
                 }
                 
@@ -650,7 +727,7 @@
                 const { data: ord } = await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); 
                 if(ord) ord.forEach(o=>activities.push({action:'Order',details:`Order #${o.id?.slice(0,8)} - Rs.${o.total_amount}`,time:new Date(o.created_at).toLocaleString()})); 
                 const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
-                if(wd) wd.forEach(w=>activities.push({action:'Withdrawal',details:`${w.investors?.full_name} requested Rs.${w.amount}`,time:new Date(w.created_at).toLocaleString()})); 
+                if(wd) wd.forEach(w=>activities.push({action:'Withdrawal Request',details:`${w.investors?.full_name} requested Rs.${w.amount} (${w.status})`,time:new Date(w.created_at).toLocaleString()})); 
                 activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
                 const recentActivities = document.getElementById('recentActivities');
                 if (recentActivities) {
@@ -685,20 +762,26 @@
                 await loadStats(); 
             };
             
-            window.approveWithdrawal = async function(id,amount,investorId){ 
-                if(!confirm('Approve withdrawal?'))return; 
-                await supabaseClient.from('withdrawals').update({status:'approved'}).eq('id',id); 
-                const{data:i}=await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); 
-                if(i) await supabaseClient.from('investors').update({available_balance:(i.available_balance||0)-amount}).eq('id',investorId); 
-                showNotification('Approved!',false); 
+            window.approveWithdrawal = async function(id, amount, investorId){ 
+                if(!confirm(`Approve withdrawal of Rs. ${amount.toLocaleString()}?`)) return; 
+                const { error } = await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
+                if(error) { showNotification(error.message, true); return; }
+                
+                const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id', investorId).single(); 
+                if(investor) { 
+                    const newBalance = (investor.available_balance || 0) - amount;
+                    await supabaseClient.from('investors').update({ available_balance: newBalance }).eq('id', investorId); 
+                }
+                showNotification('Withdrawal approved and balance updated!', false); 
                 await loadWithdrawals(); 
                 await loadInvestors(); 
                 await loadStats(); 
             };
             
             window.rejectWithdrawal = async function(id){ 
-                await supabaseClient.from('withdrawals').update({status:'rejected'}).eq('id',id); 
-                showNotification('Rejected',false); 
+                if(!confirm('Reject this withdrawal request?')) return;
+                await supabaseClient.from('withdrawals').update({ status: 'rejected' }).eq('id', id); 
+                showNotification('Withdrawal rejected', false); 
                 await loadWithdrawals(); 
             };
             
