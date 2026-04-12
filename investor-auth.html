@@ -362,19 +362,21 @@
                     <button class="toggle-btn active" id="signupTabBtn">📝 Sign Up</button>
                 </div>
 
+                <!-- SIGNUP FORM -->
                 <div id="signupSection">
-                    <div class="form-group"><i class="fas fa-user"></i><input type="text" id="signupName" placeholder="Full Name"></div>
-                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="signupEmail" placeholder="Email Address"></div>
-                    <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="signupPhone" placeholder="Phone Number"></div>
-                    <div class="form-group"><i class="fas fa-city"></i><input type="text" id="signupCity" placeholder="City"></div>
-                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="signupPassword" placeholder="Password (min 6 characters)"></div>
-                    <div class="form-group"><i class="fas fa-check-circle"></i><input type="password" id="signupConfirm" placeholder="Confirm Password"></div>
+                    <div class="form-group"><i class="fas fa-user"></i><input type="text" id="signupName" placeholder="Full Name" required></div>
+                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="signupEmail" placeholder="Email Address" required></div>
+                    <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="signupPhone" placeholder="Phone Number" required></div>
+                    <div class="form-group"><i class="fas fa-city"></i><input type="text" id="signupCity" placeholder="City" required></div>
+                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required></div>
+                    <div class="form-group"><i class="fas fa-check-circle"></i><input type="password" id="signupConfirm" placeholder="Confirm Password" required></div>
                     <button class="btn-primary" id="signupBtn"><i class="fas fa-user-plus"></i> Create Investor Account</button>
                 </div>
 
+                <!-- LOGIN FORM -->
                 <div id="loginSection" style="display: none;">
-                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address"></div>
-                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password"></div>
+                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address" required></div>
+                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password" required></div>
                     <button class="btn-primary" id="loginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard</button>
                 </div>
 
@@ -385,12 +387,15 @@
 
     <script>
         // ========================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - YOUR CREDENTIALS
         // ========================================
         const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         
+        // Initialize Supabase
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        console.log('Supabase initialized successfully');
 
         // DOM Elements
         const signupSection = document.getElementById('signupSection');
@@ -406,6 +411,7 @@
             loginTabBtn.classList.add('active');
             signupTabBtn.classList.remove('active');
             toggleFormLink.innerHTML = "Don't have an account? Sign Up →";
+            console.log('Switched to Login Form');
         }
 
         // Function to show Signup Form
@@ -415,84 +421,136 @@
             signupTabBtn.classList.add('active');
             loginTabBtn.classList.remove('active');
             toggleFormLink.innerHTML = "Already have an account? Login →";
+            console.log('Switched to Signup Form');
         }
 
-        // Add click events
-        loginTabBtn.onclick = showLoginForm;
-        signupTabBtn.onclick = showSignupForm;
-        toggleFormLink.onclick = function() {
+        // Add click events for tabs
+        loginTabBtn.addEventListener('click', showLoginForm);
+        signupTabBtn.addEventListener('click', showSignupForm);
+        
+        // Toggle link click
+        toggleFormLink.addEventListener('click', function() {
             if (loginSection.style.display === 'none') {
                 showLoginForm();
             } else {
                 showSignupForm();
             }
-        };
+        });
 
-        // Toast function
+        // Toast notification function
         function showToast(message, isError) {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
+            
             const toast = document.createElement('div');
             toast.className = `toast ${isError ? 'error' : 'success'}`;
             toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
             document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
         }
 
-        // SIGNUP FUNCTION
-        document.getElementById('signupBtn').onclick = async function() {
-            const name = document.getElementById('signupName').value.trim();
+        // ========================================
+        // SIGNUP FUNCTION - SUBMITS TO DATABASE
+        // ========================================
+        document.getElementById('signupBtn').addEventListener('click', async function() {
+            console.log('Signup button clicked - Starting signup process');
+            
+            // Get form values
+            const fullName = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const phone = document.getElementById('signupPhone').value.trim();
             const city = document.getElementById('signupCity').value.trim();
             const password = document.getElementById('signupPassword').value;
-            const confirm = document.getElementById('signupConfirm').value;
+            const confirmPassword = document.getElementById('signupConfirm').value;
 
-            if (!name || !email || !phone || !city || !password) {
-                showToast('Please fill all fields', true);
+            // Validation
+            if (!fullName) {
+                showToast('Please enter your full name', true);
                 return;
             }
-            if (password !== confirm) {
-                showToast('Passwords do not match', true);
+            if (!email) {
+                showToast('Please enter your email address', true);
+                return;
+            }
+            if (!phone) {
+                showToast('Please enter your phone number', true);
+                return;
+            }
+            if (!city) {
+                showToast('Please enter your city', true);
+                return;
+            }
+            if (!password) {
+                showToast('Please enter a password', true);
                 return;
             }
             if (password.length < 6) {
                 showToast('Password must be at least 6 characters', true);
                 return;
             }
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match', true);
+                return;
+            }
 
-            const btn = document.getElementById('signupBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
+            // Disable button and show loading
+            const signupButton = document.getElementById('signupBtn');
+            signupButton.disabled = true;
+            signupButton.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
 
             try {
+                // Step 1: Create user in Supabase Auth
+                console.log('Creating user in Supabase Auth...');
                 const { data: authData, error: authError } = await supabase.auth.signUp({
                     email: email,
                     password: password,
-                    options: { data: { full_name: name, phone: phone, city: city, role: 'investor' } }
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            phone: phone,
+                            city: city,
+                            role: 'investor'
+                        }
+                    }
                 });
 
                 if (authError) {
+                    console.error('Auth Error:', authError);
                     showToast(authError.message, true);
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
+                    signupButton.disabled = false;
+                    signupButton.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
                     return;
                 }
 
+                console.log('Auth user created:', authData.user);
+
                 if (authData.user) {
+                    // Step 2: Insert into investors table
+                    console.log('Inserting into investors table...');
                     const { error: insertError } = await supabase
                         .from('investors')
                         .insert([{
                             id: authData.user.id,
                             email: email,
-                            full_name: name,
+                            full_name: fullName,
                             phone: phone,
                             city: city,
+                            status: 'active',
                             created_at: new Date().toISOString()
                         }]);
 
-                    showToast('Account created successfully! Please login.', false);
-                    
+                    if (insertError) {
+                        console.error('Insert Error:', insertError);
+                        showToast('Account created but profile not saved. Please contact support.', true);
+                    } else {
+                        console.log('Investor record created successfully!');
+                        showToast('Account created successfully! Please login.', false);
+                    }
+
+                    // Clear form fields
                     document.getElementById('signupName').value = '';
                     document.getElementById('signupEmail').value = '';
                     document.getElementById('signupPhone').value = '';
@@ -500,50 +558,75 @@
                     document.getElementById('signupPassword').value = '';
                     document.getElementById('signupConfirm').value = '';
                     
+                    // Switch to login form
                     showLoginForm();
                 }
-            } catch (err) {
-                showToast('Error: ' + err.message, true);
+            } catch (error) {
+                console.error('Unexpected error:', error);
+                showToast('An error occurred. Please try again.', true);
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
+                signupButton.disabled = false;
+                signupButton.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
             }
-        };
+        });
 
+        // ========================================
         // LOGIN FUNCTION
-        document.getElementById('loginBtn').onclick = async function() {
+        // ========================================
+        document.getElementById('loginBtn').addEventListener('click', async function() {
+            console.log('Login button clicked');
+            
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            if (!email || !password) {
-                showToast('Please enter email and password', true);
+            if (!email) {
+                showToast('Please enter your email address', true);
+                return;
+            }
+            if (!password) {
+                showToast('Please enter your password', true);
                 return;
             }
 
-            const btn = document.getElementById('loginBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+            const loginButton = document.getElementById('loginBtn');
+            loginButton.disabled = true;
+            loginButton.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
 
-            if (error) {
-                showToast('Invalid email or password', true);
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
-                return;
+                if (error) {
+                    console.error('Login Error:', error);
+                    showToast('Invalid email or password', true);
+                    loginButton.disabled = false;
+                    loginButton.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
+                    return;
+                }
+
+                if (data.user) {
+                    console.log('Login successful:', data.user);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('userType', 'investor');
+                    showToast('Login successful! Redirecting to dashboard...', false);
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                console.error('Unexpected error:', error);
+                showToast('An error occurred. Please try again.', true);
+                loginButton.disabled = false;
+                loginButton.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
             }
-
-            if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
-                localStorage.setItem('userType', 'investor');
-                showToast('Login successful! Redirecting...', false);
-                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
-            }
-        };
+        });
 
         // Enter key support
         document.querySelectorAll('input').forEach(input => {
-            input.onkeypress = function(e) {
+            input.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     if (loginSection.style.display !== 'none') {
                         document.getElementById('loginBtn').click();
@@ -551,10 +634,10 @@
                         document.getElementById('signupBtn').click();
                     }
                 }
-            };
+            });
         });
 
-        console.log('Page loaded - Toggle working!');
+        console.log('Page loaded successfully. Signup and Login ready!');
     </script>
 </body>
 </html>
