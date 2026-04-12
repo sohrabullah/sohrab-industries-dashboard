@@ -3,104 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sohrab Industries - Buyer Dashboard | Shop Premium Bulbs</title>
+    <title>Sohrab Industries | Buyer Portal - Shop in PKR</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f5f7fa; min-height: 100vh; }
-        .buyer-header {
-            background: linear-gradient(135deg, #1E4E3E 0%, #2A6B58 100%);
-            color: white;
-            padding: 15px 30px;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0B2B26 0%, #1A4D3E 50%, #0F3B32 100%);
+            min-height: 100vh;
+        }
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            padding: 1rem 5%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
-        .logo h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
-        .logo h1 i { color: #E8B13C; }
-        .search-bar { display: flex; gap: 10px; background: white; padding: 5px 15px; border-radius: 30px; }
-        .search-bar input { border: none; padding: 8px; width: 250px; outline: none; }
-        .search-bar button { background: none; border: none; cursor: pointer; color: #1E4E3E; }
-        .header-icons { display: flex; gap: 20px; align-items: center; }
-        .header-icons button { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; position: relative; }
-        .cart-count { position: absolute; top: -8px; right: -12px; background: #E8B13C; color: #1E4E3E; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; }
-        .logout-btn { background: #dc3545; color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; }
-        .buyer-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        .hero-banner { background: linear-gradient(135deg, #E8B13C20 0%, #1E4E3E20 100%); border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 30px; }
-        .hero-banner h2 { font-size: 2rem; color: #1E4E3E; }
-        .categories { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; margin-bottom: 30px; }
-        .category-btn { padding: 10px 24px; background: white; border: 2px solid #ddd; border-radius: 30px; cursor: pointer; white-space: nowrap; }
-        .category-btn.active, .category-btn:hover { background: #1E4E3E; color: white; border-color: #1E4E3E; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.3s; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .product-image { background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
-        .product-info { padding: 20px; }
-        .product-name { font-size: 1.2rem; font-weight: 600; color: #1E4E3E; }
-        .product-price { font-size: 1.5rem; font-weight: 700; color: #1E4E3E; margin: 10px 0; }
-        .add-to-cart { width: 100%; padding: 10px; background: #1E4E3E; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .add-to-cart:disabled { background: #ccc; cursor: not-allowed; }
-        .cart-sidebar { position: fixed; right: -400px; top: 0; width: 380px; height: 100%; background: white; z-index: 1000; transition: right 0.3s ease; display: flex; flex-direction: column; }
-        .cart-sidebar.open { right: 0; }
-        .cart-header { padding: 20px; background: #1E4E3E; color: white; display: flex; justify-content: space-between; }
-        .cart-items { flex: 1; overflow-y: auto; padding: 20px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .cart-footer { padding: 20px; border-top: 1px solid #eee; }
-        .cart-total { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; }
-        .checkout-btn { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
-        .overlay.active { display: block; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1003; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; max-width: 500px; width: 90%; }
-        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 10000; text-align: center; }
-        .toast-success { background: #28a745; }
-        .toast-error { background: #dc3545; }
-        @media (max-width: 768px) { .buyer-header { flex-direction: column; text-align: center; } .cart-sidebar { width: 100%; right: -100%; } }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 800; color: #1E4E3E; }
+        .logo i { color: #E8B13C; font-size: 1.8rem; }
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { text-decoration: none; color: #1E4E3E; font-weight: 600; transition: color 0.3s; }
+        .nav-links a:hover { color: #E8B13C; }
+        .main-container { max-width: 1400px; margin: 0 auto; padding: 2rem 5%; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+        .hero-content h1 { font-size: 3rem; color: white; margin-bottom: 1rem; line-height: 1.2; }
+        .hero-content h1 span { color: #E8B13C; }
+        .hero-content p { color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem; }
+        .stat-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 1rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.2); transition: transform 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card .currency-icon { font-size: 1.8rem; color: #E8B13C; margin-bottom: 0.5rem; }
+        .stat-card .number { font-size: 1.5rem; font-weight: 800; color: #E8B13C; }
+        .stat-card .label { color: white; font-size: 0.8rem; margin-top: 0.5rem; }
+        .auth-card { background: white; border-radius: 2rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); }
+        .card-header { background: linear-gradient(112deg, #E8B13C 0%, #f0c45a 100%); padding: 1.5rem; text-align: center; color: #1E4E3E; }
+        .card-header i { font-size: 2.5rem; color: #1E4E3E; margin-bottom: 0.5rem; }
+        .card-header h2 { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .card-body { padding: 2rem; }
+        .toggle-buttons { display: flex; gap: 1rem; margin-bottom: 2rem; background: #f0f2f5; padding: 0.5rem; border-radius: 3rem; }
+        .toggle-btn { flex: 1; padding: 0.8rem; border: none; border-radius: 2rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; background: transparent; font-family: 'Inter', sans-serif; font-size: 1rem; }
+        .toggle-btn.active { background: #E8B13C; color: #1E4E3E; box-shadow: 0 4px 12px rgba(232, 177, 60, 0.3); }
+        .form-group { margin-bottom: 1.2rem; position: relative; }
+        .form-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9CA3AF; }
+        .form-group input { width: 100%; padding: 0.9rem 1rem 0.9rem 2.8rem; border: 1.5px solid #E2E8F0; border-radius: 1rem; font-size: 1rem; }
+        .form-group input:focus { outline: none; border-color: #E8B13C; box-shadow: 0 0 0 3px rgba(232, 177, 60, 0.1); }
+        .btn-primary { width: 100%; padding: 0.9rem; background: #E8B13C; color: #1E4E3E; border: none; border-radius: 2rem; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; margin-top: 0.5rem; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(232, 177, 60, 0.3); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+        .toggle-link { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
+        .toggle-link a { color: #E8B13C; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 1000; animation: slideUp 0.3s ease; text-align: center; font-weight: 500; }
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+        @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .hero-content h1 { font-size: 2rem; text-align: center; } .hero-content p { text-align: center; } }
+        @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
-    <div class="buyer-header">
-        <div class="logo"><h1><i class="fas fa-lightbulb"></i> Sohrab Industries</h1></div>
-        <div class="search-bar"><input type="text" id="searchInput" placeholder="Search bulbs..."><button onclick="searchProducts()"><i class="fas fa-search"></i></button></div>
-        <div class="header-icons">
-            <button onclick="toggleCart()"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></button>
-            <span id="userName"><i class="fas fa-user"></i></span>
-            <button onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    <nav class="navbar">
+        <div class="logo"><i class="fas fa-lightbulb"></i><span>Sohrab Industries</span></div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="investor-auth.html">Investor</a>
+            <a href="buyer-auth.html">Buyer</a>
+            <a href="admin-auth.html">Admin</a>
         </div>
-    </div>
+    </nav>
 
-    <div class="buyer-container">
-        <div class="hero-banner"><h2><i class="fas fa-lightbulb"></i> Premium Quality Bulbs</h2><p>Energy efficient • Long lasting • Best prices in Pakistan</p></div>
-        <div class="categories" id="categoriesList"></div>
-        <div class="products-grid" id="productsGrid"></div>
-    </div>
+    <div class="main-container">
+        <div class="hero-content">
+            <h1>Shop Premium <span>Quality Bulbs</span> in PKR</h1>
+            <p>Get the best quality bulbs at affordable prices. Free delivery on orders over PKR 2000. 2 years warranty on all products.</p>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="currency-icon">💡</div><div class="number">50+</div><div class="label">Products</div></div>
+                <div class="stat-card"><div class="currency-icon">🚚</div><div class="number">Free</div><div class="label">Delivery</div></div>
+                <div class="stat-card"><div class="currency-icon">⭐</div><div class="number">1 Year</div><div class="label">Warranty</div></div>
+            </div>
+        </div>
 
-    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
-    <div class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> Your Cart</h3><button onclick="toggleCart()" style="background:none;border:none;color:white;font-size:1.5rem;">&times;</button></div>
-        <div class="cart-items" id="cartItems"><p style="text-align:center;color:#999;">Your cart is empty</p></div>
-        <div class="cart-footer"><div class="cart-total">Total: Rs. <span id="cartTotal">0</span></div><button class="checkout-btn" onclick="showCheckout()">Proceed to Checkout</button></div>
-    </div>
+        <div class="auth-card">
+            <div class="card-header"><i class="fas fa-shopping-cart"></i><h2>Buyer Portal</h2><p>Login or Create Account to Shop</p></div>
+            <div class="card-body">
+                <div class="toggle-buttons">
+                    <button class="toggle-btn" id="loginTabBtn">🔐 Login</button>
+                    <button class="toggle-btn active" id="signupTabBtn">📝 Sign Up</button>
+                </div>
 
-    <div id="checkoutModal" class="modal">
-        <div class="modal-content">
-            <h2>Checkout</h2>
-            <textarea id="checkoutAddress" rows="3" placeholder="Delivery Address" style="width:100%;padding:10px;margin:10px 0;border-radius:8px;"></textarea>
-            <select id="paymentMethod" style="width:100%;padding:10px;margin:10px 0;border-radius:8px;">
-                <option value="Cash on Delivery">Cash on Delivery</option>
-                <option value="EasyPaisa">EasyPaisa</option>
-                <option value="JazzCash">JazzCash</option>
-            </select>
-            <div class="cart-total">Total: Rs. <span id="checkoutTotal">0</span></div>
-            <button onclick="placeOrder()" class="checkout-btn">Place Order</button>
-            <button onclick="closeCheckout()" style="margin-top:10px;width:100%;padding:10px;background:#6c757d;color:white;border:none;border-radius:8px;">Cancel</button>
+                <div id="signupSection">
+                    <div class="form-group"><i class="fas fa-user"></i><input type="text" id="signupName" placeholder="Full Name"></div>
+                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="signupEmail" placeholder="Email Address"></div>
+                    <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="signupPhone" placeholder="Phone Number"></div>
+                    <div class="form-group"><i class="fas fa-map-marker-alt"></i><input type="text" id="signupAddress" placeholder="Delivery Address"></div>
+                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="signupPassword" placeholder="Password (min 6 characters)"></div>
+                    <div class="form-group"><i class="fas fa-check-circle"></i><input type="password" id="signupConfirm" placeholder="Confirm Password"></div>
+                    <button class="btn-primary" id="signupBtn"><i class="fas fa-user-plus"></i> Create Buyer Account</button>
+                </div>
+
+                <div id="loginSection" style="display: none;">
+                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address"></div>
+                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password"></div>
+                    <button class="btn-primary" id="loginBtn"><i class="fas fa-store"></i> Login to Shop</button>
+                </div>
+
+                <div class="toggle-link"><a id="toggleFormLink">Already have an account? Login →</a></div>
+            </div>
         </div>
     </div>
 
@@ -108,408 +121,48 @@
         const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let currentBuyerId = null;
-        let cart = [];
-        let allProducts = [];
-        let currentCategory = 'all';
-        
-        function showNotification(message, isError) {
-            const toast = document.createElement('div');
-            toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-        
-        async function checkAuth() {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (error || !user) {
-                window.location.href = 'buyer-auth.html';
-                return null;
-            }
-            currentBuyerId = user.id;
-            document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
-            await loadProducts();
-            loadCart();
-            return user;
-        }
-        
-        async function loadProducts() {
-            const { data, error } = await supabase.from('products').select('*').eq('is_active', true);
-            if (!error && data) {
-                allProducts = data;
-                displayCategories();
-                displayProducts();
-            }
-        }
-        
-        function displayCategories() {
-            const categories = ['all', ...new Set(allProducts.map(p => p.category))];
-            const container = document.getElementById('categoriesList');
-            container.innerHTML = categories.map(cat => `<button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')">${cat === 'all' ? 'All Products' : cat}</button>`).join('');
-        }
-        
-        function filterByCategory(category) { currentCategory = category; displayCategories(); displayProducts(); }
-        
-        function searchProducts() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            displayProducts(term);
-        }
-        
-        function displayProducts(searchTerm = '') {
-            let filtered = currentCategory === 'all' ? allProducts : allProducts.filter(p => p.category === currentCategory);
-            if (searchTerm) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm));
-            const container = document.getElementById('productsGrid');
-            if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center;padding:50px;">No products found</div>'; return; }
-            container.innerHTML = filtered.map(p => `
-                <div class="product-card">
-                    <div class="product-image"><i class="fas fa-lightbulb"></i></div>
-                    <div class="product-info">
-                        <div class="product-name">${p.name}</div>
-                        <div class="product-price">Rs. ${(p.price || 0).toLocaleString()}</div>
-                        <button class="add-to-cart" onclick="addToCart('${p.id}', '${p.name}', ${p.price})" ${p.stock_quantity === 0 ? 'disabled' : ''}>
-                            <i class="fas fa-cart-plus"></i> Add to Cart
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function loadCart() { const saved = localStorage.getItem(`cart_${currentBuyerId}`); if (saved) { cart = JSON.parse(saved); updateCartUI(); } }
-        function saveCart() { localStorage.setItem(`cart_${currentBuyerId}`, JSON.stringify(cart)); updateCartUI(); }
-        
-        function addToCart(id, name, price) {
-            const existing = cart.find(item => item.id === id);
-            if (existing) existing.quantity++;
-            else cart.push({ id, name, price, quantity: 1 });
-            saveCart();
-            showNotification(`${name} added to cart!`, false);
-        }
-        
-        function updateCartUI() {
-            const container = document.getElementById('cartItems');
-            const cartCount = document.getElementById('cartCount');
-            const cartTotal = document.getElementById('cartTotal');
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            cartCount.innerHTML = count;
-            if (cart.length === 0) { container.innerHTML = '<p style="text-align:center;color:#999;">Your cart is empty</p>'; cartTotal.innerHTML = '0'; return; }
-            container.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <div><div>${item.name}</div><div>Rs. ${item.price}</div></div>
-                    <div><button onclick="updateQuantity('${item.id}', -1)">-</button> ${item.quantity} <button onclick="updateQuantity('${item.id}', 1)">+</button></div>
-                </div>
-            `).join('');
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            cartTotal.innerHTML = total.toLocaleString();
-        }
-        
-        function updateQuantity(id, change) {
-            const item = cart.find(i => i.id === id);
-            if (item) { item.quantity += change; if (item.quantity <= 0) cart = cart.filter(i => i.id !== id); saveCart(); }
-        }
-        
-        function toggleCart() { document.getElementById('cartSidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
-        
-        function showCheckout() {
-            if (cart.length === 0) { showNotification('Cart is empty!', true); return; }
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('checkoutTotal').innerHTML = total.toLocaleString();
-            document.getElementById('checkoutModal').style.display = 'flex';
-        }
-        
-        function closeCheckout() { document.getElementById('checkoutModal').style.display = 'none'; }
-        
-        async function placeOrder() {
-            const address = document.getElementById('checkoutAddress').value;
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            if (!address) { showNotification('Please enter address', true); return; }
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const { error } = await supabase.from('orders').insert([{
-                user_id: currentBuyerId, user_type: 'buyer', order_date: new Date().toISOString().split('T')[0],
-                total_amount: total, status: 'pending', payment_method: paymentMethod,
-                payment_status: paymentMethod === 'Cash on Delivery' ? 'pending' : 'paid',
-                delivery_address: address, notes: JSON.stringify(cart)
-            }]);
-            if (error) { showNotification(error.message, true); return; }
-            for (const item of cart) {
-                const { data: p } = await supabase.from('products').select('stock_quantity').eq('id', item.id).single();
-                if (p) await supabase.from('products').update({ stock_quantity: (p.stock_quantity || 0) - item.quantity }).eq('id', item.id);
-            }
-            showNotification('Order placed successfully!', false);
-            cart = []; saveCart(); closeCheckout(); toggleCart(); await loadProducts();
-        }
-        
-        async function handleLogout() { await supabase.auth.signOut(); localStorage.clear(); window.location.href = 'buyer-auth.html'; }
-        
-        window.filterByCategory = filterByCategory;
-        window.searchProducts = searchProducts;
-        window.addToCart = addToCart;
-        window.updateQuantity = updateQuantity;
-        window.toggleCart = toggleCart;
-        window.showCheckout = showCheckout;
-        window.closeCheckout = closeCheckout;
-        window.placeOrder = placeOrder;
-        window.handleLogout = handleLogout;
-        
-        checkAuth();
-    </script>
-</body>
-</html>.buyer auth html.<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sohrab Industries - Buyer Dashboard | Shop Premium Bulbs</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f5f7fa; min-height: 100vh; }
-        .buyer-header {
-            background: linear-gradient(135deg, #1E4E3E 0%, #2A6B58 100%);
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
-        .logo h1 i { color: #E8B13C; }
-        .search-bar { display: flex; gap: 10px; background: white; padding: 5px 15px; border-radius: 30px; }
-        .search-bar input { border: none; padding: 8px; width: 250px; outline: none; }
-        .search-bar button { background: none; border: none; cursor: pointer; color: #1E4E3E; }
-        .header-icons { display: flex; gap: 20px; align-items: center; }
-        .header-icons button { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; position: relative; }
-        .cart-count { position: absolute; top: -8px; right: -12px; background: #E8B13C; color: #1E4E3E; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; }
-        .logout-btn { background: #dc3545; color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; }
-        .buyer-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        .hero-banner { background: linear-gradient(135deg, #E8B13C20 0%, #1E4E3E20 100%); border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 30px; }
-        .hero-banner h2 { font-size: 2rem; color: #1E4E3E; }
-        .categories { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; margin-bottom: 30px; }
-        .category-btn { padding: 10px 24px; background: white; border: 2px solid #ddd; border-radius: 30px; cursor: pointer; white-space: nowrap; }
-        .category-btn.active, .category-btn:hover { background: #1E4E3E; color: white; border-color: #1E4E3E; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.3s; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .product-image { background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
-        .product-info { padding: 20px; }
-        .product-name { font-size: 1.2rem; font-weight: 600; color: #1E4E3E; }
-        .product-price { font-size: 1.5rem; font-weight: 700; color: #1E4E3E; margin: 10px 0; }
-        .add-to-cart { width: 100%; padding: 10px; background: #1E4E3E; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .add-to-cart:disabled { background: #ccc; cursor: not-allowed; }
-        .cart-sidebar { position: fixed; right: -400px; top: 0; width: 380px; height: 100%; background: white; z-index: 1000; transition: right 0.3s ease; display: flex; flex-direction: column; }
-        .cart-sidebar.open { right: 0; }
-        .cart-header { padding: 20px; background: #1E4E3E; color: white; display: flex; justify-content: space-between; }
-        .cart-items { flex: 1; overflow-y: auto; padding: 20px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .cart-footer { padding: 20px; border-top: 1px solid #eee; }
-        .cart-total { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; }
-        .checkout-btn { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
-        .overlay.active { display: block; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1003; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; max-width: 500px; width: 90%; }
-        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 10000; text-align: center; }
-        .toast-success { background: #28a745; }
-        .toast-error { background: #dc3545; }
-        @media (max-width: 768px) { .buyer-header { flex-direction: column; text-align: center; } .cart-sidebar { width: 100%; right: -100%; } }
-    </style>
-</head>
-<body>
-    <div class="buyer-header">
-        <div class="logo"><h1><i class="fas fa-lightbulb"></i> Sohrab Industries</h1></div>
-        <div class="search-bar"><input type="text" id="searchInput" placeholder="Search bulbs..."><button onclick="searchProducts()"><i class="fas fa-search"></i></button></div>
-        <div class="header-icons">
-            <button onclick="toggleCart()"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></button>
-            <span id="userName"><i class="fas fa-user"></i></span>
-            <button onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-        </div>
-    </div>
 
-    <div class="buyer-container">
-        <div class="hero-banner"><h2><i class="fas fa-lightbulb"></i> Premium Quality Bulbs</h2><p>Energy efficient • Long lasting • Best prices in Pakistan</p></div>
-        <div class="categories" id="categoriesList"></div>
-        <div class="products-grid" id="productsGrid"></div>
-    </div>
+        const signupSection = document.getElementById('signupSection');
+        const loginSection = document.getElementById('loginSection');
+        const loginTabBtn = document.getElementById('loginTabBtn');
+        const signupTabBtn = document.getElementById('signupTabBtn');
+        const toggleFormLink = document.getElementById('toggleFormLink');
 
-    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
-    <div class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> Your Cart</h3><button onclick="toggleCart()" style="background:none;border:none;color:white;font-size:1.5rem;">&times;</button></div>
-        <div class="cart-items" id="cartItems"><p style="text-align:center;color:#999;">Your cart is empty</p></div>
-        <div class="cart-footer"><div class="cart-total">Total: Rs. <span id="cartTotal">0</span></div><button class="checkout-btn" onclick="showCheckout()">Proceed to Checkout</button></div>
-    </div>
+        function showLoginForm() { signupSection.style.display = 'none'; loginSection.style.display = 'block'; loginTabBtn.classList.add('active'); signupTabBtn.classList.remove('active'); toggleFormLink.innerHTML = "Don't have an account? Sign Up →"; }
+        function showSignupForm() { loginSection.style.display = 'none'; signupSection.style.display = 'block'; signupTabBtn.classList.add('active'); loginTabBtn.classList.remove('active'); toggleFormLink.innerHTML = "Already have an account? Login →"; }
 
-    <div id="checkoutModal" class="modal">
-        <div class="modal-content">
-            <h2>Checkout</h2>
-            <textarea id="checkoutAddress" rows="3" placeholder="Delivery Address" style="width:100%;padding:10px;margin:10px 0;border-radius:8px;"></textarea>
-            <select id="paymentMethod" style="width:100%;padding:10px;margin:10px 0;border-radius:8px;">
-                <option value="Cash on Delivery">Cash on Delivery</option>
-                <option value="EasyPaisa">EasyPaisa</option>
-                <option value="JazzCash">JazzCash</option>
-            </select>
-            <div class="cart-total">Total: Rs. <span id="checkoutTotal">0</span></div>
-            <button onclick="placeOrder()" class="checkout-btn">Place Order</button>
-            <button onclick="closeCheckout()" style="margin-top:10px;width:100%;padding:10px;background:#6c757d;color:white;border:none;border-radius:8px;">Cancel</button>
-        </div>
-    </div>
+        loginTabBtn.addEventListener('click', showLoginForm);
+        signupTabBtn.addEventListener('click', showSignupForm);
+        toggleFormLink.addEventListener('click', () => { if (loginSection.style.display === 'none') showLoginForm(); else showSignupForm(); });
 
-    <script>
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let currentBuyerId = null;
-        let cart = [];
-        let allProducts = [];
-        let currentCategory = 'all';
-        
-        function showNotification(message, isError) {
-            const toast = document.createElement('div');
-            toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-        
-        async function checkAuth() {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (error || !user) {
-                window.location.href = 'buyer-auth.html';
-                return null;
-            }
-            currentBuyerId = user.id;
-            document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
-            await loadProducts();
-            loadCart();
-            return user;
-        }
-        
-        async function loadProducts() {
-            const { data, error } = await supabase.from('products').select('*').eq('is_active', true);
-            if (!error && data) {
-                allProducts = data;
-                displayCategories();
-                displayProducts();
-            }
-        }
-        
-        function displayCategories() {
-            const categories = ['all', ...new Set(allProducts.map(p => p.category))];
-            const container = document.getElementById('categoriesList');
-            container.innerHTML = categories.map(cat => `<button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')">${cat === 'all' ? 'All Products' : cat}</button>`).join('');
-        }
-        
-        function filterByCategory(category) { currentCategory = category; displayCategories(); displayProducts(); }
-        
-        function searchProducts() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            displayProducts(term);
-        }
-        
-        function displayProducts(searchTerm = '') {
-            let filtered = currentCategory === 'all' ? allProducts : allProducts.filter(p => p.category === currentCategory);
-            if (searchTerm) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm));
-            const container = document.getElementById('productsGrid');
-            if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center;padding:50px;">No products found</div>'; return; }
-            container.innerHTML = filtered.map(p => `
-                <div class="product-card">
-                    <div class="product-image"><i class="fas fa-lightbulb"></i></div>
-                    <div class="product-info">
-                        <div class="product-name">${p.name}</div>
-                        <div class="product-price">Rs. ${(p.price || 0).toLocaleString()}</div>
-                        <button class="add-to-cart" onclick="addToCart('${p.id}', '${p.name}', ${p.price})" ${p.stock_quantity === 0 ? 'disabled' : ''}>
-                            <i class="fas fa-cart-plus"></i> Add to Cart
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function loadCart() { const saved = localStorage.getItem(`cart_${currentBuyerId}`); if (saved) { cart = JSON.parse(saved); updateCartUI(); } }
-        function saveCart() { localStorage.setItem(`cart_${currentBuyerId}`, JSON.stringify(cart)); updateCartUI(); }
-        
-        function addToCart(id, name, price) {
-            const existing = cart.find(item => item.id === id);
-            if (existing) existing.quantity++;
-            else cart.push({ id, name, price, quantity: 1 });
-            saveCart();
-            showNotification(`${name} added to cart!`, false);
-        }
-        
-        function updateCartUI() {
-            const container = document.getElementById('cartItems');
-            const cartCount = document.getElementById('cartCount');
-            const cartTotal = document.getElementById('cartTotal');
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            cartCount.innerHTML = count;
-            if (cart.length === 0) { container.innerHTML = '<p style="text-align:center;color:#999;">Your cart is empty</p>'; cartTotal.innerHTML = '0'; return; }
-            container.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <div><div>${item.name}</div><div>Rs. ${item.price}</div></div>
-                    <div><button onclick="updateQuantity('${item.id}', -1)">-</button> ${item.quantity} <button onclick="updateQuantity('${item.id}', 1)">+</button></div>
-                </div>
-            `).join('');
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            cartTotal.innerHTML = total.toLocaleString();
-        }
-        
-        function updateQuantity(id, change) {
-            const item = cart.find(i => i.id === id);
-            if (item) { item.quantity += change; if (item.quantity <= 0) cart = cart.filter(i => i.id !== id); saveCart(); }
-        }
-        
-        function toggleCart() { document.getElementById('cartSidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
-        
-        function showCheckout() {
-            if (cart.length === 0) { showNotification('Cart is empty!', true); return; }
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('checkoutTotal').innerHTML = total.toLocaleString();
-            document.getElementById('checkoutModal').style.display = 'flex';
-        }
-        
-        function closeCheckout() { document.getElementById('checkoutModal').style.display = 'none'; }
-        
-        async function placeOrder() {
-            const address = document.getElementById('checkoutAddress').value;
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            if (!address) { showNotification('Please enter address', true); return; }
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const { error } = await supabase.from('orders').insert([{
-                user_id: currentBuyerId, user_type: 'buyer', order_date: new Date().toISOString().split('T')[0],
-                total_amount: total, status: 'pending', payment_method: paymentMethod,
-                payment_status: paymentMethod === 'Cash on Delivery' ? 'pending' : 'paid',
-                delivery_address: address, notes: JSON.stringify(cart)
-            }]);
-            if (error) { showNotification(error.message, true); return; }
-            for (const item of cart) {
-                const { data: p } = await supabase.from('products').select('stock_quantity').eq('id', item.id).single();
-                if (p) await supabase.from('products').update({ stock_quantity: (p.stock_quantity || 0) - item.quantity }).eq('id', item.id);
-            }
-            showNotification('Order placed successfully!', false);
-            cart = []; saveCart(); closeCheckout(); toggleCart(); await loadProducts();
-        }
-        
-        async function handleLogout() { await supabase.auth.signOut(); localStorage.clear(); window.location.href = 'buyer-auth.html'; }
-        
-        window.filterByCategory = filterByCategory;
-        window.searchProducts = searchProducts;
-        window.addToCart = addToCart;
-        window.updateQuantity = updateQuantity;
-        window.toggleCart = toggleCart;
-        window.showCheckout = showCheckout;
-        window.closeCheckout = closeCheckout;
-        window.placeOrder = placeOrder;
-        window.handleLogout = handleLogout;
-        
-        checkAuth();
+        function showToast(msg, isError) { const t = document.createElement('div'); t.className = `toast ${isError ? 'error' : 'success'}`; t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+
+        document.getElementById('signupBtn').addEventListener('click', async () => {
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const phone = document.getElementById('signupPhone').value.trim();
+            const address = document.getElementById('signupAddress').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirm = document.getElementById('signupConfirm').value;
+            if (!name || !email || !phone || !address || !password) { showToast('Please fill all fields', true); return; }
+            if (password !== confirm) { showToast('Passwords do not match', true); return; }
+            if (password.length < 6) { showToast('Password must be at least 6 characters', true); return; }
+            const btn = document.getElementById('signupBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating...';
+            const { data: authData, error: authError } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name, phone, address, role: 'buyer' } } });
+            if (authError) { showToast(authError.message, true); btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account'; return; }
+            if (authData.user) { await supabase.from('buyers').insert([{ id: authData.user.id, email, full_name: name, phone, address, created_at: new Date().toISOString() }]); showToast('Account created! Please login.', false); document.querySelectorAll('#signupSection input').forEach(i => i.value = ''); showLoginForm(); }
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
+        });
+
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            if (!email || !password) { showToast('Please enter email and password', true); return; }
+            const btn = document.getElementById('loginBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) { showToast('Invalid email or password', true); btn.disabled = false; btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop'; return; }
+            if (data.user) { localStorage.setItem('user', JSON.stringify(data.user)); localStorage.setItem('userType', 'buyer'); showToast('Login successful! Redirecting...', false); setTimeout(() => window.location.href = 'buyer.html', 1500); }
+        });
     </script>
 </body>
 </html>
