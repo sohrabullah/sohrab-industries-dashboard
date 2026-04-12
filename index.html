@@ -26,7 +26,6 @@
             overflow-x: hidden;
         }
 
-        /* Decorative elements */
         body::before {
             content: "";
             position: absolute;
@@ -51,7 +50,6 @@
             pointer-events: none;
         }
 
-        /* Main Container */
         .container {
             max-width: 520px;
             width: 100%;
@@ -63,7 +61,6 @@
             z-index: 1;
         }
 
-        /* Brand Header */
         .brand-header {
             background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%);
             padding: 2rem 1.8rem 1.8rem;
@@ -111,7 +108,6 @@
             font-weight: 500;
         }
 
-        /* User Type Selector */
         .user-type-selector {
             display: flex;
             gap: 10px;
@@ -133,17 +129,10 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .type-btn.active {
-            background: #1E4E3E;
-            color: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .type-btn.investor.active { background: #1E4E3E; }
+        .type-btn.investor.active { background: #1E4E3E; color: white; }
         .type-btn.buyer.active { background: #E8B13C; color: #1E4E3E; }
-        .type-btn.admin.active { background: #dc3545; }
+        .type-btn.admin.active { background: #dc3545; color: white; }
 
-        /* Form Panel */
         .form-panel {
             padding: 2rem 2rem 2.2rem;
             background: #ffffff;
@@ -159,14 +148,8 @@
         }
 
         @keyframes fadeSlide {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .form-container h2 {
@@ -193,7 +176,7 @@
             z-index: 1;
         }
 
-        input, select {
+        input {
             width: 100%;
             padding: 0.85rem 1rem 0.85rem 2.8rem;
             font-size: 0.95rem;
@@ -205,7 +188,7 @@
             outline: none;
         }
 
-        input:focus, select:focus {
+        input:focus {
             border-color: #E8B13C;
             box-shadow: 0 0 0 4px rgba(232, 177, 60, 0.2);
         }
@@ -268,7 +251,6 @@
             gap: 5px;
         }
 
-        /* Toast Notification */
         .toast-notification {
             position: fixed;
             bottom: 30px;
@@ -292,15 +274,6 @@
             to { transform: translateX(-50%) translateY(0); opacity: 1; }
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container { border-radius: 1.5rem; }
-            .form-panel { padding: 1.5rem; }
-            .brand-header h1 { font-size: 1.4rem; }
-            .toast-notification { white-space: normal; max-width: 90%; font-size: 0.85rem; }
-        }
-
-        /* Admin Notice */
         .admin-notice {
             background: #fff3cd;
             padding: 10px;
@@ -309,6 +282,13 @@
             font-size: 0.75rem;
             text-align: center;
             color: #856404;
+        }
+
+        @media (max-width: 480px) {
+            .container { border-radius: 1.5rem; }
+            .form-panel { padding: 1.5rem; }
+            .brand-header h1 { font-size: 1.4rem; }
+            .toast-notification { white-space: normal; max-width: 90%; font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -325,7 +305,6 @@
         <div class="tagline">Premium Bulbs | Smart Investment | Grow with Us</div>
     </div>
 
-    <!-- User Type Selection -->
     <div class="user-type-selector">
         <button class="type-btn investor active" onclick="selectUserType('investor')">
             <i class="fas fa-chart-line"></i> Investor
@@ -341,10 +320,9 @@
     <div class="form-panel">
         <!-- Investor Forms -->
         <div id="investorForms" class="form-container active">
-            <!-- Investor Login -->
-            <div id="investorLoginForm" class="auth-form active">
+            <div id="investorLoginForm" class="auth-form" style="display: block;">
                 <h2><i class="fas fa-sign-in-alt"></i> Investor Login</h2>
-                <form id="investorLogin">
+                <form id="investorLoginFormElement">
                     <div class="input-group">
                         <i class="fas fa-envelope"></i>
                         <input type="email" id="investorLoginEmail" placeholder="Email Address" required>
@@ -358,10 +336,9 @@
                 <p class="toggle-text">New Investor? <a onclick="showInvestorSignup()">Create Investment Account →</a></p>
             </div>
 
-            <!-- Investor Signup -->
-            <div id="investorSignupForm" class="auth-form">
+            <div id="investorSignupForm" class="auth-form" style="display: none;">
                 <h2><i class="fas fa-user-plus"></i> Become an Investor</h2>
-                <form id="investorSignup">
+                <form id="investorSignupFormElement">
                     <div class="input-group">
                         <i class="fas fa-user-circle"></i>
                         <input type="text" id="investorFullName" placeholder="Full Name" required>
@@ -390,10 +367,9 @@
 
         <!-- Buyer Forms -->
         <div id="buyerForms" class="form-container">
-            <!-- Buyer Login -->
-            <div id="buyerLoginForm" class="auth-form active">
+            <div id="buyerLoginForm" class="auth-form" style="display: block;">
                 <h2><i class="fas fa-sign-in-alt"></i> Buyer Login</h2>
-                <form id="buyerLogin">
+                <form id="buyerLoginFormElement">
                     <div class="input-group">
                         <i class="fas fa-envelope"></i>
                         <input type="email" id="buyerLoginEmail" placeholder="Email Address" required>
@@ -407,10 +383,9 @@
                 <p class="toggle-text">New Customer? <a onclick="showBuyerSignup()">Create Account →</a></p>
             </div>
 
-            <!-- Buyer Signup -->
-            <div id="buyerSignupForm" class="auth-form">
+            <div id="buyerSignupForm" class="auth-form" style="display: none;">
                 <h2><i class="fas fa-user-plus"></i> Create Account</h2>
-                <form id="buyerSignup">
+                <form id="buyerSignupFormElement">
                     <div class="input-group">
                         <i class="fas fa-user-circle"></i>
                         <input type="text" id="buyerFullName" placeholder="Full Name" required>
@@ -443,7 +418,7 @@
                 <i class="fas fa-shield-alt"></i> Authorized Personnel Only
             </div>
             <h2><i class="fas fa-user-shield"></i> Admin Login</h2>
-            <form id="adminLogin">
+            <form id="adminLoginFormElement">
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
                     <input type="email" id="adminEmail" placeholder="Admin Email" required>
@@ -456,7 +431,6 @@
             </form>
         </div>
 
-        <!-- Feature Badges -->
         <div class="feature-badges">
             <span><i class="fas fa-chart-line"></i> Monthly Returns</span>
             <span><i class="fas fa-truck"></i> Free Delivery</span>
@@ -473,8 +447,6 @@
     const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    let currentUserType = 'investor';
 
     // Toast Notification
     function showNotification(message, isError = false) {
@@ -494,8 +466,6 @@
 
     // User Type Selection
     function selectUserType(type) {
-        currentUserType = type;
-        
         // Update button styles
         document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelector(`.type-btn.${type}`).classList.add('active');
@@ -516,30 +486,30 @@
 
     // Investor Form Toggles
     function showInvestorLogin() {
-        document.getElementById('investorLoginForm').classList.add('active');
-        document.getElementById('investorSignupForm').classList.remove('active');
+        document.getElementById('investorLoginForm').style.display = 'block';
+        document.getElementById('investorSignupForm').style.display = 'none';
     }
 
     function showInvestorSignup() {
-        document.getElementById('investorLoginForm').classList.remove('active');
-        document.getElementById('investorSignupForm').classList.add('active');
+        document.getElementById('investorLoginForm').style.display = 'none';
+        document.getElementById('investorSignupForm').style.display = 'block';
     }
 
     // Buyer Form Toggles
     function showBuyerLogin() {
-        document.getElementById('buyerLoginForm').classList.add('active');
-        document.getElementById('buyerSignupForm').classList.remove('active');
+        document.getElementById('buyerLoginForm').style.display = 'block';
+        document.getElementById('buyerSignupForm').style.display = 'none';
     }
 
     function showBuyerSignup() {
-        document.getElementById('buyerLoginForm').classList.remove('active');
-        document.getElementById('buyerSignupForm').classList.add('active');
+        document.getElementById('buyerLoginForm').style.display = 'none';
+        document.getElementById('buyerSignupForm').style.display = 'block';
     }
 
     // ============================================
     // INVESTOR LOGIN
     // ============================================
-    document.getElementById('investorLogin')?.addEventListener('submit', async (e) => {
+    document.getElementById('investorLoginFormElement')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('investorLoginEmail').value.trim();
         const password = document.getElementById('investorLoginPassword').value;
@@ -558,7 +528,7 @@
     // ============================================
     // INVESTOR SIGNUP
     // ============================================
-    document.getElementById('investorSignup')?.addEventListener('submit', async (e) => {
+    document.getElementById('investorSignupFormElement')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const fullName = document.getElementById('investorFullName').value.trim();
@@ -583,21 +553,29 @@
         }
         
         if (authData.user) {
-            await supabase.from('investors').insert([{
-                id: authData.user.id, email, full_name: fullName, phone, city,
+            const { error: insertError } = await supabase.from('investors').insert([{
+                id: authData.user.id,
+                email: email,
+                full_name: fullName,
+                phone: phone || null,
+                city: city || null,
                 created_at: new Date().toISOString()
             }]);
             
+            if (insertError) {
+                console.error('Insert error:', insertError);
+            }
+            
             showNotification('Account created! Please login.', false);
             showInvestorLogin();
-            document.getElementById('investorSignup').reset();
+            document.getElementById('investorSignupFormElement').reset();
         }
     });
 
     // ============================================
     // BUYER LOGIN
     // ============================================
-    document.getElementById('buyerLogin')?.addEventListener('submit', async (e) => {
+    document.getElementById('buyerLoginFormElement')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('buyerLoginEmail').value.trim();
         const password = document.getElementById('buyerLoginPassword').value;
@@ -616,7 +594,7 @@
     // ============================================
     // BUYER SIGNUP
     // ============================================
-    document.getElementById('buyerSignup')?.addEventListener('submit', async (e) => {
+    document.getElementById('buyerSignupFormElement')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const fullName = document.getElementById('buyerFullName').value.trim();
@@ -641,21 +619,29 @@
         }
         
         if (authData.user) {
-            await supabase.from('buyers').insert([{
-                id: authData.user.id, email, full_name: fullName, phone, address,
+            const { error: insertError } = await supabase.from('buyers').insert([{
+                id: authData.user.id,
+                email: email,
+                full_name: fullName,
+                phone: phone || null,
+                address: address || null,
                 created_at: new Date().toISOString()
             }]);
             
+            if (insertError) {
+                console.error('Insert error:', insertError);
+            }
+            
             showNotification('Account created! Please login.', false);
             showBuyerLogin();
-            document.getElementById('buyerSignup').reset();
+            document.getElementById('buyerSignupFormElement').reset();
         }
     });
 
     // ============================================
     // ADMIN LOGIN
     // ============================================
-    document.getElementById('adminLogin')?.addEventListener('submit', async (e) => {
+    document.getElementById('adminLoginFormElement')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('adminEmail').value.trim();
         const password = document.getElementById('adminPassword').value;
@@ -665,7 +651,6 @@
         if (error) {
             showNotification('Login failed: ' + error.message, true);
         } else if (data.user) {
-            // Check if user is admin
             const adminEmails = ['admin@sohrab.com', 'sohrabullahkn786@gmail.com'];
             if (!adminEmails.includes(email)) {
                 showNotification('Unauthorized. Admin access only.', true);
@@ -686,7 +671,5 @@
     window.showBuyerLogin = showBuyerLogin;
     window.showBuyerSignup = showBuyerSignup;
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
 </body>
 </html>
