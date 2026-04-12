@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -21,14 +20,12 @@
             min-height: 100vh;
         }
 
-        /* Dashboard Container */
         .dashboard-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* Header */
         .dashboard-header {
             background: linear-gradient(135deg, #1E4E3E 0%, #2A6B58 100%);
             color: white;
@@ -81,7 +78,6 @@
             transform: translateY(-2px);
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -122,7 +118,6 @@
             color: #28a745;
         }
 
-        /* Tabs */
         .tabs {
             display: flex;
             gap: 10px;
@@ -153,7 +148,6 @@
             color: white;
         }
 
-        /* Tab Content */
         .tab-content {
             display: none;
             background: white;
@@ -202,7 +196,6 @@
             transform: translateY(-2px);
         }
 
-        /* Tables */
         .table-container {
             overflow-x: auto;
         }
@@ -228,7 +221,6 @@
             background: #f8f9fa;
         }
 
-        /* Status Badges */
         .status {
             padding: 4px 12px;
             border-radius: 20px;
@@ -252,7 +244,6 @@
             color: #721c24;
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -327,7 +318,6 @@
             font-weight: 600;
         }
 
-        /* Toast Notifications */
         .toast-notification {
             position: fixed;
             bottom: 30px;
@@ -353,14 +343,12 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 40px;
             color: #999;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .dashboard-header {
                 flex-direction: column;
@@ -382,7 +370,6 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Header -->
         <div class="dashboard-header">
             <h1><i class="fas fa-lightbulb"></i> Sohrab Industries</h1>
             <div class="user-info">
@@ -391,7 +378,6 @@
             </div>
         </div>
 
-        <!-- Stats Cards -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3><i class="fas fa-chart-line"></i> Total Investment</h3>
@@ -411,7 +397,6 @@
             </div>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" onclick="showTab('investments')"><i class="fas fa-chart-line"></i> My Investments</button>
             <button class="tab-btn" onclick="showTab('profits')"><i class="fas fa-coins"></i> Profit History</button>
@@ -419,57 +404,51 @@
             <button class="tab-btn" onclick="showTab('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
         </div>
 
-        <!-- Investments Tab -->
         <div id="investmentsTab" class="tab-content active">
             <div class="section-header">
                 <h2><i class="fas fa-history"></i> Investment History</h2>
                 <button onclick="showInvestmentForm()" class="btn-primary"><i class="fas fa-plus"></i> New Investment</button>
             </div>
             <div class="table-container">
-                <table id="investmentsTable">
-                    <thead>
-                        <tr><th>Date</th><th>Amount</th><th>Type</th><th>Status</th><th>Notes</th></tr>
-                    </thead>
+                <table>
+                    <thead><tr><th>Date</th><th>Amount</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
                     <tbody id="investmentsList"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Profits Tab -->
         <div id="profitsTab" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-gift"></i> Profit Distribution History</h2>
             </div>
             <div class="table-container">
-                <table id="profitsTable">
+                <table>
                     <thead><tr><th>Month</th><th>Amount</th><th>Status</th><th>Paid Date</th></tr></thead>
                     <tbody id="profitsList"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Orders Tab -->
         <div id="ordersTab" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-box"></i> Product Orders</h2>
-                <button onclick="window.location.href='products.html'" class="btn-primary"><i class="fas fa-store"></i> Browse Bulbs</button>
+                <button onclick="window.location.href='buyer.html'" class="btn-primary"><i class="fas fa-store"></i> Browse Bulbs</button>
             </div>
             <div class="table-container">
-                <table id="ordersTable">
+                <table>
                     <thead><tr><th>Product</th><th>Quantity</th><th>Total</th><th>Order Date</th><th>Status</th></tr></thead>
                     <tbody id="ordersList"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Withdrawals Tab -->
         <div id="withdrawalsTab" class="tab-content">
             <div class="section-header">
                 <h2><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</h2>
                 <button onclick="showWithdrawalForm()" class="btn-primary"><i class="fas fa-plus"></i> Request Withdrawal</button>
             </div>
             <div class="table-container">
-                <table id="withdrawalsTable">
+                <table>
                     <thead><tr><th>Request Date</th><th>Amount</th><th>Status</th><th>Processed Date</th></tr></thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
@@ -477,7 +456,6 @@
         </div>
     </div>
 
-    <!-- Investment Modal -->
     <div id="investmentModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('investmentModal')">&times;</span>
@@ -503,7 +481,6 @@
         </div>
     </div>
 
-    <!-- Withdrawal Modal -->
     <div id="withdrawalModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('withdrawalModal')">&times;</span>
@@ -526,321 +503,142 @@
     </div>
 
     <script>
-        // ============================================
-        // SUPABASE CONFIGURATION - YOUR REAL KEYS
-        // ============================================
+        // Supabase Configuration
         const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentUser = null;
 
-        // Toast Notification
-        function showNotification(message, isError = false) {
+        function showNotification(message, isError) {
             const toast = document.createElement('div');
             toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
             toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
             document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        // Check if user is logged in
+        // Check authentication
         async function checkAuth() {
             const { data: { user }, error } = await supabase.auth.getUser();
-            
             if (error || !user) {
-                window.location.href = 'index.html';
+                window.location.href = 'investor-auth.html';
                 return null;
             }
-            
             currentUser = user;
             document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
             
-            // Load all data
             await loadInvestments();
             await loadProfits();
             await loadOrders();
             await loadWithdrawals();
             await loadStats();
-            
             return user;
         }
 
-        // Load investments
         async function loadInvestments() {
-            try {
-                const { data, error } = await supabase
-                    .from('investments')
-                    .select('*')
-                    .eq('investor_id', currentUser.id)
-                    .order('investment_date', { ascending: false });
-                
-                if (error) throw error;
-                
-                const tbody = document.getElementById('investmentsList');
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No investments yet. Start your investment journey today!</td></tr>';
-                    return;
-                }
-                
-                tbody.innerHTML = data.map(inv => `
-                    <tr>
-                        <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
-                        <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
-                        <td>${inv.investment_type || 'Regular'}</td>
-                        <td><span class="status ${inv.status}">${inv.status}</span></td>
-                        <td>${inv.notes || '-'}</td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading investments:', error);
+            const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentUser.id).order('investment_date', { ascending: false });
+            const tbody = document.getElementById('investmentsList');
+            if (error || !data?.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No investments yet</td></tr>';
+                return;
             }
+            tbody.innerHTML = data.map(inv => `<tr><td>${new Date(inv.investment_date).toLocaleDateString()}</td><td>Rs. ${(inv.amount || 0).toLocaleString()}</td><td>${inv.investment_type || 'Regular'}</td><td><span class="status ${inv.status}">${inv.status}</span></td><td>${inv.notes || '-'}</td></tr>`).join('');
         }
 
-        // Load profits
         async function loadProfits() {
-            try {
-                const { data, error } = await supabase
-                    .from('profits')
-                    .select('*')
-                    .eq('investor_id', currentUser.id)
-                    .order('month', { ascending: false });
-                
-                if (error) throw error;
-                
-                const tbody = document.getElementById('profitsList');
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No profits recorded yet</td></tr>';
-                    return;
-                }
-                
-                tbody.innerHTML = data.map(profit => `
-                    <tr>
-                        <td>${new Date(profit.month).toLocaleDateString('default', { year: 'numeric', month: 'long' })}</td>
-                        <td>Rs. ${(profit.amount || 0).toLocaleString()}</td>
-                        <td><span class="status ${profit.paid ? 'active' : 'pending'}">${profit.paid ? '✅ Paid' : '⏳ Pending'}</span></td>
-                        <td>${profit.paid_date ? new Date(profit.paid_date).toLocaleDateString() : '-'}</td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading profits:', error);
+            const { data, error } = await supabase.from('profits').select('*').eq('investor_id', currentUser.id).order('month', { ascending: false });
+            const tbody = document.getElementById('profitsList');
+            if (error || !data?.length) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No profits recorded</td></tr>';
+                return;
             }
+            tbody.innerHTML = data.map(p => `<tr><td>${new Date(p.month).toLocaleDateString('default', { year: 'numeric', month: 'long' })}</td><td>Rs. ${(p.amount || 0).toLocaleString()}</td><td><span class="status ${p.paid ? 'active' : 'pending'}">${p.paid ? 'Paid' : 'Pending'}</span></td><td>${p.paid_date ? new Date(p.paid_date).toLocaleDateString() : '-'}</td></tr>`).join('');
         }
 
-        // Load orders
         async function loadOrders() {
-            try {
-                const { data, error } = await supabase
-                    .from('orders')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .eq('user_type', 'investor')
-                    .order('order_date', { ascending: false });
-                
-                if (error) throw error;
-                
-                const tbody = document.getElementById('ordersList');
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No orders yet. Browse our bulbs!</td></tr>';
-                    return;
-                }
-                
-                tbody.innerHTML = data.map(order => `
-                    <tr>
-                        <td>${order.product_name || 'Product'}</td>
-                        <td>${order.quantity || 1}</td>
-                        <td>Rs. ${(order.total_amount || 0).toLocaleString()}</td>
-                        <td>${new Date(order.order_date).toLocaleDateString()}</td>
-                        <td><span class="status ${order.status}">${order.status || 'pending'}</span></td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading orders:', error);
+            const { data, error } = await supabase.from('orders').select('*').eq('user_id', currentUser.id).eq('user_type', 'investor').order('order_date', { ascending: false });
+            const tbody = document.getElementById('ordersList');
+            if (error || !data?.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No orders yet</td></tr>';
+                return;
             }
+            tbody.innerHTML = data.map(o => `<tr><td>${o.product_name || 'Product'}</td><td>${o.quantity || 1}</td><td>Rs. ${(o.total_amount || 0).toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status ${o.status}">${o.status || 'pending'}</span></td></tr>`).join('');
         }
 
-        // Load withdrawals
         async function loadWithdrawals() {
-            try {
-                const { data, error } = await supabase
-                    .from('withdrawals')
-                    .select('*')
-                    .eq('investor_id', currentUser.id)
-                    .order('request_date', { ascending: false });
-                
-                if (error) throw error;
-                
-                const tbody = document.getElementById('withdrawalsList');
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No withdrawal requests</td></tr>';
-                    return;
-                }
-                
-                tbody.innerHTML = data.map(w => `
-                    <tr>
-                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                        <td><span class="status ${w.status}">${w.status}</span></td>
-                        <td>${w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-'}</td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading withdrawals:', error);
+            const { data, error } = await supabase.from('withdrawals').select('*').eq('investor_id', currentUser.id).order('request_date', { ascending: false });
+            const tbody = document.getElementById('withdrawalsList');
+            if (error || !data?.length) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No withdrawal requests</td></tr>';
+                return;
             }
+            tbody.innerHTML = data.map(w => `<tr><td>${new Date(w.request_date).toLocaleDateString()}</td><td>Rs. ${(w.amount || 0).toLocaleString()}</td><td><span class="status ${w.status}">${w.status}</span></td><td>${w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-'}</td></tr>`).join('');
         }
 
-        // Load statistics
         async function loadStats() {
-            try {
-                // Total active investments
-                const { data: investments } = await supabase
-                    .from('investments')
-                    .select('amount')
-                    .eq('investor_id', currentUser.id)
-                    .eq('status', 'active');
-                
-                const totalInvested = investments?.reduce((sum, i) => sum + (i.amount || 0), 0) || 0;
-                document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-                document.getElementById('activeInvestments').innerHTML = investments?.length || 0;
-                
-                // Total profits
-                const { data: profits } = await supabase
-                    .from('profits')
-                    .select('amount')
-                    .eq('investor_id', currentUser.id)
-                    .eq('paid', true);
-                
-                const totalProfit = profits?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0;
-                document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-                document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-                
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
+            const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentUser.id).eq('status', 'active');
+            const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
+            document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
+            document.getElementById('activeInvestments').innerHTML = investments?.length || 0;
+
+            const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentUser.id).eq('paid', true);
+            const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
+            document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+            document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
         }
 
-        // Show investment form
-        function showInvestmentForm() {
-            document.getElementById('investmentModal').style.display = 'block';
+        function showInvestmentForm() { document.getElementById('investmentModal').style.display = 'block'; }
+        function showWithdrawalForm() { document.getElementById('withdrawalModal').style.display = 'block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        async function submitWithdrawalRequest(amount, method, details) {
+            const { error } = await supabase.from('withdrawals').insert([{
+                investor_id: currentUser.id, amount: parseFloat(amount), request_date: new Date().toISOString().split('T')[0],
+                status: 'pending', payment_method: method, notes: details
+            }]);
+            if (error) { showNotification(error.message, true); return false; }
+            showNotification('Withdrawal request submitted!', false);
+            await loadWithdrawals();
+            return true;
         }
 
-        // Show withdrawal form
-        function showWithdrawalForm() {
-            document.getElementById('withdrawalModal').style.display = 'block';
-        }
-
-        // Close modal
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // Submit withdrawal request
-        async function submitWithdrawalRequest(amount, method, accountDetails) {
-            try {
-                const { error } = await supabase
-                    .from('withdrawals')
-                    .insert([{
-                        investor_id: currentUser.id,
-                        amount: parseFloat(amount),
-                        request_date: new Date().toISOString().split('T')[0],
-                        status: 'pending',
-                        payment_method: method,
-                        notes: accountDetails
-                    }]);
-                
-                if (error) throw error;
-                
-                showNotification('Withdrawal request submitted successfully!', false);
-                await loadWithdrawals();
-                return true;
-            } catch (error) {
-                showNotification('Error: ' + error.message, true);
-                return false;
-            }
-        }
-
-        // Tab switching
         function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`${tabName}Tab`).classList.add('active');
             event.target.classList.add('active');
         }
 
-        // Logout
         async function logout() {
             await supabase.auth.signOut();
-            localStorage.removeItem('user');
-            showNotification('Logged out successfully!', false);
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 500);
+            window.location.href = 'investor-auth.html';
         }
 
         // Event Listeners
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
-            
-            // Investment request form
-            const investmentRequest = document.getElementById('investmentRequest');
-            if (investmentRequest) {
-                investmentRequest.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const amount = document.getElementById('investmentAmount').value;
-                    const paymentMethod = document.getElementById('paymentMethod').value;
-                    const transactionId = document.getElementById('transactionId').value;
-                    
-                    showNotification(`Investment request submitted!\nAmount: Rs. ${amount}\nMethod: ${paymentMethod}\n\nOur team will verify within 24 hours.`, false);
-                    
-                    closeModal('investmentModal');
-                    e.target.reset();
-                });
-            }
-            
-            // Withdrawal request form
-            const withdrawalRequest = document.getElementById('withdrawalRequest');
-            if (withdrawalRequest) {
-                withdrawalRequest.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const amount = document.getElementById('withdrawAmount').value;
-                    const method = document.getElementById('withdrawMethod').value;
-                    const accountDetails = document.getElementById('accountDetails').value;
-                    
-                    if (parseFloat(amount) < 1000) {
-                        showNotification('Minimum withdrawal amount is Rs. 1,000', true);
-                        return;
-                    }
-                    
-                    await submitWithdrawalRequest(amount, method, accountDetails);
-                    closeModal('withdrawalModal');
-                    e.target.reset();
-                });
-            }
+            document.getElementById('investmentRequest')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const amount = document.getElementById('investmentAmount').value;
+                const method = document.getElementById('paymentMethod').value;
+                showNotification(`Investment request submitted! Amount: Rs. ${amount} via ${method}. Our team will verify within 24 hours.`, false);
+                closeModal('investmentModal');
+                e.target.reset();
+            });
+            document.getElementById('withdrawalRequest')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const amount = document.getElementById('withdrawAmount').value;
+                if (parseFloat(amount) < 1000) { showNotification('Minimum withdrawal is Rs. 1,000', true); return; }
+                await submitWithdrawalRequest(amount, document.getElementById('withdrawMethod').value, document.getElementById('accountDetails').value);
+                closeModal('withdrawalModal');
+                e.target.reset();
+            });
         });
-        
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList && event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        }
-        
-        // Make functions global
-        window.showTab = showTab;
-        window.logout = logout;
-        window.showInvestmentForm = showInvestmentForm;
-        window.showWithdrawalForm = showWithdrawalForm;
-        window.closeModal = closeModal;
+
+        window.onclick = (e) => { if (e.target.classList?.contains('modal')) e.target.style.display = 'none'; };
+        window.showTab = showTab; window.logout = logout; window.showInvestmentForm = showInvestmentForm;
+        window.showWithdrawalForm = showWithdrawalForm; window.closeModal = closeModal;
     </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
 </body>
 </html>
