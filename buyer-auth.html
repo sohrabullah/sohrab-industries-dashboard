@@ -25,9 +25,9 @@
         .logo { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 700; color: #1E4E3E; }
         .logo i { color: #E8B13C; }
         .nav-links { display: flex; gap: 20px; }
-        .nav-links a { text-decoration: none; color: #1E4E3E; font-weight: 500; }
+        .nav-links a { text-decoration: none; color: #1E4E3E; font-weight: 500; transition: color 0.3s; }
         .nav-links a:hover { color: #E8B13C; }
-        .container { max-width: 500px; margin: 2rem auto; padding: 0 1rem; }
+        .container { max-width: 520px; margin: 2rem auto; padding: 0 1rem; }
         .auth-card { background: white; border-radius: 2rem; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); }
         .card-header { background: linear-gradient(112deg, #E8B13C 0%, #f0c45a 100%); padding: 2rem; text-align: center; color: #1E4E3E; }
         .card-header i { font-size: 3rem; color: #1E4E3E; margin-bottom: 0.5rem; }
@@ -52,23 +52,18 @@
             transition: all 0.3s;
             background: transparent;
             font-family: 'Inter', sans-serif;
+            font-size: 1rem;
         }
         .toggle-btn.active { background: #E8B13C; color: #1E4E3E; }
+        .form-wrapper { transition: all 0.3s ease; }
         .form-group { margin-bottom: 1.2rem; position: relative; }
-        .form-group i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9CA3AF;
-        }
+        .form-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9CA3AF; }
         .form-group input {
             width: 100%;
             padding: 0.9rem 1rem 0.9rem 2.8rem;
             border: 1.5px solid #E2E8F0;
             border-radius: 1rem;
             font-size: 1rem;
-            transition: all 0.2s;
         }
         .form-group input:focus { outline: none; border-color: #E8B13C; }
         .btn-primary {
@@ -84,8 +79,11 @@
             transition: all 0.3s;
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(232,177,60,0.3); }
-        .footer-links { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
-        .footer-links a { color: #E8B13C; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+        .toggle-link { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
+        .toggle-link a { color: #E8B13C; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .back-home { text-align: center; margin-top: 1rem; }
+        .back-home a { color: white; text-decoration: none; font-size: 0.9rem; opacity: 0.8; }
         .toast {
             position: fixed;
             bottom: 30px;
@@ -96,6 +94,8 @@
             color: white;
             z-index: 1000;
             animation: slideUp 0.3s ease;
+            text-align: center;
+            font-weight: 500;
         }
         .toast.success { background: #28a745; }
         .toast.error { background: #dc3545; }
@@ -126,17 +126,12 @@
             </div>
             <div class="card-body">
                 <div class="toggle-buttons">
-                    <button class="toggle-btn active" id="showLoginBtn">Login</button>
-                    <button class="toggle-btn" id="showSignupBtn">Sign Up</button>
+                    <button class="toggle-btn" id="loginTabBtn">Login</button>
+                    <button class="toggle-btn active" id="signupTabBtn">Sign Up</button>
                 </div>
 
-                <div id="loginForm" style="display: none;">
-                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address" required></div>
-                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password" required></div>
-                    <button class="btn-primary" id="loginBtn"><i class="fas fa-store"></i> Login to Shop</button>
-                </div>
-
-                <div id="signupForm">
+                <!-- Signup Form (Visible by default) -->
+                <div id="signupForm" class="form-wrapper">
                     <div class="form-group"><i class="fas fa-user"></i><input type="text" id="fullName" placeholder="Full Name" required></div>
                     <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="email" placeholder="Email Address" required></div>
                     <div class="form-group"><i class="fas fa-phone"></i><input type="tel" id="phone" placeholder="Phone Number" required></div>
@@ -146,10 +141,17 @@
                     <button class="btn-primary" id="signupBtn"><i class="fas fa-user-plus"></i> Create Buyer Account</button>
                 </div>
 
-                <div class="footer-links">
-                    <a id="toggleFormLink">Already have an account? Login →</a>
+                <!-- Login Form (Hidden by default) -->
+                <div id="loginForm" class="form-wrapper" style="display: none;">
+                    <div class="form-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address" required></div>
+                    <div class="form-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password" required></div>
+                    <button class="btn-primary" id="loginBtn"><i class="fas fa-store"></i> Login to Shop</button>
                 </div>
-                <div class="back-home"><a href="index.html" style="color: #666; text-decoration: none;">← Back to Home</a></div>
+
+                <div class="toggle-link">
+                    <a id="toggleLink">Already have an account? Login →</a>
+                </div>
+                <div class="back-home"><a href="index.html">← Back to Home</a></div>
             </div>
         </div>
     </div>
@@ -167,37 +169,38 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        const loginForm = document.getElementById('loginForm');
         const signupForm = document.getElementById('signupForm');
-        const showLoginBtn = document.getElementById('showLoginBtn');
-        const showSignupBtn = document.getElementById('showSignupBtn');
-        const toggleLink = document.getElementById('toggleFormLink');
+        const loginForm = document.getElementById('loginForm');
+        const loginTab = document.getElementById('loginTabBtn');
+        const signupTab = document.getElementById('signupTabBtn');
+        const toggleLink = document.getElementById('toggleLink');
 
-        function showLogin() {
-            loginForm.style.display = 'block';
+        function showLoginForm() {
             signupForm.style.display = 'none';
-            showLoginBtn.classList.add('active');
-            showSignupBtn.classList.remove('active');
+            loginForm.style.display = 'block';
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
             toggleLink.innerHTML = "Don't have an account? Sign Up →";
         }
 
-        function showSignup() {
+        function showSignupForm() {
             loginForm.style.display = 'none';
             signupForm.style.display = 'block';
-            showSignupBtn.classList.add('active');
-            showLoginBtn.classList.remove('active');
-            toggleLink.innerHTML = 'Already have an account? Login →';
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            toggleLink.innerHTML = "Already have an account? Login →";
         }
 
-        showLoginBtn.addEventListener('click', showLogin);
-        showSignupBtn.addEventListener('click', showSignup);
+        loginTab.addEventListener('click', showLoginForm);
+        signupTab.addEventListener('click', showSignupForm);
         toggleLink.addEventListener('click', () => {
-            if (loginForm.style.display === 'none') showLogin();
-            else showSignup();
+            if (loginForm.style.display === 'none') showLoginForm();
+            else showSignupForm();
         });
 
         // SIGNUP
         document.getElementById('signupBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('signupBtn');
             const fullName = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
@@ -212,34 +215,55 @@
             if (password !== confirm) { showToast('Passwords do not match', true); return; }
             if (password.length < 6) { showToast('Password must be at least 6 characters', true); return; }
 
-            const { data: existingUser } = await supabase.from('buyers').select('email').eq('email', email).single();
-            if (existingUser) { showToast('Email already registered. Please login.', true); return; }
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
 
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email, password,
-                options: { data: { full_name: fullName, phone, address, role: 'buyer' } }
-            });
+            try {
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email, password,
+                    options: { data: { full_name: fullName, phone, address, role: 'buyer' } }
+                });
 
-            if (authError) { showToast(authError.message, true); return; }
+                if (authError) { showToast(authError.message, true); return; }
 
-            if (authData.user) {
-                await supabase.from('buyers').insert([{ id: authData.user.id, email, full_name: fullName, phone, address }]);
-                showToast('Account created successfully! Please login.', false);
-                showLogin();
-                document.getElementById('signupForm').reset();
+                if (authData.user) {
+                    await supabase.from('buyers').insert([{
+                        id: authData.user.id, email, full_name: fullName, phone, address,
+                        status: 'approved', is_approved: true, created_at: new Date().toISOString()
+                    }]);
+                    showToast('Account created successfully! Please login.', false);
+                    
+                    // Clear form
+                    document.querySelectorAll('#signupForm input').forEach(i => i.value = '');
+                    showLoginForm();
+                }
+            } catch (error) {
+                showToast('An error occurred. Please try again.', true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Buyer Account';
             }
         });
 
         // LOGIN
         document.getElementById('loginBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('loginBtn');
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
             if (!email || !password) { showToast('Please enter email and password', true); return; }
 
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-            if (error) { showToast('Invalid email or password', true); return; }
+            if (error) {
+                showToast('Invalid email or password', true);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-store"></i> Login to Shop';
+                return;
+            }
 
             if (data.user) {
                 localStorage.setItem('user', JSON.stringify(data.user));
