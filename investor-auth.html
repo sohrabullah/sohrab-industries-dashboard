@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sohrab Industries | Investor Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
@@ -13,424 +11,243 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0B2B26 0%, #1A4D3E 50%, #0F3B32 100%);
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0B2B26, #1A4D3E);
             min-height: 100vh;
-        }
-
-        .navbar {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 1rem 5%;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1E4E3E;
-        }
-
-        .logo i {
-            color: #E8B13C;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #1E4E3E;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #E8B13C;
-        }
-
         .container {
-            max-width: 520px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .auth-card {
+            max-width: 450px;
+            width: 90%;
             background: white;
-            border-radius: 2rem;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
-
-        .card-header {
-            background: linear-gradient(112deg, #1E4E3E 0%, #2A6B58 100%);
-            padding: 2rem;
+        h2 {
             text-align: center;
-            color: white;
+            color: #1E4E3E;
+            margin-bottom: 20px;
         }
-
-        .card-header i {
-            font-size: 3rem;
-            color: #E8B13C;
-            margin-bottom: 0.5rem;
+        .logo {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 10px;
         }
-
-        .card-header h2 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-header p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
         .toggle-buttons {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            background: #f0f2f5;
-            padding: 0.5rem;
-            border-radius: 3rem;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-
         .toggle-btn {
             flex: 1;
-            padding: 0.8rem;
+            padding: 12px;
             border: none;
-            border-radius: 2rem;
-            font-weight: 600;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
-            background: transparent;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
+            font-size: 16px;
+            font-weight: bold;
+            background: #f0f0f0;
         }
-
         .toggle-btn.active {
             background: #1E4E3E;
             color: white;
         }
-
         .form-group {
-            margin-bottom: 1.2rem;
-            position: relative;
+            margin-bottom: 15px;
         }
-
-        .form-group i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9CA3AF;
-        }
-
         .form-group input {
             width: 100%;
-            padding: 0.9rem 1rem 0.9rem 2.8rem;
-            border: 1.5px solid #E2E8F0;
-            border-radius: 1rem;
-            font-size: 1rem;
-            transition: all 0.2s;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
         }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #1E4E3E;
-        }
-
-        .btn-primary {
+        button {
             width: 100%;
-            padding: 0.9rem;
-            background: linear-gradient(95deg, #1F4E41, #2A6B58);
+            padding: 12px;
+            background: #1E4E3E;
             color: white;
             border: none;
-            border-radius: 2rem;
-            font-weight: 700;
-            font-size: 1rem;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 0.5rem;
+            margin-top: 10px;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(30, 78, 62, 0.3);
+        button:hover {
+            background: #2A6B58;
         }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
         .toggle-link {
             text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.85rem;
+            margin-top: 15px;
             color: #666;
         }
-
         .toggle-link a {
             color: #1E4E3E;
-            text-decoration: none;
-            font-weight: 600;
             cursor: pointer;
+            text-decoration: underline;
         }
-
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            display: none;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
         .back-home {
             text-align: center;
-            margin-top: 1rem;
+            margin-top: 15px;
         }
-
         .back-home a {
-            color: white;
+            color: #1E4E3E;
             text-decoration: none;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 40px;
-            color: white;
-            z-index: 1000;
-            animation: slideUp 0.3s ease;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .toast.success {
-            background: #28a745;
-        }
-
-        .toast.error {
-            background: #dc3545;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateX(-50%) translateY(100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">
-            <i class="fas fa-lightbulb"></i>
-            <span>Sohrab Industries</span>
-        </div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="investor-auth.html">Investor</a>
-            <a href="buyer-auth.html">Buyer</a>
-            <a href="admin-auth.html">Admin</a>
-        </div>
-    </nav>
-
     <div class="container">
-        <div class="auth-card">
-            <div class="card-header">
-                <i class="fas fa-chart-line"></i>
-                <h2>Investor Portal</h2>
-                <p>Grow your wealth with Sohrab Industries</p>
+        <div class="logo">💡</div>
+        <h2>Sohrab Industries</h2>
+        
+        <div class="toggle-buttons">
+            <button class="toggle-btn" id="loginTabBtn">Login</button>
+            <button class="toggle-btn active" id="signupTabBtn">Sign Up</button>
+        </div>
+
+        <div id="messageDiv" class="message"></div>
+
+        <!-- SIGNUP FORM -->
+        <div id="signupForm">
+            <div class="form-group">
+                <input type="text" id="signupName" placeholder="Full Name">
             </div>
-            <div class="card-body">
-                <div class="toggle-buttons">
-                    <button class="toggle-btn" id="btnLoginTab">Login</button>
-                    <button class="toggle-btn active" id="btnSignupTab">Sign Up</button>
-                </div>
-
-                <!-- SIGNUP FORM -->
-                <div id="signupForm">
-                    <div class="form-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="signupFullName" placeholder="Full Name">
-                    </div>
-                    <div class="form-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="signupEmail" placeholder="Email Address">
-                    </div>
-                    <div class="form-group">
-                        <i class="fas fa-phone"></i>
-                        <input type="tel" id="signupPhone" placeholder="Phone Number">
-                    </div>
-                    <div class="form-group">
-                        <i class="fas fa-city"></i>
-                        <input type="text" id="signupCity" placeholder="City">
-                    </div>
-                    <div class="form-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="signupPassword" placeholder="Password (min 6 characters)">
-                    </div>
-                    <div class="form-group">
-                        <i class="fas fa-check-circle"></i>
-                        <input type="password" id="signupConfirmPassword" placeholder="Confirm Password">
-                    </div>
-                    <button class="btn-primary" id="signupButton">
-                        <i class="fas fa-user-plus"></i> Create Investor Account
-                    </button>
-                </div>
-
-                <!-- LOGIN FORM -->
-                <div id="loginForm" style="display: none;">
-                    <div class="form-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="loginEmail" placeholder="Email Address">
-                    </div>
-                    <div class="form-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="loginPassword" placeholder="Password">
-                    </div>
-                    <button class="btn-primary" id="loginButton">
-                        <i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard
-                    </button>
-                </div>
-
-                <div class="toggle-link">
-                    <a id="toggleFormLink">Already have an account? Login →</a>
-                </div>
-                <div class="back-home">
-                    <a href="index.html">← Back to Home</a>
-                </div>
+            <div class="form-group">
+                <input type="email" id="signupEmail" placeholder="Email Address">
             </div>
+            <div class="form-group">
+                <input type="tel" id="signupPhone" placeholder="Phone Number">
+            </div>
+            <div class="form-group">
+                <input type="text" id="signupCity" placeholder="City">
+            </div>
+            <div class="form-group">
+                <input type="password" id="signupPassword" placeholder="Password (min 6 characters)">
+            </div>
+            <div class="form-group">
+                <input type="password" id="signupConfirm" placeholder="Confirm Password">
+            </div>
+            <button id="signupBtn">Create Investor Account</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="loginForm" style="display: none;">
+            <div class="form-group">
+                <input type="email" id="loginEmail" placeholder="Email Address">
+            </div>
+            <div class="form-group">
+                <input type="password" id="loginPassword" placeholder="Password">
+            </div>
+            <button id="loginBtn">Login to Dashboard</button>
+        </div>
+
+        <div class="toggle-link">
+            <a id="toggleLink">Already have an account? Login →</a>
+        </div>
+        <div class="back-home">
+            <a href="index.html">← Back to Home</a>
         </div>
     </div>
 
     <script>
-        // Supabase Configuration
+        // YOUR SUPABASE CONFIGURATION
         const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Toast notification function
-        function showToast(message, isError) {
-            const existingToast = document.querySelector('.toast');
-            if (existingToast) existingToast.remove();
-            
-            const toast = document.createElement('div');
-            toast.className = `toast ${isError ? 'error' : 'success'}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        // Get DOM elements
+        // Get elements
         const signupForm = document.getElementById('signupForm');
         const loginForm = document.getElementById('loginForm');
-        const btnLoginTab = document.getElementById('btnLoginTab');
-        const btnSignupTab = document.getElementById('btnSignupTab');
-        const toggleLink = document.getElementById('toggleFormLink');
-        const signupButton = document.getElementById('signupButton');
-        const loginButton = document.getElementById('loginButton');
+        const loginTab = document.getElementById('loginTabBtn');
+        const signupTab = document.getElementById('signupTabBtn');
+        const toggleLink = document.getElementById('toggleLink');
+        const messageDiv = document.getElementById('messageDiv');
 
-        // Show Login Form (hide Signup)
-        function showLoginForm() {
+        function showMessage(msg, isError) {
+            messageDiv.textContent = msg;
+            messageDiv.className = isError ? 'message error' : 'message success';
+            setTimeout(() => {
+                messageDiv.className = 'message';
+            }, 4000);
+        }
+
+        // Show Login Form
+        function showLogin() {
             signupForm.style.display = 'none';
             loginForm.style.display = 'block';
-            btnLoginTab.classList.add('active');
-            btnSignupTab.classList.remove('active');
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
             toggleLink.innerHTML = "Don't have an account? Sign Up →";
         }
 
-        // Show Signup Form (hide Login)
-        function showSignupForm() {
+        // Show Signup Form
+        function showSignup() {
             loginForm.style.display = 'none';
             signupForm.style.display = 'block';
-            btnSignupTab.classList.add('active');
-            btnLoginTab.classList.remove('active');
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
             toggleLink.innerHTML = "Already have an account? Login →";
         }
 
-        // Add click event listeners for tabs
-        btnLoginTab.addEventListener('click', showLoginForm);
-        btnSignupTab.addEventListener('click', showSignupForm);
-        
-        // Toggle link click
-        toggleLink.addEventListener('click', function() {
+        loginTab.onclick = showLogin;
+        signupTab.onclick = showSignup;
+        toggleLink.onclick = function() {
             if (loginForm.style.display === 'none') {
-                showLoginForm();
+                showLogin();
             } else {
-                showSignupForm();
+                showSignup();
             }
-        });
+        };
 
         // ========== SIGNUP FUNCTION ==========
-        signupButton.addEventListener('click', async function() {
-            // Get values
-            const fullName = document.getElementById('signupFullName').value.trim();
+        document.getElementById('signupBtn').onclick = async function() {
+            const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const phone = document.getElementById('signupPhone').value.trim();
             const city = document.getElementById('signupCity').value.trim();
             const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const confirm = document.getElementById('signupConfirm').value;
 
-            // Validation
-            if (!fullName) {
-                showToast('Please enter your full name', true);
+            if (!name || !email || !phone || !city || !password) {
+                showMessage('Please fill all fields', true);
                 return;
             }
-            if (!email) {
-                showToast('Please enter your email address', true);
-                return;
-            }
-            if (!phone) {
-                showToast('Please enter your phone number', true);
-                return;
-            }
-            if (!city) {
-                showToast('Please enter your city', true);
-                return;
-            }
-            if (!password) {
-                showToast('Please enter a password', true);
+            if (password !== confirm) {
+                showMessage('Passwords do not match', true);
                 return;
             }
             if (password.length < 6) {
-                showToast('Password must be at least 6 characters', true);
-                return;
-            }
-            if (password !== confirmPassword) {
-                showToast('Passwords do not match', true);
+                showMessage('Password must be at least 6 characters', true);
                 return;
             }
 
-            // Disable button and show loading
-            signupButton.disabled = true;
-            signupButton.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating Account...';
+            const btn = document.getElementById('signupBtn');
+            btn.disabled = true;
+            btn.textContent = 'Creating Account...';
 
             try {
                 // 1. Create user in Supabase Auth
@@ -439,7 +256,7 @@
                     password: password,
                     options: {
                         data: {
-                            full_name: fullName,
+                            full_name: name,
                             phone: phone,
                             city: city,
                             role: 'investor'
@@ -448,9 +265,9 @@
                 });
 
                 if (authError) {
-                    showToast(authError.message, true);
-                    signupButton.disabled = false;
-                    signupButton.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
+                    showMessage(authError.message, true);
+                    btn.disabled = false;
+                    btn.textContent = 'Create Investor Account';
                     return;
                 }
 
@@ -461,103 +278,82 @@
                         .insert({
                             id: authData.user.id,
                             email: email,
-                            full_name: fullName,
+                            full_name: name,
                             phone: phone,
                             city: city,
-                            status: 'approved',
-                            is_approved: true,
                             created_at: new Date().toISOString()
                         });
 
                     if (insertError) {
-                        console.error('Insert error:', insertError);
-                        showToast('Account created but profile needs update. Please login.', false);
+                        console.log('Insert error:', insertError);
+                        showMessage('Account created! Please login.', false);
                     } else {
-                        showToast('Account created successfully! Please login.', false);
+                        showMessage('Account created successfully! Please login.', false);
                     }
 
-                    // Clear form fields
-                    document.getElementById('signupFullName').value = '';
+                    // Clear form
+                    document.getElementById('signupName').value = '';
                     document.getElementById('signupEmail').value = '';
                     document.getElementById('signupPhone').value = '';
                     document.getElementById('signupCity').value = '';
                     document.getElementById('signupPassword').value = '';
-                    document.getElementById('signupConfirmPassword').value = '';
+                    document.getElementById('signupConfirm').value = '';
 
-                    // Switch to login form
-                    showLoginForm();
+                    // Switch to login
+                    showLogin();
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showToast('An error occurred. Please try again.', true);
+            } catch (err) {
+                showMessage('Error: ' + err.message, true);
             } finally {
-                signupButton.disabled = false;
-                signupButton.innerHTML = '<i class="fas fa-user-plus"></i> Create Investor Account';
+                btn.disabled = false;
+                btn.textContent = 'Create Investor Account';
             }
-        });
+        };
 
         // ========== LOGIN FUNCTION ==========
-        loginButton.addEventListener('click', async function() {
-            // Get values
+        document.getElementById('loginBtn').onclick = async function() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            // Validation
-            if (!email) {
-                showToast('Please enter your email address', true);
-                return;
-            }
-            if (!password) {
-                showToast('Please enter your password', true);
+            if (!email || !password) {
+                showMessage('Please enter email and password', true);
                 return;
             }
 
-            // Disable button and show loading
-            loginButton.disabled = true;
-            loginButton.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Logging in...';
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
 
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
 
-                if (error) {
-                    showToast('Invalid email or password', true);
-                    loginButton.disabled = false;
-                    loginButton.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
-                    return;
-                }
-
-                if (data.user) {
-                    // Store user info
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    localStorage.setItem('userType', 'investor');
-                    
-                    showToast('Login successful! Redirecting...', false);
-                    
-                    // Redirect to dashboard
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1500);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showToast('An error occurred. Please try again.', true);
-                loginButton.disabled = false;
-                loginButton.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard';
+            if (error) {
+                showMessage('Invalid email or password', true);
+                btn.disabled = false;
+                btn.textContent = 'Login to Dashboard';
+                return;
             }
-        });
 
-        // Enter key support for forms
+            if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('userType', 'investor');
+                showMessage('Login successful! Redirecting...', false);
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            }
+        };
+
+        // Enter key support
         document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
                     if (loginForm.style.display !== 'none') {
-                        loginButton.click();
+                        document.getElementById('loginBtn').click();
                     } else {
-                        signupButton.click();
+                        document.getElementById('signupBtn').click();
                     }
                 }
             });
