@@ -3,177 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sohrab Industries - Investor Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Investor Dashboard - Sohrab Industries</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f5f7fa; min-height: 100vh; }
-        .dashboard-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        .dashboard-header {
-            background: linear-gradient(135deg, #1E4E3E 0%, #2A6B58 100%);
-            color: white; padding: 20px 30px; border-radius: 20px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .dashboard-header h1 { font-size: 1.8rem; display: flex; align-items: center; gap: 10px; }
-        .dashboard-header h1 i { color: #E8B13C; }
-        .logout-btn { background: #dc3545; color: white; padding: 8px 20px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 25px; border-radius: 20px; text-align: center; border-bottom: 4px solid #E8B13C; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 15px; }
-        .stat-amount { font-size: 32px; font-weight: 700; color: #1E4E3E; }
-        .welcome-message { background: white; padding: 20px; border-radius: 15px; margin-bottom: 30px; text-align: center; }
-        .welcome-message h2 { color: #1E4E3E; }
-        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 10000; text-align: center; }
-        .toast-success { background: #28a745; }
-        .toast-error { background: #dc3545; }
-        @media (max-width: 768px) { .dashboard-header { flex-direction: column; text-align: center; gap: 15px; } }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f2f5;
+        }
+
+        .header {
+            background: #1E4E3E;
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 5%;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            border-bottom: 4px solid #E8B13C;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1E4E3E;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            color: #1E4E3E;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: white;
+            z-index: 1000;
+        }
+
+        .toast.success {
+            background: #28a745;
+        }
+
+        .toast.error {
+            background: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <h1><i class="fas fa-lightbulb"></i> Sohrab Industries</h1>
-            <div>
-                <span id="userName" style="margin-right: 20px;"><i class="fas fa-user-circle"></i> Loading...</span>
-                <button onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>
-        </div>
-
-        <div class="welcome-message">
-            <h2>Welcome to Your Investor Dashboard</h2>
-            <p>Track your investments, profits, and withdrawals here.</p>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card"><h3><i class="fas fa-chart-line"></i> Total Investment</h3><p class="stat-amount" id="totalInvestment">Rs. 0</p></div>
-            <div class="stat-card"><h3><i class="fas fa-coins"></i> Total Profit</h3><p class="stat-amount" id="totalProfit">Rs. 0</p></div>
-            <div class="stat-card"><h3><i class="fas fa-wallet"></i> Available Balance</h3><p class="stat-amount" id="availableBalance">Rs. 0</p></div>
-        </div>
-
-        <div style="background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-            <h3 style="color: #1E4E3E; margin-bottom: 15px;">Your Investments</h3>
-            <div id="investmentsList" style="color: #666;">Loading investments...</div>
-        </div>
-
-        <div style="background: white; padding: 20px; border-radius: 15px;">
-            <h3 style="color: #1E4E3E; margin-bottom: 15px;">Recent Profit History</h3>
-            <div id="profitsList" style="color: #666;">Loading profits...</div>
+    <div class="header">
+        <h1>💡 Sohrab Industries</h1>
+        <div>
+            <span id="userEmail" style="margin-right: 20px;"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
     </div>
 
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Investment</h3>
+                <div class="stat-number" id="totalInvestment">Rs. 0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Profit</h3>
+                <div class="stat-number" id="totalProfit">Rs. 0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Available Balance</h3>
+                <div class="stat-number" id="availableBalance">Rs. 0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📊 Your Investments</h2>
+            <div id="investmentsList">Loading...</div>
+        </div>
+
+        <div class="card">
+            <h2>💰 Profit History</h2>
+            <div id="profitsList">Loading...</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         let currentUser = null;
-        
-        function showNotification(message, isError) {
+
+        function showToast(message, isError) {
             const toast = document.createElement('div');
-            toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
+            toast.className = `toast ${isError ? 'error' : 'success'}`;
+            toast.textContent = isError ? `❌ ${message}` : `✅ ${message}`;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
-        
+
         async function checkAuth() {
-            try {
-                const { data: { user }, error } = await supabase.auth.getUser();
-                if (error || !user) {
-                    console.log('No user found, redirecting to login');
-                    window.location.href = 'investor-auth.html';
-                    return null;
-                }
-                currentUser = user;
-                document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
-                await loadInvestorData();
-                return user;
-            } catch (err) {
-                console.error('Auth error:', err);
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (error || !user) {
                 window.location.href = 'investor-auth.html';
-                return null;
+                return;
             }
+            currentUser = user;
+            document.getElementById('userEmail').innerHTML = `👤 ${user.email}`;
+            await loadData();
         }
-        
-        async function loadInvestorData() {
+
+        async function loadData() {
             try {
                 // Load investments
-                const { data: investments, error: invError } = await supabase
+                const { data: investments } = await supabase
                     .from('investments')
                     .select('*')
                     .eq('investor_id', currentUser.id)
                     .order('investment_date', { ascending: false });
                 
-                if (invError) console.error('Investments error:', invError);
-                
-                const investmentsList = document.getElementById('investmentsList');
+                let totalInvested = 0;
                 if (investments && investments.length > 0) {
-                    let totalInvested = 0;
-                    let html = '<table style="width:100%; border-collapse: collapse;">';
-                    html += '<tr style="background:#f8f9fa;"><th style="padding:10px; text-align:left;">Date</th><th style="padding:10px; text-align:left;">Amount</th><th style="padding:10px; text-align:left;">Status</th></tr>';
+                    let html = `<table>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>`;
                     investments.forEach(inv => {
                         totalInvested += inv.amount || 0;
-                        html += `<tr>
-                            <td style="padding:10px; border-bottom:1px solid #eee;">${new Date(inv.investment_date).toLocaleDateString()}</td>
-                            <td style="padding:10px; border-bottom:1px solid #eee;">Rs. ${(inv.amount || 0).toLocaleString()}</td>
-                            <td style="padding:10px; border-bottom:1px solid #eee;"><span style="background:#d4edda; color:#155724; padding:4px 12px; border-radius:20px;">${inv.status || 'Pending'}</span></td>
+                        html += `
+                        <tr>
+                            <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
+                            <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
+                            <td><span class="status-badge status-${inv.status === 'active' ? 'active' : 'pending'}">${inv.status || 'Pending'}</span></td>
                         </tr>`;
                     });
-                    html += '</table>';
-                    investmentsList.innerHTML = html;
-                    document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
+                    html += `</table>`;
+                    document.getElementById('investmentsList').innerHTML = html;
                 } else {
-                    investmentsList.innerHTML = '<p>No investments yet. Contact admin to make your first investment.</p>';
+                    document.getElementById('investmentsList').innerHTML = '<p>No investments yet.</p>';
                 }
+                document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
                 
                 // Load profits
-                const { data: profits, error: profError } = await supabase
+                const { data: profits } = await supabase
                     .from('profits')
                     .select('*')
                     .eq('investor_id', currentUser.id)
                     .order('month', { ascending: false });
                 
-                if (profError) console.error('Profits error:', profError);
-                
-                const profitsList = document.getElementById('profitsList');
+                let totalProfit = 0;
                 if (profits && profits.length > 0) {
-                    let totalProfit = 0;
-                    let html = '<table style="width:100%; border-collapse: collapse;">';
-                    html += '<tr style="background:#f8f9fa;"><th style="padding:10px; text-align:left;">Month</th><th style="padding:10px; text-align:left;">Amount</th><th style="padding:10px; text-align:left;">Status</th></tr>';
+                    let html = `<table>
+                        <tr>
+                            <th>Month</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>`;
                     profits.forEach(p => {
                         if (p.paid) totalProfit += p.amount || 0;
-                        html += `<tr>
-                            <td style="padding:10px; border-bottom:1px solid #eee;">${new Date(p.month).toLocaleDateString('default', { year: 'numeric', month: 'long' })}</td>
-                            <td style="padding:10px; border-bottom:1px solid #eee;">Rs. ${(p.amount || 0).toLocaleString()}</td>
-                            <td style="padding:10px; border-bottom:1px solid #eee;"><span style="background:${p.paid ? '#d4edda' : '#fff3cd'}; color:${p.paid ? '#155724' : '#856404'}; padding:4px 12px; border-radius:20px;">${p.paid ? 'Paid' : 'Pending'}</span></td>
+                        html += `
+                        <tr>
+                            <td>${new Date(p.month).toLocaleDateString('default', { month: 'long', year: 'numeric' })}</td>
+                            <td>Rs. ${(p.amount || 0).toLocaleString()}</td>
+                            <td><span class="status-badge ${p.paid ? 'status-active' : 'status-pending'}">${p.paid ? 'Paid' : 'Pending'}</span></td>
                         </tr>`;
                     });
-                    html += '</table>';
-                    profitsList.innerHTML = html;
-                    document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-                    document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+                    html += `</table>`;
+                    document.getElementById('profitsList').innerHTML = html;
                 } else {
-                    profitsList.innerHTML = '<p>No profit records yet.</p>';
+                    document.getElementById('profitsList').innerHTML = '<p>No profits yet.</p>';
                 }
-            } catch (err) {
-                console.error('Load data error:', err);
-                showNotification('Error loading data', true);
+                document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+                document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+            } catch(err) {
+                console.error(err);
+                showToast('Error loading data', true);
             }
         }
-        
-        async function handleLogout() {
+
+        async function logout() {
             await supabase.auth.signOut();
-            localStorage.clear();
-            showNotification('Logged out successfully!', false);
-            setTimeout(() => {
-                window.location.href = 'investor-auth.html';
-            }, 1000);
+            window.location.href = 'investor-auth.html';
         }
-        
-        window.handleLogout = handleLogout;
-        
+
         checkAuth();
     </script>
 </body>
