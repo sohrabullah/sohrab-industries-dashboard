@@ -207,7 +207,10 @@
         .profile-field {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 10px;
+        }
+        .profile-field input {
+            flex: 1;
         }
         
         @media (max-width: 768px) {
@@ -270,7 +273,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                <table><thead><tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead>
+                <tr><thead><tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead>
                 <tbody id="investmentRequestsList"></tbody>
             </table>
             </div>
@@ -304,33 +307,39 @@
                     <div class="form-group">
                         <label>Full Name</label>
                         <div class="profile-field">
-                            <input type="text" id="profileName" readonly style="background:#f8f9fa; flex:1;">
+                            <input type="text" id="profileName" readonly style="background:#f8f9fa;">
                             <i class="fas fa-pencil-alt edit-icon" onclick="editField('profileName', 'full_name')"></i>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Email</label>
+                        <label>Email Address</label>
                         <input type="email" id="profileEmail" readonly style="background:#f8f9fa;">
                     </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group">
                         <label>Phone Number</label>
                         <div class="profile-field">
-                            <input type="tel" id="profilePhone" readonly style="background:#f8f9fa; flex:1;">
+                            <input type="tel" id="profilePhone" readonly style="background:#f8f9fa;">
                             <i class="fas fa-pencil-alt edit-icon" onclick="editField('profilePhone', 'phone')"></i>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>City</label>
                         <div class="profile-field">
-                            <input type="text" id="profileCity" readonly style="background:#f8f9fa; flex:1;">
+                            <input type="text" id="profileCity" readonly style="background:#f8f9fa;">
                             <i class="fas fa-pencil-alt edit-icon" onclick="editField('profileCity', 'city')"></i>
                         </div>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>Total Investment</label><input type="text" id="profileTotalInvestment" readonly style="background:#f8f9fa;"></div>
-                    <div class="form-group"><label>Total Profit</label><input type="text" id="profileTotalProfit" readonly style="background:#f8f9fa;"></div>
+                    <div class="form-group"><label>Total Profit Earned</label><input type="text" id="profileTotalProfit" readonly style="background:#f8f9fa;"></div>
                     <div class="form-group"><label>Available Balance</label><input type="text" id="profileBalance" readonly style="background:#f8f9fa;"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Member Since</label><input type="text" id="profileMemberSince" readonly style="background:#f8f9fa;"></div>
+                    <div class="form-group"><label>Status</label><input type="text" id="profileStatus" readonly style="background:#f8f9fa;" value="Active"></div>
                 </div>
             </div>
         </div>
@@ -418,24 +427,39 @@
                 });
             }
 
+            // Function to ensure investor exists - only creates if not exists
             async function ensureInvestorExists(user) {
+                // First check if investor already exists
                 const { data: existing } = await supabaseClient.from('investors').select('*').eq('id', user.id);
-                if (!existing || existing.length === 0) {
-                    const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
-                    await supabaseClient.from('investors').insert([{
-                        id: user.id,
-                        email: user.email,
-                        full_name: fullName,
-                        phone: user.user_metadata?.phone || '',
-                        city: '',
-                        total_investment: 0,
-                        total_profit: 0,
-                        available_balance: 0,
-                        created_at: new Date().toISOString()
-                    }]);
-                    showToast('Profile created successfully!', false, true);
+                
+                if (existing && existing.length > 0) {
+                    // Investor exists, return the data
+                    return existing[0];
                 }
-                return true;
+                
+                // Investor doesn't exist, create new profile
+                const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
+                const newInvestor = {
+                    id: user.id,
+                    email: user.email,
+                    full_name: fullName,
+                    phone: user.user_metadata?.phone || '',
+                    city: '',
+                    total_investment: 0,
+                    total_profit: 0,
+                    available_balance: 0,
+                    created_at: new Date().toISOString()
+                };
+                
+                const { error, data } = await supabaseClient.from('investors').insert([newInvestor]).select();
+                
+                if (error) {
+                    console.error('Error creating investor:', error);
+                    return null;
+                }
+                
+                showToast('Welcome! Your investor profile has been created.', false, true);
+                return newInvestor;
             }
 
             async function checkAuth() {
@@ -446,7 +470,14 @@
                 }
                 currentInvestorId = user.id;
                 document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
-                await ensureInvestorExists(user);
+                
+                // Ensure investor exists (creates only if not exists)
+                const investor = await ensureInvestorExists(user);
+                if (!investor) {
+                    showToast('Error loading profile. Please refresh.', true);
+                    return;
+                }
+                
                 await loadAllData();
             }
 
@@ -540,7 +571,7 @@
                 const { data } = await supabaseClient.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
                 const tbody = document.getElementById('withdrawalsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<td><td colspan="6" class="empty-state">No withdrawal requests yet. Request a withdrawal above.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet. Request a withdrawal above.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(w => `
@@ -566,26 +597,31 @@
                     document.getElementById('profileTotalInvestment').value = `Rs. ${(i.total_investment || 0).toLocaleString()}`;
                     document.getElementById('profileTotalProfit').value = `Rs. ${(i.total_profit || 0).toLocaleString()}`;
                     document.getElementById('profileBalance').value = `Rs. ${(i.available_balance || 0).toLocaleString()}`;
+                    document.getElementById('profileMemberSince').value = i.created_at ? new Date(i.created_at).toLocaleDateString() : new Date().toLocaleDateString();
+                } else {
+                    // If no profile found, create one
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    if (user) {
+                        await ensureInvestorExists(user);
+                        await loadProfile(); // Retry loading
+                    }
                 }
             }
 
             // Edit Profile Field
-            window.editField = function(inputId, dbField) {
+            window.editField = async function(inputId, dbField) {
                 const input = document.getElementById(inputId);
                 const currentValue = input.value;
-                const newValue = prompt(`Enter new ${dbField.replace('_', ' ')}:`, currentValue);
+                const fieldName = dbField.replace('_', ' ');
+                const newValue = prompt(`Enter new ${fieldName}:`, currentValue);
                 if (newValue && newValue !== currentValue) {
-                    updateProfileField(dbField, newValue);
-                }
-            }
-
-            async function updateProfileField(field, value) {
-                const { error } = await supabaseClient.from('investors').update({ [field]: value }).eq('id', currentInvestorId);
-                if (error) {
-                    showToast(error.message, true);
-                } else {
-                    showToast(`${field.replace('_', ' ')} updated successfully!`, false);
-                    await loadProfile();
+                    const { error } = await supabaseClient.from('investors').update({ [dbField]: newValue }).eq('id', currentInvestorId);
+                    if (error) {
+                        showToast(error.message, true);
+                    } else {
+                        showToast(`${fieldName} updated successfully!`, false);
+                        await loadProfile();
+                    }
                 }
             }
 
@@ -633,7 +669,6 @@
                     document.getElementById('investmentTransactionId').value = '';
                     document.getElementById('investmentNotes').value = '';
                     await loadInvestmentRequests();
-                    showToast('Your request has been sent to admin for approval.', false, true);
                 }
             };
 
