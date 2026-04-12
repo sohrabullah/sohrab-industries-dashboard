@@ -121,7 +121,7 @@
 <body>
     <div class="container">
         <div class="logo">💡</div>
-        <h2>Sohrab Industries</h2>
+        <h2>Sohrab Industries - Investor Portal</h2>
         
         <div class="toggle-buttons">
             <button class="toggle-btn" id="loginTabBtn">Login</button>
@@ -150,7 +150,7 @@
             <div class="form-group">
                 <input type="password" id="signupConfirm" placeholder="Confirm Password">
             </div>
-            <button id="signupBtn">Create Investor Account</button>
+            <button id="signupBtn">CREATE INVESTOR ACCOUNT</button>
         </div>
 
         <!-- LOGIN FORM -->
@@ -161,7 +161,7 @@
             <div class="form-group">
                 <input type="password" id="loginPassword" placeholder="Password">
             </div>
-            <button id="loginBtn">Login to Dashboard</button>
+            <button id="loginBtn">LOGIN TO DASHBOARD</button>
         </div>
 
         <div class="toggle-link">
@@ -173,15 +173,17 @@
     </div>
 
     <script>
-        // YOUR SUPABASE CONFIGURATION
+        // ========================================
+        // SUPABASE CONFIGURATION - YOUR CREDENTIALS
+        // ========================================
         const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Get elements
-        const signupForm = document.getElementById('signupForm');
-        const loginForm = document.getElementById('loginForm');
+        // Get DOM elements
+        const signupFormDiv = document.getElementById('signupForm');
+        const loginFormDiv = document.getElementById('loginForm');
         const loginTab = document.getElementById('loginTabBtn');
         const signupTab = document.getElementById('signupTabBtn');
         const toggleLink = document.getElementById('toggleLink');
@@ -196,35 +198,37 @@
         }
 
         // Show Login Form
-        function showLogin() {
-            signupForm.style.display = 'none';
-            loginForm.style.display = 'block';
+        function showLoginForm() {
+            signupFormDiv.style.display = 'none';
+            loginFormDiv.style.display = 'block';
             loginTab.classList.add('active');
             signupTab.classList.remove('active');
             toggleLink.innerHTML = "Don't have an account? Sign Up →";
         }
 
         // Show Signup Form
-        function showSignup() {
-            loginForm.style.display = 'none';
-            signupForm.style.display = 'block';
+        function showSignupForm() {
+            loginFormDiv.style.display = 'none';
+            signupFormDiv.style.display = 'block';
             signupTab.classList.add('active');
             loginTab.classList.remove('active');
             toggleLink.innerHTML = "Already have an account? Login →";
         }
 
-        loginTab.onclick = showLogin;
-        signupTab.onclick = showSignup;
+        // Add click events
+        loginTab.onclick = showLoginForm;
+        signupTab.onclick = showSignupForm;
         toggleLink.onclick = function() {
-            if (loginForm.style.display === 'none') {
-                showLogin();
+            if (loginFormDiv.style.display === 'none') {
+                showLoginForm();
             } else {
-                showSignup();
+                showSignupForm();
             }
         };
 
         // ========== SIGNUP FUNCTION ==========
         document.getElementById('signupBtn').onclick = async function() {
+            // Get values
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const phone = document.getElementById('signupPhone').value.trim();
@@ -232,16 +236,33 @@
             const password = document.getElementById('signupPassword').value;
             const confirm = document.getElementById('signupConfirm').value;
 
-            if (!name || !email || !phone || !city || !password) {
-                showMessage('Please fill all fields', true);
+            // Validate
+            if (!name) {
+                showMessage('Please enter your full name', true);
                 return;
             }
-            if (password !== confirm) {
-                showMessage('Passwords do not match', true);
+            if (!email) {
+                showMessage('Please enter your email', true);
+                return;
+            }
+            if (!phone) {
+                showMessage('Please enter your phone number', true);
+                return;
+            }
+            if (!city) {
+                showMessage('Please enter your city', true);
+                return;
+            }
+            if (!password) {
+                showMessage('Please enter a password', true);
                 return;
             }
             if (password.length < 6) {
                 showMessage('Password must be at least 6 characters', true);
+                return;
+            }
+            if (password !== confirm) {
+                showMessage('Passwords do not match', true);
                 return;
             }
 
@@ -250,7 +271,7 @@
             btn.textContent = 'Creating Account...';
 
             try {
-                // 1. Create user in Supabase Auth
+                // Create user in Supabase Auth
                 const { data: authData, error: authError } = await supabase.auth.signUp({
                     email: email,
                     password: password,
@@ -267,25 +288,25 @@
                 if (authError) {
                     showMessage(authError.message, true);
                     btn.disabled = false;
-                    btn.textContent = 'Create Investor Account';
+                    btn.textContent = 'CREATE INVESTOR ACCOUNT';
                     return;
                 }
 
                 if (authData.user) {
-                    // 2. Insert into investors table
+                    // Insert into investors table
                     const { error: insertError } = await supabase
                         .from('investors')
-                        .insert({
+                        .insert([{
                             id: authData.user.id,
                             email: email,
                             full_name: name,
                             phone: phone,
                             city: city,
                             created_at: new Date().toISOString()
-                        });
+                        }]);
 
                     if (insertError) {
-                        console.log('Insert error:', insertError);
+                        console.log('Insert warning:', insertError);
                         showMessage('Account created! Please login.', false);
                     } else {
                         showMessage('Account created successfully! Please login.', false);
@@ -299,14 +320,14 @@
                     document.getElementById('signupPassword').value = '';
                     document.getElementById('signupConfirm').value = '';
 
-                    // Switch to login
-                    showLogin();
+                    // Switch to login form
+                    showLoginForm();
                 }
             } catch (err) {
                 showMessage('Error: ' + err.message, true);
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Create Investor Account';
+                btn.textContent = 'CREATE INVESTOR ACCOUNT';
             }
         };
 
@@ -315,8 +336,12 @@
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            if (!email || !password) {
-                showMessage('Please enter email and password', true);
+            if (!email) {
+                showMessage('Please enter your email', true);
+                return;
+            }
+            if (!password) {
+                showMessage('Please enter your password', true);
                 return;
             }
 
@@ -332,7 +357,7 @@
             if (error) {
                 showMessage('Invalid email or password', true);
                 btn.disabled = false;
-                btn.textContent = 'Login to Dashboard';
+                btn.textContent = 'LOGIN TO DASHBOARD';
                 return;
             }
 
@@ -340,24 +365,28 @@
                 localStorage.setItem('user', JSON.stringify(data.user));
                 localStorage.setItem('userType', 'investor');
                 showMessage('Login successful! Redirecting...', false);
-                setTimeout(() => {
+                
+                setTimeout(function() {
                     window.location.href = 'dashboard.html';
                 }, 1500);
             }
         };
 
         // Enter key support
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('keypress', function(e) {
+        const allInputs = document.querySelectorAll('input');
+        for (let i = 0; i < allInputs.length; i++) {
+            allInputs[i].addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    if (loginForm.style.display !== 'none') {
+                    if (loginFormDiv.style.display !== 'none') {
                         document.getElementById('loginBtn').click();
                     } else {
                         document.getElementById('signupBtn').click();
                     }
                 }
             });
-        });
+        }
+
+        console.log('Page loaded. Supabase connected.');
     </script>
 </body>
 </html>
