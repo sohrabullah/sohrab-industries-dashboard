@@ -16,7 +16,6 @@
             position: relative;
         }
         
-        /* Animated Background Particles */
         body::before {
             content: '';
             position: fixed;
@@ -31,7 +30,6 @@
             z-index: 0;
         }
         
-        /* Animations */
         @keyframes glowPulse {
             0%, 100% { opacity: 0.3; }
             50% { opacity: 0.8; }
@@ -69,7 +67,6 @@
         
         .admin-container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
         
-        /* Premium Header */
         .admin-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -148,7 +145,6 @@
             box-shadow: 0 8px 25px rgba(220,53,69,0.4);
         }
         
-        /* Premium Stats Grid */
         .stats-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
@@ -209,7 +205,6 @@
             font-family: 'Playfair Display', serif;
         }
         
-        /* Premium Tabs */
         .nav-tabs { 
             display: flex; 
             gap: 10px; 
@@ -251,7 +246,6 @@
             font-weight: 700;
         }
         
-        /* Premium Sections */
         .admin-section { 
             background: rgba(20,45,38,0.92);
             backdrop-filter: blur(12px);
@@ -277,7 +271,6 @@
             padding-left: 18px;
         }
         
-        /* Premium Form Cards */
         .form-card { 
             background: rgba(0,0,0,0.3);
             backdrop-filter: blur(8px);
@@ -332,7 +325,6 @@
         
         .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.4); }
         
-        /* Premium Tables */
         .table-container { 
             overflow-x: auto; 
             margin-top: 15px; 
@@ -365,7 +357,6 @@
         
         td { color: rgba(255,255,255,0.9); }
         
-        /* Premium Status Badges */
         .status-badge { 
             padding: 5px 15px; 
             border-radius: 30px; 
@@ -401,7 +392,6 @@
             color: #fff; 
         }
         
-        /* Premium Buttons */
         .btn-primary { 
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             color: #0a1f1a; 
@@ -471,7 +461,6 @@
         
         .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
         
-        /* Search Box */
         .search-box { 
             margin-bottom: 20px; 
             display: flex; 
@@ -498,7 +487,6 @@
             box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
         }
         
-        /* Premium Modal */
         .modal { 
             display: none; 
             position: fixed; 
@@ -551,7 +539,6 @@
             transform: rotate(90deg);
         }
         
-        /* Toast Notification */
         .toast-notification { 
             position: fixed; 
             bottom: 35px; 
@@ -626,7 +613,8 @@
             <h2 class="section-title"><i class="fas fa-chart-pie"></i> Dashboard Overview</h2>
             <div class="table-container">
                 <h3 style="color:#E8B13C; margin-bottom:15px;">Recent Activities</h3>
-                <table><thead><tr><th>Action</th><th>Details</th><th>Time</th></tr></thead><tbody id="recentActivities"></tbody></table>
+                <table><thead><tr><th>Action</th><th>Details</th><th>Time</th></tr></thead><tbody id="recentActivities"></tbody>
+                </table>
             </div>
         </div>
 
@@ -667,7 +655,7 @@
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -713,13 +701,15 @@
             </div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead>
+                    <thead>
+                        <tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Products Section -->
+        <!-- Products Section - FIXED -->
         <div id="productsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2>
             <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
@@ -732,8 +722,15 @@
                 </div>
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
-            <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetProductSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Product Name</th><th>Category</th><th>Wattage</th><th>Price (Rs.)</th><th>Stock</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="productsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Orders Section -->
@@ -756,7 +753,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ALL ORIGINAL JAVASCRIPT CODE PRESERVED - ONLY CSS VISUAL ENHANCEMENTS ADDED
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -768,7 +764,7 @@
             
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [];
+            let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [], allProducts = [];
 
             function showNotification(msg, isError) { 
                 const t = document.createElement('div'); 
@@ -840,8 +836,8 @@
                 document.getElementById('totalProfit').innerHTML = `Rs. ${totalProf.toLocaleString()}`;
                 const { count: pw } = await supabaseClient.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
                 document.getElementById('pendingWithdrawals').innerHTML = pw || 0;
-                const { count: pc } = await supabaseClient.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
-                document.getElementById('totalProducts').innerHTML = pc || 0;
+                const { data: productsData } = await supabaseClient.from('products').select('*', { count: 'exact' });
+                document.getElementById('totalProducts').innerHTML = productsData?.length || 0;
                 const { count: oc } = await supabaseClient.from('orders').select('*',{count:'exact',head:true});
                 document.getElementById('totalOrders').innerHTML = oc || 0;
             }
@@ -923,17 +919,30 @@
 
             window.deleteBuyer = async function(id){ if(confirm('Delete this buyer?')){ await supabaseClient.from('buyers').delete().eq('id',id); showNotification('Buyer deleted', false); await loadBuyers(); await loadStats(); } };
 
+            // FIXED: Load Products - Show ALL products regardless of is_active status
             async function loadProducts() {
-                const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
+                const { data } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+                allProducts = data || [];
                 const productsList = document.getElementById('productsList');
                 if (productsList) {
-                    productsList.innerHTML = (data||[]).map(p=>`<tr>
-                        <td><strong>${p.name}</strong></td>
-                        <td>${p.category}</td>
-                        <td>Rs.${(p.price||0).toLocaleString()}</td>
-                        <td>${p.stock_quantity||0}</td>
-                        <td class="action-buttons"><button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                    </tr>`).join('');
+                    if (allProducts.length === 0) {
+                        productsList.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-box-open"></i> No products found. Add your first product above.</td></tr>';
+                    } else {
+                        productsList.innerHTML = allProducts.map(p => `
+                            <tr>
+                                <td><strong>${p.name || '-'}</strong></td>
+                                <td>${p.category || '-'}</td>
+                                <td>${p.wattage || '-'}</td>
+                                <td>Rs. ${(p.price || 0).toLocaleString()}</td>
+                                <td>${p.stock_quantity || 0}</td>
+                                <td><span class="status-badge ${p.is_active !== false ? 'status-active' : 'status-cancelled'}">${p.is_active !== false ? 'Active' : 'Inactive'}</span></td>
+                                <td class="action-buttons">
+                                    <button onclick="toggleProductStatus('${p.id}', ${!p.is_active})" class="btn-warning"><i class="fas ${p.is_active !== false ? 'fa-ban' : 'fa-check'}"></i> ${p.is_active !== false ? 'Disable' : 'Enable'}</button>
+                                    <button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
                 }
             }
 
@@ -943,16 +952,52 @@
                 const wattage = document.getElementById('newProductWattage').value;
                 const price = parseFloat(document.getElementById('newProductPrice').value);
                 const stock = parseInt(document.getElementById('newProductStock').value) || 0;
-                if(!name || !category || !price){ showNotification('Name, category and price required', true); return; }
-                const { error } = await supabaseClient.from('products').insert([{ name, category, wattage, price, stock_quantity: stock, is_active: true, created_at: new Date().toISOString() }]);
+                if(!name || !category || !price || isNaN(price)){ showNotification('Name, category and price are required', true); return; }
+                const { error } = await supabaseClient.from('products').insert([{ 
+                    id: crypto.randomUUID(),
+                    name, 
+                    category, 
+                    wattage, 
+                    price, 
+                    stock_quantity: stock, 
+                    is_active: true, 
+                    created_at: new Date().toISOString() 
+                }]);
                 if(error){ showNotification(error.message, true); return; }
-                showNotification('Product added!', false);
+                showNotification('Product added successfully!', false);
                 document.getElementById('newProductName').value = '';
                 document.getElementById('newProductPrice').value = '';
-                await loadProducts(); await loadStats();
+                document.getElementById('newProductWattage').value = '';
+                document.getElementById('newProductStock').value = '0';
+                await loadProducts(); 
+                await loadStats();
             };
 
-            window.deleteProduct = async function(id){ if(confirm('Delete this product?')){ await supabaseClient.from('products').update({is_active:false}).eq('id',id); showNotification('Product deleted', false); await loadProducts(); await loadStats(); } };
+            window.toggleProductStatus = async function(id, newStatus) {
+                const action = newStatus ? 'enable' : 'disable';
+                if(confirm(`Are you sure you want to ${action} this product?`)) {
+                    const { error } = await supabaseClient.from('products').update({ is_active: newStatus }).eq('id', id);
+                    if(error){ showNotification(error.message, true); return; }
+                    showNotification(`Product ${action}d successfully!`, false);
+                    await loadProducts();
+                    await loadStats();
+                }
+            };
+
+            window.deleteProduct = async function(id){ 
+                if(confirm('Delete this product permanently? This action cannot be undone.')){ 
+                    const { error } = await supabaseClient.from('products').delete().eq('id', id); 
+                    if(error){ showNotification(error.message, true); return; }
+                    showNotification('Product deleted successfully!', false); 
+                    await loadProducts(); 
+                    await loadStats(); 
+                } 
+            };
+
+            window.resetProductSearch = function() {
+                document.getElementById('productSearch').value = '';
+                loadProducts();
+            };
 
             window.addInvestment = async function() { 
                 const investorId = document.getElementById('investorSelect').value, amount = parseFloat(document.getElementById('invAmount').value), date = document.getElementById('invDate').value, paymentMethod = document.getElementById('invPaymentMethod').value, transactionId = document.getElementById('invTransactionId').value; 
@@ -1087,7 +1132,7 @@
                                 <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button>
                                 <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
                             ` : `<span class="status-badge status-active">Processed</span>`}
-                         </td>
+                        </td>
                     </tr>
                 `).join('');
             };
@@ -1139,11 +1184,11 @@
                                     <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option>
                                     <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                                 </select>
-                             </td>
+                            </td>
                             <td class="action-buttons">
                                 <button onclick="viewOrderDetails('${o.id}')" class="btn-info" title="View Details"><i class="fas fa-eye"></i></button>
                                 <button onclick="deleteOrder('${o.id}')" class="btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
-                             </td>
+                            </td>
                         </tr>
                     `;
                 }).join('');
@@ -1363,8 +1408,32 @@
             
             window.searchProducts = function() { 
                 const term = document.getElementById('productSearch').value.toLowerCase(); 
-                const rows = document.querySelectorAll('#productsList tr'); 
-                rows.forEach(row=>{ row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; }); 
+                const filtered = allProducts.filter(p => 
+                    p.name?.toLowerCase().includes(term) || 
+                    p.category?.toLowerCase().includes(term) ||
+                    p.wattage?.toLowerCase().includes(term)
+                ); 
+                const productsList = document.getElementById('productsList');
+                if (productsList) {
+                    if (filtered.length === 0) {
+                        productsList.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-search"></i> No products match your search</td></tr>';
+                    } else {
+                        productsList.innerHTML = filtered.map(p => `
+                            <tr>
+                                <td><strong>${p.name || '-'}</strong></td>
+                                <td>${p.category || '-'}</td>
+                                <td>${p.wattage || '-'}</td>
+                                <td>Rs. ${(p.price || 0).toLocaleString()}</td>
+                                <td>${p.stock_quantity || 0}</td>
+                                <td><span class="status-badge ${p.is_active !== false ? 'status-active' : 'status-cancelled'}">${p.is_active !== false ? 'Active' : 'Inactive'}</span></td>
+                                <td class="action-buttons">
+                                    <button onclick="toggleProductStatus('${p.id}', ${!p.is_active})" class="btn-warning"><i class="fas ${p.is_active !== false ? 'fa-ban' : 'fa-check'}"></i> ${p.is_active !== false ? 'Disable' : 'Enable'}</button>
+                                    <button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button>
+                                 </td>
+                            </tr>
+                        `).join('');
+                    }
+                }
             };
             
             window.handleLogout = async function(){ 
