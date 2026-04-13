@@ -3,47 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sohrab Industries | Smart Investor Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <title>Sohrab Industries | Elite Investor Portal + Games</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, #f4f7fc 0%, #eef2f6 100%);
-            min-height: 100vh; 
+            font-family: 'Inter', 'Poppins', sans-serif; 
+            background: radial-gradient(circle at 10% 20%, #0a1f1a, #05120e);
+            min-height: 100vh;
+            color: #eef5ff;
         }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #1E4E3E; border-radius: 10px; }
+        
+        /* Animated particles effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: radial-gradient(#E8B13C 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glow-text { text-shadow: 0 0 8px rgba(232,177,60,0.6); }
         
         .header {
-            background: linear-gradient(135deg, #0A2F25 0%, #1E4E3E 100%);
-            color: white;
+            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
+            backdrop-filter: blur(4px);
             padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(232,177,60,0.3);
+            position: relative;
+            z-index: 10;
         }
-        .header h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 12px; }
-        .header h1 i { color: #E8B13C; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .logout-btn {
-            background: #c0392b;
-            padding: 8px 24px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            color: white;
-        }
-        .logout-btn:hover { background: #a82315; transform: scale(0.97); }
+        .logo-area h1 { font-size: 1.7rem; letter-spacing: -0.5px; }
+        .logo-area span { color: #E8B13C; font-weight: 800; }
+        .user-info { display: flex; align-items: center; gap: 20px; background: rgba(0,0,0,0.3); padding: 5px 18px; border-radius: 50px; }
+        .logout-btn { background: #c0392b; border: none; padding: 8px 22px; border-radius: 40px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; }
+        .logout-btn:hover { background: #e74c3c; transform: scale(0.96); box-shadow: 0 0 12px rgba(231,76,60,0.5); }
         
-        .container { max-width: 1400px; margin: 2rem auto; padding: 0 5%; }
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 5%; position: relative; z-index: 2; }
         
+        /* stats cards premium */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -51,349 +58,307 @@
             margin-bottom: 2rem;
         }
         .stat-card {
-            background: white;
+            background: rgba(10, 35, 28, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
             padding: 1.5rem;
-            border-radius: 28px;
-            border-bottom: 4px solid #E8B13C;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            transition: all 0.25s ease;
+            border: 1px solid rgba(232,177,60,0.3);
+            transition: all 0.3s;
             cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
-        .stat-card:hover { transform: translateY(-6px); box-shadow: 0 20px 30px rgba(0,0,0,0.1); }
-        .stat-card h3 { color: #4a5568; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 10px; }
-        .stat-number { font-size: 2rem; font-weight: 800; color: #1E4E3E; }
-        .stat-sub { font-size: 0.75rem; color: #718096; margin-top: 6px; }
+        .stat-card:hover { transform: translateY(-8px); border-color: #E8B13C; box-shadow: 0 25px 40px rgba(0,0,0,0.5); background: rgba(20, 55, 45, 0.9); }
+        .stat-card h3 { font-size: 0.85rem; opacity: 0.8; letter-spacing: 1px; }
+        .stat-number { font-size: 2.2rem; font-weight: 800; color: #E8B13C; font-family: 'Poppins', monospace; }
         
+        /* Tabs glam */
         .tabs {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 25px;
-            background: white;
-            padding: 8px 15px;
-            border-radius: 60px;
             flex-wrap: wrap;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            background: rgba(0,0,0,0.3);
+            padding: 8px 20px;
+            border-radius: 80px;
+            backdrop-filter: blur(5px);
         }
         .tab-btn {
-            padding: 10px 24px;
-            border-radius: 40px;
             background: transparent;
-            border: none;
-            font-weight: 600;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-        .tab-btn.active { background: #1E4E3E; color: white; box-shadow: 0 4px 10px rgba(30,78,62,0.3); }
-        .tab-btn:hover:not(.active) { background: #e2e8f0; }
-        
-        .tab-content { display: none; background: white; border-radius: 28px; padding: 1.8rem; box-shadow: 0 10px 25px rgba(0,0,0,0.03); animation: fade 0.25s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #1E4E3E;
-            border-left: 5px solid #E8B13C;
-            padding-left: 16px;
-            margin-bottom: 22px;
-        }
-        .table-container { overflow-x: auto; border-radius: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid #edf2f7; }
-        th { background: #1E4E3E; color: white; font-weight: 600; }
-        tr:hover td { background-color: #f9fafb; }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .status-active, .status-approved { background: #c6f7d0; color: #0a3b2a; }
-        .status-pending { background: #fff3cd; color: #8a6300; }
-        .btn-primary {
-            background: linear-gradient(95deg, #1E4E3E, #2d6a55);
             border: none;
             padding: 10px 28px;
             border-radius: 40px;
-            color: white;
             font-weight: 600;
-            cursor: pointer;
+            color: #ddd;
             transition: 0.2s;
-            display: inline-flex;
+            cursor: pointer;
+            display: flex;
             align-items: center;
             gap: 8px;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(30,78,62,0.3); }
-        .form-card { background: #f9fbfd; padding: 24px; border-radius: 28px; margin-bottom: 20px; border: 1px solid #e2edf2; }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 20px; margin-bottom: 20px; }
-        .form-group label { font-weight: 600; color: #1E4E3E; margin-bottom: 8px; display: block; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 16px;
-            border: 1.5px solid #cbd5e0;
+        .tab-btn.active { background: linear-gradient(95deg, #E8B13C, #c99b2e); color: #0a1f1a; box-shadow: 0 5px 15px rgba(232,177,60,0.4); font-weight: bold; }
+        .tab-btn:hover:not(.active) { background: rgba(232,177,60,0.2); color: #E8B13C; }
+        
+        .tab-content {
+            display: none;
+            background: rgba(15, 35, 30, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: 36px;
+            padding: 1.8rem;
+            border: 1px solid rgba(232,177,60,0.2);
+            animation: fadeSlide 0.3s ease;
+        }
+        .tab-content.active { display: block; }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            border-left: 5px solid #E8B13C;
+            padding-left: 18px;
+            margin-bottom: 25px;
+            color: #F7E05E;
+        }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.2); }
+        th { color: #E8B13C; font-weight: 600; background: rgba(0,0,0,0.3); border-radius: 16px; }
+        tr:hover td { background: rgba(232,177,60,0.1); }
+        
+        .status-badge {
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .status-active { background: #2e7d64; color: white; }
+        .status-pending { background: #b87333; color: #fff0cc; }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #E8B13C, #c9902a);
+            border: none;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: bold;
+            color: #0a1f1a;
+            cursor: pointer;
             transition: 0.2s;
         }
-        .form-group input:focus { border-color: #E8B13C; outline: none; box-shadow: 0 0 0 3px rgba(232,177,60,0.2); }
-        .payment-info { background: #eef7f2; padding: 14px; border-radius: 20px; margin: 20px 0; font-size: 14px; border-left: 5px solid #E8B13C; }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 0 18px #E8B13C; }
+        
+        /* GAME ZONE ATTRACTIVE SECTION */
+        .game-zone {
+            margin-top: 40px;
+            background: radial-gradient(circle at 20% 30%, #1e3b32, #0b231e);
+            border-radius: 48px;
+            padding: 1.5rem;
+            border: 1px solid rgba(232,177,60,0.6);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+        }
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .game-header h2 { font-size: 1.8rem; background: linear-gradient(135deg, #FFD966, #FFB347); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .wheel-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+        .wheel {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: conic-gradient(#E8B13C 0deg 60deg, #2ecc71 60deg 120deg, #3498db 120deg 180deg, #e67e22 180deg 240deg, #9b59b6 240deg 300deg, #f1c40f 300deg 360deg);
+            transition: transform 3s cubic-bezier(0.2, 0.8, 0.3, 1);
+            box-shadow: 0 0 0 8px #1e3b32, 0 0 0 12px #E8B13C;
+        }
+        .wheel-pointer {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 40px solid #ffc107;
+            filter: drop-shadow(0 2px 4px black);
+            z-index: 5;
+        }
+        .spin-btn {
+            background: #E8B13C;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 12px 32px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #0a2f24;
+        }
+        .spin-btn:active { transform: scale(0.96); }
+        .reward-msg { margin-top: 15px; font-size: 1.1rem; font-weight: bold; color: #ffd966; }
+        
+        .dice-area {
+            background: rgba(0,0,0,0.4);
+            border-radius: 40px;
+            padding: 20px;
+            text-align: center;
+        }
+        .dice {
+            font-size: 5rem;
+            cursor: pointer;
+            display: inline-block;
+            transition: 0.2s;
+            filter: drop-shadow(0 0 8px gold);
+        }
+        .dice:hover { transform: rotate(15deg) scale(1.1); }
+        
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            z-index: 2000;
             left: 0; top: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(6px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
         }
         .modal-content {
-            background: white;
-            margin: 8% auto;
+            background: #1f3d35;
+            margin: 10% auto;
             padding: 32px;
             width: 90%;
-            max-width: 520px;
-            border-radius: 32px;
-            animation: slideUp 0.25s;
+            max-width: 500px;
+            border-radius: 48px;
+            border-top: 5px solid #E8B13C;
         }
-        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .close { float: right; font-size: 28px; cursor: pointer; transition: 0.2s; }
+        .close { float: right; font-size: 28px; cursor: pointer; color: #E8B13C; }
         .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1E4E3E;
-            color: white;
-            padding: 12px 28px;
-            border-radius: 60px;
-            font-weight: 500;
-            z-index: 1200;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            animation: fadeInUp 0.25s;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #1e4e3e; color: #ffecb3; padding: 12px 28px; border-radius: 60px;
+            z-index: 2100; font-weight: bold; box-shadow: 0 5px 20px black;
         }
-        .toast.error { background: #c0392b; }
-        @keyframes fadeInUp { from { opacity: 0; bottom: 10px; } to { opacity: 1; bottom: 30px; } }
-        .edit-icon { background: #eef2f6; padding: 8px; border-radius: 40px; cursor: pointer; transition: 0.2s; }
-        .edit-icon:hover { background: #E8B13C; color: white; }
-        @media (max-width: 700px) { .stat-number { font-size: 1.4rem; } .tab-btn { padding: 6px 16px; font-size: 12px; } }
+        @media (max-width: 780px) { .stat-number { font-size: 1.5rem; } .wheel { width: 160px; height: 160px; } }
     </style>
 </head>
 <body>
 <div class="header">
-    <h1><i class="fas fa-chart-line"></i> Sohrab Industries</h1>
-    <div class="user-info"><span id="userName"><i class="fas fa-user-circle"></i> Investor</span> <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Exit</button></div>
+    <div class="logo-area"><h1><i class="fas fa-crown"></i> SOHRAB <span>INDUSTRIES</span></h1><small style="opacity:0.8">Elite Investment & Rewards</small></div>
+    <div class="user-info"><span id="userName"><i class="fas fa-user-astronaut"></i> Loading...</span><button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Exit</button></div>
 </div>
+
 <div class="container">
     <div class="stats">
-        <div class="stat-card" data-tab="investments"><h3><i class="fas fa-chart-simple"></i> Total Invested</h3><div class="stat-number" id="totalInvestment">Rs. 0</div><div class="stat-sub">Active capital</div></div>
-        <div class="stat-card" data-tab="profits"><h3><i class="fas fa-coins"></i> Total Profit Earned</h3><div class="stat-number" id="totalProfit">Rs. 0</div><div class="stat-sub">Lifetime returns</div></div>
-        <div class="stat-card" data-tab="withdrawals"><h3><i class="fas fa-hand-holding-usd"></i> Available Balance</h3><div class="stat-number" id="availableBalance">Rs. 0</div><div class="stat-sub">(Investment + Profit) - Withdrawals</div></div>
-        <div class="stat-card" data-tab="investments"><h3><i class="fas fa-briefcase"></i> Active Investments</h3><div class="stat-number" id="activeInvestments">0</div></div>
+        <div class="stat-card" data-tab="investments"><h3><i class="fas fa-chart-line"></i> TOTAL INVESTED</h3><div class="stat-number" id="totalInvestment">Rs. 0</div></div>
+        <div class="stat-card" data-tab="profits"><h3><i class="fas fa-coins"></i> TOTAL PROFIT</h3><div class="stat-number" id="totalProfit">Rs. 0</div></div>
+        <div class="stat-card" data-tab="withdrawals"><h3><i class="fas fa-wallet"></i> AVAILABLE BALANCE</h3><div class="stat-number" id="availableBalance">Rs. 0</div></div>
+        <div class="stat-card" data-tab="investments"><h3><i class="fas fa-fire"></i> ACTIVE INVESTMENTS</h3><div class="stat-number" id="activeInvestments">0</div></div>
     </div>
 
     <div class="tabs">
-        <button class="tab-btn active" data-tab="investments"><i class="fas fa-chart-line"></i> My Investments</button>
+        <button class="tab-btn active" data-tab="investments"><i class="fas fa-chart-pie"></i> Investments</button>
         <button class="tab-btn" data-tab="investmentRequests"><i class="fas fa-hourglass-half"></i> Requests</button>
-        <button class="tab-btn" data-tab="profits"><i class="fas fa-coins"></i> Profit History</button>
+        <button class="tab-btn" data-tab="profits"><i class="fas fa-percent"></i> Profits</button>
         <button class="tab-btn" data-tab="withdrawals"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
         <button class="tab-btn" data-tab="profile"><i class="fas fa-id-card"></i> Profile</button>
+        <button class="tab-btn" data-tab="games"><i class="fas fa-gamepad"></i> 🎰 Lucky Games</button>
     </div>
 
-    <!-- Investments Tab (approved) -->
-    <div id="investmentsTab" class="tab-content active">
-        <div style="display: flex; justify-content: space-between; flex-wrap:wrap; gap:12px; margin-bottom: 20px;">
-            <h2 class="section-title"><i class="fas fa-check-circle"></i> Approved Investments</h2>
-            <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus-circle"></i> New Investment</button>
+    <!-- standard tabs -->
+    <div id="investmentsTab" class="tab-content active"><div style="display:flex;justify-content:space-between;flex-wrap:wrap"><h2 class="section-title">✅ Active Capital</h2><button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus-circle"></i> New Investment</button></div><div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Txn ID</th><th>Status</th></tr></thead><tbody id="investmentsList"></tbody></table></div></div>
+    <div id="investmentRequestsTab" class="tab-content"><h2 class="section-title">⏳ Pending Approvals</h2><div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Txn</th><th>Status</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div></div>
+    <div id="profitsTab" class="tab-content"><h2 class="section-title">📈 Profit History</h2><div class="table-container"><table><thead><tr><th>Month</th><th>Amount</th><th>Percentage</th><th>Status</th></tr></thead><tbody id="profitsList"></tbody></table></div></div>
+    <div id="withdrawalsTab" class="tab-content"><div style="display:flex;justify-content:space-between"><h2 class="section-title">💸 Withdrawals</h2><button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-hand-holding-usd"></i> Request</button></div><div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div><p style="margin-top:12px;font-size:12px">✅ Withdrawals reduce your available balance (Investment + Profit - Withdrawn).</p></div>
+    
+    <div id="profileTab" class="tab-content"><h2 class="section-title">👤 Your Vault</h2><div style="display:grid;gap:20px;max-width:600px"><input type="text" id="profileName" placeholder="Full Name" class="form-control" style="padding:12px;border-radius:40px;"><input type="text" id="profilePhone" placeholder="Phone"><input type="text" id="profileCity" placeholder="City"><div><strong>Total Invested:</strong> <span id="profTotalInv">0</span> &nbsp;| <strong>Profit Earned:</strong> <span id="profTotalProfit">0</span> &nbsp;| <strong>Net Balance:</strong> <span id="profBalance">0</span></div><button id="updateProfileBtn" class="btn-primary">Update Profile</button></div></div>
+
+    <!-- GAMES ATTRACTION ZONE -->
+    <div id="gamesTab" class="tab-content">
+        <div class="game-zone">
+            <div class="game-header"><h2><i class="fas fa-dice-d6"></i> LUCKY WHEEL & DICE BONANZA</h2><span class="glow-text">Win virtual rewards & fun!</span></div>
+            <div class="wheel-container">
+                <div style="text-align:center"><div style="position:relative"><div class="wheel" id="wheel"></div><div class="wheel-pointer"></div></div><button id="spinWheelBtn" class="spin-btn mt-3"><i class="fas fa-sync-alt"></i> SPIN & WIN</button><div id="wheelResult" class="reward-msg mt-2"></div></div>
+                <div class="dice-area"><h3><i class="fas fa-dice"></i> ROLL THE DICE</h3><div class="dice" id="diceIcon">🎲</div><button id="rollDiceBtn" class="btn-primary" style="margin-top:10px"><i class="fas fa-hand-fist"></i> Roll Dice</button><div id="diceResult" class="reward-msg mt-2"></div></div>
+            </div>
+            <p style="margin-top:20px; text-align:center; font-size:12px; opacity:0.7"><i class="fas fa-trophy"></i> Entertainment only — no real money wagering. Just for investor delight!</p>
         </div>
-        <div class="table-container"><table><thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentsList"></tbody></table></div>
     </div>
+</div>
 
-    <div id="investmentRequestsTab" class="tab-content"><h2 class="section-title"><i class="fas fa-clock"></i> Pending Requests</h2><div class="table-container"><table><thead><tr><th>Request Date</th><th>Amount</th><th>Method</th><th>Txn ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div></div>
+<!-- MODALS -->
+<div id="investmentModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('investmentModal')">&times;</span><h3>💰 New Investment</h3><div class="payment-info" style="background:#2c5a4a;padding:10px;border-radius:20px">📲 EasyPaisa/JazzCash/Bank: 03XX-1234567</div><input type="number" id="investmentAmount" placeholder="Amount (min 1000)" style="width:100%;margin:12px 0;padding:12px"><select id="investmentPaymentMethod"><option>EasyPaisa</option><option>JazzCash</option></select><input id="investmentTransactionId" placeholder="Transaction ID"><textarea id="investmentNotes" placeholder="Notes"></textarea><button id="submitInvestmentBtn" class="btn-primary">Submit Request</button></div></div>
+<div id="withdrawalModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('withdrawalModal')">&times;</span><h3>💸 Withdrawal</h3><input type="number" id="withdrawAmount" placeholder="Amount"><select id="withdrawMethod"><option>EasyPaisa</option><option>Bank</option></select><input id="accountDetails" placeholder="Account / Mobile"><button id="submitWithdrawalBtn" class="btn-primary">Request</button></div></div>
 
-    <div id="profitsTab" class="tab-content"><h2 class="section-title"><i class="fas fa-gift"></i> Profit Distribution</h2><div class="table-container"><table><thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody></table></div><p class="stat-sub" style="margin-top:12px"><i class="fas fa-info-circle"></i> Paid profits are automatically added to your available balance.</p></div>
-
-    <div id="withdrawalsTab" class="tab-content">
-        <div style="display: flex; justify-content: space-between; flex-wrap:wrap; gap:12px; margin-bottom: 20px;"><h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawals</h2><button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-hand-holding-usd"></i> Request Withdrawal</button></div>
-        <div class="table-container"><table><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Method</th><th>Account</th><th>Status</th><th>Processed</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
-        <p class="stat-sub" style="margin-top:10px"><i class="fas fa-calculator"></i> <strong>Withdrawal logic:</strong> Approved withdrawals reduce your Available Balance (which includes both invested capital and earned profits). Remaining balance = Total Investment + Total Profit - Total Withdrawn.</p>
-    </div>
-
-    <div id="profileTab" class="tab-content"><h2 class="section-title"><i class="fas fa-user-cog"></i> Your Information</h2><div class="form-card"><div class="form-row"><div class="form-group"><label>Full Name</label><div class="profile-field"><input type="text" id="profileName" readonly> <i class="fas fa-pen edit-icon" onclick="editProfileField('full_name','profileName')"></i></div></div><div class="form-group"><label>Email</label><input type="email" id="profileEmail" readonly></div></div><div class="form-row"><div class="form-group"><label>Phone</label><div class="profile-field"><input type="text" id="profilePhone" readonly> <i class="fas fa-pen edit-icon" onclick="editProfileField('phone','profilePhone')"></i></div></div><div class="form-group"><label>City</label><div class="profile-field"><input type="text" id="profileCity" readonly> <i class="fas fa-pen edit-icon" onclick="editProfileField('city','profileCity')"></i></div></div></div><div class="form-row"><div class="form-group"><label>💰 Total Investment (Capital)</label><input id="profileTotalInvested" readonly></div><div class="form-group"><label>📈 Total Profit Earned</label><input id="profileTotalProfitEarned" readonly></div><div class="form-group"><label>💵 Available Balance (Net)</label><input id="profileNetBalance" readonly></div></div><div class="form-row"><div class="form-group"><label>📅 Member Since</label><input id="profileSince" readonly></div></div></div></div>
-
-    <!-- Modals -->
-    <div id="investmentModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('investmentModal')">&times;</span><h3><i class="fas fa-plus-circle"></i> New Investment Request</h3><div class="payment-info"><i class="fas fa-university"></i> Send payment to: <strong>EasyPaisa 03XX-1234567</strong> | JazzCash 03XX-7654321 | HBL A/C 1234-5678</div><div class="form-group"><label>Amount (Rs.)</label><input type="number" id="investmentAmount" placeholder="Min 1,000"></div><div class="form-group"><label>Payment Method</label><select id="investmentPaymentMethod"><option>EasyPaisa</option><option>JazzCash</option><option>Bank Transfer</option></select></div><div class="form-group"><label>Transaction ID *</label><input id="investmentTransactionId" placeholder="TXN ID"></div><div class="form-group"><label>Notes</label><textarea id="investmentNotes" rows="2"></textarea></div><button id="submitInvestmentBtn" class="btn-primary">Submit Request</button></div></div>
-
-    <div id="withdrawalModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('withdrawalModal')">&times;</span><h3><i class="fas fa-hand-holding-usd"></i> Withdrawal Request</h3><div class="form-group"><label>Amount (Rs.)</label><input type="number" id="withdrawAmount" placeholder="Enter amount (Min 1000)"></div><div class="form-group"><label>Payment Method</label><select id="withdrawMethod"><option>EasyPaisa</option><option>JazzCash</option><option>Bank Transfer</option></select></div><div class="form-group"><label>Account / Mobile Number</label><input id="accountDetails" placeholder="Account details"></div><button id="submitWithdrawalBtn" class="btn-primary">Request Withdrawal</button></div></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        (function() {
-            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            let currentInvestorId = null;
-
-            function showToast(msg, isErr = false) {
-                const t = document.createElement('div'); t.className = `toast ${isErr ? 'error' : ''}`; t.innerText = isErr ? `⚠️ ${msg}` : `✅ ${msg}`;
-                document.body.appendChild(t); setTimeout(() => t.remove(), 3200);
-            }
-            window.closeModal = (id) => document.getElementById(id).style.display = 'none';
-
-            // Fetch all core data for accurate calculations: investments (active), profits (paid), withdrawals (approved)
-            async function fetchInvestorFinancials() {
-                // 1) active investments (approved capital)
-                const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-                const totalInvested = investments?.reduce((sum, i) => sum + (i.amount || 0), 0) || 0;
-                
-                // 2) paid profits
-                const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
-                const totalProfitEarned = profits?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0;
-                
-                // 3) approved withdrawals (status = 'approved')
-                const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
-                const totalWithdrawn = withdrawals?.reduce((sum, w) => sum + (w.amount || 0), 0) || 0;
-                
-                // CORRECT FORMULA: Available = Total Invested + Total Profit - Total Withdrawn
-                const availableBalance = totalInvested + totalProfitEarned - totalWithdrawn;
-                
-                return { totalInvested, totalProfitEarned, totalWithdrawn, availableBalance };
-            }
-
-            async function updateStatsAndProfile() {
-                const { totalInvested, totalProfitEarned, availableBalance } = await fetchInvestorFinancials();
-                document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-                document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfitEarned.toLocaleString()}`;
-                document.getElementById('availableBalance').innerHTML = `Rs. ${availableBalance.toLocaleString()}`;
-                
-                // also active investments count
-                const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
-                document.getElementById('activeInvestments').innerHTML = activeInv?.length || 0;
-                
-                // profile fields update
-                const { data: invData } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
-                if(invData && invData[0]) {
-                    const p = invData[0];
-                    document.getElementById('profileTotalInvested').value = `Rs. ${totalInvested.toLocaleString()}`;
-                    document.getElementById('profileTotalProfitEarned').value = `Rs. ${totalProfitEarned.toLocaleString()}`;
-                    document.getElementById('profileNetBalance').value = `Rs. ${availableBalance.toLocaleString()}`;
-                    if(!document.getElementById('profileName').value) document.getElementById('profileName').value = p.full_name || '';
-                    document.getElementById('profileEmail').value = p.email || '';
-                    document.getElementById('profilePhone').value = p.phone || '';
-                    document.getElementById('profileCity').value = p.city || '';
-                    document.getElementById('profileSince').value = p.created_at ? new Date(p.created_at).toLocaleDateString() : new Date().toLocaleDateString();
-                }
-            }
-
-            async function loadInvestments() {
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
-                const tbody = document.getElementById('investmentsList');
-                if(!data?.length) { tbody.innerHTML = '<tr><td colspan="6" class="stat-sub" style="text-align:center">No active investments</td></tr>'; return; }
-                tbody.innerHTML = data.map(inv => `<tr><td>${new Date(inv.investment_date).toLocaleDateString()}</td><td>Rs. ${(inv.amount||0).toLocaleString()}</td><td>${inv.payment_method||'-'}</td><td>${inv.transaction_id||'-'}</td><td><span class="status-badge status-active">Active</span></td><td>${inv.notes||'-'}</td></tr>`).join('');
-            }
-            async function loadInvestmentRequests() {
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', {ascending:false});
-                const tbody = document.getElementById('investmentRequestsList');
-                if(!data?.length) { tbody.innerHTML = '<tr><td colspan="6" class="stat-sub" style="text-align:center">No pending requests</td></tr>'; return; }
-                tbody.innerHTML = data.map(req => `<tr><td>${new Date(req.created_at).toLocaleDateString()}</td><td>Rs. ${(req.amount||0).toLocaleString()}</td><td>${req.payment_method||'-'}</td><td>${req.transaction_id||'-'}</td><td><span class="status-badge status-pending">Pending</span></td><td>${req.notes||'-'}</td></tr>`).join('');
-            }
-            async function loadProfits() {
-                const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', {ascending:false});
-                const tbody = document.getElementById('profitsList');
-                if(!data?.length) { tbody.innerHTML = '<tr><td colspan="5" class="stat-sub" style="text-align:center">No profit records yet</td></tr>'; return; }
-                tbody.innerHTML = data.map(p => `<tr><td>${new Date(p.month).toLocaleDateString(undefined,{month:'long',year:'numeric'})}</td><td>Rs. ${(p.amount||0).toLocaleString()}</td><td>${p.profit_percentage||10}%</td><td><span class="status-badge ${p.paid ? 'status-active' : 'status-pending'}">${p.paid ? 'Paid ✅' : 'Pending'}</span></td><td>${p.paid_date ? new Date(p.paid_date).toLocaleDateString() : '-'}</td></tr>`).join('');
-            }
-            async function loadWithdrawals() {
-                const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', {ascending:false});
-                const tbody = document.getElementById('withdrawalsList');
-                if(!data?.length) { tbody.innerHTML = '<tr><td colspan="6" class="stat-sub" style="text-align:center">No withdrawals yet</td></tr>'; return; }
-                tbody.innerHTML = data.map(w => `<tr><td>${new Date(w.request_date).toLocaleDateString()}</td><td>Rs. ${(w.amount||0).toLocaleString()}</td><td>${w.payment_method||'-'}</td><td>${w.account_details||'-'}</td><td><span class="status-badge ${w.status==='approved'?'status-active':'status-pending'}">${w.status==='approved'?'Approved':'Pending'}</span></td><td>${w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-'}</td></tr>`).join('');
-            }
-            
-            async function loadProfileMeta() { await updateStatsAndProfile(); }
-            
-            // Edit field
-            window.editProfileField = async (field, inputId) => {
-                const inputEl = document.getElementById(inputId);
-                const newVal = prompt(`Update ${field.replace('_',' ')}:`, inputEl.value);
-                if(newVal && newVal !== inputEl.value) {
-                    const { error } = await supabase.from('investors').update({ [field]: newVal }).eq('id', currentInvestorId);
-                    if(error) showToast(error.message, true);
-                    else { showToast(`${field} updated`); inputEl.value = newVal; }
-                }
-            };
-            
-            // Submit investment request
-            document.getElementById('submitInvestmentBtn').onclick = async () => {
-                const amount = parseFloat(document.getElementById('investmentAmount').value);
-                const method = document.getElementById('investmentPaymentMethod').value;
-                const txnId = document.getElementById('investmentTransactionId').value.trim();
-                if(!amount || amount<1000) return showToast('Minimum investment Rs.1,000', true);
-                if(!txnId) return showToast('Transaction ID required', true);
-                const btn = document.getElementById('submitInvestmentBtn');
-                btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sending...';
-                const { error } = await supabase.from('investments').insert([{
-                    investor_id: currentInvestorId, amount, investment_date: new Date().toISOString().split('T')[0],
-                    payment_method: method, transaction_id: txnId, status: 'pending',
-                    notes: document.getElementById('investmentNotes').value || `via ${method}`
-                }]);
-                btn.disabled = false; btn.innerHTML = 'Submit Request';
-                if(error) showToast(error.message, true);
-                else { showToast('Request sent for approval'); closeModal('investmentModal'); document.getElementById('investmentAmount').value=''; document.getElementById('investmentTransactionId').value=''; await loadInvestmentRequests(); await updateStatsAndProfile(); }
-            };
-            
-            // Withdrawal with balance validation (real-time available balance)
-            document.getElementById('submitWithdrawalBtn').onclick = async () => {
-                const amount = parseFloat(document.getElementById('withdrawAmount').value);
-                const method = document.getElementById('withdrawMethod').value;
-                const account = document.getElementById('accountDetails').value.trim();
-                if(!amount || amount<1000) return showToast('Minimum withdrawal Rs.1,000', true);
-                if(!account) return showToast('Account details required', true);
-                const { availableBalance } = await fetchInvestorFinancials();
-                if(amount > availableBalance) return showToast(`Insufficient balance! Available: Rs. ${availableBalance.toLocaleString()}`, true);
-                const btn = document.getElementById('submitWithdrawalBtn');
-                btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
-                const { error } = await supabase.from('withdrawals').insert([{
-                    investor_id: currentInvestorId, amount, request_date: new Date().toISOString().split('T')[0],
-                    payment_method: method, account_details: account, status: 'pending'
-                }]);
-                btn.disabled = false; btn.innerHTML = 'Request Withdrawal';
-                if(error) showToast(error.message, true);
-                else { showToast('Withdrawal request submitted, admin will approve after verification'); closeModal('withdrawalModal'); document.getElementById('withdrawAmount').value=''; document.getElementById('accountDetails').value=''; await loadWithdrawals(); await updateStatsAndProfile(); }
-            };
-            
-            // Tab switching & stat cards
-            function switchTab(tabName) {
-                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.getElementById(`${tabName}Tab`).classList.add('active');
-                const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
-                if(activeBtn) activeBtn.classList.add('active');
-            }
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
-            document.querySelectorAll('.stat-card').forEach(card => card.addEventListener('click', () => switchTab(card.getAttribute('data-tab'))));
-            document.getElementById('openInvestmentModalBtn').onclick = () => document.getElementById('investmentModal').style.display = 'block';
-            document.getElementById('openWithdrawalModalBtn').onclick = () => document.getElementById('withdrawalModal').style.display = 'block';
-            
-            // Authentication & initial load
-            async function initAuth() {
-                const { data: { user }, error } = await supabase.auth.getUser();
-                if(error || !user) { window.location.href = 'investor-auth.html'; return; }
-                currentInvestorId = user.id;
-                document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
-                // ensure investor row exists
-                const { data: existing } = await supabase.from('investors').select('id').eq('id', currentInvestorId);
-                if(!existing || existing.length === 0) {
-                    await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], total_investment:0, total_profit:0, available_balance:0, created_at: new Date() }]);
-                }
-                await Promise.all([loadInvestments(), loadInvestmentRequests(), loadProfits(), loadWithdrawals(), updateStatsAndProfile(), loadProfileMeta()]);
-            }
-            document.getElementById('logoutBtn').onclick = async () => { await supabase.auth.signOut(); window.location.href = 'investor-auth.html'; };
-            initAuth();
-        })();
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let currentInvestorId = null;
+    function showToast(msg, isErr=false){ let t=document.createElement('div'); t.className='toast'; t.innerText=msg; t.style.background=isErr?'#b91c1c':'#1e4e3e'; document.body.appendChild(t); setTimeout(()=>t.remove(),3000);}
+    window.closeModal = (id)=>document.getElementById(id).style.display='none';
+    
+    async function fetchFinancials() {
+        const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+        const totalInv = investments?.reduce((s,i)=>s+(i.amount||0),0)||0;
+        const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
+        const totalProfit = profits?.reduce((s,p)=>s+(p.amount||0),0)||0;
+        const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
+        const totalWithdrawn = withdrawals?.reduce((s,w)=>s+(w.amount||0),0)||0;
+        const available = totalInv + totalProfit - totalWithdrawn;
+        return { totalInv, totalProfit, available };
+    }
+    async function updateStats() {
+        const { totalInv, totalProfit, available } = await fetchFinancials();
+        document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInv.toLocaleString()}`;
+        document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+        document.getElementById('availableBalance').innerHTML = `Rs. ${available.toLocaleString()}`;
+        const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id',currentInvestorId).eq('status','active');
+        document.getElementById('activeInvestments').innerHTML = activeInv?.length||0;
+        document.getElementById('profTotalInv').innerHTML = `Rs. ${totalInv}`;
+        document.getElementById('profTotalProfit').innerHTML = `Rs. ${totalProfit}`;
+        document.getElementById('profBalance').innerHTML = `Rs. ${available}`;
+    }
+    async function loadInvestments() { const {data}=await supabase.from('investments').select('*').eq('investor_id',currentInvestorId).eq('status','active'); document.getElementById('investmentsList').innerHTML=data?.map(i=>`<tr><td>${new Date(i.investment_date).toLocaleDateString()}</td><td>Rs.${i.amount}</td><td>${i.payment_method}</td><td>${i.transaction_id||'-'}</td><td><span class="status-badge status-active">Active</span></td></tr>`).join('')||'<tr><td colspan="5">✨ No active investments</td></tr>'; }
+    async function loadInvestmentRequests() { const {data}=await supabase.from('investments').select('*').eq('investor_id',currentInvestorId).eq('status','pending'); document.getElementById('investmentRequestsList').innerHTML=data?.map(i=>`<tr><td>${new Date(i.created_at).toLocaleDateString()}</td><td>Rs.${i.amount}</td><td>${i.payment_method}</td><td>${i.transaction_id}</td><td><span class="status-badge status-pending">Pending</span></td></tr>`).join('')||'<tr><td colspan="5">No pending requests</td></tr>'; }
+    async function loadProfits() { const {data}=await supabase.from('profits').select('*').eq('investor_id',currentInvestorId); document.getElementById('profitsList').innerHTML=data?.map(p=>`<tr><td>${new Date(p.month).toLocaleDateString()}</td><td>Rs.${p.amount}</td><td>${p.profit_percentage}%</td><td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td></tr>`).join('')||'<tr><td colspan="4">No profit records</td></tr>'; }
+    async function loadWithdrawals() { const {data}=await supabase.from('withdrawals').select('*').eq('investor_id',currentInvestorId); document.getElementById('withdrawalsList').innerHTML=data?.map(w=>`<tr><td>${new Date(w.request_date).toLocaleDateString()}</td><td>Rs.${w.amount}</td><td>${w.payment_method}</td><td><span class="status-badge ${w.status==='approved'?'status-active':'status-pending'}">${w.status}</span></td></tr>`).join('')||'<tr><td colspan="4">No withdrawals</td></tr>'; }
+    async function loadProfile() { const {data}=await supabase.from('investors').select('*').eq('id',currentInvestorId); if(data && data[0]){ document.getElementById('profileName').value=data[0].full_name||''; document.getElementById('profilePhone').value=data[0].phone||''; document.getElementById('profileCity').value=data[0].city||''; } }
+    
+    document.getElementById('updateProfileBtn')?.addEventListener('click',async()=>{ const name=document.getElementById('profileName').value; const phone=document.getElementById('profilePhone').value; const city=document.getElementById('profileCity').value; await supabase.from('investors').update({full_name:name,phone,city}).eq('id',currentInvestorId); showToast('Profile updated!'); });
+    
+    // Investment & Withdrawal handlers
+    document.getElementById('submitInvestmentBtn').onclick=async()=>{ const amount=parseFloat(document.getElementById('investmentAmount').value); const txn=document.getElementById('investmentTransactionId').value; if(amount<1000||!txn) return showToast('Min 1000 & Txn ID',true); await supabase.from('investments').insert([{investor_id:currentInvestorId,amount,investment_date:new Date().toISOString().split('T')[0],payment_method:document.getElementById('investmentPaymentMethod').value,transaction_id:txn,status:'pending',notes:document.getElementById('investmentNotes').value}]); showToast('Request sent'); closeModal('investmentModal'); loadInvestmentRequests(); };
+    document.getElementById('submitWithdrawalBtn').onclick=async()=>{ const amount=parseFloat(document.getElementById('withdrawAmount').value); const {available}=await fetchFinancials(); if(amount>available) return showToast(`Insufficient balance. Available: Rs.${available}`,true); await supabase.from('withdrawals').insert([{investor_id:currentInvestorId,amount,request_date:new Date().toISOString().split('T')[0],payment_method:document.getElementById('withdrawMethod').value,account_details:document.getElementById('accountDetails').value,status:'pending'}]); showToast('Withdrawal request submitted'); closeModal('withdrawalModal'); loadWithdrawals(); updateStats(); };
+    
+    // GAME: Wheel of Fortune
+    const segments = ["+50 Bonus Points", "+100 🎁", "✨ 20 Bonus", "🎉 200 Points", "Lucky Star ⭐", "+500 Virtual"];
+    const wheel = document.getElementById('wheel');
+    function buildWheel(){ if(wheel) wheel.style.background=`conic-gradient(#E8B13C 0deg 60deg, #2ecc71 60deg 120deg, #3498db 120deg 180deg, #e67e22 180deg 240deg, #9b59b6 240deg 300deg, #f1c40f 300deg 360deg)`; } buildWheel();
+    let spinning=false;
+    document.getElementById('spinWheelBtn')?.addEventListener('click',()=>{ if(spinning) return; spinning=true; const spins=Math.floor(Math.random()*3600)+720; wheel.style.transform=`rotate(${spins}deg)`; setTimeout(()=>{ const finalDeg = (spins % 360); let segmentIndex = Math.floor((360 - finalDeg) / 60) % 6; const reward = segments[segmentIndex]; document.getElementById('wheelResult').innerHTML=`🎉 Wheel landed: ${reward}! 🎉`; showToast(`🎡 You won ${reward} (fun credit)`); spinning=false; },3000); });
+    
+    // Dice Roll
+    document.getElementById('rollDiceBtn')?.addEventListener('click',()=>{ const diceVal = Math.floor(Math.random()*6)+1; const diceMap = ['⚀','⚁','⚂','⚃','⚄','⚅']; document.getElementById('diceIcon').innerHTML = diceMap[diceVal-1]; let messages = ['Lucky!','Great roll!','Jackpot vibe','Fortune smiles']; document.getElementById('diceResult').innerHTML=`🎲 You rolled ${diceVal} — ${messages[diceVal%messages.length]} ✨`; showToast(`Dice: ${diceVal} — enjoy the luck!`); });
+    
+    // Tab switching
+    function switchTab(tabName){ document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById(`${tabName}Tab`).classList.add('active'); document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active'); }
+    document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.getAttribute('data-tab'))));
+    document.querySelectorAll('.stat-card').forEach(card=>card.addEventListener('click',()=>switchTab(card.getAttribute('data-tab'))));
+    document.getElementById('openInvestmentModalBtn').onclick=()=>document.getElementById('investmentModal').style.display='block';
+    document.getElementById('openWithdrawalModalBtn').onclick=()=>document.getElementById('withdrawalModal').style.display='block';
+    
+    // Auth
+    async function init(){ const {data:{user}}=await supabase.auth.getUser(); if(!user){ window.location.href='investor-auth.html'; return; } currentInvestorId=user.id; document.getElementById('userName').innerHTML=`<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`; await supabase.from('investors').select('id').eq('id',currentInvestorId).then(async(res)=>{ if(!res.data?.length) await supabase.from('investors').insert([{id:currentInvestorId,email:user.email,full_name:user.email.split('@')[0],created_at:new Date()}]); }); await Promise.all([loadInvestments(), loadInvestmentRequests(), loadProfits(), loadWithdrawals(), updateStats(), loadProfile()]); }
+    document.getElementById('logoutBtn').onclick=async()=>{ await supabase.auth.signOut(); window.location.href='investor-auth.html'; };
+    init();
+</script>
 </body>
 </html>
