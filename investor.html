@@ -2,60 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sohrab Industries | 50/50 Profit Sharing - Motivate & Grow</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Dashboard - Sohrab Industries</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body { 
             font-family: 'Inter', sans-serif; 
-            background: linear-gradient(145deg, #0a1a15 0%, #0d281f 50%, #0a1a15 100%);
-            min-height: 100vh;
-            position: relative;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e9ecef 100%);
+            min-height: 100vh; 
         }
         
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(232,177,60,0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(30,78,62,0.15) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-        
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #1E4E3E; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #E8B13C; }
         
         .header {
-            background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
+            background: linear-gradient(135deg, #1E4E3E 0%, #2A6B58 100%);
             color: white;
             padding: 1rem 5%;
             display: flex;
@@ -63,97 +28,66 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 10;
-            border-bottom: 2px solid rgba(232,177,60,0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(232,177,60,0.1), transparent);
-            animation: shimmer 3s infinite;
-        }
-        
         .header h1 { 
-            font-size: 1.8rem; 
-            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem; 
             display: flex; 
             align-items: center; 
-            gap: 12px;
-            transition: all 0.3s;
-            background: linear-gradient(135deg, #fff, #E8B13C);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            gap: 10px;
+            transition: transform 0.3s;
         }
         .header h1:hover { transform: scale(1.02); }
         .header h1 i { 
             color: #E8B13C;
-            text-shadow: 0 0 15px rgba(232,177,60,0.8);
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
-            color: #E8B13C;
+            text-shadow: 0 0 5px rgba(232,177,60,0.5);
         }
-        .user-info { 
-            display: flex; 
-            align-items: center; 
-            gap: 20px;
-            background: rgba(0,0,0,0.3);
-            padding: 8px 25px;
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(232,177,60,0.3);
-        }
+        .user-info { display: flex; align-items: center; gap: 20px; }
         .logout-btn {
-            background: linear-gradient(135deg, #dc3545, #a71d2a);
+            background: #dc3545;
             color: white;
-            padding: 8px 24px;
+            padding: 8px 20px;
             border: none;
-            border-radius: 40px;
+            border-radius: 30px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             transition: all 0.3s;
         }
         .logout-btn:hover { 
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(220,53,69,0.4);
+            background: #c82333; 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220,53,69,0.3);
         }
         
-        .container { max-width: 1400px; margin: 2rem auto; padding: 0 5%; position: relative; z-index: 2; }
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 5%; }
         
-        /* Motivation Carousel Section */
+        /* Carousel Styles - New Addition */
         .carousel-section {
-            background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(30,78,62,0.2));
-            border-radius: 32px;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 24px;
             padding: 1.8rem;
             margin-bottom: 2rem;
-            border: 1px solid rgba(232,177,60,0.3);
-            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid rgba(30,78,62,0.1);
         }
         .carousel-title {
             text-align: center;
             margin-bottom: 1.5rem;
         }
         .carousel-title h2 {
-            font-family: 'Playfair Display', serif;
-            color: #E8B13C;
+            font-family: 'Inter', sans-serif;
+            color: #1E4E3E;
             font-size: 1.6rem;
+            font-weight: 700;
         }
         .carousel-title p {
-            color: rgba(255,255,255,0.6);
+            color: #666;
             font-size: 0.9rem;
         }
         .carousel-container {
             position: relative;
             overflow: hidden;
-            border-radius: 24px;
+            border-radius: 20px;
         }
         .carousel-track {
             display: flex;
@@ -162,59 +96,60 @@
         }
         .carousel-card {
             min-width: calc(25% - 15px);
-            background: linear-gradient(145deg, rgba(20,45,38,0.9), rgba(15,35,28,0.95));
-            border-radius: 24px;
+            background: linear-gradient(145deg, #ffffff, #f5f7fa);
+            border-radius: 20px;
             padding: 1.5rem;
             text-align: center;
-            border: 1px solid rgba(232,177,60,0.3);
+            border: 1px solid rgba(30,78,62,0.15);
             transition: all 0.3s;
-            animation: slideInLeft 0.5s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         .carousel-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-6px);
             border-color: #E8B13C;
-            box-shadow: 0 15px 35px rgba(232,177,60,0.2);
+            box-shadow: 0 15px 30px rgba(232,177,60,0.15);
         }
         .carousel-icon {
-            font-size: 3rem;
-            color: #E8B13C;
-            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            color: #1E4E3E;
+            margin-bottom: 0.8rem;
         }
         .carousel-number {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #E8B13C, #ffd966);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Playfair Display', serif;
+            color: #E8B13C;
+            font-family: 'Inter', sans-serif;
         }
         .carousel-label {
-            color: rgba(255,255,255,0.7);
-            font-size: 0.9rem;
+            color: #555;
+            font-size: 0.85rem;
             margin-top: 8px;
+            font-weight: 500;
         }
         .carousel-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(232,177,60,0.3);
+            background: #1E4E3E;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
-            color: #E8B13C;
-            font-size: 1.2rem;
+            color: white;
+            font-size: 1rem;
             transition: all 0.3s;
             z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .carousel-btn:hover {
             background: #E8B13C;
-            color: #0a1f1a;
+            color: #1E4E3E;
         }
-        .carousel-btn.prev { left: 10px; }
-        .carousel-btn.next { right: 10px; }
+        .carousel-btn.prev { left: 5px; }
+        .carousel-btn.next { right: 5px; }
         
         @media (max-width: 1024px) {
             .carousel-card { min-width: calc(33.33% - 14px); }
@@ -226,125 +161,42 @@
             .carousel-card { min-width: 100%; }
         }
         
-        /* Stats Cards */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
         .stat-card {
-            background: linear-gradient(145deg, rgba(20,45,38,0.95), rgba(15,35,28,0.95));
-            backdrop-filter: blur(10px);
+            background: white;
             padding: 1.5rem;
-            border-radius: 28px;
-            text-align: center;
-            border: 1px solid rgba(232,177,60,0.3);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(232,177,60,0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        .stat-card:hover::before { opacity: 1; }
-        .stat-card:hover { 
-            transform: translateY(-12px) scale(1.02); 
-            border-color: #E8B13C;
-            box-shadow: 0 25px 50px rgba(232,177,60,0.25);
-        }
-        .stat-card h3 { 
-            color: rgba(255,255,255,0.7); 
-            font-size: 0.85rem; 
-            margin-bottom: 0.8rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
-        }
-        .stat-number { 
-            font-size: 2.2rem; 
-            font-weight: 800; 
-            background: linear-gradient(135deg, #E8B13C, #ffd966);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Playfair Display', serif;
-        }
-        
-        /* Rules Banner */
-        .rules-banner {
-            background: linear-gradient(135deg, rgba(232,177,60,0.15), rgba(30,78,62,0.3));
-            border-radius: 28px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(232,177,60,0.4);
-            backdrop-filter: blur(8px);
-        }
-        .rules-banner h3 {
-            color: #E8B13C;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .rules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
-        }
-        .rule-item {
-            background: rgba(0,0,0,0.3);
-            padding: 12px 18px;
             border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            text-align: center;
+            border-bottom: 4px solid #E8B13C;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             transition: all 0.3s;
+            cursor: pointer;
         }
-        .rule-item:hover {
-            background: rgba(232,177,60,0.15);
-            transform: translateX(5px);
+        .stat-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
-        .rule-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(232,177,60,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: #E8B13C;
-        }
-        .rule-text strong { color: #E8B13C; display: block; font-size: 0.9rem; }
-        .rule-text p { color: rgba(255,255,255,0.7); font-size: 0.8rem; }
+        .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-number { font-size: 1.8rem; font-weight: 800; color: #1E4E3E; }
         
         .tabs {
             display: flex;
-            gap: 12px;
-            margin-bottom: 1.8rem;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            padding: 8px 20px;
-            border-radius: 80px;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 10px;
+            border-radius: 60px;
             flex-wrap: wrap;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            border: 1px solid rgba(232,177,60,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
         .tab-btn {
-            padding: 12px 32px;
-            background: transparent;
+            padding: 12px 28px;
+            background: none;
             border: none;
             cursor: pointer;
             border-radius: 50px;
@@ -352,107 +204,112 @@
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: rgba(255,255,255,0.8);
+            gap: 8px;
         }
-        .tab-btn:hover { background: rgba(232,177,60,0.2); transform: translateY(-3px); color: #E8B13C; }
-        .tab-btn.active { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; box-shadow: 0 6px 20px rgba(232,177,60,0.4); font-weight: 700; }
+        .tab-btn:hover { 
+            background: #f0f2f5; 
+            transform: translateY(-2px);
+        }
+        .tab-btn.active { 
+            background: linear-gradient(135deg, #1E4E3E, #2A6B58);
+            color: white; 
+            box-shadow: 0 4px 12px rgba(30,78,62,0.3);
+        }
         
         .tab-content {
             display: none;
-            background: rgba(20,45,38,0.92);
-            backdrop-filter: blur(12px);
-            border-radius: 32px;
-            padding: 1.8rem;
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.2);
-            border: 1px solid rgba(232,177,60,0.2);
-            animation: fadeSlideUp 0.4s ease-out;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            animation: fadeIn 0.3s ease;
         }
         .tab-content.active { display: block; }
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .section-title {
-            font-size: 1.5rem;
-            font-family: 'Playfair Display', serif;
-            background: linear-gradient(135deg, #E8B13C, #ffd966);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            font-size: 1.3rem;
+            color: #1E4E3E;
             margin-bottom: 20px;
-            border-left: 5px solid #E8B13C;
-            padding-left: 18px;
+            border-left: 4px solid #E8B13C;
+            padding-left: 15px;
         }
         
-        .table-container { overflow-x: auto; margin-top: 15px; border-radius: 20px; }
+        .table-container { overflow-x: auto; margin-top: 15px; border-radius: 15px; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.15); }
-        th { background: linear-gradient(135deg, #0a2f24, #1a4a3a); color: #E8B13C; font-weight: 700; }
-        tr:hover td { background: rgba(232,177,60,0.08); }
-        td { color: rgba(255,255,255,0.9); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { 
+            background: linear-gradient(135deg, #1E4E3E, #2A6B58);
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover { background: #f8f9fa; }
         
-        .status-badge { padding: 5px 15px; border-radius: 30px; font-size: 12px; display: inline-block; font-weight: 700; }
-        .status-active, .status-approved { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
-        .status-pending { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
+        .status-badge { 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            display: inline-block;
+            font-weight: 600;
+        }
+        .status-active, .status-approved { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
         
         .btn-primary {
-            background: linear-gradient(135deg, #E8B13C, #c99b2e);
-            color: #0a1f1a;
-            padding: 12px 28px;
+            background: linear-gradient(135deg, #1E4E3E, #2A6B58);
+            color: white;
+            padding: 10px 24px;
             border: none;
-            border-radius: 40px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             transition: all 0.3s;
         }
-        .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 25px rgba(232,177,60,0.4); }
+        .btn-primary:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30,78,62,0.3);
+        }
         
         .form-card {
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
-            padding: 28px;
-            border-radius: 28px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 20px;
             margin-bottom: 25px;
-            border: 1px solid rgba(232,177,60,0.2);
+            border: 1px solid rgba(0,0,0,0.05);
         }
         .form-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 20px;
         }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #E8B13C; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #1E4E3E; }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 14px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(232,177,60,0.3);
-            border-radius: 16px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
             font-size: 14px;
             transition: all 0.3s;
-            color: white;
         }
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: #E8B13C;
-            box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
+            box-shadow: 0 0 0 3px rgba(232,177,60,0.1);
         }
-        .form-group input::placeholder { color: rgba(255,255,255,0.4); }
         
         .payment-info {
-            background: linear-gradient(135deg, rgba(232,177,60,0.15), rgba(30,78,62,0.3));
-            padding: 18px;
-            border-radius: 20px;
-            margin: 18px 0;
-            border-left: 5px solid #E8B13C;
-            color: rgba(255,255,255,0.9);
+            background: linear-gradient(135deg, #e7f3ff, #d4e6f1);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 14px;
+            border-left: 4px solid #E8B13C;
         }
         
-        /* Modal Fix for Large Screens - Bottom Margin */
         .modal {
             display: none;
             position: fixed;
@@ -461,142 +318,136 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(15px);
-            overflow-y: auto;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
         }
         .modal-content {
-            background: linear-gradient(145deg, #1a3d33, #0f2a22);
-            margin: 5% auto;
-            padding: 35px;
+            background: white;
+            margin: 10% auto;
+            padding: 30px;
             width: 90%;
-            max-width: 520px;
-            border-radius: 40px;
-            animation: slideDownModal 0.3s ease;
-            border: 1px solid rgba(232,177,60,0.3);
-            margin-bottom: 5%;
+            max-width: 500px;
+            border-radius: 25px;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
         }
-        @media (min-width: 1200px) {
-            .modal-content {
-                margin: 3% auto;
-                margin-bottom: 5%;
-            }
-        }
-        @keyframes slideDownModal {
-            from { transform: translateY(-60px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .modal-content h2 { color: #E8B13C; margin-bottom: 20px; font-family: 'Playfair Display', serif; }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .close { 
             float: right; 
-            font-size: 30px; 
+            font-size: 28px; 
             cursor: pointer; 
-            color: rgba(255,255,255,0.6); 
+            color: #999; 
             transition: all 0.3s;
-            width: 36px;
-            height: 36px;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
         }
-        .close:hover { color: #E8B13C; background: rgba(232,177,60,0.2); transform: rotate(90deg); }
+        .close:hover { 
+            color: #333; 
+            background: #f0f2f5;
+        }
         
         .toast {
             position: fixed;
-            bottom: 35px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 14px 30px;
-            border-radius: 60px;
+            padding: 12px 24px;
+            border-radius: 50px;
             color: white;
-            z-index: 1100;
+            z-index: 1000;
             text-align: center;
-            animation: slideUpToast 0.3s ease;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            font-weight: 500;
         }
-        .toast.success { background: linear-gradient(135deg, #1e7e5e, #155a44); }
-        .toast.error { background: linear-gradient(135deg, #c0392b, #a5281b); }
-        @keyframes slideUpToast {
-            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
+        .toast.success { background: linear-gradient(135deg, #28a745, #20c997); }
+        .toast.error { background: linear-gradient(135deg, #dc3545, #c82333); }
+        .toast.info { background: linear-gradient(135deg, #17a2b8, #138496); }
+        @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
         
-        .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); font-style: italic; }
+        .empty-state { text-align: center; padding: 40px; color: #999; }
+        
         .edit-icon {
             cursor: pointer;
-            color: #E8B13C;
-            background: rgba(0,0,0,0.3);
+            color: #1E4E3E;
+            background: #f0f2f5;
             padding: 10px;
             border-radius: 50%;
             transition: all 0.3s;
         }
-        .edit-icon:hover { background: #E8B13C; color: #0a1f1a; transform: rotate(15deg) scale(1.1); }
-        .profile-field { display: flex; align-items: center; gap: 12px; }
-        .profile-field input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); color: white; }
-        .info-text { margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.5); }
+        .edit-icon:hover { 
+            background: #E8B13C; 
+            color: white; 
+            transform: rotate(15deg);
+        }
+        .profile-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile-field input {
+            flex: 1;
+        }
         
         @media (max-width: 768px) {
             .header { flex-direction: column; text-align: center; }
-            th, td { padding: 10px 8px; font-size: 12px; }
-            .stats { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            th, td { padding: 8px; font-size: 12px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
             .tabs { justify-content: center; }
-            .tab-btn { padding: 8px 18px; font-size: 12px; }
-            .modal-content { margin: 10% auto; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1><i class="fas fa-gem"></i> Sohrab Industries</h1>
+        <h1><i class="fas fa-lightbulb"></i> Sohrab Industries</h1>
         <div class="user-info">
-            <span id="userName"><i class="fas fa-user-astronaut"></i> Loading...</span>
+            <span id="userName"><i class="fas fa-user-circle"></i> Loading...</span>
             <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
     </div>
 
     <div class="container">
-        <!-- Inspiring Carousel Section -->
+        <!-- NEW: Inspiring Carousel Section -->
         <div class="carousel-section">
             <div class="carousel-title">
                 <h2><i class="fas fa-chart-line"></i> Our Growing Community</h2>
                 <p>Real numbers that inspire confidence & trust</p>
             </div>
             <div class="carousel-container">
-                <button class="carousel-btn prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn prev" id="carouselPrevBtn"><i class="fas fa-chevron-left"></i></button>
                 <div class="carousel-track" id="carouselTrack">
-                    <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-users"></i></div><div class="carousel-number" id="totalInvestorsCount">500+</div><div class="carousel-label">Active Investors</div></div>
-                    <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-rupee-sign"></i></div><div class="carousel-number" id="totalInvestedCount">Rs. 12.5M+</div><div class="carousel-label">Total Invested</div></div>
-                    <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="carousel-number" id="totalWithdrawnCount">Rs. 8.2M+</div><div class="carousel-label">Total Withdrawals</div></div>
+                    <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-users"></i></div><div class="carousel-number">500+</div><div class="carousel-label">Active Investors</div></div>
+                    <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-rupee-sign"></i></div><div class="carousel-number">Rs. 12.5M+</div><div class="carousel-label">Total Invested</div></div>
+                    <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="carousel-number">Rs. 8.2M+</div><div class="carousel-label">Total Withdrawals</div></div>
                     <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-microchip"></i></div><div class="carousel-number">50,000+</div><div class="carousel-label">Items Sold</div></div>
-                    <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-chart-pie"></i></div><div class="carousel-number">50%</div><div class="carousel-label">Your Profit Share</div></div>
+                    <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-chart-pie"></i></div><div class="carousel-number">50/50</div><div class="carousel-label">Profit Sharing</div></div>
                     <div class="carousel-card"><div class="carousel-icon"><i class="fas fa-trophy"></i></div><div class="carousel-number">100%</div><div class="carousel-label">Capital Protection</div></div>
                 </div>
-                <button class="carousel-btn next" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-
-        <!-- Investment Rules Banner -->
-        <div class="rules-banner">
-            <h3><i class="fas fa-scroll"></i> Investment Rules & 50/50 Profit Sharing</h3>
-            <div class="rules-grid">
-                <div class="rule-item"><div class="rule-icon"><i class="fas fa-coins"></i></div><div class="rule-text"><strong>Minimum Investment</strong><p>Minimum Rs. 1,000 PKR - No maximum limit</p></div></div>
-                <div class="rule-item"><div class="rule-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="rule-text"><strong>Minimum Withdrawal</strong><p>Minimum Rs. 1,000 PKR - Request anytime</p></div></div>
-                <div class="rule-item"><div class="rule-icon"><i class="fas fa-chart-line"></i></div><div class="rule-text"><strong>50/50 Profit Sharing</strong><p>Sohrab Industries: 50% | Investors: 50% of total profit</p></div></div>
-                <div class="rule-item"><div class="rule-icon"><i class="fas fa-microchip"></i></div><div class="rule-text"><strong>Business Model</strong><p>We purchase electronic items (bulbs, fans, appliances) and sell for profit</p></div></div>
-                <div class="rule-item"><div class="rule-icon"><i class="fas fa-shield-alt"></i></div><div class="rule-text"><strong>Capital Protection</strong><p>Your invested money is 100% safe - principal amount guaranteed</p></div></div>
-                <div class="rule-item"><div class="rule-icon"><i class="fas fa-percent"></i></div><div class="rule-text"><strong>No Interest (Riba-Free)</strong><p>Shariah-compliant profit sharing - Halal investment opportunity</p></div></div>
-                <div class="rule-item"><div class="rule-icon"><i class="fas fa-calendar-week"></i></div><div class="rule-text"><strong>Profit Distribution</strong><p>Monthly profit distribution based on actual sales earnings</p></div></div>
-                <div class="rule-item"><div class="rule-icon"><i class="fas fa-clock"></i></div><div class="rule-text"><strong>Flexible Exit</strong><p>Withdraw your investment + profit anytime with notice</p></div></div>
+                <button class="carousel-btn next" id="carouselNextBtn"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
 
         <div class="stats">
-            <div class="stat-card" data-tab="investments"><h3><i class="fas fa-chart-line"></i> Total Investment</h3><div class="stat-number" id="totalInvestment">Rs. 0</div></div>
-            <div class="stat-card" data-tab="profits"><h3><i class="fas fa-coins"></i> Total Profit (50% Share)</h3><div class="stat-number" id="totalProfit">Rs. 0</div></div>
-            <div class="stat-card" data-tab="withdrawals"><h3><i class="fas fa-wallet"></i> Available Balance</h3><div class="stat-number" id="availableBalance">Rs. 0</div></div>
-            <div class="stat-card" data-tab="investments"><h3><i class="fas fa-chart-simple"></i> Active Investments</h3><div class="stat-number" id="activeInvestments">0</div></div>
+            <div class="stat-card" data-tab="investments">
+                <h3><i class="fas fa-chart-line"></i> Total Investment</h3>
+                <div class="stat-number" id="totalInvestment">Rs. 0</div>
+            </div>
+            <div class="stat-card" data-tab="profits">
+                <h3><i class="fas fa-coins"></i> Total Profit Earned</h3>
+                <div class="stat-number" id="totalProfit">Rs. 0</div>
+            </div>
+            <div class="stat-card" data-tab="withdrawals">
+                <h3><i class="fas fa-wallet"></i> Available Balance</h3>
+                <div class="stat-number" id="availableBalance">Rs. 0</div>
+            </div>
+            <div class="stat-card" data-tab="investments">
+                <h3><i class="fas fa-chart-simple"></i> Active Investments</h3>
+                <div class="stat-number" id="activeInvestments">0</div>
+            </div>
         </div>
 
         <div class="tabs">
@@ -607,67 +458,158 @@
             <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> 👤 My Profile</button>
         </div>
 
+        <!-- Investments Tab -->
         <div id="investmentsTab" class="tab-content active">
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments</h2>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments (Money You Have Invested)</h2>
                 <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + New Investment Request</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentsList"></tbody></table></div>
-            <p class="info-text"><i class="fas fa-info-circle"></i> Your invested capital is 100% safe. You earn 50% of the profit from electronic items sales.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody id="investmentsList"></tbody>
+                </table>
+            </div>
+            <p style="margin-top: 15px; font-size: 12px; color: #666;"><i class="fas fa-info-circle"></i> This table shows all your approved investments. This money is invested with us and earning profits.</p>
         </div>
 
+        <!-- Investment Requests Tab -->
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
-            <div class="table-container"><table><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
-            <p class="info-text"><i class="fas fa-info-circle"></i> Requests are verified within 24-48 hours. Minimum investment: Rs. 1,000</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody id="investmentRequestsList"></tbody>
+                </table>
+            </div>
+            <p style="margin-top: 15px; font-size: 12px; color: #666;"><i class="fas fa-info-circle"></i> These requests are waiting for admin approval. Once approved, they will appear in "My Investments".</p>
         </div>
 
+        <!-- Profits Tab -->
         <div id="profitsTab" class="tab-content">
-            <h2 class="section-title"><i class="fas fa-gift"></i> Your 50% Profit Share Earnings</h2>
-            <div class="table-container"></table><thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody></table></div>
-            <p class="info-text"><i class="fas fa-info-circle"></i> You receive 50% of the net profit from electronic items sales. Paid profits added to available balance.</p>
+            <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr>
+                    </thead>
+                    <tbody id="profitsList"></tbody>
+                </table>
+            </div>
+            <p style="margin-top: 15px; font-size: 12px; color: #666;"><i class="fas fa-info-circle"></i> This shows all profits earned from your investments. Paid profits are added to your available balance.</p>
         </div>
 
+        <!-- Withdrawals Tab -->
         <div id="withdrawalsTab" class="tab-content">
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests (Money Taken Out)</h2>
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
-            <p class="info-text"><i class="fas fa-info-circle"></i> Minimum withdrawal: Rs. 1,000. Withdrawals processed within 3-5 business days.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr>
+                    </thead>
+                    <tbody id="withdrawalsList"></tbody>
+                </table>
+            </div>
+            <p style="margin-top: 15px; font-size: 12px; color: #666;"><i class="fas fa-info-circle"></i> This shows all your withdrawal requests. Approved withdrawals are deducted from your available balance.</p>
         </div>
 
+        <!-- Profile Tab -->
         <div id="profileTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-user-edit"></i> Your Profile Information</h2>
             <div class="form-card">
                 <div class="form-row">
-                    <div class="form-group"><label>Full Name</label><div class="profile-field"><input type="text" id="profileName" readonly><i class="fas fa-pencil-alt edit-icon" onclick="editField('profileName', 'full_name')"></i></div></div>
-                    <div class="form-group"><label>Email Address</label><input type="email" id="profileEmail" readonly></div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <div class="profile-field">
+                            <input type="text" id="profileName" readonly style="background:#f8f9fa;">
+                            <i class="fas fa-pencil-alt edit-icon" onclick="editField('profileName', 'full_name')"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="profileEmail" readonly style="background:#f8f9fa;">
+                    </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Phone Number</label><div class="profile-field"><input type="tel" id="profilePhone" readonly><i class="fas fa-pencil-alt edit-icon" onclick="editField('profilePhone', 'phone')"></i></div></div>
-                    <div class="form-group"><label>City</label><div class="profile-field"><input type="text" id="profileCity" readonly><i class="fas fa-pencil-alt edit-icon" onclick="editField('profileCity', 'city')"></i></div></div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="profile-field">
+                            <input type="tel" id="profilePhone" readonly style="background:#f8f9fa;">
+                            <i class="fas fa-pencil-alt edit-icon" onclick="editField('profilePhone', 'phone')"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <div class="profile-field">
+                            <input type="text" id="profileCity" readonly style="background:#f8f9fa;">
+                            <i class="fas fa-pencil-alt edit-icon" onclick="editField('profileCity', 'city')"></i>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>💰 Total Investment</label><input type="text" id="profileTotalInvestment" readonly></div>
-                    <div class="form-group"><label>📈 Total Profit (50%)</label><input type="text" id="profileTotalProfit" readonly></div>
-                    <div class="form-group"><label>💵 Available Balance</label><input type="text" id="profileBalance" readonly></div>
+                    <div class="form-group"><label>💰 Total Investment</label><input type="text" id="profileTotalInvestment" readonly style="background:#f8f9fa;"></div>
+                    <div class="form-group"><label>📈 Total Profit Earned</label><input type="text" id="profileTotalProfit" readonly style="background:#f8f9fa;"></div>
+                    <div class="form-group"><label>💵 Available Balance</label><input type="text" id="profileBalance" readonly style="background:#f8f9fa;"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>📅 Member Since</label><input type="text" id="profileMemberSince" readonly></div>
-                    <div class="form-group"><label>✅ Status</label><input type="text" id="profileStatus" readonly value="Active"></div>
+                    <div class="form-group"><label>📅 Member Since</label><input type="text" id="profileMemberSince" readonly style="background:#f8f9fa;"></div>
+                    <div class="form-group"><label>✅ Status</label><input type="text" id="profileStatus" readonly style="background:#f8f9fa;" value="Active"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modals with proper margins for large screens -->
-    <div id="investmentModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('investmentModal')">&times;</span><h2><i class="fas fa-plus-circle"></i> Submit New Investment Request</h2><div class="payment-info"><i class="fas fa-info-circle"></i> <strong>Minimum Investment: Rs. 1,000 PKR</strong><br>Send payment to:<br><strong>🏦 EasyPaisa:</strong> 03XX-XXXXXXX<br><strong>🏦 JazzCash:</strong> 03XX-XXXXXXX<br><strong>🏦 Bank Transfer:</strong> HBL Account #XXXX-XXXX</div><div class="form-group"><label>Investment Amount (Rs.) *Min 1,000</label><input type="number" id="investmentAmount" placeholder="Enter amount (min Rs. 1,000)"></div><div class="form-group"><label>Payment Method</label><select id="investmentPaymentMethod"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option><option value="Bank Transfer">Bank Transfer</option></select></div><div class="form-group"><label>Transaction ID</label><input type="text" id="investmentTransactionId" placeholder="Enter transaction ID"></div><div class="form-group"><label>Notes</label><textarea id="investmentNotes" rows="2" placeholder="Optional notes"></textarea></div><button id="submitInvestmentBtn" class="btn-primary">Submit Request</button></div></div>
+    <div id="investmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('investmentModal')">&times;</span>
+            <h2><i class="fas fa-plus-circle"></i> Submit New Investment Request</h2>
+            <div class="payment-info">
+                <i class="fas fa-info-circle"></i> Send payment to:<br>
+                <strong>🏦 EasyPaisa:</strong> 03XX-XXXXXXX<br>
+                <strong>🏦 JazzCash:</strong> 03XX-XXXXXXX<br>
+                <strong>🏦 Bank Transfer:</strong> HBL Account #XXXX-XXXX
+            </div>
+            <div class="form-group"><label>Investment Amount (Rs.)</label><input type="number" id="investmentAmount" placeholder="Enter amount"></div>
+            <div class="form-group"><label>Payment Method</label>
+                <select id="investmentPaymentMethod">
+                    <option value="EasyPaisa">EasyPaisa</option>
+                    <option value="JazzCash">JazzCash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Transaction ID</label><input type="text" id="investmentTransactionId" placeholder="Enter transaction ID"></div>
+            <div class="form-group"><label>Notes</label><textarea id="investmentNotes" rows="2"></textarea></div>
+            <button id="submitInvestmentBtn" class="btn-primary">Submit Request</button>
+        </div>
+    </div>
 
-    <div id="withdrawalModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('withdrawalModal')">&times;</span><h2><i class="fas fa-money-bill-wave"></i> Request Withdrawal</h2><div class="payment-info"><i class="fas fa-info-circle"></i> <strong>Minimum Withdrawal: Rs. 1,000 PKR</strong><br>Withdraw your investment profit share anytime.</div><div class="form-group"><label>Amount (Rs.) *Min 1,000</label><input type="number" id="withdrawAmount" placeholder="Enter amount (min Rs. 1,000)"></div><div class="form-group"><label>Payment Method</label><select id="withdrawMethod"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option><option value="Bank Transfer">Bank Transfer</option></select></div><div class="form-group"><label>Account Details</label><input type="text" id="accountDetails" placeholder="Account number / Mobile number"></div><button id="submitWithdrawalBtn" class="btn-primary">Submit Request</button></div></div>
+    <div id="withdrawalModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('withdrawalModal')">&times;</span>
+            <h2><i class="fas fa-money-bill-wave"></i> Request Withdrawal</h2>
+            <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="withdrawAmount" placeholder="Enter amount (Min Rs. 1000)"></div>
+            <div class="form-group"><label>Payment Method</label>
+                <select id="withdrawMethod">
+                    <option value="EasyPaisa">EasyPaisa</option>
+                    <option value="JazzCash">JazzCash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Account Details</label><input type="text" id="accountDetails" placeholder="Account number / Mobile number"></div>
+            <button id="submitWithdrawalBtn" class="btn-primary">Submit Request</button>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Wait for DOM to fully load
         (function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -675,30 +617,81 @@
             
             let currentInvestorId = null;
 
-            // Carousel Functionality
-            let currentIndex = 0;
-            const track = document.getElementById('carouselTrack');
-            const cards = document.querySelectorAll('.carousel-card');
-            const visibleCards = window.innerWidth >= 1024 ? 4 : window.innerWidth >= 768 ? 3 : window.innerWidth >= 480 ? 2 : 1;
-            const cardWidth = cards[0]?.offsetWidth + 20 || 280;
-            
-            function updateCarousel() {
-                if (track) track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+            // ========== CAROUSEL FUNCTIONALITY (NEW ADDITION - DOES NOT AFFECT EXISTING CODE) ==========
+            function initCarousel() {
+                const track = document.getElementById('carouselTrack');
+                const prevBtn = document.getElementById('carouselPrevBtn');
+                const nextBtn = document.getElementById('carouselNextBtn');
+                
+                if (!track || !prevBtn || !nextBtn) return;
+                
+                const cards = document.querySelectorAll('.carousel-card');
+                if (cards.length === 0) return;
+                
+                let currentIndex = 0;
+                let visibleCards = 4;
+                
+                function updateVisibleCards() {
+                    if (window.innerWidth >= 1024) visibleCards = 4;
+                    else if (window.innerWidth >= 768) visibleCards = 3;
+                    else if (window.innerWidth >= 480) visibleCards = 2;
+                    else visibleCards = 1;
+                }
+                
+                function getCardWidth() {
+                    const card = cards[0];
+                    if (!card) return 280;
+                    const style = window.getComputedStyle(card);
+                    const marginRight = parseFloat(style.marginRight) || 0;
+                    return card.offsetWidth + marginRight + 20; // 20px gap
+                }
+                
+                function updateCarousel() {
+                    updateVisibleCards();
+                    const cardWidth = getCardWidth();
+                    const maxIndex = Math.max(0, cards.length - visibleCards);
+                    if (currentIndex > maxIndex) currentIndex = maxIndex;
+                    track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+                }
+                
+                prevBtn.addEventListener('click', () => {
+                    updateVisibleCards();
+                    const maxIndex = Math.max(0, cards.length - visibleCards);
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                    } else {
+                        currentIndex = maxIndex;
+                    }
+                    updateCarousel();
+                });
+                
+                nextBtn.addEventListener('click', () => {
+                    updateVisibleCards();
+                    const maxIndex = Math.max(0, cards.length - visibleCards);
+                    if (currentIndex < maxIndex) {
+                        currentIndex++;
+                    } else {
+                        currentIndex = 0;
+                    }
+                    updateCarousel();
+                });
+                
+                window.addEventListener('resize', () => updateCarousel());
+                updateCarousel();
             }
-            document.getElementById('nextBtn')?.addEventListener('click', () => {
-                if (currentIndex < cards.length - visibleCards) { currentIndex++; updateCarousel(); }
-                else { currentIndex = 0; updateCarousel(); }
-            });
-            document.getElementById('prevBtn')?.addEventListener('click', () => {
-                if (currentIndex > 0) { currentIndex--; updateCarousel(); }
-                else { currentIndex = cards.length - visibleCards; updateCarousel(); }
-            });
-            window.addEventListener('resize', () => { updateCarousel(); });
+            
+            // Initialize carousel when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initCarousel);
+            } else {
+                initCarousel();
+            }
+            // ========== END CAROUSEL FUNCTIONALITY ==========
 
             function showToast(message, isError) {
                 const toast = document.createElement('div');
                 toast.className = `toast ${isError ? 'error' : 'success'}`;
-                toast.innerHTML = isError ? `⚠️ ${message}` : `✨ ${message}`;
+                toast.innerHTML = isError ? `❌ ${message}` : `✅ ${message}`;
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 3000);
             }
@@ -718,15 +711,35 @@
 
             async function checkAuth() {
                 const { data: { user }, error } = await supabase.auth.getUser();
-                if (error || !user) { window.location.href = 'investor-auth.html'; return; }
+                if (error || !user) {
+                    window.location.href = 'investor-auth.html';
+                    return;
+                }
                 currentInvestorId = user.id;
-                document.getElementById('userName').innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
+                document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
                 
+                // Ensure investor exists in database
                 const { data: existingInvestor } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
                 if (!existingInvestor || existingInvestor.length === 0) {
-                    await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', total_investment: 0, total_profit: 0, available_balance: 0, created_at: new Date().toISOString() }]);
+                    await supabase.from('investors').insert([{
+                        id: currentInvestorId,
+                        email: user.email,
+                        full_name: user.email.split('@')[0],
+                        phone: '',
+                        city: '',
+                        total_investment: 0,
+                        total_profit: 0,
+                        available_balance: 0,
+                        created_at: new Date().toISOString()
+                    }]);
                 }
-                await loadInvestments(); await loadInvestmentRequests(); await loadProfits(); await loadWithdrawals(); await loadProfile(); await loadStats();
+                
+                await loadInvestments();
+                await loadInvestmentRequests();
+                await loadProfits();
+                await loadWithdrawals();
+                await loadProfile();
+                await loadStats();
             }
 
             async function loadStats() {
@@ -740,35 +753,84 @@
                     const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
                     document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
                     document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-                } catch(err) { console.error(err); }
+                } catch(err) {
+                    console.error('Error loading stats:', err);
+                }
             }
 
             async function loadInvestments() {
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
                 const tbody = document.getElementById('investmentsList');
-                if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">✨ No approved investments yet. Minimum investment Rs. 1,000</td></tr>'; return; }
-                tbody.innerHTML = data.map(inv => `<tr><td>${new Date(inv.investment_date).toLocaleDateString()}</td><td>Rs. ${(inv.amount || 0).toLocaleString()}</td><td>${inv.payment_method || '-'}</td><td>${inv.transaction_id || '-'}</td><td><span class="status-badge status-active">✅ Active</span></td><td>${inv.notes || '-'}</td></tr>`).join('');
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet. Your investment requests will appear here after admin approval.办?</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.map(inv => `
+                    <tr>
+                        <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
+                        <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
+                        <td>${inv.payment_method || '-'}</td>
+                        <td>${inv.transaction_id || '-'}</td>
+                        <td><span class="status-badge status-active">✅ Approved</span></td>
+                        <td>${inv.notes || '-'}</td>
+                    </tr>
+                `).join('');
             }
 
             async function loadInvestmentRequests() {
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
                 const tbody = document.getElementById('investmentRequestsList');
-                if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">⏳ No pending investment requests. Submit a new request (min Rs. 1,000)</td></tr>'; return; }
-                tbody.innerHTML = data.map(inv => `<tr><td>${new Date(inv.created_at).toLocaleDateString()}</td><td>Rs. ${(inv.amount || 0).toLocaleString()}</td><td>${inv.payment_method || '-'}</td><td>${inv.transaction_id || '-'}</td><td><span class="status-badge status-pending">⏳ Pending</span></td><td>${inv.notes || '-'}</td></tr>`).join('');
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests. Submit a new request above.办?</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.map(inv => `
+                    <tr>
+                        <td>${new Date(inv.created_at).toLocaleDateString()}</td>
+                        <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
+                        <td>${inv.payment_method || '-'}</td>
+                        <td>${inv.transaction_id || '-'}</td>
+                        <td><span class="status-badge status-pending">⏳ Pending</span></td>
+                        <td>${inv.notes || '-'}</td>
+                    </tr>
+                `).join('');
             }
 
             async function loadProfits() {
                 const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
                 const tbody = document.getElementById('profitsList');
-                if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">📊 No profits recorded yet. You earn 50% of sales profit!</td></tr>'; return; }
-                tbody.innerHTML = data.map(p => `<tr><td>${new Date(p.month).toLocaleDateString('default', { month: 'long', year: 'numeric' })}</td><td>Rs. ${(p.amount || 0).toLocaleString()}</td><td>${p.profit_percentage || 50}%</td><td><span class="status-badge ${p.paid ? 'status-active' : 'status-pending'}">${p.paid ? '✅ Paid' : '⏳ Pending'}</span></td><td>${p.paid_date ? new Date(p.paid_date).toLocaleDateString() : '-'}</td></tr>`).join('');
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet. Profits will appear here once distributed.办?</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.map(p => `
+                    <tr>
+                        <td>${new Date(p.month).toLocaleDateString('default', { month: 'long', year: 'numeric' })}</td>
+                        <td>Rs. ${(p.amount || 0).toLocaleString()}</td>
+                        <td>${p.profit_percentage || 10}%</td>
+                        <td><span class="status-badge ${p.paid ? 'status-active' : 'status-pending'}">${p.paid ? '✅ Paid' : '⏳ Pending'}</span></td>
+                        <td>${p.paid_date ? new Date(p.paid_date).toLocaleDateString() : '-'}</td>
+                    </tr>
+                `).join('');
             }
 
             async function loadWithdrawals() {
                 const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
                 const tbody = document.getElementById('withdrawalsList');
-                if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">💸 No withdrawal requests yet. Minimum withdrawal Rs. 1,000</td></tr>'; return; }
-                tbody.innerHTML = data.map(w => `<tr><td>${new Date(w.request_date).toLocaleDateString()}</td><td>Rs. ${(w.amount || 0).toLocaleString()}</td><td>${w.payment_method || '-'}</td><td>${w.account_details || '-'}</td><td><span class="status-badge ${w.status === 'approved' ? 'status-approved' : 'status-pending'}">${w.status === 'pending' ? '⏳ Pending' : '✅ Approved'}</span></td><td>${w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-'}</td></tr>`).join('');
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet. Request a withdrawal above.办?</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.map(w => `
+                    <tr>
+                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                        <td>${w.payment_method || '-'}</td>
+                        <td>${w.account_details || '-'}</td>
+                        <td><span class="status-badge status-${w.status}">${w.status === 'pending' ? '⏳ Pending' : '✅ Approved'}</span></td>
+                        <td>${w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-'}</td>
+                    </tr>
+                `).join('');
             }
 
             async function loadProfile() {
@@ -793,8 +855,12 @@
                 const newValue = prompt(`Enter new ${fieldName}:`, currentValue);
                 if (newValue && newValue !== currentValue) {
                     const { error } = await supabase.from('investors').update({ [dbField]: newValue }).eq('id', currentInvestorId);
-                    if (error) showToast(error.message, true);
-                    else { showToast(`${fieldName} updated successfully!`, false); await loadProfile(); }
+                    if (error) {
+                        showToast(error.message, true);
+                    } else {
+                        showToast(`${fieldName} updated successfully!`, false);
+                        await loadProfile();
+                    }
                 }
             };
 
@@ -806,36 +872,106 @@
                 const paymentMethod = document.getElementById('investmentPaymentMethod').value;
                 const transactionId = document.getElementById('investmentTransactionId').value;
                 const notes = document.getElementById('investmentNotes').value;
-                if (!amount || !transactionId) { showToast('Please fill amount and transaction ID', true); return; }
-                if (parseFloat(amount) < 1000) { showToast('Minimum investment amount is Rs. 1,000', true); return; }
+                
+                if (!amount || !transactionId) { 
+                    showToast('Please fill amount and transaction ID', true); 
+                    return; 
+                }
+                if (parseFloat(amount) < 1000) { 
+                    showToast('Minimum investment amount is Rs. 1,000', true); 
+                    return; 
+                }
+                
                 const btn = document.getElementById('submitInvestmentBtn');
-                btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
-                const { error } = await supabase.from('investments').insert([{ investor_id: currentInvestorId, amount: parseFloat(amount), investment_date: new Date().toISOString().split('T')[0], payment_method: paymentMethod, transaction_id: transactionId, status: 'pending', notes: notes || `Payment via ${paymentMethod} - TXN: ${transactionId}` }]);
-                btn.disabled = false; btn.innerHTML = 'Submit Request';
-                if (error) showToast(error.message, true);
-                else { showToast('Investment request submitted! Admin will verify.', false); document.getElementById('investmentModal').style.display = 'none'; document.getElementById('investmentAmount').value = ''; document.getElementById('investmentTransactionId').value = ''; document.getElementById('investmentNotes').value = ''; await loadInvestmentRequests(); }
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
+                
+                const { error } = await supabase.from('investments').insert([{
+                    investor_id: currentInvestorId,
+                    amount: parseFloat(amount),
+                    investment_date: new Date().toISOString().split('T')[0],
+                    payment_method: paymentMethod,
+                    transaction_id: transactionId,
+                    status: 'pending',
+                    notes: notes || `Payment via ${paymentMethod} - TXN: ${transactionId}`
+                }]);
+                
+                btn.disabled = false;
+                btn.innerHTML = 'Submit Request';
+                
+                if (error) { 
+                    showToast(error.message, true); 
+                } else {
+                    showToast('Investment request submitted! Admin will verify.', false);
+                    document.getElementById('investmentModal').style.display = 'none';
+                    document.getElementById('investmentAmount').value = '';
+                    document.getElementById('investmentTransactionId').value = '';
+                    document.getElementById('investmentNotes').value = '';
+                    await loadInvestmentRequests();
+                }
             };
 
             document.getElementById('submitWithdrawalBtn').onclick = async () => {
                 const amount = document.getElementById('withdrawAmount').value;
                 const method = document.getElementById('withdrawMethod').value;
                 const accountDetails = document.getElementById('accountDetails').value;
-                if (!amount || !accountDetails) { showToast('Please fill all fields', true); return; }
-                if (parseFloat(amount) < 1000) { showToast('Minimum withdrawal amount is Rs. 1,000', true); return; }
+                
+                if (!amount || !accountDetails) { 
+                    showToast('Please fill all fields', true); 
+                    return; 
+                }
+                if (parseFloat(amount) < 1000) { 
+                    showToast('Minimum withdrawal amount is Rs. 1,000', true); 
+                    return; 
+                }
+                
                 const { data: balanceData } = await supabase.from('investors').select('available_balance').eq('id', currentInvestorId);
                 const currentBalance = (balanceData && balanceData[0]) ? (balanceData[0].available_balance || 0) : 0;
-                if (parseFloat(amount) > currentBalance) { showToast(`Insufficient balance! Available: Rs. ${currentBalance.toLocaleString()}`, true); return; }
+                if (parseFloat(amount) > currentBalance) { 
+                    showToast(`Insufficient balance! Available: Rs. ${currentBalance.toLocaleString()}`, true); 
+                    return; 
+                }
+                
                 const btn = document.getElementById('submitWithdrawalBtn');
-                btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
-                const { error } = await supabase.from('withdrawals').insert([{ investor_id: currentInvestorId, amount: parseFloat(amount), request_date: new Date().toISOString().split('T')[0], payment_method: method, account_details: accountDetails, status: 'pending' }]);
-                btn.disabled = false; btn.innerHTML = 'Submit Request';
-                if (error) showToast(error.message, true);
-                else { showToast('Withdrawal request submitted! Admin will process.', false); document.getElementById('withdrawalModal').style.display = 'none'; document.getElementById('withdrawAmount').value = ''; document.getElementById('accountDetails').value = ''; await loadWithdrawals(); }
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
+                
+                const { error } = await supabase.from('withdrawals').insert([{
+                    investor_id: currentInvestorId,
+                    amount: parseFloat(amount),
+                    request_date: new Date().toISOString().split('T')[0],
+                    payment_method: method,
+                    account_details: accountDetails,
+                    status: 'pending'
+                }]);
+                
+                btn.disabled = false;
+                btn.innerHTML = 'Submit Request';
+                
+                if (error) { 
+                    showToast(error.message, true); 
+                } else {
+                    showToast('Withdrawal request submitted! Admin will process.', false);
+                    document.getElementById('withdrawalModal').style.display = 'none';
+                    document.getElementById('withdrawAmount').value = '';
+                    document.getElementById('accountDetails').value = '';
+                    await loadWithdrawals();
+                }
             };
 
-            document.getElementById('logoutBtn').onclick = async () => { await supabase.auth.signOut(); window.location.href = 'investor-auth.html'; };
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
-            document.querySelectorAll('.stat-card').forEach(card => card.addEventListener('click', () => switchTab(card.getAttribute('data-tab'))));
+            document.getElementById('logoutBtn').onclick = async () => {
+                await supabase.auth.signOut();
+                window.location.href = 'investor-auth.html';
+            };
+
+            // Initialize tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+            });
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('click', () => switchTab(card.getAttribute('data-tab')));
+            });
+
             checkAuth();
         })();
     </script>
