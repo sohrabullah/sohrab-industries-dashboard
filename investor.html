@@ -372,11 +372,11 @@
         <!-- Investments Tab -->
         <div id="investmentsTab" class="tab-content active">
             <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments</h2>
+                <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments (Money You Have Invested)</h2>
                 <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + New Investment Request</button>
             </div>
             <div class="table-container">
-                </table>
+                <table>
                     <thead>
                         <tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
                     </thead>
@@ -390,7 +390,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                </table>
+                <table>
                     <thead>
                         <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
                     </thead>
@@ -404,7 +404,7 @@
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
             <div class="table-container">
-                </table>
+                <tr>
                     <thead>
                         <tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr>
                     </thead>
@@ -417,13 +417,13 @@
         <!-- Withdrawals Tab -->
         <div id="withdrawalsTab" class="tab-content">
             <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
+                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests (Money Taken Out)</h2>
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
             <div class="table-container">
-                </table>
+                <tr>
                     <thead>
-                        <tr><th>Request Date</th><th>Full Name</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr>
+                        <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr>
                     </thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
@@ -431,7 +431,7 @@
             <p style="margin-top: 15px; font-size: 12px; color: #666;"><i class="fas fa-info-circle"></i> This shows all your withdrawal requests. Approved withdrawals are deducted from your available balance.</p>
         </div>
 
-        <!-- Investment Rules Tab -->
+        <!-- Investment Rules Tab - NEW -->
         <div id="rulesTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gavel"></i> Investment Rules & Guidelines</h2>
             
@@ -442,7 +442,7 @@
                     <li><strong>Profit Distribution:</strong> Monthly profits are calculated based on the total investment amount and distributed to investors.</li>
                     <li><strong>Profit Split:</strong> 50% of the profit goes to investors, 50% stays with Sohrab Industries for business growth.</li>
                     <li><strong>Withdrawal Process:</strong> Investors can request withdrawal anytime. Minimum withdrawal amount is Rs. 1,000.</li>
-                    <li><strong>Balance Formula:</strong> Available Balance = Total Investment + Total Profit Earned - Approved Withdrawals</li>
+                    <li><strong>Balance Formula:</strong> Available Balance = Total Investment + Total Profit - Total Withdrawn</li>
                 </ul>
             </div>
 
@@ -545,7 +545,6 @@
         </div>
     </div>
 
-    <!-- Investment Modal -->
     <div id="investmentModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('investmentModal')">&times;</span>
@@ -570,12 +569,10 @@
         </div>
     </div>
 
-    <!-- Withdrawal Modal -->
     <div id="withdrawalModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('withdrawalModal')">&times;</span>
             <h2><i class="fas fa-money-bill-wave"></i> Request Withdrawal</h2>
-            <div class="form-group"><label>Full Name (As per CNIC)</label><input type="text" id="withdrawFullName" placeholder="Enter your full name"></div>
             <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="withdrawAmount" placeholder="Enter amount (Min Rs. 1000)"></div>
             <div class="form-group"><label>Payment Method</label>
                 <select id="withdrawMethod">
@@ -586,16 +583,13 @@
             </div>
             <div class="form-group"><label>Account Details</label><input type="text" id="accountDetails" placeholder="Account number / Mobile number"></div>
             <button id="submitWithdrawalBtn" class="btn-primary">Submit Request</button>
-            <p style="font-size: 12px; color: #666; margin-top: 15px; text-align: center;">
-                <i class="fas fa-clock"></i> Withdrawals are processed within 3-5 business days
-            </p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Wait for DOM to fully load
-        document.addEventListener('DOMContentLoaded', function() {
+        (function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -669,7 +663,7 @@
                     const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
                     document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
                     
-                    // Get total withdrawals approved
+                    // Get total withdrawn from approved withdrawals
                     const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
                     const totalWithdrawn = withdrawals?.reduce((s, w) => s + (w.amount || 0), 0) || 0;
                     
@@ -689,12 +683,10 @@
             }
 
             async function loadInvestments() {
-                const tbody = document.getElementById('investmentsList');
-                if (!tbody) return;
-                
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
+                const tbody = document.getElementById('investmentsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet. Your investment requests will appear here after admin approval.办?</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet. Your investment requests will appear here after admin approval.办?<\/td><\/tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(inv => `
@@ -710,12 +702,10 @@
             }
 
             async function loadInvestmentRequests() {
-                const tbody = document.getElementById('investmentRequestsList');
-                if (!tbody) return;
-                
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
+                const tbody = document.getElementById('investmentRequestsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests. Submit a new request above.办?</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests. Submit a new request above.办?<\/td><\/tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(inv => `
@@ -731,12 +721,10 @@
             }
 
             async function loadProfits() {
-                const tbody = document.getElementById('profitsList');
-                if (!tbody) return;
-                
                 const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
+                const tbody = document.getElementById('profitsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<td><td colspan="5" class="empty-state">No profits recorded yet. Profits will appear here once distributed.办?<\/td><\/tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet. Profits will appear here once distributed.办?<\/td><\/tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(p => `
@@ -751,18 +739,15 @@
             }
 
             async function loadWithdrawals() {
-                const tbody = document.getElementById('withdrawalsList');
-                if (!tbody) return;
-                
                 const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
+                const tbody = document.getElementById('withdrawalsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No withdrawal requests yet. Request a withdrawal above.办?<\/td><\/tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet. Request a withdrawal above.办?<\/td><\/tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(w => `
-                    <tr>
+                    <td>
                         <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                        <td>${w.full_name || '-'}</td>
                         <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
                         <td>${w.payment_method || '-'}</td>
                         <td>${w.account_details || '-'}</td>
@@ -851,12 +836,11 @@
             };
 
             document.getElementById('submitWithdrawalBtn').onclick = async () => {
-                const fullName = document.getElementById('withdrawFullName').value;
                 const amount = document.getElementById('withdrawAmount').value;
                 const method = document.getElementById('withdrawMethod').value;
                 const accountDetails = document.getElementById('accountDetails').value;
                 
-                if (!fullName || !amount || !accountDetails) { 
+                if (!amount || !accountDetails) { 
                     showToast('Please fill all fields', true); 
                     return; 
                 }
@@ -865,7 +849,7 @@
                     return; 
                 }
                 
-                // Check available balance
+                // Get current available balance
                 const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
                 const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
                 const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
@@ -885,7 +869,6 @@
                 
                 const { error } = await supabase.from('withdrawals').insert([{
                     investor_id: currentInvestorId,
-                    full_name: fullName,
                     amount: parseFloat(amount),
                     request_date: new Date().toISOString().split('T')[0],
                     payment_method: method,
@@ -901,7 +884,6 @@
                 } else {
                     showToast('Withdrawal request submitted! Admin will process.', false);
                     document.getElementById('withdrawalModal').style.display = 'none';
-                    document.getElementById('withdrawFullName').value = '';
                     document.getElementById('withdrawAmount').value = '';
                     document.getElementById('accountDetails').value = '';
                     await loadWithdrawals();
@@ -922,7 +904,7 @@
             });
 
             checkAuth();
-        });
+        })();
     </script>
 </body>
 </html>
