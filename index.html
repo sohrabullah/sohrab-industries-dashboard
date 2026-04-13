@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sohrab Industries | Ultimate Premium Experience</title>
+    <title>Sohrab Industries | Premium LED & Investment Solutions</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -11,64 +11,67 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0f0d;
+            background: #050a08;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
         
-        /* Animated Cyber Grid Background */
-        body::before {
-            content: '';
+        /* Animated Gradient Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 20% 30%, rgba(232,177,60,0.15), transparent 50%),
+                        radial-gradient(ellipse at 80% 70%, rgba(30,78,62,0.2), transparent 50%),
+                        linear-gradient(125deg, #0a1a15, #0d281f, #0a1a15);
+            z-index: -2;
+        }
+        
+        /* Animated Grid Lines */
+        .grid-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(232,177,60,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(232,177,60,0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
-            animation: gridMove 20s linear infinite;
+                linear-gradient(rgba(232,177,60,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(232,177,60,0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1;
+            animation: gridFloat 20s linear infinite;
         }
         
-        @keyframes gridMove {
+        @keyframes gridFloat {
             0% { transform: translate(0, 0); }
-            100% { transform: translate(40px, 40px); }
+            100% { transform: translate(60px, 60px); }
         }
         
-        /* Floating Particles */
-        .particle {
+        /* Floating Orbs */
+        .floating-orb {
             position: fixed;
-            background: radial-gradient(circle, #E8B13C, transparent);
             border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            animation: floatParticle 8s ease-in-out infinite;
+            filter: blur(60px);
+            z-index: -1;
+            animation: orbFloat 15s ease-in-out infinite;
         }
         
-        @keyframes floatParticle {
-            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-            20% { opacity: 0.6; }
-            80% { opacity: 0.3; }
-            100% { transform: translateY(-100px) translateX(50px) scale(0); opacity: 0; }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            33% { transform: translate(50px, -30px) scale(1.1); opacity: 0.5; }
+            66% { transform: translate(-30px, 40px) scale(0.9); opacity: 0.4; }
         }
         
-        /* Neon Glow Effects */
-        @keyframes neonPulse {
-            0%, 100% { text-shadow: 0 0 5px #E8B13C, 0 0 10px #E8B13C, 0 0 20px rgba(232,177,60,0.5); }
-            50% { text-shadow: 0 0 15px #E8B13C, 0 0 30px #E8B13C, 0 0 45px rgba(232,177,60,0.8); }
-        }
+        .orb-gold { background: radial-gradient(circle, #E8B13C, transparent); width: 400px; height: 400px; top: -150px; right: -150px; }
+        .orb-green { background: radial-gradient(circle, #1e7e5e, transparent); width: 350px; height: 350px; bottom: -100px; left: -100px; animation-duration: 18s; }
+        .orb-amber { background: radial-gradient(circle, #ffd966, transparent); width: 250px; height: 250px; top: 50%; right: 20%; animation-duration: 12s; }
         
-        @keyframes borderGlow {
-            0%, 100% { border-color: rgba(232,177,60,0.3); box-shadow: 0 0 10px rgba(232,177,60,0.2); }
-            50% { border-color: rgba(232,177,60,0.8); box-shadow: 0 0 25px rgba(232,177,60,0.5); }
-        }
-        
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1a2a24; }
+        ::-webkit-scrollbar-track { background: #0a1f1a; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
         
         /* Navigation */
@@ -76,21 +79,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 5%;
-            background: rgba(10, 20, 18, 0.95);
+            padding: 1.2rem 5%;
+            background: rgba(5, 15, 12, 0.95);
             backdrop-filter: blur(20px);
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 2px solid rgba(232,177,60,0.3);
-            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            border-bottom: 1px solid rgba(232,177,60,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
-        .logo { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            font-size: 1.6rem; 
-            font-weight: 800; 
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
             font-family: 'Playfair Display', serif;
             cursor: pointer;
             background: linear-gradient(135deg, #E8B13C, #ffd966, #E8B13C);
@@ -98,13 +102,16 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: gradientShift 3s ease infinite;
+            animation: shimmer 3s ease infinite;
         }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .logo i { color: #E8B13C; font-size: 2rem; filter: drop-shadow(0 0 8px #E8B13C); }
+        
+        @keyframes shimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .logo i { color: #E8B13C; font-size: 2rem; filter: drop-shadow(0 0 10px #E8B13C); }
+        
         .nav-buttons { display: flex; gap: 15px; align-items: center; }
         
-        .dropdown { position: relative; display: inline-block; }
+        .dropdown { position: relative; }
         .dropbtn {
             padding: 10px 28px;
             font-size: 0.95rem;
@@ -118,16 +125,15 @@
         .dropbtn.signup { 
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             color: #0a1f1a;
-            box-shadow: 0 0 15px rgba(232,177,60,0.5);
+            box-shadow: 0 0 20px rgba(232,177,60,0.4);
         }
         .dropbtn.login { 
             background: transparent; 
             color: #E8B13C; 
             border: 2px solid #E8B13C;
-            box-shadow: 0 0 10px rgba(232,177,60,0.3);
         }
-        .dropbtn.signup:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 25px rgba(232,177,60,0.8); }
-        .dropbtn.login:hover { background: rgba(232,177,60,0.2); transform: translateY(-3px); box-shadow: 0 0 20px rgba(232,177,60,0.5); }
+        .dropbtn.signup:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(232,177,60,0.7); }
+        .dropbtn.login:hover { background: rgba(232,177,60,0.15); transform: translateY(-3px); }
         
         .dropdown-content {
             display: none;
@@ -136,23 +142,22 @@
             background: linear-gradient(145deg, #1a3d33, #0f2a22);
             min-width: 260px;
             border-radius: 20px;
-            z-index: 1001;
             overflow: hidden;
             margin-top: 12px;
-            border: 1px solid rgba(232,177,60,0.5);
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(232,177,60,0.4);
+            backdrop-filter: blur(15px);
         }
-        .dropdown-content.show { display: block; animation: fadeInDown 0.2s ease; }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .dropdown-content.show { display: block; animation: fadeInUp 0.2s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .dropdown-content a {
             color: rgba(255,255,255,0.9);
             padding: 14px 22px;
-            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 12px;
             transition: all 0.25s;
             border-bottom: 1px solid rgba(232,177,60,0.1);
+            text-decoration: none;
         }
         .dropdown-content a:hover { background: rgba(232,177,60,0.2); color: #E8B13C; padding-left: 28px; }
         .dropdown-content a i { width: 28px; color: #E8B13C; }
@@ -168,9 +173,9 @@
             align-items: center;
             gap: 8px;
             transition: all 0.3s;
-            box-shadow: 0 0 12px rgba(232,177,60,0.4);
+            box-shadow: 0 0 15px rgba(232,177,60,0.3);
         }
-        .dashboard-btn:hover { transform: translateY(-3px); box-shadow: 0 0 25px rgba(232,177,60,0.7); }
+        .dashboard-btn:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(232,177,60,0.6); }
         .logout-nav-btn {
             background: linear-gradient(135deg, #dc3545, #a71d2a);
             color: white;
@@ -179,227 +184,244 @@
             border: none;
             cursor: pointer;
             font-weight: 700;
-            transition: all 0.3s;
         }
         
-        /* Hero Section with 3D Effect */
+        /* Hero Section */
         .hero {
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 6rem 2rem 8rem;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
-        .hero h1 { 
-            font-size: 4rem; 
-            margin-bottom: 1rem; 
+        .hero h1 {
+            font-size: 5rem;
+            margin-bottom: 1rem;
             font-family: 'Playfair Display', serif;
             background: linear-gradient(135deg, #fff, #E8B13C, #ffd966, #E8B13C);
             background-size: 300% auto;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: gradientShift 4s ease infinite;
-            letter-spacing: -1px;
+            animation: shimmer 4s ease infinite;
+            letter-spacing: -2px;
         }
-        .hero p { font-size: 1.3rem; color: rgba(255,255,255,0.85); margin-bottom: 2rem; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .hero p {
+            font-size: 1.4rem;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
         
-        /* Premium Stats Carousel */
-        .stats-carousel-section {
-            padding: 2rem 5%;
-            position: relative;
-            z-index: 1;
-        }
-        .stats-carousel-container {
-            position: relative;
-            max-width: 500px;
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 40px;
-        }
-        .stats-carousel-track {
+        .hero-cta {
             display: flex;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
-        .stats-slide {
-            flex: 0 0 100%;
-            padding: 0 10px;
-        }
-        .stats-card {
-            background: linear-gradient(145deg, rgba(20,45,38,0.95), rgba(10,25,20,0.95));
-            backdrop-filter: blur(20px);
-            padding: 2.5rem;
-            border-radius: 40px;
-            text-align: center;
-            border: 2px solid rgba(232,177,60,0.4);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(232,177,60,0.2);
-            animation: borderGlow 2s ease-in-out infinite;
-        }
-        .stats-number {
-            font-size: 4rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #E8B13C, #ffd966);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 2px;
-        }
-        .stats-label {
+        .hero-btn {
+            padding: 16px 38px;
+            border-radius: 60px;
+            font-weight: 700;
             font-size: 1.1rem;
-            color: rgba(255,255,255,0.8);
-            margin-top: 10px;
-            letter-spacing: 1px;
-        }
-        .stats-icon {
-            font-size: 3rem;
-            color: #E8B13C;
-            margin-bottom: 1rem;
-            filter: drop-shadow(0 0 10px #E8B13C);
-        }
-        .carousel-nav {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .carousel-nav-btn {
-            background: rgba(232,177,60,0.2);
-            border: 1px solid #E8B13C;
-            color: #E8B13C;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
+            text-decoration: none;
             transition: all 0.3s;
-            font-size: 1.2rem;
-        }
-        .carousel-nav-btn:hover {
-            background: #E8B13C;
-            color: #0a1f1a;
-            transform: scale(1.1);
-            box-shadow: 0 0 20px #E8B13C;
-        }
-        .stats-dots {
-            display: flex;
-            justify-content: center;
+            display: inline-flex;
+            align-items: center;
             gap: 12px;
-            margin-top: 20px;
         }
-        .stats-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(232,177,60,0.4);
-            cursor: pointer;
-            transition: all 0.3s;
+        .hero-btn.primary {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+            box-shadow: 0 0 25px rgba(232,177,60,0.5);
         }
-        .stats-dot.active {
-            width: 30px;
-            border-radius: 10px;
-            background: #E8B13C;
-            box-shadow: 0 0 10px #E8B13C;
+        .hero-btn.secondary {
+            background: transparent;
+            color: #E8B13C;
+            border: 2px solid #E8B13C;
         }
+        .hero-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 0 40px rgba(232,177,60,0.8); }
         
-        /* Features Grid with Game-like Cards */
+        /* Stats Section */
+        .stats-section {
+            padding: 3rem 5%;
+            position: relative;
+            z-index: 2;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .stat-card {
+            background: linear-gradient(145deg, rgba(20,45,38,0.9), rgba(10,25,20,0.9));
+            backdrop-filter: blur(15px);
+            padding: 2rem;
+            border-radius: 30px;
+            text-align: center;
+            border: 1px solid rgba(232,177,60,0.3);
+            transition: all 0.4s;
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: #E8B13C;
+            box-shadow: 0 20px 40px rgba(232,177,60,0.2);
+        }
+        .stat-icon { font-size: 2.5rem; color: #E8B13C; margin-bottom: 1rem; }
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #E8B13C;
+            font-family: 'Playfair Display', serif;
+        }
+        .stat-label { color: rgba(255,255,255,0.7); margin-top: 8px; font-size: 0.9rem; letter-spacing: 1px; }
+        
+        @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 500px) { .stats-grid { grid-template-columns: 1fr; } }
+        
+        /* Features Section */
         .features-section {
-            padding: 4rem 5%;
+            padding: 5rem 5%;
             background: linear-gradient(145deg, rgba(15,35,28,0.8), rgba(10,25,20,0.9));
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-family: 'Playfair Display', serif;
             background: linear-gradient(135deg, #E8B13C, #ffd966);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             margin-bottom: 3rem;
-            position: relative;
         }
-        .section-title:after {
-            content: '';
-            display: block;
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, #E8B13C, #ffd966, transparent);
-            margin: 18px auto 0;
-            border-radius: 4px;
-        }
+        .section-title span { border-bottom: 3px solid #E8B13C; padding-bottom: 10px; }
+        
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             max-width: 1300px;
             margin: 0 auto;
         }
-        .game-card {
+        .feature-card {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(15px);
             border-radius: 28px;
             padding: 2rem;
             text-align: center;
             border: 1px solid rgba(232,177,60,0.3);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
         }
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(232,177,60,0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        .game-card:hover::before { opacity: 1; }
-        .game-card:hover {
-            transform: translateY(-12px) scale(1.02);
+        .feature-card:hover {
+            transform: translateY(-10px);
             border-color: #E8B13C;
-            box-shadow: 0 25px 50px rgba(232,177,60,0.3);
+            box-shadow: 0 20px 40px rgba(232,177,60,0.2);
         }
-        .game-icon {
+        .feature-icon {
             font-size: 3.5rem;
             margin-bottom: 1rem;
             display: inline-block;
             transition: all 0.3s;
-            cursor: pointer;
         }
-        /* Icon animations */
-        @keyframes iconBulbBlink { 0%,100% { filter: drop-shadow(0 0 5px #E8B13C); } 50% { filter: drop-shadow(0 0 25px #E8B13C) drop-shadow(0 0 35px #ffd966); transform: scale(1.1); } }
-        @keyframes iconWheelSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes iconTruckMove { 0%,100% { transform: translateX(0); } 25% { transform: translateX(15px); } 75% { transform: translateX(-15px); } }
-        @keyframes iconShieldPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); text-shadow: 0 0 20px #4ecdc4; } }
-        @keyframes iconChartRise { 0%,100% { transform: translateY(0); } 30% { transform: translateY(-15px); } 60% { transform: translateY(0); } }
-        @keyframes iconWalletBounce { 0%,100% { transform: translateY(0) rotate(0deg); } 30% { transform: translateY(-12px) rotate(-10deg); } 60% { transform: translateY(0) rotate(10deg); } }
-        @keyframes iconHeadsetVibrate { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px) rotate(-5deg); } 75% { transform: translateX(5px) rotate(5deg); } }
+        .feature-card h3 { color: #E8B13C; margin-bottom: 0.8rem; font-size: 1.4rem; }
+        .feature-card p { color: rgba(255,255,255,0.8); line-height: 1.6; }
         
-        .animate-bulb { animation: iconBulbBlink 0.6s ease-in-out 3; }
-        .animate-truck { animation: iconTruckMove 0.5s ease-in-out, iconWheelSpin 0.5s ease-in-out; }
-        .animate-shield { animation: iconShieldPulse 0.5s ease-in-out; }
-        .animate-chart { animation: iconChartRise 0.6s ease-in-out; }
-        .animate-wallet { animation: iconWalletBounce 0.6s ease-in-out; }
-        .animate-headset { animation: iconHeadsetVibrate 0.4s ease-in-out; }
+        /* Icon Animation Classes */
+        .animate-bulb { animation: bulbFlash 0.6s ease-in-out 3; }
+        .animate-truck { animation: truckMove 0.5s ease-in-out, wheelSpin 0.5s ease-in-out; }
+        .animate-shield { animation: shieldPulse 0.5s ease-in-out; }
+        .animate-chart { animation: chartRise 0.6s ease-in-out; }
+        .animate-wallet { animation: walletBounce 0.6s ease-in-out; }
+        .animate-headset { animation: headsetShake 0.4s ease-in-out; }
         
-        .game-card h3 { color: #E8B13C; margin-bottom: 0.8rem; font-size: 1.4rem; }
-        .game-card p { color: rgba(255,255,255,0.8); line-height: 1.6; }
+        @keyframes bulbFlash { 0%,100% { filter: drop-shadow(0 0 5px #E8B13C); } 50% { filter: drop-shadow(0 0 25px #E8B13C) drop-shadow(0 0 35px #ffd966); transform: scale(1.1); } }
+        @keyframes wheelSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes truckMove { 0%,100% { transform: translateX(0); } 25% { transform: translateX(15px); } 75% { transform: translateX(-15px); } }
+        @keyframes shieldPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); text-shadow: 0 0 20px #4ecdc4; } }
+        @keyframes chartRise { 0%,100% { transform: translateY(0); } 30% { transform: translateY(-15px); } 60% { transform: translateY(0); } }
+        @keyframes walletBounce { 0%,100% { transform: translateY(0) rotate(0deg); } 30% { transform: translateY(-12px) rotate(-10deg); } 60% { transform: translateY(0) rotate(10deg); } }
+        @keyframes headsetShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px) rotate(-5deg); } 75% { transform: translateX(6px) rotate(5deg); } }
         
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
-            padding: 4rem 2rem;
+        /* Investment Journey Section */
+        .journey-section {
+            padding: 5rem 5%;
+            position: relative;
+            z-index: 2;
+        }
+        .journey-steps {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .step {
             text-align: center;
+            flex: 1;
+            min-width: 180px;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 28px;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0a1f1a;
+            margin: 0 auto 1rem;
+        }
+        .step h3 { color: #E8B13C; margin-bottom: 0.5rem; }
+        .step p { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+        
+        /* Testimonials */
+        .testimonials-section {
+            padding: 5rem 5%;
+            background: linear-gradient(145deg, rgba(10,25,20,0.9), rgba(15,35,28,0.9));
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .testimonial-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 28px;
+            padding: 2rem;
+            border: 1px solid rgba(232,177,60,0.3);
+            transition: all 0.3s;
+        }
+        .testimonial-card:hover { transform: translateY(-8px); border-color: #E8B13C; }
+        .testimonial-text { font-style: italic; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 1rem; }
+        .testimonial-author { color: #E8B13C; font-weight: 700; }
+        .quote-icon { color: #E8B13C; font-size: 2rem; opacity: 0.4; margin-bottom: 0.5rem; }
+        
+        /* CTA Banner */
+        .cta-banner {
+            padding: 4rem 5%;
+            text-align: center;
+            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
             position: relative;
             overflow: hidden;
-            border-top: 2px solid rgba(232,177,60,0.5);
-            border-bottom: 2px solid rgba(232,177,60,0.5);
         }
-        .cta-section:before {
+        .cta-banner::before {
             content: '';
             position: absolute;
             top: -50%;
@@ -407,31 +429,44 @@
             width: 200%;
             height: 200%;
             background: radial-gradient(circle, rgba(232,177,60,0.15), transparent 70%);
-            animation: pulseGlow 4s ease infinite;
+            animation: rotateGlow 10s linear infinite;
         }
-        @keyframes pulseGlow { 0%,100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
-        .cta-section h2 { font-size: 2.5rem; margin-bottom: 1rem; font-family: 'Playfair Display', serif; background: linear-gradient(135deg, #fff, #E8B13C); -webkit-background-clip: text; background-clip: text; color: transparent; position: relative; z-index: 1; }
-        .cta-section p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem; position: relative; z-index: 1; }
+        @keyframes rotateGlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .cta-banner h2 { font-size: 2.5rem; color: white; margin-bottom: 1rem; position: relative; z-index: 1; }
+        .cta-banner p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem; position: relative; z-index: 1; }
         .cta-buttons { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; position: relative; z-index: 1; }
-        .cta-btn { padding: 14px 36px; border-radius: 60px; font-weight: 700; text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 10px; }
-        .cta-btn.primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; box-shadow: 0 0 20px rgba(232,177,60,0.5); }
-        .cta-btn.secondary { background: transparent; color: #E8B13C; border: 2px solid #E8B13C; }
-        .cta-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 0 35px rgba(232,177,60,0.7); }
-        
-        /* Testimonials */
-        .testimonials { padding: 4rem 5%; background: linear-gradient(145deg, rgba(10,25,20,0.9), rgba(15,35,28,0.9)); }
-        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
-        .testimonial-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 2rem; border-radius: 28px; border: 1px solid rgba(232,177,60,0.3); transition: all 0.3s; }
-        .testimonial-card:hover { transform: translateY(-8px); border-color: #E8B13C; box-shadow: 0 15px 35px rgba(232,177,60,0.2); }
-        .testimonial-text { font-style: italic; margin-bottom: 1rem; color: rgba(255,255,255,0.85); line-height: 1.6; }
-        .testimonial-author { font-weight: 700; color: #E8B13C; margin-top: 1rem; }
+        .cta-btn {
+            padding: 14px 36px;
+            border-radius: 60px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cta-btn.gold { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
+        .cta-btn.transparent { background: transparent; color: #E8B13C; border: 2px solid #E8B13C; }
+        .cta-btn:hover { transform: translateY(-5px); box-shadow: 0 0 35px rgba(232,177,60,0.6); }
         
         /* Footer */
-        .footer { background: #0a1f1a; text-align: center; padding: 2rem; border-top: 1px solid rgba(232,177,60,0.2); }
-        .footer p { color: rgba(255,255,255,0.7); }
-        .footer .social-icons i { font-size: 1.5rem; margin: 0 12px; cursor: pointer; transition: all 0.3s; color: #E8B13C; }
-        .footer .social-icons i:hover { transform: translateY(-5px); color: white; text-shadow: 0 0 15px #E8B13C; }
+        .footer {
+            background: #050a08;
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(232,177,60,0.2);
+        }
+        .footer p { color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
+        .social-icons i {
+            font-size: 1.5rem;
+            margin: 0 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #E8B13C;
+        }
+        .social-icons i:hover { transform: translateY(-5px); color: white; text-shadow: 0 0 15px #E8B13C; }
         
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -439,32 +474,29 @@
             transform: translateX(-50%);
             padding: 14px 32px;
             border-radius: 60px;
-            color: white;
+            color: #0a1f1a;
+            background: linear-gradient(135deg, #E8B13C, #ffd966);
+            font-weight: 700;
             z-index: 10000;
-            font-weight: 600;
             animation: slideUp 0.3s ease;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            box-shadow: 0 0 30px rgba(232,177,60,0.6);
         }
-        .toast.success { background: linear-gradient(135deg, #1e7e5e, #155a44); border-left: 4px solid #E8B13C; }
-        .toast.info { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
         @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
         
         @media (max-width: 768px) {
-            .navbar { flex-direction: column; gap: 15px; }
-            .hero h1 { font-size: 2.2rem; }
+            .hero h1 { font-size: 2.5rem; }
             .hero p { font-size: 1rem; }
-            .stats-number { font-size: 2.8rem; }
-            .stats-card { padding: 1.8rem; }
-            .section-title { font-size: 1.8rem; }
-            .cta-section h2 { font-size: 1.8rem; }
-            .features-grid { grid-template-columns: 1fr; }
+            .navbar { flex-direction: column; gap: 15px; }
+            .section-title { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Floating Particles -->
-    <div id="particles"></div>
+    <div class="animated-bg"></div>
+    <div class="grid-overlay"></div>
+    <div class="floating-orb orb-gold"></div>
+    <div class="floating-orb orb-green"></div>
+    <div class="floating-orb orb-amber"></div>
 
     <nav class="navbar">
         <div class="logo" onclick="window.location.href='index.html'">
@@ -472,21 +504,21 @@
             <span>Sohrab Industries</span>
         </div>
         <div class="nav-buttons" id="navButtons">
-            <div class="dropdown" id="signupDropdown">
+            <div class="dropdown">
                 <button class="dropbtn signup" id="signupMainBtn"><i class="fas fa-user-plus"></i> Sign Up</button>
                 <div class="dropdown-content" id="signupDropdownContent">
                     <a href="investor-auth.html"><i class="fas fa-chart-line"></i> Sign up as Investor</a>
                     <a href="buyer-auth.html"><i class="fas fa-shopping-cart"></i> Sign up as Buyer</a>
-                    <div class="dropdown-divider"></div>
+                    <div style="height:1px; background:rgba(232,177,60,0.2); margin:5px 0;"></div>
                     <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Admin Access</a>
                 </div>
             </div>
-            <div class="dropdown" id="loginDropdown">
+            <div class="dropdown">
                 <button class="dropbtn login" id="loginMainBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
                 <div class="dropdown-content" id="loginDropdownContent">
                     <a href="investor-auth.html"><i class="fas fa-chart-line"></i> Login as Investor</a>
                     <a href="buyer-auth.html"><i class="fas fa-shopping-cart"></i> Login as Buyer</a>
-                    <div class="dropdown-divider"></div>
+                    <div style="height:1px; background:rgba(232,177,60,0.2); margin:5px 0;"></div>
                     <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Admin Login</a>
                 </div>
             </div>
@@ -495,46 +527,53 @@
 
     <section class="hero">
         <h1>Illuminate Your Future</h1>
-        <p>Premium Quality LED Solutions | High-Yield Investment Opportunities | Grow with Trust</p>
+        <p>Premium Quality LED Solutions | High-Yield Investment Opportunities | Trusted by Thousands</p>
+        <div class="hero-cta">
+            <a href="investor-auth.html" class="hero-btn primary"><i class="fas fa-chart-line"></i> Start Investing</a>
+            <a href="buyer-auth.html" class="hero-btn secondary"><i class="fas fa-shopping-cart"></i> Shop Now</a>
+        </div>
     </section>
 
-    <!-- Stats Carousel -->
-    <section class="stats-carousel-section">
-        <div class="stats-carousel-container">
-            <div class="stats-carousel-track" id="statsCarouselTrack">
-                <div class="stats-slide"><div class="stats-card"><div class="stats-icon"><i class="fas fa-smile"></i></div><div class="stats-number">5000+</div><div class="stats-label">Happy Customers</div></div></div>
-                <div class="stats-slide"><div class="stats-card"><div class="stats-icon"><i class="fas fa-chart-line"></i></div><div class="stats-number">Rs. 50M+</div><div class="stats-label">Total Investments</div></div></div>
-                <div class="stats-slide"><div class="stats-card"><div class="stats-icon"><i class="fas fa-headset"></i></div><div class="stats-number">24/7</div><div class="stats-label">Premium Support</div></div></div>
-                <div class="stats-slide"><div class="stats-card"><div class="stats-icon"><i class="fas fa-percent"></i></div><div class="stats-number">15%</div><div class="stats-label">Monthly Returns</div></div></div>
-            </div>
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-smile"></i></div><div class="stat-number">5,000+</div><div class="stat-label">Happy Customers</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-number">Rs. 50M+</div><div class="stat-label">Total Investments</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-headset"></i></div><div class="stat-number">24/7</div><div class="stat-label">Premium Support</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-percent"></i></div><div class="stat-number">15%</div><div class="stat-label">Monthly Returns</div></div>
         </div>
-        <div class="carousel-nav">
-            <button class="carousel-nav-btn" id="statsPrevBtn"><i class="fas fa-chevron-left"></i></button>
-            <button class="carousel-nav-btn" id="statsNextBtn"><i class="fas fa-chevron-right"></i></button>
-        </div>
-        <div class="stats-dots" id="statsDots"></div>
     </section>
 
     <section class="features-section">
-        <h2 class="section-title">Why Choose Sohrab Industries?</h2>
+        <h2 class="section-title">Why Choose Us?</h2>
         <div class="features-grid" id="featuresGrid"></div>
     </section>
 
-    <section class="cta-section">
-        <h2>Start Your Journey Today</h2>
-        <p>Join thousands of satisfied investors and customers who trust Sohrab Industries</p>
-        <div class="cta-buttons">
-            <a href="investor-auth.html" class="cta-btn primary"><i class="fas fa-chart-line"></i> Start Investing Now</a>
-            <a href="buyer-auth.html" class="cta-btn secondary"><i class="fas fa-shopping-cart"></i> Shop Premium Products</a>
+    <section class="journey-section">
+        <h2 class="section-title">Your Investment Journey</h2>
+        <div class="journey-steps">
+            <div class="step"><div class="step-number">1</div><h3>Sign Up</h3><p>Create your account in minutes</p></div>
+            <div class="step"><div class="step-number">2</div><h3>Invest</h3><p>Start with as low as Rs. 1,000</p></div>
+            <div class="step"><div class="step-number">3</div><h3>Earn Profits</h3><p>Get 10-15% monthly returns</p></div>
+            <div class="step"><div class="step-number">4</div><h3>Withdraw</h3><p>Instant withdrawal to your account</p></div>
         </div>
     </section>
 
-    <section class="testimonials">
-        <h2 class="section-title">What Our Clients Say</h2>
+    <section class="testimonials-section">
+        <h2 class="section-title">Trusted by Thousands</h2>
         <div class="testimonials-grid">
-            <div class="testimonial-card"><div class="quote-icon"><i class="fas fa-quote-left" style="color:#E8B13C; opacity:0.5;"></i></div><p class="testimonial-text">"Best investment platform in Pakistan. Received monthly profits on time with complete transparency!"</p><p class="testimonial-author">— Ahmed R., Verified Investor</p></div>
-            <div class="testimonial-card"><div class="quote-icon"><i class="fas fa-quote-left" style="color:#E8B13C; opacity:0.5;"></i></div><p class="testimonial-text">"The quality of bulbs is exceptional. Very affordable prices and fast delivery. Highly recommended!"</p><p class="testimonial-author">— Sara K., Happy Customer</p></div>
-            <div class="testimonial-card"><div class="quote-icon"><i class="fas fa-quote-left" style="color:#E8B13C; opacity:0.5;"></i></div><p class="testimonial-text">"Very professional team. Quick response to all my queries and smooth withdrawal process."</p><p class="testimonial-author">— Usman M., Investor</p></div>
+            <div class="testimonial-card"><div class="quote-icon"><i class="fas fa-quote-left"></i></div><p class="testimonial-text">"Best investment platform in Pakistan. Timely profits and complete transparency. Highly recommended!"</p><p class="testimonial-author">— Ahmed R., Verified Investor</p></div>
+            <div class="testimonial-card"><div class="quote-icon"><i class="fas fa-quote-left"></i></div><p class="testimonial-text">"Exceptional product quality and fast delivery. The LED bulbs are energy efficient and long-lasting."</p><p class="testimonial-author">— Sara K., Happy Customer</p></div>
+            <div class="testimonial-card"><div class="quote-icon"><i class="fas fa-quote-left"></i></div><p class="testimonial-text">"Professional team, quick support, and smooth withdrawal process. Truly trustworthy platform."</p><p class="testimonial-author">— Usman M., Investor</p></div>
+        </div>
+    </section>
+
+    <section class="cta-banner">
+        <h2>Ready to Grow Your Wealth?</h2>
+        <p>Join the Sohrab Industries family today and start your journey toward financial freedom</p>
+        <div class="cta-buttons">
+            <a href="investor-auth.html" class="cta-btn gold"><i class="fas fa-chart-line"></i> Invest Now</a>
+            <a href="buyer-auth.html" class="cta-btn transparent"><i class="fas fa-lightbulb"></i> Shop Products</a>
+            <a href="contact.html" class="cta-btn transparent"><i class="fas fa-headset"></i> Contact Us</a>
         </div>
     </section>
 
@@ -555,125 +594,75 @@
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            // Create particles
-            for(let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.width = particle.style.height = Math.random() * 8 + 2 + 'px';
-                particle.style.animationDelay = Math.random() * 10 + 's';
-                particle.style.animationDuration = Math.random() * 8 + 6 + 's';
-                document.body.appendChild(particle);
+            function showToast(msg) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.innerHTML = `<i class="fas fa-star"></i> ${msg}`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2500);
             }
             
-            // Features Data
             const features = [
-                { icon: "fa-lightbulb", title: "High Returns", desc: "Earn up to 10-15% monthly profit with transparent tracking", type: "bulb", msg: "💡 Light ON! Bright future ahead!" },
-                { icon: "fa-truck", title: "Free Delivery", desc: "Free shipping nationwide on orders over Rs. 2000", type: "truck", msg: "🚚 Delivery truck racing! Wheels spinning!" },
-                { icon: "fa-shield-alt", title: "Secure Investment", desc: "100% secure with real-time dashboard updates", type: "shield", msg: "🛡️ Security activated! Protected!" },
-                { icon: "fa-chart-line", title: "Growing Returns", desc: "Watch your wealth grow with consistent profits", type: "chart", msg: "📈 Wealth rising! Growing steadily!" },
-                { icon: "fa-wallet", title: "Easy Withdrawal", desc: "Withdraw anytime via EasyPaisa, JazzCash or Bank", type: "wallet", msg: "💰 Withdrawal ready! Funds available!" },
-                { icon: "fa-headset", title: "24/7 Support", desc: "Dedicated support team ready to assist you", type: "headset", msg: "🎧 Support connected! We're here!" }
+                { icon: "fa-lightbulb", title: "High Returns", desc: "Earn up to 10-15% monthly profit with complete transparency", type: "bulb", msg: "💡 Light ON! Your wealth is growing!" },
+                { icon: "fa-truck", title: "Free Delivery", desc: "Free shipping nationwide on orders over Rs. 2000", type: "truck", msg: "🚚 Delivery truck racing to your door!" },
+                { icon: "fa-shield-alt", title: "Secure Investment", desc: "100% secure with real-time dashboard tracking", type: "shield", msg: "🛡️ Security shield activated! Protected!" },
+                { icon: "fa-chart-line", title: "Growing Returns", desc: "Watch your wealth grow with consistent monthly profits", type: "chart", msg: "📈 Market rising! Your wealth is climbing!" },
+                { icon: "fa-wallet", title: "Easy Withdrawal", desc: "Withdraw anytime via EasyPaisa, JazzCash or Bank", type: "wallet", msg: "💰 Withdrawal ready! Funds available instantly!" },
+                { icon: "fa-headset", title: "24/7 Support", desc: "Dedicated support team ready to assist you anytime", type: "headset", msg: "🎧 Support connected! We're here to help!" }
             ];
             
             const animations = { bulb: 'animate-bulb', truck: 'animate-truck', shield: 'animate-shield', chart: 'animate-chart', wallet: 'animate-wallet', headset: 'animate-headset' };
             
-            // Build features grid
             const grid = document.getElementById('featuresGrid');
             features.forEach(f => {
                 const card = document.createElement('div');
-                card.className = 'game-card';
-                card.innerHTML = `
-                    <div class="game-icon"><i class="fas ${f.icon}"></i></div>
-                    <h3>${f.title}</h3>
-                    <p>${f.desc}</p>
-                `;
-                const icon = card.querySelector('.game-icon i');
+                card.className = 'feature-card';
+                card.innerHTML = `<div class="feature-icon"><i class="fas ${f.icon}"></i></div><h3>${f.title}</h3><p>${f.desc}</p>`;
+                const icon = card.querySelector('.feature-icon i');
                 icon.style.cursor = 'pointer';
                 icon.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const animClass = animations[f.type];
-                    icon.classList.remove(animClass);
+                    const anim = animations[f.type];
+                    icon.classList.remove(anim);
                     void icon.offsetWidth;
-                    icon.classList.add(animClass);
-                    showToast(f.msg, 'info');
-                    setTimeout(() => icon.classList.remove(animClass), 600);
+                    icon.classList.add(anim);
+                    showToast(f.msg);
+                    setTimeout(() => icon.classList.remove(anim), 600);
                 });
                 card.addEventListener('mouseenter', () => { icon.style.transform = 'scale(1.1)'; });
                 card.addEventListener('mouseleave', () => { icon.style.transform = 'scale(1)'; });
                 grid.appendChild(card);
             });
             
-            // Stats Carousel
-            let currentStatIndex = 0;
-            const track = document.getElementById('statsCarouselTrack');
-            const slides = document.querySelectorAll('.stats-slide');
-            const dotsContainer = document.getElementById('statsDots');
-            
-            function updateStatsCarousel() {
-                if (!track) return;
-                const width = track.parentElement.offsetWidth;
-                track.style.transform = `translateX(-${currentStatIndex * width}px)`;
-                const dots = document.querySelectorAll('.stats-dot');
-                dots.forEach((dot, i) => {
-                    if (i === currentStatIndex) dot.classList.add('active');
-                    else dot.classList.remove('active');
-                });
-            }
-            
-            function createStatsDots() {
-                slides.forEach((_, i) => {
-                    const dot = document.createElement('div');
-                    dot.className = 'stats-dot';
-                    if (i === 0) dot.classList.add('active');
-                    dot.addEventListener('click', () => {
-                        currentStatIndex = i;
-                        updateStatsCarousel();
-                        resetAutoSlide();
-                    });
-                    dotsContainer.appendChild(dot);
-                });
-            }
-            
-            function nextStatSlide() { currentStatIndex = (currentStatIndex + 1) % slides.length; updateStatsCarousel(); resetAutoSlide(); }
-            function prevStatSlide() { currentStatIndex = (currentStatIndex - 1 + slides.length) % slides.length; updateStatsCarousel(); resetAutoSlide(); }
-            
-            let autoInterval;
-            function resetAutoSlide() { if (autoInterval) clearInterval(autoInterval); autoInterval = setInterval(nextStatSlide, 4000); }
-            
-            document.getElementById('statsPrevBtn')?.addEventListener('click', prevStatSlide);
-            document.getElementById('statsNextBtn')?.addEventListener('click', nextStatSlide);
-            window.addEventListener('resize', () => setTimeout(updateStatsCarousel, 100));
-            
-            createStatsDots();
-            setTimeout(updateStatsCarousel, 100);
-            resetAutoSlide();
-            
-            function showToast(msg, type) {
-                const toast = document.createElement('div');
-                toast.className = `toast ${type}`;
-                toast.innerHTML = type === 'success' ? `✨ ${msg}` : `🎯 ${msg}`;
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 2500);
-            }
-            
-            // Dropdown functionality
+            // Dropdown logic
             window.toggleDropdown = function(type) {
                 const sc = document.getElementById('signupDropdownContent');
                 const lc = document.getElementById('loginDropdownContent');
                 if (type === 'signup') { sc?.classList.toggle('show'); lc?.classList.remove('show'); }
                 else { lc?.classList.toggle('show'); sc?.classList.remove('show'); }
             };
+            
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.dropdown')) {
                     document.getElementById('signupDropdownContent')?.classList.remove('show');
                     document.getElementById('loginDropdownContent')?.classList.remove('show');
                 }
             });
+            
             document.getElementById('signupMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('signup'); });
             document.getElementById('loginMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('login'); });
             
+            // Social icons interaction
+            document.querySelectorAll('.social-icons i').forEach(icon => {
+                icon.addEventListener('click', () => showToast('Thanks for connecting with us! 🌟'));
+            });
+            
+            // Stat cards click effect
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('click', () => showToast('Explore our amazing features! 🚀'));
+            });
+            
+            // Auth check
             async function updateNavbar() {
                 try {
                     const { data: { user } } = await supabaseClient.auth.getUser();
@@ -686,19 +675,21 @@
                             const { data: inv } = await supabaseClient.from('investors').select('id').eq('id', user.id).single();
                             if (!inv) { dashLink = 'buyer.html'; role = 'Buyer'; }
                         }
-                        navBtns.innerHTML = `<span style="background:rgba(232,177,60,0.2); padding:8px 20px; border-radius:50px; color:#E8B13C;"><i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}</span>
+                        navBtns.innerHTML = `<span style="background:rgba(232,177,60,0.2); padding:8px 20px; border-radius:50px; color:#E8B13C; font-weight:600;"><i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}</span>
                             <a href="${dashLink}" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> ${role} Dashboard</a>
                             <button onclick="handleLogout()" class="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
                     }
                 } catch(e) {}
             }
-            window.handleLogout = async function() { await supabaseClient.auth.signOut(); localStorage.clear(); showToast('Logged out!', 'success'); setTimeout(() => location.reload(), 1000); };
-            updateNavbar();
             
-            // Social icons click
-            document.querySelectorAll('.social-icons i').forEach(icon => {
-                icon.addEventListener('click', () => showToast('Thanks for connecting! 🌟', 'success'));
-            });
+            window.handleLogout = async function() {
+                await supabaseClient.auth.signOut();
+                localStorage.clear();
+                showToast('Logged out successfully!');
+                setTimeout(() => location.reload(), 1000);
+            };
+            
+            updateNavbar();
         })();
     </script>
 </body>
