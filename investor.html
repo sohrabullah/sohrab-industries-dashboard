@@ -523,7 +523,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead>
                     <tbody id="investmentRequestsList"></tbody>
                 </table>
@@ -550,7 +550,7 @@
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
@@ -648,7 +648,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ALL ORIGINAL FUNCTIONS PRESERVED - ONLY VISUAL ENHANCEMENTS ADDED
         (function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -709,17 +708,39 @@
                 await loadStats();
             }
 
+            // FIXED: Correct Available Balance calculation
+            // Available Balance = Total Investment + Total Profit - Total Withdrawn (approved withdrawals)
+            async function fetchInvestorFinancials() {
+                const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+                const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
+                
+                const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
+                const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
+                
+                const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
+                const totalWithdrawn = withdrawals?.reduce((s, w) => s + (w.amount || 0), 0) || 0;
+                
+                const availableBalance = totalInvested + totalProfit - totalWithdrawn;
+                
+                return { totalInvested, totalProfit, availableBalance };
+            }
+
             async function loadStats() {
                 try {
-                    const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-                    const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
+                    const { totalInvested, totalProfit, availableBalance } = await fetchInvestorFinancials();
                     document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-                    document.getElementById('activeInvestments').innerHTML = investments?.length || 0;
-
-                    const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
-                    const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
                     document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-                    document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+                    document.getElementById('availableBalance').innerHTML = `Rs. ${availableBalance.toLocaleString()}`;
+
+                    const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
+                    document.getElementById('activeInvestments').innerHTML = activeInv?.length || 0;
+                    
+                    // Update investor record with correct values
+                    await supabase.from('investors').update({ 
+                        total_investment: totalInvested, 
+                        total_profit: totalProfit, 
+                        available_balance: availableBalance 
+                    }).eq('id', currentInvestorId);
                 } catch(err) {
                     console.error('Error loading stats:', err);
                 }
@@ -729,7 +750,7 @@
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
                 const tbody = document.getElementById('investmentsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">✨ No approved investments yet. Your investment requests will appear here after admin approval.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">✨ No approved investments yet. Your investment requests will appear here after admin approval.办?办?</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(inv => `
@@ -748,7 +769,7 @@
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
                 const tbody = document.getElementById('investmentRequestsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">⏳ No pending investment requests. Submit a new request above.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">⏳ No pending investment requests. Submit a new request above.办?办?</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(inv => `
@@ -767,7 +788,7 @@
                 const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
                 const tbody = document.getElementById('profitsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">📊 No profits recorded yet. Profits will appear here once distributed.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">📊 No profits recorded yet. Profits will appear here once distributed.办?办?</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(p => `
@@ -785,7 +806,7 @@
                 const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
                 const tbody = document.getElementById('withdrawalsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">💸 No withdrawal requests yet. Request a withdrawal above.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">💸 No withdrawal requests yet. Request a withdrawal above.办?办?</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(w => `
@@ -878,6 +899,7 @@
                 }
             };
 
+            // FIXED: Withdrawal now uses correct available balance from fetchInvestorFinancials
             document.getElementById('submitWithdrawalBtn').onclick = async () => {
                 const amount = document.getElementById('withdrawAmount').value;
                 const method = document.getElementById('withdrawMethod').value;
@@ -892,10 +914,9 @@
                     return; 
                 }
                 
-                const { data: balanceData } = await supabase.from('investors').select('available_balance').eq('id', currentInvestorId);
-                const currentBalance = (balanceData && balanceData[0]) ? (balanceData[0].available_balance || 0) : 0;
-                if (parseFloat(amount) > currentBalance) { 
-                    showToast(`Insufficient balance! Available: Rs. ${currentBalance.toLocaleString()}`, true); 
+                const { availableBalance } = await fetchInvestorFinancials();
+                if (parseFloat(amount) > availableBalance) { 
+                    showToast(`Insufficient balance! Available: Rs. ${availableBalance.toLocaleString()}`, true); 
                     return; 
                 }
                 
@@ -923,6 +944,7 @@
                     document.getElementById('withdrawAmount').value = '';
                     document.getElementById('accountDetails').value = '';
                     await loadWithdrawals();
+                    await loadStats();
                 }
             };
 
