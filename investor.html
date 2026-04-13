@@ -372,7 +372,7 @@
         <!-- Investments Tab -->
         <div id="investmentsTab" class="tab-content active">
             <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments (Money You Have Invested)</h2>
+                <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments</h2>
                 <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + New Investment Request</button>
             </div>
             <div class="table-container">
@@ -390,7 +390,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead>
                         <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
                     </thead>
@@ -417,7 +417,7 @@
         <!-- Withdrawals Tab -->
         <div id="withdrawalsTab" class="tab-content">
             <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests (Money Taken Out)</h2>
+                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
             <div class="table-container">
@@ -431,7 +431,7 @@
             <p style="margin-top: 15px; font-size: 12px; color: #666;"><i class="fas fa-info-circle"></i> This shows all your withdrawal requests. Approved withdrawals are deducted from your available balance.</p>
         </div>
 
-        <!-- Investment Rules Tab - NEW -->
+        <!-- Investment Rules Tab -->
         <div id="rulesTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gavel"></i> Investment Rules & Guidelines</h2>
             
@@ -545,22 +545,23 @@
         </div>
     </div>
 
+    <!-- Investment Modal -->
     <div id="investmentModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('investmentModal')">&times;</span>
             <h2><i class="fas fa-plus-circle"></i> Submit New Investment Request</h2>
             <div class="payment-info">
                 <i class="fas fa-info-circle"></i> Send payment to:<br>
-                <strong>🏦 EasyPaisa:</strong> 03XX-XXXXXXX<br>
-                <strong>🏦 JazzCash:</strong> 03XX-XXXXXXX<br>
-                <strong>🏦 Bank Transfer:</strong> HBL Account #XXXX-XXXX
+                <strong>🏦 EasyPaisa (Sohrab Ullah):</strong> 03173703413<br>
+                <strong>🏦 JazzCash (Sohrab Ullah):</strong> 03173703413<br>
+                <strong>🏦 Bank Transfer:</strong> HBL Account #XXXX-XXXX (Sohrab Ullah)
             </div>
             <div class="form-group"><label>Investment Amount (Rs.)</label><input type="number" id="investmentAmount" placeholder="Enter amount"></div>
             <div class="form-group"><label>Payment Method</label>
                 <select id="investmentPaymentMethod">
-                    <option value="EasyPaisa">EasyPaisa</option>
-                    <option value="JazzCash">JazzCash</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="EasyPaisa">EasyPaisa - 03173703413 (Sohrab Ullah)</option>
+                    <option value="JazzCash">JazzCash - 03173703413 (Sohrab Ullah)</option>
+                    <option value="Bank Transfer">Bank Transfer - HBL (Sohrab Ullah)</option>
                 </select>
             </div>
             <div class="form-group"><label>Transaction ID</label><input type="text" id="investmentTransactionId" placeholder="Enter transaction ID"></div>
@@ -569,6 +570,7 @@
         </div>
     </div>
 
+    <!-- Withdrawal Modal -->
     <div id="withdrawalModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('withdrawalModal')">&times;</span>
@@ -576,20 +578,23 @@
             <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="withdrawAmount" placeholder="Enter amount (Min Rs. 1000)"></div>
             <div class="form-group"><label>Payment Method</label>
                 <select id="withdrawMethod">
-                    <option value="EasyPaisa">EasyPaisa</option>
-                    <option value="JazzCash">JazzCash</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="EasyPaisa">EasyPaisa - 03173703413 (Sohrab Ullah)</option>
+                    <option value="JazzCash">JazzCash - 03173703413 (Sohrab Ullah)</option>
+                    <option value="Bank Transfer">Bank Transfer - HBL (Sohrab Ullah)</option>
                 </select>
             </div>
             <div class="form-group"><label>Account Details</label><input type="text" id="accountDetails" placeholder="Account number / Mobile number"></div>
             <button id="submitWithdrawalBtn" class="btn-primary">Submit Request</button>
+            <p style="font-size: 12px; color: #666; margin-top: 15px; text-align: center;">
+                <i class="fas fa-clock"></i> Withdrawals are processed within 3-5 business days
+            </p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Wait for DOM to fully load
-        (function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -652,6 +657,12 @@
 
             async function loadStats() {
                 try {
+                    const tbodyInvestments = document.getElementById('investmentsList');
+                    const tbodyProfits = document.getElementById('profitsList');
+                    const tbodyWithdrawals = document.getElementById('withdrawalsList');
+                    
+                    if (!tbodyInvestments && !tbodyProfits && !tbodyWithdrawals) return;
+                    
                     // Get total investment from approved investments
                     const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
                     const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
@@ -683,8 +694,10 @@
             }
 
             async function loadInvestments() {
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
                 const tbody = document.getElementById('investmentsList');
+                if (!tbody) return;
+                
+                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet. Your investment requests will appear here after admin approval.办?<\/td><\/tr>';
                     return;
@@ -702,8 +715,10 @@
             }
 
             async function loadInvestmentRequests() {
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
                 const tbody = document.getElementById('investmentRequestsList');
+                if (!tbody) return;
+                
+                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests. Submit a new request above.办?<\/td><\/tr>';
                     return;
@@ -721,8 +736,10 @@
             }
 
             async function loadProfits() {
-                const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
                 const tbody = document.getElementById('profitsList');
+                if (!tbody) return;
+                
+                const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet. Profits will appear here once distributed.办?<\/td><\/tr>';
                     return;
@@ -739,14 +756,16 @@
             }
 
             async function loadWithdrawals() {
-                const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
                 const tbody = document.getElementById('withdrawalsList');
+                if (!tbody) return;
+                
+                const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet. Request a withdrawal above.办?<\/td><\/tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(w => `
-                    <td>
+                    <tr>
                         <td>${new Date(w.request_date).toLocaleDateString()}</td>
                         <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
                         <td>${w.payment_method || '-'}</td>
@@ -904,7 +923,7 @@
             });
 
             checkAuth();
-        })();
+        });
     </script>
 </body>
 </html>
