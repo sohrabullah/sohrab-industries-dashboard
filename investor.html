@@ -338,7 +338,7 @@
             <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> 👤 My Profile</button>
         </div>
 
-        <!-- Investments Tab - Approved -->
+        <!-- Investments Tab -->
         <div id="investmentsTab" class="tab-content active">
             <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                 <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments (Money You Have Invested)</h2>
@@ -355,11 +355,11 @@
             <p style="margin-top: 15px; font-size: 12px; color: #666;"><i class="fas fa-info-circle"></i> This table shows all your approved investments. This money is invested with us and earning profits.</p>
         </div>
 
-        <!-- Investment Requests Tab - Pending -->
+        <!-- Investment Requests Tab -->
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                </table>
+                <table>
                     <thead>
                         <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
                     </thead>
@@ -373,7 +373,7 @@
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
             <div class="table-container">
-                </table>
+                <table>
                     <thead>
                         <tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr>
                     </thead>
@@ -390,7 +390,7 @@
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
             <div class="table-container">
-                <tr>
+                <table>
                     <thead>
                         <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr>
                     </thead>
@@ -489,7 +489,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Wait for DOM to fully load
+        (function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -608,7 +609,7 @@
                 const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
                 const tbody = document.getElementById('profitsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet. Profits will appear here once distributed.办?</td></tr>';
+                    tbody.innerHTML = '<td><td colspan="5" class="empty-state">No profits recorded yet. Profits will appear here once distributed.办?</td></table>';
                     return;
                 }
                 tbody.innerHTML = data.map(p => `
@@ -626,7 +627,7 @@
                 const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
                 const tbody = document.getElementById('withdrawalsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<td><td colspan="6" class="empty-state">No withdrawal requests yet. Request a withdrawal above.办?</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet. Request a withdrawal above.办?</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(w => `
@@ -781,7 +782,7 @@
             });
 
             checkAuth();
-        });
+        })();
     </script>
 </body>
 </html>
