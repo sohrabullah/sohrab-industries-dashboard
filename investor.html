@@ -372,11 +372,11 @@
         <!-- Investments Tab -->
         <div id="investmentsTab" class="tab-content active">
             <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments</h2>
+                <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments (Money You Have Invested)</h2>
                 <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + New Investment Request</button>
             </div>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead>
                         <tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
                     </thead>
@@ -417,7 +417,7 @@
         <!-- Withdrawals Tab -->
         <div id="withdrawalsTab" class="tab-content">
             <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
+                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests (Money Taken Out)</h2>
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
             <div class="table-container">
@@ -426,12 +426,12 @@
                         <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr>
                     </thead>
                     <tbody id="withdrawalsList"></tbody>
-                </tr>
+                </table>
             </div>
             <p style="margin-top: 15px; font-size: 12px; color: #666;"><i class="fas fa-info-circle"></i> This shows all your withdrawal requests. Approved withdrawals are deducted from your available balance.</p>
         </div>
 
-        <!-- Investment Rules Tab -->
+        <!-- Investment Rules Tab - NEW -->
         <div id="rulesTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gavel"></i> Investment Rules & Guidelines</h2>
             
@@ -583,16 +583,13 @@
             </div>
             <div class="form-group"><label>Account Details</label><input type="text" id="accountDetails" placeholder="Account number / Mobile number"></div>
             <button id="submitWithdrawalBtn" class="btn-primary">Submit Request</button>
-            <p style="font-size: 12px; color: #666; margin-top: 15px; text-align: center;">
-                <i class="fas fa-clock"></i> Withdrawals are processed within 3-5 business days
-            </p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Wait for DOM to fully load
-        document.addEventListener('DOMContentLoaded', function() {
+        (function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -655,45 +652,23 @@
 
             async function loadStats() {
                 try {
-                    // Get total investment from approved investments
                     const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
                     const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
-                    const totalInvestmentElem = document.getElementById('totalInvestment');
-                    const activeInvestmentsElem = document.getElementById('activeInvestments');
-                    if (totalInvestmentElem) totalInvestmentElem.innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-                    if (activeInvestmentsElem) activeInvestmentsElem.innerHTML = investments?.length || 0;
+                    document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
+                    document.getElementById('activeInvestments').innerHTML = investments?.length || 0;
 
-                    // Get total profit from paid profits
                     const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
                     const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
-                    const totalProfitElem = document.getElementById('totalProfit');
-                    if (totalProfitElem) totalProfitElem.innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-                    
-                    // Get total withdrawn from approved withdrawals
-                    const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
-                    const totalWithdrawn = withdrawals?.reduce((s, w) => s + (w.amount || 0), 0) || 0;
-                    
-                    // Available Balance = Total Investment + Total Profit - Total Withdrawn
-                    const availableBalance = totalInvested + totalProfit - totalWithdrawn;
-                    const availableBalanceElem = document.getElementById('availableBalance');
-                    if (availableBalanceElem) availableBalanceElem.innerHTML = `Rs. ${availableBalance.toLocaleString()}`;
-                    
-                    // Update investor table with latest stats
-                    await supabase.from('investors').update({
-                        total_investment: totalInvested,
-                        total_profit: totalProfit,
-                        available_balance: availableBalance
-                    }).eq('id', currentInvestorId);
+                    document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+                    document.getElementById('availableBalance').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
                 } catch(err) {
                     console.error('Error loading stats:', err);
                 }
             }
 
             async function loadInvestments() {
-                const tbody = document.getElementById('investmentsList');
-                if (!tbody) return;
-                
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
+                const tbody = document.getElementById('investmentsList');
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No approved investments yet. Your investment requests will appear here after admin approval.办?<\/td><\/tr>';
                     return;
@@ -711,10 +686,8 @@
             }
 
             async function loadInvestmentRequests() {
-                const tbody = document.getElementById('investmentRequestsList');
-                if (!tbody) return;
-                
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
+                const tbody = document.getElementById('investmentRequestsList');
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests. Submit a new request above.办?<\/td><\/tr>';
                     return;
@@ -732,12 +705,10 @@
             }
 
             async function loadProfits() {
-                const tbody = document.getElementById('profitsList');
-                if (!tbody) return;
-                
                 const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
+                const tbody = document.getElementById('profitsList');
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No profits recorded yet. Profits will appear here once distributed.办?<\/td><\/tr>';
+                    tbody.innerHTML = '<td><td colspan="5" class="empty-state">No profits recorded yet. Profits will appear here once distributed.办?<\/td><\/tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(p => `
@@ -752,10 +723,8 @@
             }
 
             async function loadWithdrawals() {
-                const tbody = document.getElementById('withdrawalsList');
-                if (!tbody) return;
-                
                 const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
+                const tbody = document.getElementById('withdrawalsList');
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No withdrawal requests yet. Request a withdrawal above.办?<\/td><\/tr>';
                     return;
@@ -766,7 +735,7 @@
                         <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
                         <td>${w.payment_method || '-'}</td>
                         <td>${w.account_details || '-'}</td>
-                        <td><span class="status-badge status-${w.status}">${w.status === 'pending' ? '⏳ Pending' : (w.status === 'approved' ? '✅ Approved' : '❌ Rejected')}</span></td>
+                        <td><span class="status-badge status-${w.status}">${w.status === 'pending' ? '⏳ Pending' : '✅ Approved'}</span></td>
                         <td>${w.processed_date ? new Date(w.processed_date).toLocaleDateString() : '-'}</td>
                     </tr>
                 `).join('');
@@ -776,29 +745,19 @@
                 const { data } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
                 if (data && data[0]) {
                     const i = data[0];
-                    const profileNameElem = document.getElementById('profileName');
-                    const profileEmailElem = document.getElementById('profileEmail');
-                    const profilePhoneElem = document.getElementById('profilePhone');
-                    const profileCityElem = document.getElementById('profileCity');
-                    const profileTotalInvestmentElem = document.getElementById('profileTotalInvestment');
-                    const profileTotalProfitElem = document.getElementById('profileTotalProfit');
-                    const profileBalanceElem = document.getElementById('profileBalance');
-                    const profileMemberSinceElem = document.getElementById('profileMemberSince');
-                    
-                    if (profileNameElem) profileNameElem.value = i.full_name || '';
-                    if (profileEmailElem) profileEmailElem.value = i.email || '';
-                    if (profilePhoneElem) profilePhoneElem.value = i.phone || '';
-                    if (profileCityElem) profileCityElem.value = i.city || '';
-                    if (profileTotalInvestmentElem) profileTotalInvestmentElem.value = `Rs. ${(i.total_investment || 0).toLocaleString()}`;
-                    if (profileTotalProfitElem) profileTotalProfitElem.value = `Rs. ${(i.total_profit || 0).toLocaleString()}`;
-                    if (profileBalanceElem) profileBalanceElem.value = `Rs. ${(i.available_balance || 0).toLocaleString()}`;
-                    if (profileMemberSinceElem) profileMemberSinceElem.value = i.created_at ? new Date(i.created_at).toLocaleDateString() : new Date().toLocaleDateString();
+                    document.getElementById('profileName').value = i.full_name || '';
+                    document.getElementById('profileEmail').value = i.email || '';
+                    document.getElementById('profilePhone').value = i.phone || '';
+                    document.getElementById('profileCity').value = i.city || '';
+                    document.getElementById('profileTotalInvestment').value = `Rs. ${(i.total_investment || 0).toLocaleString()}`;
+                    document.getElementById('profileTotalProfit').value = `Rs. ${(i.total_profit || 0).toLocaleString()}`;
+                    document.getElementById('profileBalance').value = `Rs. ${(i.available_balance || 0).toLocaleString()}`;
+                    document.getElementById('profileMemberSince').value = i.created_at ? new Date(i.created_at).toLocaleDateString() : new Date().toLocaleDateString();
                 }
             }
 
             window.editField = async function(inputId, dbField) {
                 const input = document.getElementById(inputId);
-                if (!input) return;
                 const currentValue = input.value;
                 const fieldName = dbField.replace('_', ' ');
                 const newValue = prompt(`Enter new ${fieldName}:`, currentValue);
@@ -874,17 +833,10 @@
                     return; 
                 }
                 
-                // Get current available balance
-                const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-                const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
-                const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
-                const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
-                const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
-                const totalWithdrawn = withdrawals?.reduce((s, w) => s + (w.amount || 0), 0) || 0;
-                const availableBalance = totalInvested + totalProfit - totalWithdrawn;
-                
-                if (parseFloat(amount) > availableBalance) { 
-                    showToast(`Insufficient balance! Available: Rs. ${availableBalance.toLocaleString()}`, true); 
+                const { data: balanceData } = await supabase.from('investors').select('available_balance').eq('id', currentInvestorId);
+                const currentBalance = (balanceData && balanceData[0]) ? (balanceData[0].available_balance || 0) : 0;
+                if (parseFloat(amount) > currentBalance) { 
+                    showToast(`Insufficient balance! Available: Rs. ${currentBalance.toLocaleString()}`, true); 
                     return; 
                 }
                 
@@ -929,7 +881,7 @@
             });
 
             checkAuth();
-        });
+        })();
     </script>
 </body>
 </html>
