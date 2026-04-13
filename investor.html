@@ -6,7 +6,6 @@
     <title>Sohrab Industries | Premium Investor Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Favicon to avoid 404 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -528,7 +527,7 @@
                 <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></tr></div>
             <p class="info-text"><i class="fas fa-info-circle"></i> This shows all your withdrawal requests. Approved withdrawals are deducted from your available balance.</p>
         </div>
 
@@ -562,7 +561,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Wait for DOM to be fully loaded before executing
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -570,7 +568,6 @@
             
             let currentInvestorId = null;
 
-            // Carousel Functionality
             function initCarousel() {
                 const track = document.getElementById('carouselTrack');
                 const prev = document.getElementById('carouselPrevBtn');
@@ -598,7 +595,6 @@
                 window.addEventListener('resize', update); 
                 setTimeout(update, 100);
             }
-            
             initCarousel();
 
             function showToast(message, isError) {
@@ -623,57 +619,39 @@
                 if (activeBtn) activeBtn.classList.add('active');
             }
 
-            async function checkAuth() {
-                const { data: { user }, error } = await supabase.auth.getUser();
-                if (error || !user) {
-                    window.location.href = 'investor-auth.html';
-                    return;
-                }
-                currentInvestorId = user.id;
-                const userNameSpan = document.getElementById('userName');
-                if (userNameSpan) userNameSpan.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
-                
-                const { data: existingInvestor } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
-                if (!existingInvestor || existingInvestor.length === 0) {
-                    await supabase.from('investors').insert([{
-                        id: currentInvestorId,
-                        email: user.email,
-                        full_name: user.email.split('@')[0],
-                        phone: '',
-                        city: '',
-                        total_investment: 0,
-                        total_profit: 0,
-                        available_balance: 0,
-                        created_at: new Date().toISOString()
-                    }]);
-                }
-                
-                await loadInvestments();
-                await loadInvestmentRequests();
-                await loadProfits();
-                await loadWithdrawals();
-                await loadProfile();
-                await loadStats();
+            // CORRECTED: Available Balance = Total Investment + Total Profit - Total Withdrawn
+            async function fetchInvestorFinancials() {
+                const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+                const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
+                const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
+                const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
+                const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
+                const totalWithdrawn = withdrawals?.reduce((s, w) => s + (w.amount || 0), 0) || 0;
+                const availableBalance = totalInvested + totalProfit - totalWithdrawn;
+                return { totalInvested, totalProfit, availableBalance };
             }
 
             async function loadStats() {
                 try {
-                    const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-                    const totalInvested = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0;
+                    const { totalInvested, totalProfit, availableBalance } = await fetchInvestorFinancials();
                     const totalInvEl = document.getElementById('totalInvestment');
-                    const activeInvEl = document.getElementById('activeInvestments');
-                    if (totalInvEl) totalInvEl.innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-                    if (activeInvEl) activeInvEl.innerHTML = investments?.length || 0;
-
-                    const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
-                    const totalProfit = profits?.reduce((s, p) => s + (p.amount || 0), 0) || 0;
                     const totalProfitEl = document.getElementById('totalProfit');
                     const availBalanceEl = document.getElementById('availableBalance');
+                    if (totalInvEl) totalInvEl.innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
                     if (totalProfitEl) totalProfitEl.innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-                    if (availBalanceEl) availBalanceEl.innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-                } catch(err) {
-                    console.error('Error loading stats:', err);
-                }
+                    if (availBalanceEl) availBalanceEl.innerHTML = `Rs. ${availableBalance.toLocaleString()}`;
+
+                    const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
+                    const activeInvEl = document.getElementById('activeInvestments');
+                    if (activeInvEl) activeInvEl.innerHTML = activeInv?.length || 0;
+                    
+                    // Update investor record
+                    await supabase.from('investors').update({ 
+                        total_investment: totalInvested, 
+                        total_profit: totalProfit, 
+                        available_balance: availableBalance 
+                    }).eq('id', currentInvestorId);
+                } catch(err) { console.error('Error loading stats:', err); }
             }
 
             async function loadInvestments() {
@@ -787,12 +765,8 @@
                 const newValue = prompt(`Enter new ${fieldName}:`, currentValue);
                 if (newValue && newValue !== currentValue) {
                     const { error } = await supabase.from('investors').update({ [dbField]: newValue }).eq('id', currentInvestorId);
-                    if (error) {
-                        showToast(error.message, true);
-                    } else {
-                        showToast(`${fieldName} updated successfully!`, false);
-                        await loadProfile();
-                    }
+                    if (error) showToast(error.message, true);
+                    else { showToast(`${fieldName} updated successfully!`, false); await loadProfile(); }
                 }
             };
 
@@ -829,7 +803,7 @@
                     btn.disabled = false;
                     btn.innerHTML = 'Submit Request';
                     
-                    if (error) { showToast(error.message, true); } 
+                    if (error) showToast(error.message, true);
                     else {
                         showToast('Investment request submitted! Admin will verify.', false);
                         const modal = document.getElementById('investmentModal');
@@ -855,9 +829,8 @@
                     if (!amount || !accountDetails) { showToast('Please fill all fields', true); return; }
                     if (parseFloat(amount) < 1000) { showToast('Minimum withdrawal amount is Rs. 1,000', true); return; }
                     
-                    const { data: balanceData } = await supabase.from('investors').select('available_balance').eq('id', currentInvestorId);
-                    const currentBalance = (balanceData && balanceData[0]) ? (balanceData[0].available_balance || 0) : 0;
-                    if (parseFloat(amount) > currentBalance) { showToast(`Insufficient balance! Available: Rs. ${currentBalance.toLocaleString()}`, true); return; }
+                    const { availableBalance } = await fetchInvestorFinancials();
+                    if (parseFloat(amount) > availableBalance) { showToast(`Insufficient balance! Available: Rs. ${availableBalance.toLocaleString()}`, true); return; }
                     
                     const btn = submitWithdrawalBtn;
                     btn.disabled = true;
@@ -875,7 +848,7 @@
                     btn.disabled = false;
                     btn.innerHTML = 'Submit Request';
                     
-                    if (error) { showToast(error.message, true); } 
+                    if (error) showToast(error.message, true);
                     else {
                         showToast('Withdrawal request submitted! Admin will process.', false);
                         const modal = document.getElementById('withdrawalModal');
@@ -885,6 +858,7 @@
                         if (amountInput) amountInput.value = '';
                         if (accountInput) accountInput.value = '';
                         await loadWithdrawals();
+                        await loadStats();
                     }
                 };
             }
@@ -904,6 +878,39 @@
                 card.addEventListener('click', () => switchTab(card.getAttribute('data-tab')));
             });
 
+            async function checkAuth() {
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (error || !user) {
+                    window.location.href = 'investor-auth.html';
+                    return;
+                }
+                currentInvestorId = user.id;
+                const userNameSpan = document.getElementById('userName');
+                if (userNameSpan) userNameSpan.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
+                
+                const { data: existingInvestor } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
+                if (!existingInvestor || existingInvestor.length === 0) {
+                    await supabase.from('investors').insert([{
+                        id: currentInvestorId,
+                        email: user.email,
+                        full_name: user.email.split('@')[0],
+                        phone: '',
+                        city: '',
+                        total_investment: 0,
+                        total_profit: 0,
+                        available_balance: 0,
+                        created_at: new Date().toISOString()
+                    }]);
+                }
+                
+                await loadInvestments();
+                await loadInvestmentRequests();
+                await loadProfits();
+                await loadWithdrawals();
+                await loadProfile();
+                await loadStats();
+            }
+            
             checkAuth();
         });
     </script>
