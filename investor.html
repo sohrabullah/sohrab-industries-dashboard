@@ -512,13 +512,13 @@
 
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
-            <div class="table-container"><tr><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
             <p class="info-text"><i class="fas fa-info-circle"></i> These requests are waiting for admin approval. Once approved, they will appear in "My Investments".</p>
         </div>
 
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
-            <div class="table-container"><table><thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody></table></div>
             <p class="info-text"><i class="fas fa-info-circle"></i> This shows all profits earned from your investments. Paid profits are added to your available balance.</p>
         </div>
 
@@ -527,7 +527,7 @@
                 <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
-            <div class="table-container"><tr><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></tr></div>
+            <div class="table-container"><tr><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
             <p class="info-text"><i class="fas fa-info-circle"></i> This shows all your withdrawal requests. Approved withdrawals are deducted from your available balance.</p>
         </div>
 
@@ -645,7 +645,6 @@
                     const activeInvEl = document.getElementById('activeInvestments');
                     if (activeInvEl) activeInvEl.innerHTML = activeInv?.length || 0;
                     
-                    // Update investor record
                     await supabase.from('investors').update({ 
                         total_investment: totalInvested, 
                         total_profit: totalProfit, 
@@ -659,7 +658,7 @@
                 if (!tbody) return;
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">✨ No approved investments yet. Your investment requests will appear here after admin approval.办?</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">✨ No approved investments yet. Your investment requests will appear here after admin approval.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(inv => `
@@ -677,9 +676,14 @@
             async function loadInvestmentRequests() {
                 const tbody = document.getElementById('investmentRequestsList');
                 if (!tbody) return;
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
+                const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
+                if (error) {
+                    console.error('Error loading investment requests:', error);
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">❌ Error loading requests</td></tr>';
+                    return;
+                }
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">⏳ No pending investment requests. Submit a new request above.办?</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">⏳ No pending investment requests. Submit a new request above.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(inv => `
@@ -699,7 +703,7 @@
                 if (!tbody) return;
                 const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">📊 No profits recorded yet. Profits will appear here once distributed.办?</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">📊 No profits recorded yet. Profits will appear here once distributed.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(p => `
@@ -716,9 +720,14 @@
             async function loadWithdrawals() {
                 const tbody = document.getElementById('withdrawalsList');
                 if (!tbody) return;
-                const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
+                const { data, error } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
+                if (error) {
+                    console.error('Error loading withdrawals:', error);
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">❌ Error loading withdrawals</td></tr>';
+                    return;
+                }
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">💸 No withdrawal requests yet. Request a withdrawal above.办?</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">💸 No withdrawal requests yet. Request a withdrawal above.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.map(w => `
