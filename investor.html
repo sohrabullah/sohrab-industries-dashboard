@@ -453,7 +453,6 @@
     </div>
 
     <div class="container">
-        <!-- Investment Rules Banner -->
         <div class="rules-banner">
             <h3><i class="fas fa-scroll"></i> Investment Rules & 50/50 Profit Sharing</h3>
             <div class="rules-grid">
@@ -468,7 +467,6 @@
             </div>
         </div>
 
-        <!-- Carousel Section -->
         <div class="carousel-section">
             <div class="carousel-title">
                 <h2><i class="fas fa-chart-line"></i> Our Growing Community</h2>
@@ -508,7 +506,7 @@
                 <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments</h2>
                 <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + New Investment Request</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentsList"></tbody></tr></div>
             <p class="info-text"><i class="fas fa-info-circle"></i> This table shows all your approved investments. This money is invested with us and earning profits.</p>
         </div>
 
@@ -520,7 +518,7 @@
 
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
-            <div class="table-container"><tr><thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody><table></div>
+            <div class="table-container"><tr><thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody></table></div>
             <p class="info-text"><i class="fas fa-info-circle"></i> This shows all profits earned from your investments. Paid profits are added to your available balance.</p>
         </div>
 
@@ -563,8 +561,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Wait for DOM to fully load
-        (function() {
+        // Wait for DOM to be fully loaded before executing
+        document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -599,12 +597,7 @@
                 window.addEventListener('resize', update); 
                 setTimeout(update, 100);
             }
-            
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initCarousel);
-            } else {
-                initCarousel();
-            }
+            initCarousel();
 
             function showToast(message, isError) {
                 const toast = document.createElement('div');
@@ -615,7 +608,8 @@
             }
 
             window.closeModal = function(modalId) {
-                document.getElementById(modalId).style.display = 'none';
+                const modal = document.getElementById(modalId);
+                if (modal) modal.style.display = 'none';
             }
 
             function switchTab(tabName) {
@@ -634,7 +628,8 @@
                     return;
                 }
                 currentInvestorId = user.id;
-                document.getElementById('userName').innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
+                const userNameSpan = document.getElementById('userName');
+                if (userNameSpan) userNameSpan.innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
                 
                 const { data: existingInvestor } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
                 if (!existingInvestor || existingInvestor.length === 0) {
@@ -674,20 +669,25 @@
             async function loadStats() {
                 try {
                     const { totalInvested, totalProfit, availableBalance } = await fetchInvestorFinancials();
-                    document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-                    document.getElementById('totalProfit').innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
-                    document.getElementById('availableBalance').innerHTML = `Rs. ${availableBalance.toLocaleString()}`;
+                    const totalInvEl = document.getElementById('totalInvestment');
+                    const totalProfitEl = document.getElementById('totalProfit');
+                    const availBalanceEl = document.getElementById('availableBalance');
+                    if (totalInvEl) totalInvEl.innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
+                    if (totalProfitEl) totalProfitEl.innerHTML = `Rs. ${totalProfit.toLocaleString()}`;
+                    if (availBalanceEl) availBalanceEl.innerHTML = `Rs. ${availableBalance.toLocaleString()}`;
 
                     const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
-                    document.getElementById('activeInvestments').innerHTML = activeInv?.length || 0;
+                    const activeInvEl = document.getElementById('activeInvestments');
+                    if (activeInvEl) activeInvEl.innerHTML = activeInv?.length || 0;
                     
                     await supabase.from('investors').update({ total_investment: totalInvested, total_profit: totalProfit, available_balance: availableBalance }).eq('id', currentInvestorId);
                 } catch(err) { console.error('Error loading stats:', err); }
             }
 
             async function loadInvestments() {
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
                 const tbody = document.getElementById('investmentsList');
+                if (!tbody) return;
+                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', { ascending: false });
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">✨ No approved investments yet. Your investment requests will appear here after admin approval.办?办?</td></tr>';
                     return;
@@ -705,8 +705,9 @@
             }
 
             async function loadInvestmentRequests() {
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
                 const tbody = document.getElementById('investmentRequestsList');
+                if (!tbody) return;
+                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at', { ascending: false });
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">⏳ No pending investment requests. Submit a new request above.办?办?</td></tr>';
                     return;
@@ -724,8 +725,9 @@
             }
 
             async function loadProfits() {
-                const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
                 const tbody = document.getElementById('profitsList');
+                if (!tbody) return;
+                const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month', { ascending: false });
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" class="empty-state">📊 No profits recorded yet. Profits will appear here once distributed.办?办?</td></tr>';
                     return;
@@ -742,8 +744,9 @@
             }
 
             async function loadWithdrawals() {
-                const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
                 const tbody = document.getElementById('withdrawalsList');
+                if (!tbody) return;
+                const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date', { ascending: false });
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">💸 No withdrawal requests yet. Request a withdrawal above.办?办?</td></tr>';
                     return;
@@ -764,115 +767,139 @@
                 const { data } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
                 if (data && data[0]) {
                     const i = data[0];
-                    document.getElementById('profileName').value = i.full_name || '';
-                    document.getElementById('profileEmail').value = i.email || '';
-                    document.getElementById('profilePhone').value = i.phone || '';
-                    document.getElementById('profileCity').value = i.city || '';
-                    document.getElementById('profileTotalInvestment').value = `Rs. ${(i.total_investment || 0).toLocaleString()}`;
-                    document.getElementById('profileTotalProfit').value = `Rs. ${(i.total_profit || 0).toLocaleString()}`;
-                    document.getElementById('profileBalance').value = `Rs. ${(i.available_balance || 0).toLocaleString()}`;
-                    document.getElementById('profileMemberSince').value = i.created_at ? new Date(i.created_at).toLocaleDateString() : new Date().toLocaleDateString();
+                    const nameEl = document.getElementById('profileName');
+                    const emailEl = document.getElementById('profileEmail');
+                    const phoneEl = document.getElementById('profilePhone');
+                    const cityEl = document.getElementById('profileCity');
+                    const totalInvEl = document.getElementById('profileTotalInvestment');
+                    const totalProfitEl = document.getElementById('profileTotalProfit');
+                    const balanceEl = document.getElementById('profileBalance');
+                    const sinceEl = document.getElementById('profileMemberSince');
+                    
+                    if (nameEl) nameEl.value = i.full_name || '';
+                    if (emailEl) emailEl.value = i.email || '';
+                    if (phoneEl) phoneEl.value = i.phone || '';
+                    if (cityEl) cityEl.value = i.city || '';
+                    if (totalInvEl) totalInvEl.value = `Rs. ${(i.total_investment || 0).toLocaleString()}`;
+                    if (totalProfitEl) totalProfitEl.value = `Rs. ${(i.total_profit || 0).toLocaleString()}`;
+                    if (balanceEl) balanceEl.value = `Rs. ${(i.available_balance || 0).toLocaleString()}`;
+                    if (sinceEl) sinceEl.value = i.created_at ? new Date(i.created_at).toLocaleDateString() : new Date().toLocaleDateString();
                 }
             }
 
             window.editField = async function(inputId, dbField) {
                 const input = document.getElementById(inputId);
+                if (!input) return;
                 const currentValue = input.value;
                 const fieldName = dbField.replace('_', ' ');
                 const newValue = prompt(`Enter new ${fieldName}:`, currentValue);
                 if (newValue && newValue !== currentValue) {
                     const { error } = await supabase.from('investors').update({ [dbField]: newValue }).eq('id', currentInvestorId);
-                    if (error) {
-                        showToast(error.message, true);
-                    } else {
-                        showToast(`${fieldName} updated successfully!`, false);
-                        await loadProfile();
+                    if (error) showToast(error.message, true);
+                    else { showToast(`${fieldName} updated successfully!`, false); await loadProfile(); }
+                }
+            };
+
+            const openInvestmentBtn = document.getElementById('openInvestmentModalBtn');
+            const openWithdrawalBtn = document.getElementById('openWithdrawalModalBtn');
+            if (openInvestmentBtn) openInvestmentBtn.onclick = () => { const modal = document.getElementById('investmentModal'); if (modal) modal.style.display = 'block'; };
+            if (openWithdrawalBtn) openWithdrawalBtn.onclick = () => { const modal = document.getElementById('withdrawalModal'); if (modal) modal.style.display = 'block'; };
+
+            const submitInvestmentBtn = document.getElementById('submitInvestmentBtn');
+            if (submitInvestmentBtn) {
+                submitInvestmentBtn.onclick = async () => {
+                    const amount = document.getElementById('investmentAmount')?.value;
+                    const paymentMethod = document.getElementById('investmentPaymentMethod')?.value;
+                    const transactionId = document.getElementById('investmentTransactionId')?.value;
+                    const notes = document.getElementById('investmentNotes')?.value;
+                    
+                    if (!amount || !transactionId) { showToast('Please fill amount and transaction ID', true); return; }
+                    if (parseFloat(amount) < 1000) { showToast('Minimum investment amount is Rs. 1,000', true); return; }
+                    
+                    const btn = submitInvestmentBtn;
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
+                    
+                    const { error } = await supabase.from('investments').insert([{
+                        investor_id: currentInvestorId,
+                        amount: parseFloat(amount),
+                        investment_date: new Date().toISOString().split('T')[0],
+                        payment_method: paymentMethod,
+                        transaction_id: transactionId,
+                        status: 'pending',
+                        notes: notes || `Payment via ${paymentMethod} - TXN: ${transactionId}`
+                    }]);
+                    
+                    btn.disabled = false;
+                    btn.innerHTML = 'Submit Request';
+                    
+                    if (error) { showToast(error.message, true); } 
+                    else {
+                        showToast('Investment request submitted! Admin will verify.', false);
+                        const modal = document.getElementById('investmentModal');
+                        if (modal) modal.style.display = 'none';
+                        const amountInput = document.getElementById('investmentAmount');
+                        const txnInput = document.getElementById('investmentTransactionId');
+                        const notesInput = document.getElementById('investmentNotes');
+                        if (amountInput) amountInput.value = '';
+                        if (txnInput) txnInput.value = '';
+                        if (notesInput) notesInput.value = '';
+                        await loadInvestmentRequests();
                     }
-                }
-            };
+                };
+            }
 
-            document.getElementById('openInvestmentModalBtn').onclick = () => document.getElementById('investmentModal').style.display = 'block';
-            document.getElementById('openWithdrawalModalBtn').onclick = () => document.getElementById('withdrawalModal').style.display = 'block';
+            const submitWithdrawalBtn = document.getElementById('submitWithdrawalBtn');
+            if (submitWithdrawalBtn) {
+                submitWithdrawalBtn.onclick = async () => {
+                    const amount = document.getElementById('withdrawAmount')?.value;
+                    const method = document.getElementById('withdrawMethod')?.value;
+                    const accountDetails = document.getElementById('accountDetails')?.value;
+                    
+                    if (!amount || !accountDetails) { showToast('Please fill all fields', true); return; }
+                    if (parseFloat(amount) < 1000) { showToast('Minimum withdrawal amount is Rs. 1,000', true); return; }
+                    
+                    const { availableBalance } = await fetchInvestorFinancials();
+                    if (parseFloat(amount) > availableBalance) { showToast(`Insufficient balance! Available: Rs. ${availableBalance.toLocaleString()}`, true); return; }
+                    
+                    const btn = submitWithdrawalBtn;
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
+                    
+                    const { error } = await supabase.from('withdrawals').insert([{
+                        investor_id: currentInvestorId,
+                        amount: parseFloat(amount),
+                        request_date: new Date().toISOString().split('T')[0],
+                        payment_method: method,
+                        account_details: accountDetails,
+                        status: 'pending'
+                    }]);
+                    
+                    btn.disabled = false;
+                    btn.innerHTML = 'Submit Request';
+                    
+                    if (error) { showToast(error.message, true); } 
+                    else {
+                        showToast('Withdrawal request submitted! Admin will process.', false);
+                        const modal = document.getElementById('withdrawalModal');
+                        if (modal) modal.style.display = 'none';
+                        const amountInput = document.getElementById('withdrawAmount');
+                        const accountInput = document.getElementById('accountDetails');
+                        if (amountInput) amountInput.value = '';
+                        if (accountInput) accountInput.value = '';
+                        await loadWithdrawals();
+                        await loadStats();
+                    }
+                };
+            }
 
-            document.getElementById('submitInvestmentBtn').onclick = async () => {
-                const amount = document.getElementById('investmentAmount').value;
-                const paymentMethod = document.getElementById('investmentPaymentMethod').value;
-                const transactionId = document.getElementById('investmentTransactionId').value;
-                const notes = document.getElementById('investmentNotes').value;
-                
-                if (!amount || !transactionId) { showToast('Please fill amount and transaction ID', true); return; }
-                if (parseFloat(amount) < 1000) { showToast('Minimum investment amount is Rs. 1,000', true); return; }
-                
-                const btn = document.getElementById('submitInvestmentBtn');
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
-                
-                const { error } = await supabase.from('investments').insert([{
-                    investor_id: currentInvestorId,
-                    amount: parseFloat(amount),
-                    investment_date: new Date().toISOString().split('T')[0],
-                    payment_method: paymentMethod,
-                    transaction_id: transactionId,
-                    status: 'pending',
-                    notes: notes || `Payment via ${paymentMethod} - TXN: ${transactionId}`
-                }]);
-                
-                btn.disabled = false;
-                btn.innerHTML = 'Submit Request';
-                
-                if (error) { showToast(error.message, true); } 
-                else {
-                    showToast('Investment request submitted! Admin will verify.', false);
-                    document.getElementById('investmentModal').style.display = 'none';
-                    document.getElementById('investmentAmount').value = '';
-                    document.getElementById('investmentTransactionId').value = '';
-                    document.getElementById('investmentNotes').value = '';
-                    await loadInvestmentRequests();
-                }
-            };
-
-            document.getElementById('submitWithdrawalBtn').onclick = async () => {
-                const amount = document.getElementById('withdrawAmount').value;
-                const method = document.getElementById('withdrawMethod').value;
-                const accountDetails = document.getElementById('accountDetails').value;
-                
-                if (!amount || !accountDetails) { showToast('Please fill all fields', true); return; }
-                if (parseFloat(amount) < 1000) { showToast('Minimum withdrawal amount is Rs. 1,000', true); return; }
-                
-                const { availableBalance } = await fetchInvestorFinancials();
-                if (parseFloat(amount) > availableBalance) { showToast(`Insufficient balance! Available: Rs. ${availableBalance.toLocaleString()}`, true); return; }
-                
-                const btn = document.getElementById('submitWithdrawalBtn');
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Submitting...';
-                
-                const { error } = await supabase.from('withdrawals').insert([{
-                    investor_id: currentInvestorId,
-                    amount: parseFloat(amount),
-                    request_date: new Date().toISOString().split('T')[0],
-                    payment_method: method,
-                    account_details: accountDetails,
-                    status: 'pending'
-                }]);
-                
-                btn.disabled = false;
-                btn.innerHTML = 'Submit Request';
-                
-                if (error) { showToast(error.message, true); } 
-                else {
-                    showToast('Withdrawal request submitted! Admin will process.', false);
-                    document.getElementById('withdrawalModal').style.display = 'none';
-                    document.getElementById('withdrawAmount').value = '';
-                    document.getElementById('accountDetails').value = '';
-                    await loadWithdrawals();
-                    await loadStats();
-                }
-            };
-
-            document.getElementById('logoutBtn').onclick = async () => {
-                await supabase.auth.signOut();
-                window.location.href = 'investor-auth.html';
-            };
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.onclick = async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = 'investor-auth.html';
+                };
+            }
 
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
@@ -882,7 +909,7 @@
             });
 
             checkAuth();
-        })();
+        });
     </script>
 </body>
 </html>
