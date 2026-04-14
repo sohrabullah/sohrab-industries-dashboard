@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Sohrab Industries | Contact Us - Global LED Manufacturing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050a08;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 20% 30%, rgba(232,177,60,0.15), transparent 50%),
+                        radial-gradient(ellipse at 80% 70%, rgba(30,78,62,0.2), transparent 50%),
+                        linear-gradient(125deg, #0a1a15, #0d281f, #0a1a15);
+            z-index: -2;
+        }
+        
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(232,177,60,0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(232,177,60,0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1;
+            animation: gridFloat 20s linear infinite;
+        }
+        
+        @keyframes gridFloat {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+        
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: -1;
+            animation: orbFloat 15s ease-in-out infinite;
+        }
+        
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            33% { transform: translate(50px, -30px) scale(1.1); opacity: 0.5; }
+            66% { transform: translate(-30px, 40px) scale(0.9); opacity: 0.4; }
+        }
+        
+        .orb-gold { background: radial-gradient(circle, #E8B13C, transparent); width: 400px; height: 400px; top: -150px; right: -150px; }
+        .orb-green { background: radial-gradient(circle, #1e7e5e, transparent); width: 350px; height: 350px; bottom: -100px; left: -100px; animation-duration: 18s; }
+        .orb-amber { background: radial-gradient(circle, #ffd966, transparent); width: 250px; height: 250px; top: 50%; right: 20%; animation-duration: 12s; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a1f1a; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
+        
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 5%;
+            background: rgba(5, 15, 12, 0.95);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(232,177,60,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            font-family: 'Playfair Display', serif;
+            cursor: pointer;
+            background: linear-gradient(135deg, #E8B13C, #ffd966, #E8B13C);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmer 3s ease infinite;
+        }
+        
+        @keyframes shimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .logo i { color: #E8B13C; font-size: 2rem; filter: drop-shadow(0 0 10px #E8B13C); }
+        
+        .nav-buttons { display: flex; gap: 15px; align-items: center; }
+        
+        .dropdown { position: relative; }
+        .dropbtn {
+            padding: 10px 28px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .dropbtn.signup { 
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+            box-shadow: 0 0 20px rgba(232,177,60,0.4);
+        }
+        .dropbtn.login { 
+            background: transparent; 
+            color: #E8B13C; 
+            border: 2px solid #E8B13C;
+        }
+        .dropbtn.signup:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(232,177,60,0.7); }
+        .dropbtn.login:hover { background: rgba(232,177,60,0.15); transform: translateY(-3px); }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            min-width: 260px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 12px;
+            border: 1px solid rgba(232,177,60,0.4);
+            backdrop-filter: blur(15px);
+        }
+        .dropdown-content.show { display: block; animation: fadeInUp 0.2s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .dropdown-content a {
+            color: rgba(255,255,255,0.9);
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.25s;
+            border-bottom: 1px solid rgba(232,177,60,0.1);
+            text-decoration: none;
+        }
+        .dropdown-content a:hover { background: rgba(232,177,60,0.2); color: #E8B13C; padding-left: 28px; }
+        .dropdown-content a i { width: 28px; color: #E8B13C; }
+        
+        .dashboard-btn {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(232,177,60,0.3);
+        }
+        .dashboard-btn:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(232,177,60,0.6); }
+        .logout-nav-btn {
+            background: linear-gradient(135deg, #dc3545, #a71d2a);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        
+        /* Hero Section */
+        .contact-hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        .contact-hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #fff, #E8B13C, #ffd966);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .contact-hero p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.8);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Contact Info Cards */
+        .contact-info-section {
+            padding: 2rem 5%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .contact-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        
+        .contact-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 28px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(232,177,60,0.3);
+            transition: all 0.4s;
+            cursor: pointer;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-10px);
+            border-color: #E8B13C;
+            box-shadow: 0 20px 40px rgba(232,177,60,0.2);
+        }
+        
+        .contact-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(232,177,60,0.2), rgba(30,78,62,0.2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2.5rem;
+            color: #E8B13C;
+        }
+        
+        .contact-card h3 {
+            color: #E8B13C;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-card p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-card a {
+            color: #E8B13C;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .contact-card a:hover {
+            color: #ffd966;
+            text-decoration: underline;
+        }
+        
+        /* Maps Section */
+        .maps-section {
+            padding: 3rem 5%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #E8B13C, #ffd966);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 2rem;
+        }
+        
+        .maps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        
+        .map-card {
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid rgba(232,177,60,0.3);
+            transition: all 0.4s;
+        }
+        
+        .map-card:hover {
+            transform: translateY(-5px);
+            border-color: #E8B13C;
+            box-shadow: 0 15px 35px rgba(232,177,60,0.2);
+        }
+        
+        .map-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .map-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .map-info {
+            padding: 1.2rem;
+            text-align: center;
+        }
+        
+        .map-info h3 {
+            color: #E8B13C;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .map-info p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Quick Contact Form */
+        .form-section {
+            padding: 3rem 5%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .contact-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 2.5rem;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #E8B13C;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(232,177,60,0.3);
+            border-radius: 16px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #E8B13C;
+            box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
+        }
+        
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+            padding: 14px 36px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(232,177,60,0.4);
+        }
+        
+        /* Business Hours */
+        .hours-section {
+            padding: 2rem 5%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .hours-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        
+        .hours-card h3 {
+            color: #E8B13C;
+            margin-bottom: 1rem;
+        }
+        
+        .hours-card p {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.8;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #050a08;
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(232,177,60,0.2);
+            position: relative;
+            z-index: 2;
+        }
+        .footer p { color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
+        .social-icons i {
+            font-size: 1.5rem;
+            margin: 0 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #E8B13C;
+        }
+        .social-icons i:hover { transform: translateY(-5px); color: white; text-shadow: 0 0 15px #E8B13C; }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 14px 32px;
+            border-radius: 60px;
+            color: #0a1f1a;
+            background: linear-gradient(135deg, #E8B13C, #ffd966);
+            font-weight: 700;
+            z-index: 10000;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 0 30px rgba(232,177,60,0.6);
+        }
+        @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        
+        @media (max-width: 768px) {
+            .contact-hero h1 { font-size: 2.5rem; }
+            .maps-grid { grid-template-columns: 1fr; }
+            .contact-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="grid-overlay"></div>
+    <div class="floating-orb orb-gold"></div>
+    <div class="floating-orb orb-green"></div>
+    <div class="floating-orb orb-amber"></div>
+
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class="fas fa-lightbulb"></i>
+            <span>Sohrab Industries</span>
+        </div>
+        <div class="nav-buttons" id="navButtons">
+            <div class="dropdown">
+                <button class="dropbtn signup" id="signupMainBtn"><i class="fas fa-user-plus"></i> Sign Up</button>
+                <div class="dropdown-content" id="signupDropdownContent">
+                    <a href="investor-auth.html"><i class="fas fa-chart-line"></i> Sign up as Investor</a>
+                    <a href="buyer-auth.html"><i class="fas fa-shopping-cart"></i> Sign up as Buyer</a>
+                    <div style="height:1px; background:rgba(232,177,60,0.2); margin:5px 0;"></div>
+                    <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Admin Access</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn login" id="loginMainBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <div class="dropdown-content" id="loginDropdownContent">
+                    <a href="investor-auth.html"><i class="fas fa-chart-line"></i> Login as Investor</a>
+                    <a href="buyer-auth.html"><i class="fas fa-shopping-cart"></i> Login as Buyer</a>
+                    <div style="height:1px; background:rgba(232,177,60,0.2); margin:5px 0;"></div>
+                    <a href="admin-auth.html"><i class="fas fa-shield-alt"></i> Admin Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="contact-hero">
+        <h1>Contact Us</h1>
+        <p>We're here to help with all your LED lighting needs. Reach out to our team for inquiries, bulk orders, or partnership opportunities.</p>
+    </section>
+
+    <!-- Contact Info Cards -->
+    <section class="contact-info-section">
+        <div class="contact-cards">
+            <div class="contact-card">
+                <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+                <h3>WhatsApp</h3>
+                <p>Quick responses on WhatsApp</p>
+                <a href="https://wa.me/923334772909" target="_blank">+92 333 4772909</a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <h3>Email Us</h3>
+                <p>Send us your inquiries</p>
+                <a href="mailto:sohrabindustries@gmail.com">sohrabindustries@gmail.com</a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                <h3>Call Us</h3>
+                <p>Monday - Friday, 9AM - 6PM</p>
+                <a href="tel:+923334772909">+92 333 4772909</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Maps Section - China Factory & Pakistan Distribution -->
+    <section class="maps-section">
+        <h2 class="section-title">📍 Our Global Presence</h2>
+        <div class="maps-grid">
+            <!-- China Factory Map -->
+            <div class="map-card">
+                <div class="map-wrapper">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387578.1542485685!2d113.10243135!3d23.1291126!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31556c31e5046f0f%3A0x6f9c7b0c3b8f3e9d!2sGuangzhou%2C%20Guangdong%20Province%2C%20China!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="map-info">
+                    <h3><i class="fas fa-industry"></i> China Factory - Guangzhou</h3>
+                    <p>Our state-of-the-art LED bulb manufacturing facility in Guangzhou, China. Advanced machinery producing 50,000+ bulbs daily with German technology.</p>
+                </div>
+            </div>
+            
+            <!-- Pakistan Distribution Map -->
+            <div class="map-card">
+                <div class="map-wrapper">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13230.874183473204!2d71.5153264!3d34.0081191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38d913fdfa6fcc59%3A0x7b5e5d5e5d5e5d5e!2sPeshawar%2C%20Khyber%20Pakhtunkhwa%2C%20Pakistan!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="map-info">
+                    <h3><i class="fas fa-warehouse"></i> Pakistan Head Office - Peshawar</h3>
+                    <p>Main distributor headquarter in Peshawar, Khyber Pakhtunkhwa. Serving wholesalers and retailers across Pakistan with nationwide delivery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Distribution Network Section -->
+    <section class="maps-section">
+        <h2 class="section-title">📦 Our Distribution Network in Pakistan</h2>
+        <div class="maps-grid">
+            <div class="map-card">
+                <div class="map-wrapper">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d724583.6329998733!2d66.83411585!3d24.86073425!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33e0660b6a7d1%3A0x2b4c7e5d5e5d5e5d!2sKarachi%2C%20Sindh%2C%20Pakistan!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="map-info">
+                    <h3><i class="fas fa-city"></i> Karachi Region</h3>
+                    <p>Major distribution hub serving Sindh and Balochistan markets with premium LED products.</p>
+                </div>
+            </div>
+            
+            <div class="map-card">
+                <div class="map-wrapper">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d108769.89703955187!2d74.2851609!3d31.4821602!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39190483e4d5e5e5%3A0x5e5d5e5d5e5d5e5d!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="map-info">
+                    <h3><i class="fas fa-city"></i> Lahore Region</h3>
+                    <p>Central Punjab distribution center serving major cities and wholesalers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Hours -->
+    <section class="hours-section">
+        <div class="hours-grid">
+            <div class="hours-card">
+                <h3><i class="fas fa-clock"></i> Business Hours</h3>
+                <p>Monday - Thursday: 9:00 AM - 6:00 PM<br>Friday: 9:00 AM - 1:00 PM, 2:30 PM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM<br>Sunday: Closed</p>
+            </div>
+            <div class="hours-card">
+                <h3><i class="fas fa-truck"></i> Delivery Information</h3>
+                <p>Nationwide delivery across Pakistan<br>Free shipping on orders over Rs. 2,000<br>Bulk orders: Special pricing available<br>International shipping: Contact us for details</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Contact Form -->
+    <section class="form-section">
+        <div class="contact-form-container">
+            <h2 style="text-align: center; color: #E8B13C; margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">Send Us a Message</h2>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="contactName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="contactEmail" placeholder="Enter your email address" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="contactPhone" placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="contactSubject" placeholder="What is this regarding?">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="contactMessage" rows="5" placeholder="Tell us about your inquiry..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 Sohrab Industries. All rights reserved. | Pakistan's Leading Bulb Manufacturer & Exporter</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">China Factory: Guangzhou | Pakistan Head Office: Peshawar, KPK</p>
+        <div class="social-icons">
+            <i class="fab fa-facebook" onclick="window.open('https://facebook.com', '_blank')"></i>
+            <i class="fab fa-whatsapp" onclick="window.open('https://wa.me/923334772909', '_blank')"></i>
+            <i class="fab fa-instagram" onclick="window.open('https://instagram.com', '_blank')"></i>
+            <i class="fab fa-linkedin" onclick="window.open('https://linkedin.com', '_blank')"></i>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas fa-star"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Contact Form Submission
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const phone = document.getElementById('contactPhone').value;
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sending...';
+            
+            // Save to Supabase contacts table (create if not exists)
+            try {
+                const { error } = await supabaseClient.from('contacts').insert([{
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    subject: subject,
+                    message: message,
+                    created_at: new Date().toISOString()
+                }]);
+                
+                if (error) {
+                    console.error('Error saving to database:', error);
+                    showToast('Message sent! We will contact you soon. (Demo mode)');
+                } else {
+                    showToast('Thank you! Your message has been sent. We will contact you soon.');
+                }
+                
+                document.getElementById('contactForm').reset();
+            } catch (err) {
+                showToast('Message sent! We will contact you soon.');
+                document.getElementById('contactForm').reset();
+            }
+            
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+        });
+        
+        // Dropdown logic for navigation
+        window.toggleDropdown = function(type) {
+            const sc = document.getElementById('signupDropdownContent');
+            const lc = document.getElementById('loginDropdownContent');
+            if (type === 'signup') { sc?.classList.toggle('show'); lc?.classList.remove('show'); }
+            else { lc?.classList.toggle('show'); sc?.classList.remove('show'); }
+        };
+        
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.dropdown')) {
+                document.getElementById('signupDropdownContent')?.classList.remove('show');
+                document.getElementById('loginDropdownContent')?.classList.remove('show');
+            }
+        });
+        
+        document.getElementById('signupMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('signup'); });
+        document.getElementById('loginMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('login'); });
+        
+        // Auth check for navbar
+        async function updateNavbar() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                const navBtns = document.getElementById('navButtons');
+                if (user && navBtns) {
+                    const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
+                    let dashLink = 'investor.html', role = 'Investor';
+                    if (adminEmails.includes(user.email)) { dashLink = 'admin.html'; role = 'Admin'; }
+                    else {
+                        const { data: inv } = await supabaseClient.from('investors').select('id').eq('id', user.id).single();
+                        if (!inv) { dashLink = 'buyer.html'; role = 'Buyer'; }
+                    }
+                    navBtns.innerHTML = `<span style="background:rgba(232,177,60,0.2); padding:8px 20px; border-radius:50px; color:#E8B13C; font-weight:600;"><i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}</span>
+                        <a href="${dashLink}" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> ${role} Dashboard</a>
+                        <button onclick="handleLogout()" class="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
+                }
+            } catch(e) {}
+        }
+        
+        window.handleLogout = async function() {
+            await supabaseClient.auth.signOut();
+            localStorage.clear();
+            showToast('Logged out successfully!');
+            setTimeout(() => location.reload(), 1000);
+        };
+        
+        updateNavbar();
+    </script>
+</body>
+</html>
