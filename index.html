@@ -276,7 +276,7 @@
         @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 500px) { .stats-grid { grid-template-columns: 1fr; } }
         
-        /* Video Gallery Section - COMPLETELY HIDE YOUTUBE BRANDING */
+        /* Video Gallery Section */
         .video-gallery-section {
             padding: 5rem 5%;
             background: linear-gradient(145deg, rgba(10,25,20,0.95), rgba(5,15,12,0.95));
@@ -295,35 +295,27 @@
             margin-bottom: 3rem;
         }
         
-        .featured-video {
-            max-width: 1000px;
-            margin: 0 auto 3rem auto;
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .video-card {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
             border-radius: 28px;
             overflow: hidden;
-            border: 2px solid rgba(232,177,60,0.5);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(232,177,60,0.3);
             transition: all 0.4s;
-            background: #000;
-            position: relative;
         }
         
-        /* Hide YouTube branding with CSS overlay */
-        .featured-video::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-            height: 60px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            pointer-events: none;
-            z-index: 5;
-        }
-        
-        .featured-video:hover {
-            transform: translateY(-5px);
+        .video-card:hover {
+            transform: translateY(-8px);
             border-color: #E8B13C;
-            box-shadow: 0 30px 60px rgba(232,177,60,0.2);
+            box-shadow: 0 20px 40px rgba(232,177,60,0.2);
         }
         
         .video-wrapper {
@@ -336,113 +328,118 @@
         
         .video-wrapper iframe {
             position: absolute;
-            top: -50px;
-            left: 0;
-            width: 100%;
-            height: calc(100% + 50px);
-            border: none;
-        }
-        
-        /* Hide YouTube logo, share button, and controls with pointer-events and positioning */
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            max-width: 1300px;
-            margin: 2rem auto 0;
-        }
-        
-        .video-card {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid rgba(232,177,60,0.3);
-            transition: all 0.4s;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        /* Hide YouTube elements on video cards */
-        .video-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 50px;
-            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
-            pointer-events: none;
-            z-index: 5;
-            border-radius: 0 0 24px 24px;
-        }
-        
-        .video-card:hover {
-            transform: translateY(-8px);
-            border-color: #E8B13C;
-            box-shadow: 0 20px 40px rgba(232,177,60,0.2);
-        }
-        
-        .video-thumb-wrapper {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            background: #000;
-            cursor: pointer;
-        }
-        
-        .video-thumb-wrapper iframe {
-            position: absolute;
-            top: -50px;
-            left: 0;
-            width: 100%;
-            height: calc(100% + 50px);
-            border: none;
-            pointer-events: none;
-        }
-        
-        .play-overlay {
-            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            border: none;
+        }
+        
+        /* Custom Video Controls */
+        .video-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(232,177,60,0.3);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .control-btn {
+            background: rgba(232,177,60,0.2);
+            border: none;
+            color: #E8B13C;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .control-btn:hover {
+            background: #E8B13C;
+            color: #0a1f1a;
+            transform: scale(1.05);
+        }
+        
+        .progress-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 200px;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
             cursor: pointer;
-            z-index: 20;
+            position: relative;
         }
         
-        .play-overlay i {
-            font-size: 4rem;
-            color: #E8B13C;
-            filter: drop-shadow(0 0 15px rgba(232,177,60,0.8));
-            transition: all 0.3s;
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #E8B13C, #ffd966);
+            border-radius: 4px;
+            width: 0%;
+            position: relative;
         }
         
-        .play-overlay:hover {
-            background: rgba(0,0,0,0.3);
+        .time-display {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.8rem;
+            font-family: monospace;
+            min-width: 100px;
         }
         
-        .play-overlay:hover i {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 25px #E8B13C);
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #E8B13C;
+            cursor: pointer;
         }
         
         .video-info {
-            padding: 1.2rem;
+            padding: 1rem 1.2rem;
             text-align: center;
-            position: relative;
-            z-index: 10;
+            background: rgba(0,0,0,0.4);
         }
         
         .video-info h3 {
             color: #E8B13C;
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-bottom: 0.3rem;
         }
         
@@ -686,12 +683,13 @@
         }
         @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
         
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .hero h1 { font-size: 2.5rem; }
             .hero p { font-size: 1rem; }
             .navbar { flex-direction: column; gap: 15px; }
             .section-title { font-size: 2rem; }
             .video-grid { grid-template-columns: 1fr; }
+            .control-group { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -738,101 +736,10 @@
         </div>
     </section>
 
-    <!-- Video Gallery Section - NO YOUTUBE BRANDING, NO REDIRECTS -->
+    <!-- Video Gallery Section with Custom Controls -->
     <section class="video-gallery-section">
         <h2 class="section-title">🏭 Inside Our State-of-the-Art Factory</h2>
-        
-        <!-- Featured Video - Auto-play, No YouTube elements visible -->
-        <div class="featured-video">
-            <div class="video-wrapper">
-                <iframe id="featuredIframe" 
-                        src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=0&hl=en&cc_load_policy=0&widget_referrer=sohrabindustries.com&enablejsapi=1" 
-                        title="LED Bulb Manufacturing Process"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                </iframe>
-            </div>
-            <div class="video-info">
-                <h3><i class="fas fa-play-circle"></i> Complete LED Bulb Manufacturing Process</h3>
-                <p>Watch the amazing journey from raw material to finished product | Injection Molding → PCB Assembly → Testing → Packing</p>
-                <span class="badge">🎬 Exclusive Factory Tour | Premium Content</span>
-            </div>
-        </div>
-
-        <!-- Video Grid - Click to play, NO YouTube redirects -->
-        <div class="video-grid" id="videoGrid">
-            <div class="video-card" data-video-id="AxwCUJq17dw" data-start="14" data-title="Injection Molding Process">
-                <div class="video-thumb-wrapper">
-                    <iframe src="https://youtu.be/-xYxB-3j7lk?si=bQ0FTY3laz3itCG9" 
-                            title="Injection Molding"
-                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                    </iframe>
-                    <div class="play-overlay">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                </div>
-                <div class="video-info">
-                    <h3><i class="fas fa-microchip"></i> Injection Molding Process</h3>
-                    <p>LED bulb cover and housing parts manufacturing</p>
-                    <span class="badge">🔧 Precision Engineering</span>
-                </div>
-            </div>
-
-            <div class="video-card" data-video-id="AxwCUJq17dw" data-start="201" data-title="PCB & IC Assembly">
-                <div class="video-thumb-wrapper">
-                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=201&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
-                            title="PCB Assembly"
-                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                    </iframe>
-                    <div class="play-overlay">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                </div>
-                <div class="video-info">
-                    <h3><i class="fas fa-microchip"></i> PCB & IC Assembly</h3>
-                    <p>Automatic machines making driver circuits</p>
-                    <span class="badge">⚡ German Technology</span>
-                </div>
-            </div>
-
-            <div class="video-card" data-video-id="AxwCUJq17dw" data-start="357" data-title="Quality Testing Lab">
-                <div class="video-thumb-wrapper">
-                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=357&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
-                            title="Quality Testing"
-                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                    </iframe>
-                    <div class="play-overlay">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                </div>
-                <div class="video-info">
-                    <h3><i class="fas fa-flask"></i> Quality Testing Lab</h3>
-                    <p>Rigorous testing for brightness and durability</p>
-                    <span class="badge">✅ ISO Certified</span>
-                </div>
-            </div>
-
-            <div class="video-card" data-video-id="AxwCUJq17dw" data-start="394" data-title="Final Assembly Line">
-                <div class="video-thumb-wrapper">
-                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=394&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
-                            title="Final Assembly"
-                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                    </iframe>
-                    <div class="play-overlay">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                </div>
-                <div class="video-info">
-                    <h3><i class="fas fa-industry"></i> Final Assembly Line</h3>
-                    <p>Complete bulb assembly and packing process</p>
-                    <span class="badge">🏭 Mass Production</span>
-                </div>
-            </div>
-        </div>
+        <div class="video-grid" id="videoGrid"></div>
     </section>
 
     <section class="stats-section">
@@ -906,6 +813,38 @@
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
+            // New video data
+            const videos = [
+                {
+                    id: "xYxB3j7lk",
+                    url: "https://www.youtube-nocookie.com/embed/-xYxB-3j7lk",
+                    title: "How LED Light Strips Are Made",
+                    desc: "The SMD Process - Complete manufacturing of LED strips",
+                    badge: "🔧 SMD Technology"
+                },
+                {
+                    id: "ySwrZ6p5kuc",
+                    url: "https://www.youtube-nocookie.com/embed/ySwrZ6p5kuc",
+                    title: "LED Bulb Automatic Production",
+                    desc: "Fully automated LED bulb manufacturing process",
+                    badge: "⚡ Fully Automated"
+                },
+                {
+                    id: "v76nwAdCCOw",
+                    url: "https://www.youtube-nocookie.com/embed/v76nwAdCCOw",
+                    title: "LED Driver Factory Tour",
+                    desc: "Meizhi Guzhen - Professional LED driver manufacturing",
+                    badge: "🔌 Driver Factory"
+                },
+                {
+                    id: "L2f_ePDpRyw",
+                    url: "https://www.youtube-nocookie.com/embed/L2f_ePDpRyw",
+                    title: "Making LED Bulbs",
+                    desc: "Complete bulb assembly and testing process",
+                    badge: "🏭 Mass Production"
+                }
+            ];
+            
             function showToast(msg) {
                 const toast = document.createElement('div');
                 toast.className = 'toast';
@@ -914,74 +853,245 @@
                 setTimeout(() => toast.remove(), 2500);
             }
             
-            // Stop all videos and reset
-            function stopAllVideos() {
-                document.querySelectorAll('.video-card').forEach(card => {
-                    const thumbWrapper = card.querySelector('.video-thumb-wrapper');
-                    const existingIframe = thumbWrapper.querySelector('iframe');
-                    const videoId = card.getAttribute('data-video-id');
-                    const startTime = card.getAttribute('data-start') || '0';
-                    
-                    if (existingIframe && existingIframe.src.includes('autoplay=1')) {
-                        const cleanSrc = `https://www.youtube-nocookie.com/embed/${videoId}?start=${startTime}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1`;
-                        existingIframe.src = cleanSrc;
-                        existingIframe.style.pointerEvents = 'none';
-                        
-                        let playOverlay = card.querySelector('.play-overlay');
-                        if (!playOverlay) {
-                            playOverlay = document.createElement('div');
-                            playOverlay.className = 'play-overlay';
-                            playOverlay.innerHTML = '<i class="fas fa-play-circle"></i>';
-                            thumbWrapper.appendChild(playOverlay);
-                        }
-                        playOverlay.style.display = 'flex';
-                    }
+            // Setup video players with custom controls
+            function setupVideoPlayers() {
+                const grid = document.getElementById('videoGrid');
+                if (!grid) return;
+                
+                grid.innerHTML = '';
+                
+                videos.forEach((video, index) => {
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'video-card';
+                    videoCard.innerHTML = `
+                        <div class="video-wrapper">
+                            <iframe id="iframe-${index}" 
+                                src="${video.url}?autoplay=0&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&enablejsapi=1" 
+                                title="${video.title}"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <div class="video-controls">
+                            <div class="control-group">
+                                <button class="control-btn play-pause-btn" data-index="${index}"><i class="fas fa-play"></i></button>
+                                <button class="control-btn" data-action="replay" data-index="${index}"><i class="fas fa-redo-alt"></i></button>
+                                <button class="control-btn" data-action="backward" data-index="${index}"><i class="fas fa-backward"></i></button>
+                                <button class="control-btn" data-action="forward" data-index="${index}"><i class="fas fa-forward"></i></button>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar" data-index="${index}">
+                                    <div class="progress-fill" data-index="${index}"></div>
+                                </div>
+                                <div class="time-display" data-index="${index}">0:00 / 0:00</div>
+                            </div>
+                            <div class="volume-control">
+                                <button class="control-btn volume-btn" data-index="${index}"><i class="fas fa-volume-up"></i></button>
+                                <input type="range" class="volume-slider" data-index="${index}" min="0" max="100" value="80">
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3><i class="fas fa-play-circle"></i> ${video.title}</h3>
+                            <p>${video.desc}</p>
+                            <span class="badge">${video.badge}</span>
+                        </div>
+                    `;
+                    grid.appendChild(videoCard);
                 });
+                
+                // Initialize YouTube API for each iframe
+                let players = {};
+                
+                // Wait for YouTube API
+                window.onYouTubeIframeAPIReady = function() {
+                    videos.forEach((video, index) => {
+                        const iframeId = `iframe-${index}`;
+                        players[index] = new YT.Player(iframeId, {
+                            events: {
+                                onReady: (event) => onPlayerReady(event, index),
+                                onStateChange: (event) => onPlayerStateChange(event, index)
+                            }
+                        });
+                    });
+                };
+                
+                function onPlayerReady(event, index) {
+                    const player = event.target;
+                    players[index] = player;
+                    
+                    // Set initial volume
+                    const volumeSlider = document.querySelector(`.volume-slider[data-index="${index}"]`);
+                    if (volumeSlider) {
+                        player.setVolume(parseInt(volumeSlider.value));
+                    }
+                    
+                    // Update time display periodically
+                    setInterval(() => {
+                        if (player && player.getCurrentTime) {
+                            const currentTime = player.getCurrentTime() || 0;
+                            const duration = player.getDuration() || 0;
+                            const progressPercent = (currentTime / duration) * 100;
+                            
+                            const progressFill = document.querySelector(`.progress-fill[data-index="${index}"]`);
+                            if (progressFill) progressFill.style.width = `${progressPercent}%`;
+                            
+                            const timeDisplay = document.querySelector(`.time-display[data-index="${index}"]`);
+                            if (timeDisplay) {
+                                timeDisplay.innerHTML = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+                            }
+                        }
+                    }, 500);
+                }
+                
+                function onPlayerStateChange(event, index) {
+                    const playPauseBtn = document.querySelector(`.play-pause-btn[data-index="${index}"] i`);
+                    if (playPauseBtn) {
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            playPauseBtn.className = 'fas fa-pause';
+                        } else {
+                            playPauseBtn.className = 'fas fa-play';
+                        }
+                    }
+                }
+                
+                function formatTime(seconds) {
+                    if (isNaN(seconds)) return "0:00";
+                    const mins = Math.floor(seconds / 60);
+                    const secs = Math.floor(seconds % 60);
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                }
+                
+                // Attach event listeners after a short delay for API to load
+                setTimeout(() => {
+                    // Play/Pause buttons
+                    document.querySelectorAll('.play-pause-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const index = parseInt(btn.getAttribute('data-index'));
+                            const player = players[index];
+                            if (player) {
+                                if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+                                    player.pauseVideo();
+                                } else {
+                                    player.playVideo();
+                                }
+                            }
+                        });
+                    });
+                    
+                    // Replay button
+                    document.querySelectorAll('[data-action="replay"]').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const index = parseInt(btn.getAttribute('data-index'));
+                            const player = players[index];
+                            if (player) {
+                                player.seekTo(0);
+                                player.playVideo();
+                            }
+                        });
+                    });
+                    
+                    // Backward 10 seconds
+                    document.querySelectorAll('[data-action="backward"]').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const index = parseInt(btn.getAttribute('data-index'));
+                            const player = players[index];
+                            if (player) {
+                                const currentTime = player.getCurrentTime();
+                                player.seekTo(Math.max(0, currentTime - 10));
+                            }
+                        });
+                    });
+                    
+                    // Forward 10 seconds
+                    document.querySelectorAll('[data-action="forward"]').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const index = parseInt(btn.getAttribute('data-index'));
+                            const player = players[index];
+                            if (player) {
+                                const currentTime = player.getCurrentTime();
+                                const duration = player.getDuration();
+                                player.seekTo(Math.min(duration, currentTime + 10));
+                            }
+                        });
+                    });
+                    
+                    // Progress bar seek
+                    document.querySelectorAll('.progress-bar').forEach(bar => {
+                        bar.addEventListener('click', (e) => {
+                            const index = parseInt(bar.getAttribute('data-index'));
+                            const player = players[index];
+                            if (player) {
+                                const rect = bar.getBoundingClientRect();
+                                const x = e.clientX - rect.left;
+                                const width = rect.width;
+                                const percent = x / width;
+                                const duration = player.getDuration();
+                                player.seekTo(duration * percent);
+                            }
+                        });
+                    });
+                    
+                    // Volume control
+                    document.querySelectorAll('.volume-slider').forEach(slider => {
+                        slider.addEventListener('input', () => {
+                            const index = parseInt(slider.getAttribute('data-index'));
+                            const player = players[index];
+                            if (player) {
+                                player.setVolume(parseInt(slider.value));
+                                const volumeBtn = document.querySelector(`.volume-btn[data-index="${index}"] i`);
+                                if (volumeBtn) {
+                                    if (parseInt(slider.value) === 0) {
+                                        volumeBtn.className = 'fas fa-volume-mute';
+                                    } else if (parseInt(slider.value) < 50) {
+                                        volumeBtn.className = 'fas fa-volume-down';
+                                    } else {
+                                        volumeBtn.className = 'fas fa-volume-up';
+                                    }
+                                }
+                            }
+                        });
+                    });
+                    
+                    // Mute toggle on volume icon
+                    document.querySelectorAll('.volume-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const index = parseInt(btn.getAttribute('data-index'));
+                            const player = players[index];
+                            const slider = document.querySelector(`.volume-slider[data-index="${index}"]`);
+                            if (player && slider) {
+                                if (player.isMuted()) {
+                                    player.unMute();
+                                    slider.value = player.getVolume();
+                                } else {
+                                    player.mute();
+                                    slider.value = 0;
+                                }
+                                const icon = btn.querySelector('i');
+                                if (player.isMuted()) {
+                                    icon.className = 'fas fa-volume-mute';
+                                } else if (player.getVolume() === 0) {
+                                    icon.className = 'fas fa-volume-mute';
+                                } else if (player.getVolume() < 50) {
+                                    icon.className = 'fas fa-volume-down';
+                                } else {
+                                    icon.className = 'fas fa-volume-up';
+                                }
+                            }
+                        });
+                    });
+                }, 1000);
             }
             
-            // Setup video cards
-            function setupVideoCards() {
-                const videoCards = document.querySelectorAll('.video-card');
-                
-                videoCards.forEach(card => {
-                    const videoId = card.getAttribute('data-video-id');
-                    const startTime = card.getAttribute('data-start') || '0';
-                    const videoTitle = card.getAttribute('data-title') || 'Factory Video';
-                    const thumbWrapper = card.querySelector('.video-thumb-wrapper');
-                    const existingIframe = thumbWrapper.querySelector('iframe');
-                    
-                    const playVideo = (e) => {
-                        e.stopPropagation();
-                        stopAllVideos();
-                        
-                        const newIframe = document.createElement('iframe');
-                        newIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?start=${startTime}&autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=1`;
-                        newIframe.title = videoTitle;
-                        newIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                        newIframe.allowFullscreen = true;
-                        newIframe.style.width = '100%';
-                        newIframe.style.height = '100%';
-                        newIframe.style.position = 'absolute';
-                        newIframe.style.top = '-50px';
-                        newIframe.style.left = '0';
-                        newIframe.style.width = '100%';
-                        newIframe.style.height = 'calc(100% + 50px)';
-                        newIframe.style.border = 'none';
-                        
-                        existingIframe.remove();
-                        thumbWrapper.appendChild(newIframe);
-                        
-                        const playOverlay = card.querySelector('.play-overlay');
-                        if (playOverlay) playOverlay.style.display = 'none';
-                    };
-                    
-                    const playOverlay = card.querySelector('.play-overlay');
-                    if (playOverlay) {
-                        playOverlay.addEventListener('click', playVideo);
-                    }
-                    card.addEventListener('click', playVideo);
-                });
-            }
+            // Load YouTube API
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            
+            // Call setup after API loads
+            window.onYouTubeIframeAPIReady = function() {
+                setupVideoPlayers();
+            };
             
             const features = [
                 { icon: "fa-lightbulb", title: "Premium Quality", desc: "German technology LED chips with 50,000+ hours lifespan", type: "bulb", msg: "💡 Premium quality bulbs! Built to last!" },
@@ -1041,8 +1151,7 @@
                 card.addEventListener('click', () => showToast('Explore our manufacturing excellence! 🏭'));
             });
             
-            setupVideoCards();
-            
+            // Auth check
             async function updateNavbar() {
                 try {
                     const { data: { user } } = await supabaseClient.auth.getUser();
@@ -1070,6 +1179,13 @@
             };
             
             updateNavbar();
+            
+            // Fallback setup if API loads after
+            setTimeout(() => {
+                if (typeof YT === 'undefined') {
+                    setupVideoPlayers();
+                }
+            }, 2000);
         })();
     </script>
 </body>
