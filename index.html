@@ -276,7 +276,7 @@
         @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 500px) { .stats-grid { grid-template-columns: 1fr; } }
         
-        /* Video Gallery Section - No YouTube Branding, No Ads */
+        /* Video Gallery Section - COMPLETELY HIDE YOUTUBE BRANDING */
         .video-gallery-section {
             padding: 5rem 5%;
             background: linear-gradient(145deg, rgba(10,25,20,0.95), rgba(5,15,12,0.95));
@@ -304,6 +304,20 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             transition: all 0.4s;
             background: #000;
+            position: relative;
+        }
+        
+        /* Hide YouTube branding with CSS overlay */
+        .featured-video::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            pointer-events: none;
+            z-index: 5;
         }
         
         .featured-video:hover {
@@ -322,18 +336,14 @@
         
         .video-wrapper iframe {
             position: absolute;
-            top: 0;
+            top: -50px;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% + 50px);
             border: none;
         }
         
-        /* Hide YouTube logo and controls */
-        .video-wrapper iframe {
-            pointer-events: auto;
-        }
-        
+        /* Hide YouTube logo, share button, and controls with pointer-events and positioning */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -350,6 +360,21 @@
             border: 1px solid rgba(232,177,60,0.3);
             transition: all 0.4s;
             cursor: pointer;
+            position: relative;
+        }
+        
+        /* Hide YouTube elements on video cards */
+        .video-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+            pointer-events: none;
+            z-index: 5;
+            border-radius: 0 0 24px 24px;
         }
         
         .video-card:hover {
@@ -369,10 +394,10 @@
         
         .video-thumb-wrapper iframe {
             position: absolute;
-            top: 0;
+            top: -50px;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% + 50px);
             border: none;
             pointer-events: none;
         }
@@ -389,7 +414,7 @@
             justify-content: center;
             transition: all 0.3s;
             cursor: pointer;
-            z-index: 10;
+            z-index: 20;
         }
         
         .play-overlay i {
@@ -411,6 +436,8 @@
         .video-info {
             padding: 1.2rem;
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
         
         .video-info h3 {
@@ -711,16 +738,16 @@
         </div>
     </section>
 
-    <!-- Video Gallery Section - No YouTube Branding, No Ads, No Redirect -->
+    <!-- Video Gallery Section - NO YOUTUBE BRANDING, NO REDIRECTS -->
     <section class="video-gallery-section">
         <h2 class="section-title">🏭 Inside Our State-of-the-Art Factory</h2>
         
-        <!-- Featured Video Container (Auto-play, no ads, no YouTube logo) -->
-        <div id="featuredVideoContainer" class="featured-video">
-            <div class="video-wrapper" id="featuredVideoWrapper">
+        <!-- Featured Video - Auto-play, No YouTube elements visible -->
+        <div class="featured-video">
+            <div class="video-wrapper">
                 <iframe id="featuredIframe" 
-                        src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=0&hl=en&cc_load_policy=0&widget_referrer=sohrabindustries.com" 
-                        title="LED Bulb Manufacturing Process - Full Factory Tour"
+                        src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=0&hl=en&cc_load_policy=0&widget_referrer=sohrabindustries.com&enablejsapi=1" 
+                        title="LED Bulb Manufacturing Process"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
                 </iframe>
@@ -728,16 +755,16 @@
             <div class="video-info">
                 <h3><i class="fas fa-play-circle"></i> Complete LED Bulb Manufacturing Process</h3>
                 <p>Watch the amazing journey from raw material to finished product | Injection Molding → PCB Assembly → Testing → Packing</p>
-                <span class="badge">🎬 Factory Documentary | No Ads | Exclusive Content</span>
+                <span class="badge">🎬 Exclusive Factory Tour | No Ads | Premium Content</span>
             </div>
         </div>
 
-        <!-- Video Grid - Click to Play (Only one video plays at a time, no YouTube redirect) -->
+        <!-- Video Grid - Click to play, NO YouTube redirects -->
         <div class="video-grid" id="videoGrid">
             <div class="video-card" data-video-id="AxwCUJq17dw" data-start="14" data-title="Injection Molding Process">
                 <div class="video-thumb-wrapper">
-                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=14&autoplay=0&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
-                            title="LED Bulb Cover Making - Injection Molding"
+                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=14&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
+                            title="Injection Molding"
                             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                     </iframe>
@@ -754,8 +781,8 @@
 
             <div class="video-card" data-video-id="AxwCUJq17dw" data-start="201" data-title="PCB & IC Assembly">
                 <div class="video-thumb-wrapper">
-                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=201&autoplay=0&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
-                            title="PCB Board Assembly for LED Bulbs"
+                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=201&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
+                            title="PCB Assembly"
                             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                     </iframe>
@@ -772,8 +799,8 @@
 
             <div class="video-card" data-video-id="AxwCUJq17dw" data-start="357" data-title="Quality Testing Lab">
                 <div class="video-thumb-wrapper">
-                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=357&autoplay=0&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
-                            title="LED Bulb Testing & Quality Control"
+                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=357&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
+                            title="Quality Testing"
                             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                     </iframe>
@@ -790,8 +817,8 @@
 
             <div class="video-card" data-video-id="AxwCUJq17dw" data-start="394" data-title="Final Assembly Line">
                 <div class="video-thumb-wrapper">
-                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=394&autoplay=0&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
-                            title="Full Assembly Line Process"
+                    <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?start=394&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1" 
+                            title="Final Assembly"
                             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                     </iframe>
@@ -879,8 +906,6 @@
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            let currentPlayingVideo = null;
-            
             function showToast(msg) {
                 const toast = document.createElement('div');
                 toast.className = 'toast';
@@ -889,18 +914,8 @@
                 setTimeout(() => toast.remove(), 2500);
             }
             
-            // Function to stop all videos and reset to thumbnail mode
+            // Stop all videos and reset
             function stopAllVideos() {
-                // Reset featured video to autoplay muted loop state
-                const featuredIframe = document.getElementById('featuredIframe');
-                if (featuredIframe) {
-                    const currentSrc = featuredIframe.src;
-                    if (!currentSrc.includes('autoplay=1')) {
-                        featuredIframe.src = "https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=0&hl=en&cc_load_policy=0";
-                    }
-                }
-                
-                // Reset all video cards to thumbnail mode
                 document.querySelectorAll('.video-card').forEach(card => {
                     const thumbWrapper = card.querySelector('.video-thumb-wrapper');
                     const existingIframe = thumbWrapper.querySelector('iframe');
@@ -908,11 +923,10 @@
                     const startTime = card.getAttribute('data-start') || '0';
                     
                     if (existingIframe && existingIframe.src.includes('autoplay=1')) {
-                        const cleanSrc = `https://www.youtube-nocookie.com/embed/${videoId}?start=${startTime}&autoplay=0&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1`;
+                        const cleanSrc = `https://www.youtube-nocookie.com/embed/${videoId}?start=${startTime}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1`;
                         existingIframe.src = cleanSrc;
                         existingIframe.style.pointerEvents = 'none';
                         
-                        // Show play overlay again
                         let playOverlay = card.querySelector('.play-overlay');
                         if (!playOverlay) {
                             playOverlay = document.createElement('div');
@@ -925,7 +939,7 @@
                 });
             }
             
-            // Setup video cards with click-to-play functionality (only one video at a time)
+            // Setup video cards
             function setupVideoCards() {
                 const videoCards = document.querySelectorAll('.video-card');
                 
@@ -938,32 +952,27 @@
                     
                     const playVideo = (e) => {
                         e.stopPropagation();
-                        
-                        // Stop any currently playing video first
                         stopAllVideos();
                         
-                        // Create new iframe with autoplay enabled for this card
                         const newIframe = document.createElement('iframe');
-                        newIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?start=${startTime}&autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=1`;
+                        newIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?start=${startTime}&autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&disablekb=1&fs=1`;
                         newIframe.title = videoTitle;
                         newIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
                         newIframe.allowFullscreen = true;
                         newIframe.style.width = '100%';
                         newIframe.style.height = '100%';
                         newIframe.style.position = 'absolute';
-                        newIframe.style.top = '0';
+                        newIframe.style.top = '-50px';
                         newIframe.style.left = '0';
+                        newIframe.style.width = '100%';
+                        newIframe.style.height = 'calc(100% + 50px)';
                         newIframe.style.border = 'none';
                         
-                        // Replace the old iframe
                         existingIframe.remove();
                         thumbWrapper.appendChild(newIframe);
                         
-                        // Remove play overlay
                         const playOverlay = card.querySelector('.play-overlay');
                         if (playOverlay) playOverlay.style.display = 'none';
-                        
-                        currentPlayingVideo = card;
                     };
                     
                     const playOverlay = card.querySelector('.play-overlay');
@@ -1024,20 +1033,16 @@
             document.getElementById('signupMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('signup'); });
             document.getElementById('loginMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('login'); });
             
-            // Social icons interaction
             document.querySelectorAll('.social-icons i').forEach(icon => {
                 icon.addEventListener('click', () => showToast('Thanks for connecting with us! 🌟'));
             });
             
-            // Stat cards click effect
             document.querySelectorAll('.stat-card').forEach(card => {
                 card.addEventListener('click', () => showToast('Explore our manufacturing excellence! 🏭'));
             });
             
-            // Initialize video cards
             setupVideoCards();
             
-            // Auth check
             async function updateNavbar() {
                 try {
                     const { data: { user } } = await supabaseClient.auth.getUser();
