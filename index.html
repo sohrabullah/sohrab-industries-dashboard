@@ -320,7 +320,8 @@
             background: #000;
         }
         
-        .video-wrapper iframe {
+        .video-wrapper iframe,
+        .video-wrapper div {
             position: absolute;
             top: 0;
             left: 0;
@@ -758,7 +759,7 @@
         <h2 class="section-title">🏭 Inside Our State-of-the-Art Factory</h2>
         
         <!-- Featured Video -->
-        <div class="featured-video" id="featuredVideoContainer">
+        <div class="featured-video">
             <div class="video-wrapper">
                 <iframe id="featuredIframe" 
                     src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&enablejsapi=1"
@@ -774,8 +775,8 @@
             </div>
         </div>
 
-        <!-- Video Grid -->
-        <div class="video-grid" id="videoGrid"></div>
+        <!-- Video Grid Container -->
+        <div id="videoGrid" class="video-grid"></div>
     </section>
 
     <section class="stats-section">
@@ -844,391 +845,366 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        (function() {
-            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
-            // Video data with the new links
-            const videos = [
-                {
-                    id: "-xYxB-3j7lk",
-                    url: "https://www.youtube-nocookie.com/embed/-xYxB-3j7lk",
-                    title: "How LED Light Strips Are Made",
-                    desc: "The SMD Process - Complete manufacturing of LED strips",
-                    badge: "🔧 SMD Technology"
-                },
-                {
-                    id: "ySwrZ6p5kuc",
-                    url: "https://www.youtube-nocookie.com/embed/ySwrZ6p5kuc",
-                    title: "LED Bulb Automatic Production",
-                    desc: "Fully automated LED bulb manufacturing process",
-                    badge: "⚡ Fully Automated"
-                },
-                {
-                    id: "v76nwAdCCOw",
-                    url: "https://www.youtube-nocookie.com/embed/v76nwAdCCOw",
-                    title: "LED Driver Factory Tour",
-                    desc: "Meizhi Guzhen - Professional LED driver manufacturing",
-                    badge: "🔌 Driver Factory"
-                },
-                {
-                    id: "L2f_ePDpRyw",
-                    url: "https://www.youtube-nocookie.com/embed/L2f_ePDpRyw",
-                    title: "Making LED Bulbs",
-                    desc: "Complete bulb assembly and testing process",
-                    badge: "🏭 Mass Production"
-                }
-            ];
-            
-            let players = {};
-            let featuredPlayer = null;
-            
-            function showToast(msg) {
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                toast.innerHTML = `<i class="fas fa-star"></i> ${msg}`;
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 2500);
+        // Global players array
+        let players = {};
+        let playersReady = {};
+        
+        // Video data with the new links
+        const videos = [
+            {
+                id: "-xYxB-3j7lk",
+                title: "How LED Light Strips Are Made",
+                desc: "The SMD Process - Complete manufacturing of LED strips",
+                badge: "🔧 SMD Technology"
+            },
+            {
+                id: "ySwrZ6p5kuc",
+                title: "LED Bulb Automatic Production",
+                desc: "Fully automated LED bulb manufacturing process",
+                badge: "⚡ Fully Automated"
+            },
+            {
+                id: "v76nwAdCCOw",
+                title: "LED Driver Factory Tour",
+                desc: "Meizhi Guzhen - Professional LED driver manufacturing",
+                badge: "🔌 Driver Factory"
+            },
+            {
+                id: "L2f_ePDpRyw",
+                title: "Making LED Bulbs",
+                desc: "Complete bulb assembly and testing process",
+                badge: "🏭 Mass Production"
             }
-            
-            function formatTime(seconds) {
-                if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
-                const mins = Math.floor(seconds / 60);
-                const secs = Math.floor(seconds % 60);
-                return `${mins}:${secs.toString().padStart(2, '0')}`;
-            }
-            
-            // Setup video grid players
-            function setupVideoPlayers() {
-                const grid = document.getElementById('videoGrid');
-                if (!grid) return;
-                
-                grid.innerHTML = '';
-                
-                videos.forEach((video, index) => {
-                    const playerId = `player-${index}`;
-                    const videoCard = document.createElement('div');
-                    videoCard.className = 'video-card';
-                    videoCard.innerHTML = `
-                        <div class="video-wrapper">
-                            <div id="${playerId}"></div>
-                        </div>
-                        <div class="video-controls">
-                            <div class="control-group">
-                                <button class="control-btn play-pause-btn" data-index="${index}"><i class="fas fa-play"></i></button>
-                                <button class="control-btn replay-btn" data-index="${index}"><i class="fas fa-redo-alt"></i></button>
-                                <button class="control-btn backward-btn" data-index="${index}"><i class="fas fa-backward"></i></button>
-                                <button class="control-btn forward-btn" data-index="${index}"><i class="fas fa-forward"></i></button>
-                            </div>
-                            <div class="progress-container">
-                                <div class="progress-bar" data-index="${index}">
-                                    <div class="progress-fill" data-index="${index}"></div>
-                                </div>
-                                <div class="time-display" data-index="${index}">0:00 / 0:00</div>
-                            </div>
-                            <div class="volume-control">
-                                <button class="control-btn volume-btn" data-index="${index}"><i class="fas fa-volume-up"></i></button>
-                                <input type="range" class="volume-slider" data-index="${index}" min="0" max="100" value="80">
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <h3><i class="fas fa-play-circle"></i> ${video.title}</h3>
-                            <p>${video.desc}</p>
-                            <span class="badge">${video.badge}</span>
-                        </div>
-                    `;
-                    grid.appendChild(videoCard);
-                    
-                    // Create YouTube player
-                    players[index] = new YT.Player(playerId, {
-                        height: '100%',
-                        width: '100%',
-                        videoId: video.id,
-                        playerVars: {
-                            'autoplay': 0,
-                            'controls': 0,
-                            'modestbranding': 1,
-                            'rel': 0,
-                            'showinfo': 0,
-                            'iv_load_policy': 3,
-                            'disablekb': 1,
-                            'enablejsapi': 1
-                        },
-                        events: {
-                            'onReady': (event) => onPlayerReady(event, index),
-                            'onStateChange': (event) => onPlayerStateChange(event, index)
-                        }
-                    });
+        ];
+        
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas fa-star"></i> ${msg}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Function to attach control event listeners after players are ready
+        function attachControlListeners(index, player) {
+            // Play/Pause button
+            const playPauseBtn = document.querySelector(`.play-pause-btn[data-index="${index}"]`);
+            if (playPauseBtn) {
+                // Remove old listener and add new one
+                const newBtn = playPauseBtn.cloneNode(true);
+                playPauseBtn.parentNode.replaceChild(newBtn, playPauseBtn);
+                newBtn.addEventListener('click', () => {
+                    if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+                        player.pauseVideo();
+                    } else {
+                        player.playVideo();
+                    }
                 });
+            }
+            
+            // Replay button
+            const replayBtn = document.querySelector(`.replay-btn[data-index="${index}"]`);
+            if (replayBtn) {
+                const newBtn = replayBtn.cloneNode(true);
+                replayBtn.parentNode.replaceChild(newBtn, replayBtn);
+                newBtn.addEventListener('click', () => {
+                    player.seekTo(0);
+                    player.playVideo();
+                });
+            }
+            
+            // Backward 10 seconds
+            const backwardBtn = document.querySelector(`.backward-btn[data-index="${index}"]`);
+            if (backwardBtn) {
+                const newBtn = backwardBtn.cloneNode(true);
+                backwardBtn.parentNode.replaceChild(newBtn, backwardBtn);
+                newBtn.addEventListener('click', () => {
+                    const currentTime = player.getCurrentTime();
+                    player.seekTo(Math.max(0, currentTime - 10));
+                });
+            }
+            
+            // Forward 10 seconds
+            const forwardBtn = document.querySelector(`.forward-btn[data-index="${index}"]`);
+            if (forwardBtn) {
+                const newBtn = forwardBtn.cloneNode(true);
+                forwardBtn.parentNode.replaceChild(newBtn, forwardBtn);
+                newBtn.addEventListener('click', () => {
+                    const currentTime = player.getCurrentTime();
+                    const duration = player.getDuration();
+                    player.seekTo(Math.min(duration, currentTime + 10));
+                });
+            }
+            
+            // Progress bar seek
+            const progressBar = document.querySelector(`.progress-bar[data-index="${index}"]`);
+            if (progressBar) {
+                const newBar = progressBar.cloneNode(true);
+                progressBar.parentNode.replaceChild(newBar, progressBar);
+                newBar.addEventListener('click', (e) => {
+                    const rect = newBar.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const width = rect.width;
+                    const percent = x / width;
+                    const duration = player.getDuration();
+                    player.seekTo(duration * percent);
+                });
+            }
+            
+            // Volume slider
+            const volumeSlider = document.querySelector(`.volume-slider[data-index="${index}"]`);
+            if (volumeSlider) {
+                const newSlider = volumeSlider.cloneNode(true);
+                volumeSlider.parentNode.replaceChild(newSlider, volumeSlider);
+                newSlider.addEventListener('input', () => {
+                    const volume = parseInt(newSlider.value);
+                    player.setVolume(volume);
+                    const volumeBtn = document.querySelector(`.volume-btn[data-index="${index}"] i`);
+                    if (volumeBtn) {
+                        if (volume === 0) {
+                            volumeBtn.className = 'fas fa-volume-mute';
+                        } else if (volume < 50) {
+                            volumeBtn.className = 'fas fa-volume-down';
+                        } else {
+                            volumeBtn.className = 'fas fa-volume-up';
+                        }
+                    }
+                });
+                player.setVolume(parseInt(newSlider.value));
+            }
+            
+            // Volume mute button
+            const volumeBtn = document.querySelector(`.volume-btn[data-index="${index}"]`);
+            if (volumeBtn) {
+                const newBtn = volumeBtn.cloneNode(true);
+                volumeBtn.parentNode.replaceChild(newBtn, volumeBtn);
+                newBtn.addEventListener('click', () => {
+                    const slider = document.querySelector(`.volume-slider[data-index="${index}"]`);
+                    if (player.isMuted()) {
+                        player.unMute();
+                        if (slider) slider.value = player.getVolume();
+                    } else {
+                        player.mute();
+                        if (slider) slider.value = 0;
+                    }
+                    const icon = newBtn.querySelector('i');
+                    if (player.isMuted() || player.getVolume() === 0) {
+                        icon.className = 'fas fa-volume-mute';
+                    } else if (player.getVolume() < 50) {
+                        icon.className = 'fas fa-volume-down';
+                    } else {
+                        icon.className = 'fas fa-volume-up';
+                    }
+                });
+            }
+        }
+        
+        // Create video grid and players
+        function createVideoGrid() {
+            const grid = document.getElementById('videoGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            videos.forEach((video, index) => {
+                const playerId = `player-${index}`;
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card';
+                videoCard.innerHTML = `
+                    <div class="video-wrapper">
+                        <div id="${playerId}"></div>
+                    </div>
+                    <div class="video-controls">
+                        <div class="control-group">
+                            <button class="control-btn play-pause-btn" data-index="${index}"><i class="fas fa-play"></i></button>
+                            <button class="control-btn replay-btn" data-index="${index}"><i class="fas fa-redo-alt"></i></button>
+                            <button class="control-btn backward-btn" data-index="${index}"><i class="fas fa-backward"></i></button>
+                            <button class="control-btn forward-btn" data-index="${index}"><i class="fas fa-forward"></i></button>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" data-index="${index}">
+                                <div class="progress-fill" data-index="${index}"></div>
+                            </div>
+                            <div class="time-display" data-index="${index}">0:00 / 0:00</div>
+                        </div>
+                        <div class="volume-control">
+                            <button class="control-btn volume-btn" data-index="${index}"><i class="fas fa-volume-up"></i></button>
+                            <input type="range" class="volume-slider" data-index="${index}" min="0" max="100" value="80">
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3><i class="fas fa-play-circle"></i> ${video.title}</h3>
+                        <p>${video.desc}</p>
+                        <span class="badge">${video.badge}</span>
+                    </div>
+                `;
+                grid.appendChild(videoCard);
                 
-                // Setup featured player
-                featuredPlayer = new YT.Player('featuredIframe', {
+                // Create YouTube player
+                players[index] = new YT.Player(playerId, {
+                    height: '100%',
+                    width: '100%',
+                    videoId: video.id,
+                    playerVars: {
+                        'autoplay': 0,
+                        'controls': 0,
+                        'modestbranding': 1,
+                        'rel': 0,
+                        'showinfo': 0,
+                        'iv_load_policy': 3,
+                        'disablekb': 1,
+                        'enablejsapi': 1
+                    },
                     events: {
                         'onReady': (event) => {
-                            event.target.setVolume(50);
-                            event.target.playVideo();
-                        }
-                    }
-                });
-            }
-            
-            function onPlayerReady(event, index) {
-                const player = event.target;
-                players[index] = player;
-                
-                // Set initial volume
-                const volumeSlider = document.querySelector(`.volume-slider[data-index="${index}"]`);
-                if (volumeSlider) {
-                    player.setVolume(parseInt(volumeSlider.value));
-                }
-                
-                // Update progress bar and time display
-                setInterval(() => {
-                    if (player && player.getCurrentTime) {
-                        const currentTime = player.getCurrentTime() || 0;
-                        const duration = player.getDuration() || 0;
-                        const progressPercent = (currentTime / duration) * 100;
-                        
-                        const progressFill = document.querySelector(`.progress-fill[data-index="${index}"]`);
-                        if (progressFill) progressFill.style.width = `${progressPercent}%`;
-                        
-                        const timeDisplay = document.querySelector(`.time-display[data-index="${index}"]`);
-                        if (timeDisplay) {
-                            timeDisplay.innerHTML = `${formatTime(currentTime)} / ${formatTime(duration)}`;
-                        }
-                    }
-                }, 500);
-            }
-            
-            function onPlayerStateChange(event, index) {
-                const playPauseBtn = document.querySelector(`.play-pause-btn[data-index="${index}"] i`);
-                if (playPauseBtn) {
-                    if (event.data === YT.PlayerState.PLAYING) {
-                        playPauseBtn.className = 'fas fa-pause';
-                    } else {
-                        playPauseBtn.className = 'fas fa-play';
-                    }
-                }
-            }
-            
-            // Attach event listeners after players are ready
-            setTimeout(() => {
-                // Play/Pause buttons
-                document.querySelectorAll('.play-pause-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const index = parseInt(btn.getAttribute('data-index'));
-                        const player = players[index];
-                        if (player) {
-                            if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-                                player.pauseVideo();
-                            } else {
-                                player.playVideo();
-                            }
-                        }
-                    });
-                });
-                
-                // Replay buttons
-                document.querySelectorAll('.replay-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const index = parseInt(btn.getAttribute('data-index'));
-                        const player = players[index];
-                        if (player) {
-                            player.seekTo(0);
-                            player.playVideo();
-                        }
-                    });
-                });
-                
-                // Backward 10 seconds
-                document.querySelectorAll('.backward-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const index = parseInt(btn.getAttribute('data-index'));
-                        const player = players[index];
-                        if (player) {
-                            const currentTime = player.getCurrentTime();
-                            player.seekTo(Math.max(0, currentTime - 10));
-                        }
-                    });
-                });
-                
-                // Forward 10 seconds
-                document.querySelectorAll('.forward-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const index = parseInt(btn.getAttribute('data-index'));
-                        const player = players[index];
-                        if (player) {
-                            const currentTime = player.getCurrentTime();
-                            const duration = player.getDuration();
-                            player.seekTo(Math.min(duration, currentTime + 10));
-                        }
-                    });
-                });
-                
-                // Progress bar seek
-                document.querySelectorAll('.progress-bar').forEach(bar => {
-                    bar.addEventListener('click', (e) => {
-                        const index = parseInt(bar.getAttribute('data-index'));
-                        const player = players[index];
-                        if (player) {
-                            const rect = bar.getBoundingClientRect();
-                            const x = e.clientX - rect.left;
-                            const width = rect.width;
-                            const percent = x / width;
-                            const duration = player.getDuration();
-                            player.seekTo(duration * percent);
-                        }
-                    });
-                });
-                
-                // Volume slider
-                document.querySelectorAll('.volume-slider').forEach(slider => {
-                    slider.addEventListener('input', () => {
-                        const index = parseInt(slider.getAttribute('data-index'));
-                        const player = players[index];
-                        if (player) {
-                            const volume = parseInt(slider.value);
-                            player.setVolume(volume);
-                            const volumeBtn = document.querySelector(`.volume-btn[data-index="${index}"] i`);
-                            if (volumeBtn) {
-                                if (volume === 0) {
-                                    volumeBtn.className = 'fas fa-volume-mute';
-                                } else if (volume < 50) {
-                                    volumeBtn.className = 'fas fa-volume-down';
+                            playersReady[index] = true;
+                            attachControlListeners(index, event.target);
+                            // Start progress update interval
+                            setInterval(() => {
+                                if (players[index] && players[index].getCurrentTime) {
+                                    const currentTime = players[index].getCurrentTime() || 0;
+                                    const duration = players[index].getDuration() || 0;
+                                    const progressPercent = (currentTime / duration) * 100;
+                                    
+                                    const progressFill = document.querySelector(`.progress-fill[data-index="${index}"]`);
+                                    if (progressFill) progressFill.style.width = `${progressPercent}%`;
+                                    
+                                    const timeDisplay = document.querySelector(`.time-display[data-index="${index}"]`);
+                                    if (timeDisplay) {
+                                        timeDisplay.innerHTML = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+                                    }
+                                    
+                                    // Update play/pause button icon
+                                    const playPauseBtn = document.querySelector(`.play-pause-btn[data-index="${index}"] i`);
+                                    if (playPauseBtn) {
+                                        if (players[index].getPlayerState() === YT.PlayerState.PLAYING) {
+                                            playPauseBtn.className = 'fas fa-pause';
+                                        } else {
+                                            playPauseBtn.className = 'fas fa-play';
+                                        }
+                                    }
+                                }
+                            }, 500);
+                        },
+                        'onStateChange': (event) => {
+                            const playPauseBtn = document.querySelector(`.play-pause-btn[data-index="${index}"] i`);
+                            if (playPauseBtn) {
+                                if (event.data === YT.PlayerState.PLAYING) {
+                                    playPauseBtn.className = 'fas fa-pause';
                                 } else {
-                                    volumeBtn.className = 'fas fa-volume-up';
+                                    playPauseBtn.className = 'fas fa-play';
                                 }
                             }
                         }
-                    });
-                });
-                
-                // Volume mute toggle
-                document.querySelectorAll('.volume-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const index = parseInt(btn.getAttribute('data-index'));
-                        const player = players[index];
-                        const slider = document.querySelector(`.volume-slider[data-index="${index}"]`);
-                        if (player && slider) {
-                            if (player.isMuted()) {
-                                player.unMute();
-                                const volume = player.getVolume();
-                                slider.value = volume;
-                            } else {
-                                player.mute();
-                                slider.value = 0;
-                            }
-                            const icon = btn.querySelector('i');
-                            if (player.isMuted() || player.getVolume() === 0) {
-                                icon.className = 'fas fa-volume-mute';
-                            } else if (player.getVolume() < 50) {
-                                icon.className = 'fas fa-volume-down';
-                            } else {
-                                icon.className = 'fas fa-volume-up';
-                            }
-                        }
-                    });
-                });
-            }, 2000);
-            
-            const features = [
-                { icon: "fa-lightbulb", title: "Premium Quality", desc: "German technology LED chips with 50,000+ hours lifespan", type: "bulb", msg: "💡 Premium quality bulbs! Built to last!" },
-                { icon: "fa-truck", title: "Fast Delivery", desc: "Nationwide delivery within 24-48 hours to your doorstep", type: "truck", msg: "🚚 Fast delivery racing to your location!" },
-                { icon: "fa-shield-alt", title: "Warranty", desc: "2 years warranty on all LED products with free replacement", type: "shield", msg: "🛡️ 2 years warranty! Fully protected!" },
-                { icon: "fa-chart-line", title: "Best Investment", desc: "Manufacturing business with 15% monthly returns for investors", type: "chart", msg: "📈 Your investment is growing with our factory!" },
-                { icon: "fa-wallet", title: "Factory Direct", desc: "Direct from manufacturer - no middlemen, best prices", type: "wallet", msg: "💰 Factory direct pricing! Best rates guaranteed!" },
-                { icon: "fa-headset", title: "24/7 Support", desc: "Dedicated support for wholesalers, distributors, and investors", type: "headset", msg: "🎧 24/7 support! We're always here!" }
-            ];
-            
-            const animations = { bulb: 'animate-bulb', truck: 'animate-truck', shield: 'animate-shield', chart: 'animate-chart', wallet: 'animate-wallet', headset: 'animate-headset' };
-            
-            const grid = document.getElementById('featuresGrid');
-            features.forEach(f => {
-                const card = document.createElement('div');
-                card.className = 'feature-card';
-                card.innerHTML = `<div class="feature-icon"><i class="fas ${f.icon}"></i></div><h3>${f.title}</h3><p>${f.desc}</p>`;
-                const icon = card.querySelector('.feature-icon i');
-                icon.style.cursor = 'pointer';
-                icon.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const anim = animations[f.type];
-                    icon.classList.remove(anim);
-                    void icon.offsetWidth;
-                    icon.classList.add(anim);
-                    showToast(f.msg);
-                    setTimeout(() => icon.classList.remove(anim), 600);
-                });
-                card.addEventListener('mouseenter', () => { icon.style.transform = 'scale(1.1)'; });
-                card.addEventListener('mouseleave', () => { icon.style.transform = 'scale(1)'; });
-                grid.appendChild(card);
-            });
-            
-            // Dropdown logic
-            window.toggleDropdown = function(type) {
-                const sc = document.getElementById('signupDropdownContent');
-                const lc = document.getElementById('loginDropdownContent');
-                if (type === 'signup') { sc?.classList.toggle('show'); lc?.classList.remove('show'); }
-                else { lc?.classList.toggle('show'); sc?.classList.remove('show'); }
-            };
-            
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.dropdown')) {
-                    document.getElementById('signupDropdownContent')?.classList.remove('show');
-                    document.getElementById('loginDropdownContent')?.classList.remove('show');
-                }
-            });
-            
-            document.getElementById('signupMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('signup'); });
-            document.getElementById('loginMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('login'); });
-            
-            document.querySelectorAll('.social-icons i').forEach(icon => {
-                icon.addEventListener('click', () => showToast('Thanks for connecting with us! 🌟'));
-            });
-            
-            document.querySelectorAll('.stat-card').forEach(card => {
-                card.addEventListener('click', () => showToast('Explore our manufacturing excellence! 🏭'));
-            });
-            
-            // Auth check
-            async function updateNavbar() {
-                try {
-                    const { data: { user } } = await supabaseClient.auth.getUser();
-                    const navBtns = document.getElementById('navButtons');
-                    if (user) {
-                        const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
-                        let dashLink = 'investor.html', role = 'Investor';
-                        if (adminEmails.includes(user.email)) { dashLink = 'admin.html'; role = 'Admin'; }
-                        else {
-                            const { data: inv } = await supabaseClient.from('investors').select('id').eq('id', user.id).single();
-                            if (!inv) { dashLink = 'buyer.html'; role = 'Buyer'; }
-                        }
-                        navBtns.innerHTML = `<span style="background:rgba(232,177,60,0.2); padding:8px 20px; border-radius:50px; color:#E8B13C; font-weight:600;"><i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}</span>
-                            <a href="${dashLink}" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> ${role} Dashboard</a>
-                            <button onclick="handleLogout()" class="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
                     }
-                } catch(e) {}
+                });
+            });
+        }
+        
+        // Features data
+        const features = [
+            { icon: "fa-lightbulb", title: "Premium Quality", desc: "German technology LED chips with 50,000+ hours lifespan", type: "bulb", msg: "💡 Premium quality bulbs! Built to last!" },
+            { icon: "fa-truck", title: "Fast Delivery", desc: "Nationwide delivery within 24-48 hours to your doorstep", type: "truck", msg: "🚚 Fast delivery racing to your location!" },
+            { icon: "fa-shield-alt", title: "Warranty", desc: "2 years warranty on all LED products with free replacement", type: "shield", msg: "🛡️ 2 years warranty! Fully protected!" },
+            { icon: "fa-chart-line", title: "Best Investment", desc: "Manufacturing business with 15% monthly returns for investors", type: "chart", msg: "📈 Your investment is growing with our factory!" },
+            { icon: "fa-wallet", title: "Factory Direct", desc: "Direct from manufacturer - no middlemen, best prices", type: "wallet", msg: "💰 Factory direct pricing! Best rates guaranteed!" },
+            { icon: "fa-headset", title: "24/7 Support", desc: "Dedicated support for wholesalers, distributors, and investors", type: "headset", msg: "🎧 24/7 support! We're always here!" }
+        ];
+        
+        const animations = { bulb: 'animate-bulb', truck: 'animate-truck', shield: 'animate-shield', chart: 'animate-chart', wallet: 'animate-wallet', headset: 'animate-headset' };
+        
+        const grid = document.getElementById('featuresGrid');
+        features.forEach(f => {
+            const card = document.createElement('div');
+            card.className = 'feature-card';
+            card.innerHTML = `<div class="feature-icon"><i class="fas ${f.icon}"></i></div><h3>${f.title}</h3><p>${f.desc}</p>`;
+            const icon = card.querySelector('.feature-icon i');
+            icon.style.cursor = 'pointer';
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const anim = animations[f.type];
+                icon.classList.remove(anim);
+                void icon.offsetWidth;
+                icon.classList.add(anim);
+                showToast(f.msg);
+                setTimeout(() => icon.classList.remove(anim), 600);
+            });
+            card.addEventListener('mouseenter', () => { icon.style.transform = 'scale(1.1)'; });
+            card.addEventListener('mouseleave', () => { icon.style.transform = 'scale(1)'; });
+            grid.appendChild(card);
+        });
+        
+        // Dropdown logic
+        window.toggleDropdown = function(type) {
+            const sc = document.getElementById('signupDropdownContent');
+            const lc = document.getElementById('loginDropdownContent');
+            if (type === 'signup') { sc?.classList.toggle('show'); lc?.classList.remove('show'); }
+            else { lc?.classList.toggle('show'); sc?.classList.remove('show'); }
+        };
+        
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.dropdown')) {
+                document.getElementById('signupDropdownContent')?.classList.remove('show');
+                document.getElementById('loginDropdownContent')?.classList.remove('show');
             }
-            
-            window.handleLogout = async function() {
-                await supabaseClient.auth.signOut();
-                localStorage.clear();
-                showToast('Logged out successfully!');
-                setTimeout(() => location.reload(), 1000);
-            };
-            
-            updateNavbar();
-            
-            // Load YouTube API and setup players
-            const tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            
-            window.onYouTubeIframeAPIReady = function() {
-                setupVideoPlayers();
-            };
-        })();
+        });
+        
+        document.getElementById('signupMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('signup'); });
+        document.getElementById('loginMainBtn')?.addEventListener('click', (e) => { e.stopPropagation(); window.toggleDropdown('login'); });
+        
+        document.querySelectorAll('.social-icons i').forEach(icon => {
+            icon.addEventListener('click', () => showToast('Thanks for connecting with us! 🌟'));
+        });
+        
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('click', () => showToast('Explore our manufacturing excellence! 🏭'));
+        });
+        
+        // Auth check
+        async function updateNavbar() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                const navBtns = document.getElementById('navButtons');
+                if (user) {
+                    const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
+                    let dashLink = 'investor.html', role = 'Investor';
+                    if (adminEmails.includes(user.email)) { dashLink = 'admin.html'; role = 'Admin'; }
+                    else {
+                        const { data: inv } = await supabaseClient.from('investors').select('id').eq('id', user.id).single();
+                        if (!inv) { dashLink = 'buyer.html'; role = 'Buyer'; }
+                    }
+                    navBtns.innerHTML = `<span style="background:rgba(232,177,60,0.2); padding:8px 20px; border-radius:50px; color:#E8B13C; font-weight:600;"><i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}</span>
+                        <a href="${dashLink}" class="dashboard-btn"><i class="fas fa-tachometer-alt"></i> ${role} Dashboard</a>
+                        <button onclick="handleLogout()" class="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
+                }
+            } catch(e) {}
+        }
+        
+        window.handleLogout = async function() {
+            await supabaseClient.auth.signOut();
+            localStorage.clear();
+            showToast('Logged out successfully!');
+            setTimeout(() => location.reload(), 1000);
+        };
+        
+        updateNavbar();
+        
+        // Load YouTube API and create players
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        window.onYouTubeIframeAPIReady = function() {
+            createVideoGrid();
+        };
     </script>
 </body>
 </html>
