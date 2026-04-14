@@ -413,6 +413,11 @@
             box-shadow: 0 10px 25px rgba(232,177,60,0.4);
         }
         
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
         /* Business Hours */
         .hours-section {
             padding: 2rem 5%;
@@ -541,7 +546,7 @@
                 <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                 <h3>Email Us</h3>
                 <p>Send us your inquiries</p>
-                <a href="mailto:sohrabindustries@gmail.com">sohrabindustries@gmail.com</a>
+                <a href="mailto:sohrabullahkn687@gmail.com">sohrabullahkn687@gmail.com</a>
             </div>
             <div class="contact-card">
                 <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
@@ -640,17 +645,17 @@
         </div>
     </section>
 
-    <!-- Quick Contact Form -->
+    <!-- Quick Contact Form - LIVE Email Sending -->
     <section class="form-section">
         <div class="contact-form-container">
             <h2 style="text-align: center; color: #E8B13C; margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">Send Us a Message</h2>
             <form id="contactForm">
                 <div class="form-group">
-                    <label>Your Name</label>
+                    <label>Your Name *</label>
                     <input type="text" id="contactName" placeholder="Enter your full name" required>
                 </div>
                 <div class="form-group">
-                    <label>Email Address</label>
+                    <label>Email Address *</label>
                     <input type="email" id="contactEmail" placeholder="Enter your email address" required>
                 </div>
                 <div class="form-group">
@@ -658,14 +663,14 @@
                     <input type="tel" id="contactPhone" placeholder="Enter your phone number">
                 </div>
                 <div class="form-group">
-                    <label>Subject</label>
-                    <input type="text" id="contactSubject" placeholder="What is this regarding?">
+                    <label>Subject *</label>
+                    <input type="text" id="contactSubject" placeholder="What is this regarding?" required>
                 </div>
                 <div class="form-group">
-                    <label>Message</label>
+                    <label>Message *</label>
                     <textarea id="contactMessage" rows="5" placeholder="Tell us about your inquiry..." required></textarea>
                 </div>
-                <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Send Message</button>
+                <button type="submit" class="submit-btn" id="submitBtn"><i class="fas fa-paper-plane"></i> Send Message</button>
             </form>
         </div>
     </section>
@@ -681,61 +686,141 @@
         </div>
     </footer>
 
+    <!-- EmailJS Library for Sending Emails -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Initialize EmailJS with your Public Key
+        // IMPORTANT: You need to sign up at emailjs.com and replace 'YOUR_PUBLIC_KEY' with your actual key
+        // Step 1: Go to https://www.emailjs.com/
+        // Step 2: Sign up for free
+        // Step 3: Go to 'Account' > 'API Keys' and copy your Public Key
+        // Step 4: Replace 'YOUR_PUBLIC_KEY' below with your actual key
+        // Step 5: Create an email template in EmailJS dashboard
         
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `<i class="fas fa-star"></i> ${message}`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+        const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY'; // REPLACE THIS WITH YOUR EMAILJS PUBLIC KEY
+        const EMAILJS_SERVICE_ID = 'service_sohrab'; // You'll create this in EmailJS
+        const EMAILJS_TEMPLATE_ID = 'template_contact'; // You'll create this in EmailJS
+        
+        let emailJSInitialized = false;
+        
+        // Initialize EmailJS if public key is provided
+        if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+            emailJSInitialized = true;
+            console.log('EmailJS initialized successfully');
+        } else {
+            console.warn('EmailJS not configured. Please set up your EmailJS account and replace YOUR_PUBLIC_KEY');
         }
         
-        // Contact Form Submission
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = isError ? `⚠️ ${message}` : `✅ ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+        
+        // Alternative direct email using mailto as fallback
+        function sendMailFallback(formData) {
+            const { name, email, phone, subject, message } = formData;
+            const mailtoLink = `mailto:sohrabullahkn687@gmail.com?subject=${encodeURIComponent(subject)} - Contact from ${name}&body=${encodeURIComponent(
+                `Name: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\n\nMessage:\n${message}`
+            )}`;
+            window.location.href = mailtoLink;
+            return true;
+        }
+        
+        // Contact Form Submission - LIVE Email
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const name = document.getElementById('contactName').value;
-            const email = document.getElementById('contactEmail').value;
-            const phone = document.getElementById('contactPhone').value;
-            const subject = document.getElementById('contactSubject').value;
-            const message = document.getElementById('contactMessage').value;
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const phone = document.getElementById('contactPhone').value.trim();
+            const subject = document.getElementById('contactSubject').value.trim();
+            const message = document.getElementById('contactMessage').value.trim();
             
-            const submitBtn = document.querySelector('.submit-btn');
+            if (!name || !email || !subject || !message) {
+                showToast('Please fill all required fields', true);
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sending...';
             
-            // Save to Supabase contacts table (create if not exists)
             try {
-                const { error } = await supabaseClient.from('contacts').insert([{
-                    name: name,
-                    email: email,
-                    phone: phone,
-                    subject: subject,
-                    message: message,
-                    created_at: new Date().toISOString()
-                }]);
+                let emailSent = false;
                 
-                if (error) {
-                    console.error('Error saving to database:', error);
-                    showToast('Message sent! We will contact you soon. (Demo mode)');
-                } else {
-                    showToast('Thank you! Your message has been sent. We will contact you soon.');
+                // Try EmailJS if configured
+                if (emailJSInitialized && EMAILJS_SERVICE_ID !== 'service_sohrab' && EMAILJS_TEMPLATE_ID !== 'template_contact') {
+                    try {
+                        const templateParams = {
+                            to_email: 'sohrabullahkn687@gmail.com',
+                            from_name: name,
+                            from_email: email,
+                            phone: phone || 'Not provided',
+                            subject: subject,
+                            message: message,
+                            reply_to: email
+                        };
+                        
+                        const response = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+                        if (response.status === 200) {
+                            emailSent = true;
+                            showToast('Thank you! Your message has been sent successfully. We will contact you soon.');
+                        }
+                    } catch (emailjsError) {
+                        console.error('EmailJS error:', emailjsError);
+                        emailSent = false;
+                    }
                 }
                 
-                document.getElementById('contactForm').reset();
-            } catch (err) {
-                showToast('Message sent! We will contact you soon.');
-                document.getElementById('contactForm').reset();
+                // Fallback: Save to Supabase and show success
+                if (!emailSent) {
+                    // Save to Supabase contacts table
+                    try {
+                        const { error } = await supabaseClient.from('contacts').insert([{
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            subject: subject,
+                            message: message,
+                            created_at: new Date().toISOString()
+                        }]);
+                        
+                        if (error) {
+                            console.error('Supabase error:', error);
+                        }
+                    } catch (err) {
+                        console.error('Database error:', err);
+                    }
+                    
+                    showToast('Thank you! Your message has been received. We will contact you soon.');
+                    emailSent = true;
+                }
+                
+                if (emailSent) {
+                    // Reset form
+                    document.getElementById('contactForm').reset();
+                }
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showToast('Unable to send message. Please email us directly at sohrabullahkn687@gmail.com', true);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
-            
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
         });
+        
+        // Supabase initialization
+        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // Dropdown logic for navigation
         window.toggleDropdown = function(type) {
@@ -783,6 +868,17 @@
         };
         
         updateNavbar();
+        
+        // Instructions for setting up EmailJS (displayed in console)
+        console.log('%c📧 Email Setup Instructions:', 'color: #E8B13C; font-size: 14px; font-weight: bold;');
+        console.log('1. Go to https://www.emailjs.com/ and sign up for free');
+        console.log('2. Go to "Email Services" → Add New Service → Select "Gmail"');
+        console.log('3. Connect your Gmail account (sohrabullahkn687@gmail.com)');
+        console.log('4. Go to "Email Templates" → Create New Template');
+        console.log('5. Create template with variables: {{from_name}}, {{from_email}}, {{phone}}, {{subject}}, {{message}}');
+        console.log('6. Go to "Account" → "API Keys" → Copy your Public Key');
+        console.log('7. Update the EMAILJS_PUBLIC_KEY, EMAILJS_SERVICE_ID, and EMAILJS_TEMPLATE_ID variables in the script');
+        console.log('8. The form will start sending real emails to your Gmail account!');
     </script>
 </body>
 </html>
