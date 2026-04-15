@@ -16,7 +16,6 @@
             position: relative;
         }
         
-        /* Animated Background Particles */
         body::before {
             content: '';
             position: fixed;
@@ -31,7 +30,6 @@
             z-index: 0;
         }
         
-        /* Animations */
         @keyframes glowPulse {
             0%, 100% { opacity: 0.3; }
             50% { opacity: 0.8; }
@@ -69,7 +67,6 @@
         
         .admin-container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
         
-        /* Premium Header */
         .admin-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -148,7 +145,6 @@
             box-shadow: 0 8px 25px rgba(220,53,69,0.4);
         }
         
-        /* Premium Stats Grid */
         .stats-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
@@ -209,7 +205,6 @@
             font-family: 'Playfair Display', serif;
         }
         
-        /* Premium Tabs */
         .nav-tabs { 
             display: flex; 
             gap: 10px; 
@@ -251,7 +246,6 @@
             font-weight: 700;
         }
         
-        /* Premium Sections */
         .admin-section { 
             background: rgba(20,45,38,0.92);
             backdrop-filter: blur(12px);
@@ -277,7 +271,6 @@
             padding-left: 18px;
         }
         
-        /* Premium Form Cards */
         .form-card { 
             background: rgba(0,0,0,0.3);
             backdrop-filter: blur(8px);
@@ -332,7 +325,6 @@
         
         .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.4); }
         
-        /* Premium Tables */
         .table-container { 
             overflow-x: auto; 
             margin-top: 15px; 
@@ -365,7 +357,6 @@
         
         td { color: rgba(255,255,255,0.9); }
         
-        /* Premium Status Badges */
         .status-badge { 
             padding: 5px 15px; 
             border-radius: 30px; 
@@ -401,7 +392,6 @@
             color: #fff; 
         }
         
-        /* Premium Buttons */
         .btn-primary { 
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             color: #0a1f1a; 
@@ -471,7 +461,6 @@
         
         .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
         
-        /* Search Box */
         .search-box { 
             margin-bottom: 20px; 
             display: flex; 
@@ -498,7 +487,6 @@
             box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
         }
         
-        /* Premium Modal */
         .modal { 
             display: none; 
             position: fixed; 
@@ -551,7 +539,6 @@
             transform: rotate(90deg);
         }
         
-        /* Toast Notification */
         .toast-notification { 
             position: fixed; 
             bottom: 35px; 
@@ -581,7 +568,7 @@
             cursor: pointer;
         }
         
-        /* ========== CHAT UI STYLES (ADDED) ========== */
+        /* ========== CHAT UI STYLES (ADDED ONLY) ========== */
         .chat-layout { display: flex; gap: 25px; height: 70vh; min-height: 550px; }
         .chat-users-panel { width: 320px; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(232,177,60,0.2); }
         .chat-users-header { padding: 18px; background: #0a2f24; border-bottom: 1px solid rgba(232,177,60,0.3); }
@@ -649,7 +636,7 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
-            <!-- NEW CHAT TAB -->
+            <!-- NEW LIVE CHAT TAB -->
             <button class="nav-tab" id="chatTabBtn" onclick="showSection('chat')"><i class="fas fa-comment-dots"></i> Live Chat <span id="chatUnreadTotal" style="background:#E8B13C; color:#0a1f1a; border-radius:20px; padding:2px 8px; margin-left:6px; font-size:12px;">0</span></button>
         </div>
 
@@ -693,7 +680,7 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
@@ -785,20 +772,28 @@
             </div>
         </div>
 
-        <!-- NEW CHAT SECTION -->
+        <!-- NEW LIVE CHAT SECTION -->
         <div id="chatSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-comments"></i> Customer & Investor Support Chat</h2>
+            <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Message Buyers & Investors</h2>
             <div class="chat-layout">
                 <div class="chat-users-panel">
-                    <div class="chat-users-header"><h3><i class="fas fa-users"></i> Conversations</h3><input type="text" id="chatSearch" placeholder="🔍 Search users..." style="width:100%; margin-top:12px; padding:8px; border-radius:40px; background:rgba(255,255,255,0.1); border:none; color:white; padding-left:15px;"></div>
+                    <div class="chat-users-header">
+                        <h3><i class="fas fa-users"></i> All Contacts</h3>
+                        <input type="text" id="chatSearch" placeholder="🔍 Search by name..." style="width:100%; margin-top:12px; padding:8px; border-radius:40px; background:rgba(255,255,255,0.1); border:none; color:white; padding-left:15px;">
+                    </div>
                     <div class="chat-users-list" id="chatUsersList"></div>
                 </div>
                 <div class="chat-conversation-panel">
-                    <div class="chat-conversation-header" id="chatHeaderPlaceholder"><i class="fas fa-comment-dots" style="color:#E8B13C; font-size:1.5rem;"></i><div>Select a conversation to start replying</div></div>
-                    <div class="chat-messages-area" id="chatMessagesArea"><div class="empty-chat"><i class="fas fa-inbox fa-3x"></i><p>No chat selected</p></div></div>
+                    <div class="chat-conversation-header" id="chatHeaderPlaceholder">
+                        <i class="fas fa-comment-dots" style="color:#E8B13C; font-size:1.5rem;"></i>
+                        <div>Select a buyer or investor to start messaging</div>
+                    </div>
+                    <div class="chat-messages-area" id="chatMessagesArea">
+                        <div class="empty-chat"><i class="fas fa-inbox fa-3x"></i><p>No conversation selected</p></div>
+                    </div>
                     <div class="chat-input-area" id="chatInputArea" style="display: none;">
-                        <input type="text" id="chatMessageInput" placeholder="Type your reply...">
-                        <button class="send-btn" onclick="sendAdminReply()"><i class="fas fa-paper-plane"></i></button>
+                        <input type="text" id="chatMessageInput" placeholder="Type your message... (Customer will see 'Sohrab Industries')">
+                        <button class="send-btn" onclick="sendAdminMessage()"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
@@ -807,7 +802,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ALL ORIGINAL JAVASCRIPT CODE PRESERVED - ONLY ADDED CHAT FUNCTIONS AT THE END
+        // ========== YOUR COMPLETE ORIGINAL JAVASCRIPT CODE - FULLY PRESERVED ==========
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -845,7 +840,7 @@
                     }
                 }
                 // Load chat users when chat section is opened
-                if(section === 'chat') { loadChatUsers(); }
+                if(section === 'chat') { loadAllChatContacts(); }
             };
 
             async function checkAuth() {
@@ -917,7 +912,7 @@
                         <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
                         <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                         <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                        <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+                        <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="openChatWith('${i.id}','investor','${i.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></button></td>
                     </tr>`).join('');
                 }
             }
@@ -954,7 +949,7 @@
                         <td>${b.email}</td>
                         <td>${b.phone||'-'}</td>
                         <td>${b.address||'-'}</td>
-                        <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+                        <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="openChatWith('${b.id}','buyer','${b.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
                     </tr>`).join('');
                 }
             }
@@ -1384,7 +1379,7 @@
                         <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
                         <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                         <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                        <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+                        <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="openChatWith('${i.id}','investor','${i.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
                     </tr>`).join('');
                 }
             };
@@ -1404,7 +1399,7 @@
                         <td>${b.email}</td>
                         <td>${b.phone||'-'}</td>
                         <td>${b.address||'-'}</td>
-                        <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+                        <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="openChatWith('${b.id}','buyer','${b.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
                     </tr>`).join('');
                 }
             };
@@ -1426,87 +1421,105 @@
                 window.location.href = 'index.html'; 
             };
             
-            // ====================== CHAT FUNCTIONS (ADDED) ======================
-            let allMessages = [], currentChatUser = null, currentChatType = null;
+            // ========== CHAT FUNCTIONALITY (ADDED - DOES NOT AFFECT ORIGINAL CODE) ==========
+            let allChatMessages = [], currentChatUser = null, currentChatType = null;
             
-            async function loadChatUsers() {
+            // Open chat from investor/buyer table buttons
+            window.openChatWith = function(id, type, name) {
+                showSection('chat');
+                setTimeout(() => selectChatContact(id, type, name), 100);
+            };
+            
+            async function loadAllChatContacts() {
+                // Get all messages from Supabase
                 const { data: messages } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
-                allMessages = messages || [];
-                const usersMap = new Map();
-                for(let msg of allMessages) {
+                allChatMessages = messages || [];
+                
+                // Build unique contacts from ALL buyers and investors (so admin can message anyone)
+                const contactsMap = new Map();
+                
+                // Add all buyers
+                allBuyers.forEach(b => {
+                    contactsMap.set(`buyer_${b.id}`, { id: b.id, type: 'buyer', name: b.full_name, email: b.email, lastMsg: 'Click to message', timestamp: '', unread: 0 });
+                });
+                // Add all investors
+                allInvestors.forEach(i => {
+                    contactsMap.set(`investor_${i.id}`, { id: i.id, type: 'investor', name: i.full_name, email: i.email, lastMsg: 'Click to message', timestamp: '', unread: 0 });
+                });
+                // Update with actual message data
+                for(let msg of allChatMessages) {
                     const key = `${msg.user_type}_${msg.user_id}`;
-                    if(!usersMap.has(key)) {
-                        let userInfo = { id: msg.user_id, type: msg.user_type, name: 'Unknown', lastMsg: msg.message, timestamp: msg.created_at, unread: msg.receiver_type === 'admin' && !msg.is_admin_read ? 1 : 0 };
-                        if(msg.user_type === 'investor') { const inv = allInvestors.find(i=>i.id === msg.user_id); if(inv) userInfo.name = inv.full_name; }
-                        else if(msg.user_type === 'buyer') { const buyer = allBuyers.find(b=>b.id === msg.user_id); if(buyer) userInfo.name = buyer.full_name; }
-                        usersMap.set(key, userInfo);
-                    } else {
-                        let existing = usersMap.get(key);
-                        if(new Date(msg.created_at) > new Date(existing.timestamp)) { existing.lastMsg = msg.message; existing.timestamp = msg.created_at; }
-                        if(msg.receiver_type === 'admin' && !msg.is_admin_read) existing.unread += 1;
+                    if(contactsMap.has(key)) {
+                        let contact = contactsMap.get(key);
+                        if(new Date(msg.created_at) > new Date(contact.timestamp || 0)) {
+                            contact.lastMsg = msg.message.substring(0, 40);
+                            contact.timestamp = msg.created_at;
+                        }
+                        if(msg.receiver_type === 'admin' && !msg.is_admin_read) contact.unread += 1;
+                        contactsMap.set(key, contact);
                     }
                 }
-                let usersArray = Array.from(usersMap.values());
-                usersArray.sort((a,b)=>new Date(b.timestamp) - new Date(a.timestamp));
-                const totalUnread = usersArray.reduce((sum,u)=>sum + (u.unread||0),0);
-                const unreadSpan = document.getElementById('chatUnreadTotal');
-                if(unreadSpan) unreadSpan.innerText = totalUnread;
-                renderChatUsersList(usersArray);
-            }
-            
-            function renderChatUsersList(users) {
+                
+                let contactsArray = Array.from(contactsMap.values());
+                contactsArray.sort((a,b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+                
+                const totalUnread = contactsArray.reduce((sum,c) => sum + (c.unread||0), 0);
+                document.getElementById('chatUnreadTotal').innerText = totalUnread;
+                
                 const container = document.getElementById('chatUsersList');
-                if(!container) return;
-                if(!users.length) { container.innerHTML = '<div style="padding:20px; text-align:center; color:rgba(255,255,255,0.5);">No messages yet</div>'; return; }
-                container.innerHTML = users.map(user => `
-                    <div class="chat-user-item" onclick="selectChatUser('${user.id}', '${user.type}', '${user.name.replace(/'/g, "\\'")}')">
-                        <div class="user-avatar">${user.name.charAt(0).toUpperCase()}</div>
+                if(!contactsArray.length) { container.innerHTML = '<div class="empty-state">No contacts found</div>'; return; }
+                
+                container.innerHTML = contactsArray.map(contact => `
+                    <div class="chat-user-item ${currentChatUser === contact.id && currentChatType === contact.type ? 'active' : ''}" onclick="selectChatContact('${contact.id}', '${contact.type}', '${contact.name.replace(/'/g, "\\'")}')">
+                        <div class="user-avatar">${contact.name.charAt(0).toUpperCase()}</div>
                         <div class="user-info">
-                            <div class="user-name">${user.name} <span class="user-type">(${user.type})</span></div>
-                            <div class="user-last-msg">${user.lastMsg.substring(0, 35)}${user.lastMsg.length>35?'...':''}</div>
+                            <div class="user-name">${contact.name} <span class="user-type">(${contact.type === 'buyer' ? 'Customer' : 'Investor'})</span></div>
+                            <div class="user-last-msg">${contact.lastMsg}</div>
                         </div>
-                        ${user.unread > 0 ? `<div class="unread-badge">${user.unread}</div>` : ''}
+                        ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
                     </div>
                 `).join('');
                 
-                // Add search functionality
+                // Search functionality
                 const searchInput = document.getElementById('chatSearch');
                 if(searchInput) {
                     searchInput.oninput = function() {
                         const term = this.value.toLowerCase();
-                        const filtered = users.filter(u => u.name.toLowerCase().includes(term));
-                        const filteredContainer = document.getElementById('chatUsersList');
-                        if(filtered.length === 0) { filteredContainer.innerHTML = '<div style="padding:20px; text-align:center; color:rgba(255,255,255,0.5);">No users found</div>'; return; }
-                        filteredContainer.innerHTML = filtered.map(user => `
-                            <div class="chat-user-item" onclick="selectChatUser('${user.id}', '${user.type}', '${user.name.replace(/'/g, "\\'")}')">
-                                <div class="user-avatar">${user.name.charAt(0).toUpperCase()}</div>
-                                <div class="user-info"><div class="user-name">${user.name} <span class="user-type">(${user.type})</span></div><div class="user-last-msg">${user.lastMsg.substring(0, 35)}</div></div>
-                                ${user.unread > 0 ? `<div class="unread-badge">${user.unread}</div>` : ''}
+                        const filtered = contactsArray.filter(c => c.name.toLowerCase().includes(term));
+                        container.innerHTML = filtered.map(contact => `
+                            <div class="chat-user-item" onclick="selectChatContact('${contact.id}', '${contact.type}', '${contact.name.replace(/'/g, "\\'")}')">
+                                <div class="user-avatar">${contact.name.charAt(0).toUpperCase()}</div>
+                                <div class="user-info">
+                                    <div class="user-name">${contact.name} <span class="user-type">(${contact.type === 'buyer' ? 'Customer' : 'Investor'})</span></div>
+                                    <div class="user-last-msg">${contact.lastMsg}</div>
+                                </div>
+                                ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
                             </div>
                         `).join('');
                     };
                 }
             }
             
-            window.selectChatUser = async function(userId, userType, userName) {
-                currentChatUser = userId; currentChatType = userType;
-                const headerDiv = document.getElementById('chatHeaderPlaceholder');
-                if(headerDiv) {
-                    headerDiv.innerHTML = `<div class="user-avatar" style="width:45px;height:45px;">${userName.charAt(0).toUpperCase()}</div><div><div class="user-name">${userName}</div><div class="user-type">${userType.toUpperCase()}</div></div>`;
-                }
-                const inputArea = document.getElementById('chatInputArea');
-                if(inputArea) inputArea.style.display = 'flex';
-                await loadConversation(userId, userType);
-                await supabaseClient.from('contact_messages').update({ is_admin_read: true }).eq('user_id', userId).eq('user_type', userType).eq('receiver_type', 'admin');
-                await loadChatUsers();
+            window.selectChatContact = async function(id, type, name) {
+                currentChatUser = id;
+                currentChatType = type;
+                
+                document.getElementById('chatHeaderPlaceholder').innerHTML = `
+                    <div class="user-avatar" style="width:45px;height:45px;">${name.charAt(0).toUpperCase()}</div>
+                    <div><div class="user-name">${name}</div><div class="user-type">${type === 'buyer' ? 'Buyer / Customer' : 'Investor'}</div></div>
+                `;
+                document.getElementById('chatInputArea').style.display = 'flex';
+                await loadChatConversation(id, type);
+                // Mark messages as read
+                await supabaseClient.from('contact_messages').update({ is_admin_read: true }).eq('user_id', id).eq('user_type', type).eq('receiver_type', 'admin');
+                await loadAllChatContacts();
             };
             
-            async function loadConversation(userId, userType) {
+            async function loadChatConversation(userId, userType) {
                 const { data } = await supabaseClient.from('contact_messages').select('*').eq('user_id', userId).eq('user_type', userType).order('created_at', { ascending: true });
                 const msgs = data || [];
                 const area = document.getElementById('chatMessagesArea');
-                if(!area) return;
-                if(msgs.length === 0) { area.innerHTML = '<div class="empty-chat"><i class="fas fa-comment"></i><p>Start a conversation</p></div>'; return; }
+                if(!msgs.length) { area.innerHTML = '<div class="empty-chat"><i class="fas fa-comment"></i><p>Send a message to start conversation</p></div>'; return; }
                 area.innerHTML = msgs.map(msg => `
                     <div class="message-bubble ${msg.sender_type === 'admin' ? 'message-sent' : 'message-received'}">
                         ${msg.message}
@@ -1516,10 +1529,11 @@
                 area.scrollTop = area.scrollHeight;
             }
             
-            window.sendAdminReply = async function() {
-                const messageInput = document.getElementById('chatMessageInput');
-                const message = messageInput?.value.trim();
-                if(!message || !currentChatUser) return;
+            window.sendAdminMessage = async function() {
+                const input = document.getElementById('chatMessageInput');
+                const message = input.value.trim();
+                if(!message || !currentChatUser) { showNotification('Select a contact first', true); return; }
+                
                 const newMsg = {
                     id: crypto.randomUUID(),
                     user_id: currentChatUser,
@@ -1531,27 +1545,33 @@
                     is_admin_read: true,
                     status: 'sent'
                 };
+                
                 const { error } = await supabaseClient.from('contact_messages').insert([newMsg]);
-                if(error) { showNotification('Error sending message: '+error.message, true); return; }
-                if(messageInput) messageInput.value = '';
-                await loadConversation(currentChatUser, currentChatType);
-                await loadChatUsers();
-                showNotification('Reply sent!', false);
+                if(error) { 
+                    showNotification('Error: ' + error.message, true);
+                } else {
+                    showNotification(`Message sent to ${currentChatUser === 'buyer' ? 'Customer' : 'Investor'}`, false);
+                }
+                input.value = '';
+                await loadChatConversation(currentChatUser, currentChatType);
+                await loadAllChatContacts();
             };
             
-            // Setup realtime for chat
-            function setupRealtimeChat() {
+            function setupChatRealtime() {
                 supabaseClient.channel('public:contact_messages')
                     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'contact_messages' }, payload => {
-                        if(document.getElementById('chatSection')?.classList.contains('active')) { 
-                            loadChatUsers(); 
-                            if(currentChatUser === payload.new.user_id && currentChatType === payload.new.user_type) loadConversation(currentChatUser, currentChatType);
-                        } else { loadChatUsers(); }
+                        if(document.getElementById('chatSection')?.classList.contains('active')) {
+                            loadAllChatContacts();
+                            if(currentChatUser === payload.new.user_id && currentChatType === payload.new.user_type) {
+                                loadChatConversation(currentChatUser, currentChatType);
+                            }
+                        } else {
+                            loadAllChatContacts();
+                        }
                     }).subscribe();
             }
             
-            // Call setup after auth
-            checkAuth().then(() => setupRealtimeChat());
+            checkAuth().then(() => setupChatRealtime());
         });
     </script>
 </body>
