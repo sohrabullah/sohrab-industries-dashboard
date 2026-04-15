@@ -80,48 +80,97 @@ async function refreshAllData() {
 
 // Load Statistics
 async function loadStats() {
-    const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
-    document.getElementById('totalInvestors').innerHTML = ic || 0;
-    const { count: bc } = await supabaseClient.from('buyers').select('*', { count: 'exact', head: true });
-    document.getElementById('totalBuyers').innerHTML = bc || 0;
-    const { count: pr } = await supabaseClient.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-    document.getElementById('pendingRequests').innerHTML = pr || 0;
-    const { data: inv } = await supabaseClient.from('investments').select('amount');
-    const totalInv = inv?.reduce((s,i)=>s+(i.amount||0),0)||0;
-    document.getElementById('totalInvestments').innerHTML = `Rs. ${totalInv.toLocaleString()}`;
-    const { data: prof } = await supabaseClient.from('profits').select('amount').eq('paid',true);
-    const totalProf = prof?.reduce((s,p)=>s+(p.amount||0),0)||0;
-    document.getElementById('totalProfit').innerHTML = `Rs. ${totalProf.toLocaleString()}`;
-    const { count: pw } = await supabaseClient.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
-    document.getElementById('pendingWithdrawals').innerHTML = pw || 0;
-    const { count: pc } = await supabaseClient.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
-    document.getElementById('totalProducts').innerHTML = pc || 0;
-    const { count: oc } = await supabaseClient.from('orders').select('*',{count:'exact',head:true});
-    document.getElementById('totalOrders').innerHTML = oc || 0;
+    try {
+        const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
+        const totalInvestorsEl = document.getElementById('totalInvestors');
+        if (totalInvestorsEl) totalInvestorsEl.innerHTML = ic || 0;
+        
+        const { count: bc } = await supabaseClient.from('buyers').select('*', { count: 'exact', head: true });
+        const totalBuyersEl = document.getElementById('totalBuyers');
+        if (totalBuyersEl) totalBuyersEl.innerHTML = bc || 0;
+        
+        const { count: pr } = await supabaseClient.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+        const pendingRequestsEl = document.getElementById('pendingRequests');
+        if (pendingRequestsEl) pendingRequestsEl.innerHTML = pr || 0;
+        
+        const { data: inv } = await supabaseClient.from('investments').select('amount');
+        const totalInv = inv?.reduce((s,i)=>s+(i.amount||0),0)||0;
+        const totalInvestmentsEl = document.getElementById('totalInvestments');
+        if (totalInvestmentsEl) totalInvestmentsEl.innerHTML = `Rs. ${totalInv.toLocaleString()}`;
+        
+        const { data: prof } = await supabaseClient.from('profits').select('amount').eq('paid',true);
+        const totalProf = prof?.reduce((s,p)=>s+(p.amount||0),0)||0;
+        const totalProfitEl = document.getElementById('totalProfit');
+        if (totalProfitEl) totalProfitEl.innerHTML = `Rs. ${totalProf.toLocaleString()}`;
+        
+        const { count: pw } = await supabaseClient.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
+        const pendingWithdrawalsEl = document.getElementById('pendingWithdrawals');
+        if (pendingWithdrawalsEl) pendingWithdrawalsEl.innerHTML = pw || 0;
+        
+        const { count: pc } = await supabaseClient.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
+        const totalProductsEl = document.getElementById('totalProducts');
+        if (totalProductsEl) totalProductsEl.innerHTML = pc || 0;
+        
+        const { count: oc } = await supabaseClient.from('orders').select('*',{count:'exact',head:true});
+        const totalOrdersEl = document.getElementById('totalOrders');
+        if (totalOrdersEl) totalOrdersEl.innerHTML = oc || 0;
+    } catch(e) {
+        console.error('Error loading stats:', e);
+    }
 }
 
 // Load Investors
 async function loadInvestors() {
-    const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
-    allInvestors = data || [];
-    const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${i.full_name}</option>`).join('');
-    const investorSelect = document.getElementById('investorSelect');
-    const profitSelect = document.getElementById('profitInvestorSelect');
-    if (investorSelect) investorSelect.innerHTML = selectHtml;
-    if (profitSelect) profitSelect.innerHTML = selectHtml;
-    const investorsList = document.getElementById('investorsList');
-    if (investorsList) {
-        investorsList.innerHTML = allInvestors.map(i=>`<tr>
-            <td><strong>${i.full_name}</strong></td>
-            <td>${i.email}</td>
-            <td>${i.phone||'-'}</td>
-            <td>${i.city||'-'}</td>
-            <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
-            <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
-            <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-            <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-        </tr>`).join('');
+    try {
+        const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
+        allInvestors = data || [];
+        
+        const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${escapeHtml(i.full_name)}</option>`).join('');
+        
+        const investorSelect = document.getElementById('investorSelect');
+        const profitSelect = document.getElementById('profitInvestorSelect');
+        if (investorSelect) investorSelect.innerHTML = selectHtml;
+        if (profitSelect) profitSelect.innerHTML = selectHtml;
+        
+        const investorsList = document.getElementById('investorsList');
+        if (investorsList) {
+            if (allInvestors.length === 0) {
+                investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            for (let i = 0; i < allInvestors.length; i++) {
+                const inv = allInvestors[i];
+                html += `<tr>
+                    <td><strong>${escapeHtml(inv.full_name)}</strong></td>
+                    <td>${escapeHtml(inv.email)}</td>
+                    <td>${escapeHtml(inv.phone || '-')}</td>
+                    <td>${escapeHtml(inv.city || '-')}</td>
+                    <td>Rs.${(inv.total_investment || 0).toLocaleString()}</td>
+                    <td>Rs.${(inv.total_profit || 0).toLocaleString()}</td>
+                    <td>Rs.${(inv.available_balance || 0).toLocaleString()}</td>
+                    <td class="action-buttons"><button onclick="deleteInvestor('${inv.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+                </tr>`;
+            }
+            investorsList.innerHTML = html;
+        }
+    } catch(e) {
+        console.error('Error loading investors:', e);
+        const investorsList = document.getElementById('investorsList');
+        if (investorsList) investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">Error loading investors</td></tr>';
     }
+}
+
+// Helper function to escape HTML
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
 }
 
 // Add New Investor
@@ -159,17 +208,34 @@ window.deleteInvestor = async function(id){
 
 // Load Buyers
 async function loadBuyers() {
-    const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
-    allBuyers = data || [];
-    const buyersList = document.getElementById('buyersList');
-    if (buyersList) {
-        buyersList.innerHTML = allBuyers.map(b=>`<tr>
-            <td><strong>${b.full_name}</strong></td>
-            <td>${b.email}</td>
-            <td>${b.phone||'-'}</td>
-            <td>${b.address||'-'}</td>
-            <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-        </tr>`).join('');
+    try {
+        const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
+        allBuyers = data || [];
+        
+        const buyersList = document.getElementById('buyersList');
+        if (buyersList) {
+            if (allBuyers.length === 0) {
+                buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            for (let i = 0; i < allBuyers.length; i++) {
+                const b = allBuyers[i];
+                html += `<tr>
+                    <td><strong>${escapeHtml(b.full_name)}</strong></td>
+                    <td>${escapeHtml(b.email)}</td>
+                    <td>${escapeHtml(b.phone || '-')}</td>
+                    <td>${escapeHtml(b.address || '-')}</td>
+                    <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+                </tr>`;
+            }
+            buyersList.innerHTML = html;
+        }
+    } catch(e) {
+        console.error('Error loading buyers:', e);
+        const buyersList = document.getElementById('buyersList');
+        if (buyersList) buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">Error loading buyers</td></tr>';
     }
 }
 
@@ -200,16 +266,30 @@ window.deleteBuyer = async function(id){
 
 // Load Products
 async function loadProducts() {
-    const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
-    const productsList = document.getElementById('productsList');
-    if (productsList) {
-        productsList.innerHTML = (data||[]).map(p=>`<tr>
-            <td><strong>${p.name}</strong></td>
-            <td>${p.category}</td>
-            <td>Rs.${(p.price||0).toLocaleString()}</td>
-            <td>${p.stock_quantity||0}</td>
-            <td class="action-buttons"><button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-        </tr>`).join('');
+    try {
+        const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
+        const productsList = document.getElementById('productsList');
+        if (productsList) {
+            if (!data || data.length === 0) {
+                productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                const p = data[i];
+                html += `<tr>
+                    <td><strong>${escapeHtml(p.name)}</strong></td>
+                    <td>${escapeHtml(p.category)}</td>
+                    <td>Rs.${(p.price || 0).toLocaleString()}</td>
+                    <td>${p.stock_quantity || 0}</td>
+                    <td class="action-buttons"><button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+                </tr>`;
+            }
+            productsList.innerHTML = html;
+        }
+    } catch(e) {
+        console.error('Error loading products:', e);
     }
 }
 
@@ -279,81 +359,132 @@ window.addProfit = async function() {
 
 // Load Investment History
 async function loadInvestmentHistory() { 
-    const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
-    const investmentHistory = document.getElementById('investmentHistory');
-    if (investmentHistory) {
-        investmentHistory.innerHTML = (data||[]).map(i=>`<tr>
-            <td>${i.investors?.full_name||'-'}</td>
-            <td>Rs.${(i.amount||0).toLocaleString()}</td>
-            <td>${new Date(i.investment_date).toLocaleDateString()}</td>
-            <td>${i.payment_method||'-'}</td>
-            <td><span class="status-badge status-${i.status}">${i.status}</span></td>
-            <td class="action-buttons"><button onclick="deleteInvestment('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-        </tr>`).join('');
+    try {
+        const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
+        const investmentHistory = document.getElementById('investmentHistory');
+        if (investmentHistory) {
+            if (!data || data.length === 0) {
+                investmentHistory.innerHTML = '<tr><td colspan="6" class="empty-state">No investments found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                const inv = data[i];
+                html += `<tr>
+                    <td>${escapeHtml(inv.investors?.full_name || '-')}</td>
+                    <td>Rs.${(inv.amount || 0).toLocaleString()}</td>
+                    <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
+                    <td>${escapeHtml(inv.payment_method || '-')}</td>
+                    <td><span class="status-badge status-${inv.status}">${inv.status}</span></td>
+                    <td class="action-buttons"><button onclick="deleteInvestment('${inv.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+                </tr>`;
+            }
+            investmentHistory.innerHTML = html;
+        }
+    } catch(e) {
+        console.error('Error loading investment history:', e);
     }
 }
 
 // Load Profit History
 async function loadProfitHistory() { 
-    const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); 
-    const profitHistory = document.getElementById('profitHistory');
-    if (profitHistory) {
-        profitHistory.innerHTML = (data||[]).map(p=>`<tr>
-            <td>${p.investors?.full_name||'-'}</td>
-            <td>Rs.${(p.amount||0).toLocaleString()}</td>
-            <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
-            <td>${p.profit_percentage||10}%</td>
-            <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td>
-            <td class="action-buttons"><button onclick="deleteProfit('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-        </tr>`).join('');
+    try {
+        const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); 
+        const profitHistory = document.getElementById('profitHistory');
+        if (profitHistory) {
+            if (!data || data.length === 0) {
+                profitHistory.innerHTML = '<tr><td colspan="6" class="empty-state">No profits found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                const p = data[i];
+                html += `<tr>
+                    <td>${escapeHtml(p.investors?.full_name || '-')}</td>
+                    <td>Rs.${(p.amount || 0).toLocaleString()}</td>
+                    <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
+                    <td>${p.profit_percentage || 10}%</td>
+                    <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td>
+                    <td class="action-buttons"><button onclick="deleteProfit('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+                </tr>`;
+            }
+            profitHistory.innerHTML = html;
+        }
+    } catch(e) {
+        console.error('Error loading profit history:', e);
     }
 }
 
-// Load Investment Requests
+// Load Investment Requests - FIXED
 async function loadInvestmentRequests() { 
-    const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); 
-    const requestsList = document.getElementById('investmentRequestsList');
-    if (requestsList) {
-        requestsList.innerHTML = (data || []).map(req => `<tr>
-            <td><strong>${req.investors?.full_name || '-'}</strong><br><small>${req.investors?.email || '-'}</small></td>
-            <td>Rs. ${(req.amount || 0).toLocaleString()}</td>
-            <td>${new Date(req.created_at).toLocaleDateString()}</td>
-            <td>${req.payment_method || '-'}</td>
-            <td>${req.transaction_id || '-'}</td>
-            <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button></td>
-        </tr>`).join('');
+    try {
+        const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); 
+        const requestsList = document.getElementById('investmentRequestsList');
+        if (requestsList) {
+            if (!data || data.length === 0) {
+                requestsList.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                const req = data[i];
+                html += `<tr>
+                    <td><strong>${escapeHtml(req.investors?.full_name || '-')}</strong><br><small>${escapeHtml(req.investors?.email || '-')}</small></td>
+                    <td>Rs. ${(req.amount || 0).toLocaleString()}</td>
+                    <td>${new Date(req.created_at).toLocaleDateString()}</td>
+                    <td>${escapeHtml(req.payment_method || '-')}</td>
+                    <td>${escapeHtml(req.transaction_id || '-')}</td>
+                    <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button> <button onclick="rejectInvestment('${req.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button></td>
+                </tr>`;
+            }
+            requestsList.innerHTML = html;
+        }
+    } catch(e) {
+        console.error('Error loading investment requests:', e);
+        const requestsList = document.getElementById('investmentRequestsList');
+        if (requestsList) requestsList.innerHTML = '<tr><td colspan="6" class="empty-state">Error loading requests</td></tr>';
     }
 }
 
 // Load Withdrawals
 async function loadWithdrawals() { 
-    const { data } = await supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false });
-    allWithdrawals = data || [];
-    const withdrawalsList = document.getElementById('withdrawalsList');
-    if (!withdrawalsList) return;
-    
-    if (!allWithdrawals || allWithdrawals.length === 0) {
-        withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-inbox"></i> No withdrawal requests found</td></tr>';
-        return;
+    try {
+        const { data } = await supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false });
+        allWithdrawals = data || [];
+        const withdrawalsList = document.getElementById('withdrawalsList');
+        if (!withdrawalsList) return;
+        
+        if (!allWithdrawals || allWithdrawals.length === 0) {
+            withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-inbox"></i> No withdrawal requests found</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        for (let i = 0; i < allWithdrawals.length; i++) {
+            const w = allWithdrawals[i];
+            html += `<tr>
+                <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
+                <td><small>${escapeHtml(w.investors?.email || '-')}</small></td>
+                <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                <td>${escapeHtml(w.payment_method || '-')}</td>
+                <td><small>${escapeHtml(w.account_details || '-')}</small></td>
+                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
+                <td class="action-buttons">
+                    ${w.status === 'pending' ? `
+                        <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button>
+                        <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
+                    ` : `<span class="status-badge status-active">Processed</span>`}
+                </td>
+            </tr>`;
+        }
+        withdrawalsList.innerHTML = html;
+    } catch(e) {
+        console.error('Error loading withdrawals:', e);
     }
-    
-    withdrawalsList.innerHTML = allWithdrawals.map(w => `
-        <tr>
-            <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
-            <td><small>${w.investors?.email || '-'}</small></td>
-            <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-            <td>${new Date(w.request_date).toLocaleDateString()}</td>
-            <td>${w.payment_method || '-'}</td>
-            <td><small>${w.account_details || '-'}</small></td>
-            <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
-            <td class="action-buttons">
-                ${w.status === 'pending' ? `
-                    <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button>
-                    <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
-                ` : `<span class="status-badge status-active">Processed</span>`}
-             </td>
-        </tr>
-    `).join('');
 }
 
 // Search Withdrawals
@@ -371,23 +502,26 @@ window.searchWithdrawals = function() {
         return;
     }
     
-    withdrawalsList.innerHTML = filtered.map(w => `
-        <tr>
-            <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
-            <td><small>${w.investors?.email || '-'}</small></td>
+    let html = '';
+    for (let i = 0; i < filtered.length; i++) {
+        const w = filtered[i];
+        html += `<tr>
+            <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
+            <td><small>${escapeHtml(w.investors?.email || '-')}</small></td>
             <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
             <td>${new Date(w.request_date).toLocaleDateString()}</td>
-            <td>${w.payment_method || '-'}</td>
-            <td><small>${w.account_details || '-'}</small></td>
+            <td>${escapeHtml(w.payment_method || '-')}</td>
+            <td><small>${escapeHtml(w.account_details || '-')}</small></td>
             <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
             <td class="action-buttons">
                 ${w.status === 'pending' ? `
                     <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button>
                     <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
                 ` : `<span class="status-badge status-active">Processed</span>`}
-              </td>
-        </tr>
-    `).join('');
+            </td>
+        </tr>`;
+    }
+    withdrawalsList.innerHTML = html;
 };
 
 // Reset Withdrawal Search
@@ -398,31 +532,33 @@ window.resetWithdrawalSearch = function() {
 
 // Load Orders
 async function loadOrders() { 
-    const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
-    allOrders = data || [];
-    const ordersList = document.getElementById('ordersList');
-    if (!ordersList) return;
-    
-    if (!allOrders || allOrders.length === 0) {
-        ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i> No orders found</td></tr>';
-        return;
-    }
-    
-    ordersList.innerHTML = allOrders.map(o => {
-        let productsList = '-';
-        try {
-            const items = JSON.parse(o.notes || '[]');
-            if (Array.isArray(items) && items.length > 0) {
-                productsList = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-            } else {
-                productsList = o.notes || '-';
-            }
-        } catch(e) {
-            productsList = o.notes || '-';
+    try {
+        const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
+        allOrders = data || [];
+        const ordersList = document.getElementById('ordersList');
+        if (!ordersList) return;
+        
+        if (!allOrders || allOrders.length === 0) {
+            ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i> No orders found</td></tr>';
+            return;
         }
         
-        return `
-            <tr>
+        let html = '';
+        for (let i = 0; i < allOrders.length; i++) {
+            const o = allOrders[i];
+            let productsList = '-';
+            try {
+                const items = JSON.parse(o.notes || '[]');
+                if (Array.isArray(items) && items.length > 0) {
+                    productsList = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                } else {
+                    productsList = o.notes || '-';
+                }
+            } catch(e) {
+                productsList = o.notes || '-';
+            }
+            
+            html += `<tr>
                 <td><strong>${o.id?.slice(0, 12)}...</strong><br><small style="color:#E8B13C;">${o.id}</small></td>
                 <td>${o.user_type || 'buyer'}</td>
                 <td><small>${productsList.substring(0, 50)}${productsList.length > 50 ? '...' : ''}</small></td>
@@ -439,14 +575,17 @@ async function loadOrders() {
                         <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option>
                         <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                     </select>
-                  </td>
+                </td>
                 <td class="action-buttons">
                     <button onclick="viewOrderDetails('${o.id}')" class="btn-info" title="View Details"><i class="fas fa-eye"></i></button>
                     <button onclick="deleteOrder('${o.id}')" class="btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
-                  </td>
-            </table>
-        `;
-    }).join('');
+                </td>
+            </tr>`;
+        }
+        ordersList.innerHTML = html;
+    } catch(e) {
+        console.error('Error loading orders:', e);
+    }
 }
 
 // Update Order Status
@@ -509,7 +648,9 @@ window.searchOrders = function() {
         return;
     }
     
-    ordersList.innerHTML = filtered.map(o => {
+    let html = '';
+    for (let i = 0; i < filtered.length; i++) {
+        const o = filtered[i];
         let productsList = '-';
         try {
             const items = JSON.parse(o.notes || '[]');
@@ -517,7 +658,7 @@ window.searchOrders = function() {
                 productsList = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
             }
         } catch(e) { productsList = o.notes || '-'; }
-        return `<tr>
+        html += `<tr>
             <td><strong>${o.id?.slice(0, 12)}...</strong></td>
             <td>${o.user_type || 'buyer'}</td>
             <td>${productsList.substring(0, 40)}</td>
@@ -529,7 +670,8 @@ window.searchOrders = function() {
             <td><select onchange="updateOrderStatus('${o.id}', this.value)"><option value="pending" ${o.status==='pending'?'selected':''}>Pending</option><option value="processing" ${o.status==='processing'?'selected':''}>Processing</option><option value="shipped" ${o.status==='shipped'?'selected':''}>Shipped</option><option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option></select></td>
             <td class="action-buttons"><button onclick="viewOrderDetails('${o.id}')" class="btn-info">View</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td>
         </tr>`;
-    }).join('');
+    }
+    ordersList.innerHTML = html;
 };
 
 // Reset Order Search
@@ -540,21 +682,48 @@ window.resetOrderSearch = function() {
 
 // Load Recent Activities
 async function loadRecentActivities() { 
-    const activities = []; 
-    const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
-    if(inv) inv.forEach(i=>activities.push({action:'Investment',details:`${i.investors?.full_name} invested Rs.${i.amount}`,time:new Date(i.created_at).toLocaleString()})); 
-    const { data: ord } = await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); 
-    if(ord) ord.forEach(o=>activities.push({action:'Order',details:`Order #${o.id?.slice(0,8)} - Rs.${o.total_amount}`,time:new Date(o.created_at).toLocaleString()})); 
-    const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
-    if(wd) wd.forEach(w=>activities.push({action:'Withdrawal Request',details:`${w.investors?.full_name} requested Rs.${w.amount} (${w.status})`,time:new Date(w.created_at).toLocaleString()})); 
-    activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
-    const recentActivities = document.getElementById('recentActivities');
-    if (recentActivities) {
-        recentActivities.innerHTML = activities.slice(0,10).map(a=>`<tr>
-            <td>${a.action}</td>
-            <td>${a.details}</td>
-            <td>${a.time}</td>
-        </tr>`).join('');
+    try {
+        const activities = []; 
+        const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
+        if(inv && inv.length > 0) {
+            for(let i = 0; i < inv.length; i++) {
+                activities.push({action:'Investment', details:`${inv[i].investors?.full_name} invested Rs.${inv[i].amount}`, time:new Date(inv[i].created_at).toLocaleString()});
+            }
+        }
+        
+        const { data: ord } = await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); 
+        if(ord && ord.length > 0) {
+            for(let i = 0; i < ord.length; i++) {
+                activities.push({action:'Order', details:`Order #${ord[i].id?.slice(0,8)} - Rs.${ord[i].total_amount}`, time:new Date(ord[i].created_at).toLocaleString()});
+            }
+        }
+        
+        const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
+        if(wd && wd.length > 0) {
+            for(let i = 0; i < wd.length; i++) {
+                activities.push({action:'Withdrawal Request', details:`${wd[i].investors?.full_name} requested Rs.${wd[i].amount} (${wd[i].status})`, time:new Date(wd[i].created_at).toLocaleString()});
+            }
+        }
+        
+        activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
+        const recentActivities = document.getElementById('recentActivities');
+        if (recentActivities) {
+            if (activities.length === 0) {
+                recentActivities.innerHTML = '<tr><td colspan="3" class="empty-state">No recent activities</td></tr>'；
+                return;
+            }
+            let html = '';
+            for (let i = 0; i < Math.min(activities.length, 10); i++) {
+                html += `<tr>
+                    <td>${activities[i].action}</td>
+                    <td>${activities[i].details}</td>
+                    <td>${activities[i].time}</td>
+                </tr>`;
+            }
+            recentActivities.innerHTML = html;
+        }
+    } catch(e) {
+        console.error('Error loading recent activities:', e);
     }
 }
 
@@ -636,16 +805,23 @@ window.searchInvestors = function() {
     const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
     const investorsList = document.getElementById('investorsList');
     if (investorsList) {
-        investorsList.innerHTML = filtered.map(i=>`<tr>
-            <td><strong>${i.full_name}</strong></td>
-            <td>${i.email}</td>
-            <td>${i.phone||'-'}</td>
-            <td>${i.city||'-'}</td>
-            <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
-            <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
-            <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-            <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-        </tr>`).join('');
+        if (filtered.length === 0) {
+            investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>'；
+            return;
+        }
+        let html = '';
+        for (let i = 0; i < filtered.length; i++) {
+            const inv = filtered[i];
+            html += `<tr>
+                <td><strong>${escapeHtml(inv.full_name)}</strong></td>
+                <td>${escapeHtml(inv.email)}</td>`;
+            html += `<td>${escapeHtml(inv.phone || '-')}</td><td>${escapeHtml(inv.city || '-')}</td>`;
+            html += `<td>Rs.${(inv.total_investment || 0).toLocaleString()}</td><td>Rs.${(inv.total_profit || 0).toLocaleString()}</td>`;
+            html += `<td>Rs.${(inv.available_balance || 0).toLocaleString()}</td>`;
+            html += `<td class="action-buttons"><button onclick="deleteInvestor('${inv.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>`;
+            html += `</tr>`;
+        }
+        investorsList.innerHTML = html;
     }
 };
 
@@ -661,13 +837,20 @@ window.searchBuyers = function() {
     const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
     const buyersList = document.getElementById('buyersList');
     if (buyersList) {
-        buyersList.innerHTML = filtered.map(b=>`<tr>
-            <td><strong>${b.full_name}</strong></td>
-            <td>${b.email}</td>
-            <td>${b.phone||'-'}</td>
-            <td>${b.address||'-'}</td>
-            <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-        </tr>`).join('');
+        if (filtered.length === 0) {
+            buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>'；
+            return;
+        }
+        let html = '';
+        for (let i = 0; i < filtered.length; i++) {
+            const b = filtered[i];
+            html += `<tr>
+                <td><strong>${escapeHtml(b.full_name)}</strong></td>
+                <td>${escapeHtml(b.email)}</td><td>${escapeHtml(b.phone || '-')}</td><td>${escapeHtml(b.address || '-')}</td>
+                <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
+            </tr>`;
+        }
+        buyersList.innerHTML = html;
     }
 };
 
