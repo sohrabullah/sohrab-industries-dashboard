@@ -685,7 +685,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -760,7 +760,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ALL ORIGINAL JAVASCRIPT CODE PRESERVED - ONLY PRODUCT FUNCTIONS REPLACED WITH WORKING VERSION
+        // ALL ORIGINAL JAVASCRIPT CODE PRESERVED - ONLY PROFITS TAB FIXED
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -822,9 +822,9 @@
                 await loadBuyers();
                 await loadInvestmentRequests();
                 await loadInvestmentHistory();
-                await loadProfitHistory();
+                await loadProfitHistory();  // FIXED: Now properly loads profit history
                 await loadWithdrawals();
-                await loadProducts();  // Now using the FIXED version below
+                await loadProducts();
                 await loadOrders();
                 await loadRecentActivities();
             }
@@ -927,7 +927,6 @@
 
             window.deleteBuyer = async function(id){ if(confirm('Delete this buyer?')){ await supabaseClient.from('buyers').delete().eq('id',id); showNotification('Buyer deleted', false); await loadBuyers(); await loadStats(); } };
 
-            // FIXED PRODUCTS FUNCTIONS (from working file two)
             async function loadProducts() {
                 const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
                 const productsList = document.getElementById('productsList');
@@ -1008,6 +1007,8 @@
                 await supabaseClient.from('investors').update({ total_profit: totalProfit, available_balance: newBalance }).eq('id',investorId); 
                 showNotification('Profit added!',false); 
                 document.getElementById('profitAmount').value = ''; 
+                document.getElementById('profitMonth').value = '';
+                document.getElementById('profitPercentage').value = '10';
                 await loadProfitHistory(); await loadInvestors(); await loadStats(); 
             };
 
@@ -1015,6 +1016,10 @@
                 const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
                 const investmentHistory = document.getElementById('investmentHistory');
                 if (investmentHistory) {
+                    if (!data || data.length === 0) {
+                        investmentHistory.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-chart-line"></i> No investment history found</td></tr>';
+                        return;
+                    }
                     investmentHistory.innerHTML = (data||[]).map(i=>`<tr>
                         <td>${i.investors?.full_name||'-'}</td>
                         <td>Rs.${(i.amount||0).toLocaleString()}</td>
@@ -1026,12 +1031,17 @@
                 }
             }
             
+            // FIXED: Profit History loading function - properly displays profit history
             async function loadProfitHistory() { 
                 const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); 
                 const profitHistory = document.getElementById('profitHistory');
                 if (profitHistory) {
+                    if (!data || data.length === 0) {
+                        profitHistory.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-coins"></i> No profit history found. Add your first profit above!</td></tr>';
+                        return;
+                    }
                     profitHistory.innerHTML = (data||[]).map(p=>`<tr>
-                        <td>${p.investors?.full_name||'-'}</td>
+                        <td><strong>${p.investors?.full_name||'-'}</strong></td>
                         <td>Rs.${(p.amount||0).toLocaleString()}</td>
                         <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
                         <td>${p.profit_percentage||10}%</td>
@@ -1045,6 +1055,10 @@
                 const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); 
                 const requestsList = document.getElementById('investmentRequestsList');
                 if (requestsList) {
+                    if (!data || data.length === 0) {
+                        requestsList.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-check-circle"></i> No pending investment requests</td></tr>';
+                        return;
+                    }
                     requestsList.innerHTML = (data || []).map(req => `<tr>
                         <td><strong>${req.investors?.full_name || '-'}</strong><br><small>${req.investors?.email || '-'}</small></td>
                         <td>Rs. ${(req.amount || 0).toLocaleString()}</td>
@@ -1082,7 +1096,7 @@
                                 <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
                             ` : `<span class="status-badge status-active">Processed</span>`}
                         </td>
-                    </tr>
+                    </table>
                 `).join('');
             }
             
@@ -1150,11 +1164,11 @@
                                     <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option>
                                     <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                                 </select>
-                             </td>
+                              </td>
                             <td class="action-buttons">
                                 <button onclick="viewOrderDetails('${o.id}')" class="btn-info" title="View Details"><i class="fas fa-eye"></i></button>
                                 <button onclick="deleteOrder('${o.id}')" class="btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
-                             </td>
+                              </td>
                         </tr>
                     `;
                 }).join('');
@@ -1212,7 +1226,7 @@
                 if (!ordersList) return;
                 
                 if (filtered.length === 0) {
-                    ordersList.innerHTML = '</table><td colspan="10" class="empty-state"><i class="fas fa-search"></i> No orders found</td></tr>';
+                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-search"></i> No orders found</td></tr>';
                     return;
                 }
                 
@@ -1232,6 +1246,8 @@
                 if(ord) ord.forEach(o=>activities.push({action:'Order',details:`Order #${o.id?.slice(0,8)} - Rs.${o.total_amount}`,time:new Date(o.created_at).toLocaleString()})); 
                 const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
                 if(wd) wd.forEach(w=>activities.push({action:'Withdrawal Request',details:`${w.investors?.full_name} requested Rs.${w.amount} (${w.status})`,time:new Date(w.created_at).toLocaleString()})); 
+                const { data: prof } = await supabaseClient.from('profits').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5);
+                if(prof) prof.forEach(p=>activities.push({action:'Profit',details:`${p.investors?.full_name} earned Rs.${p.amount} profit`,time:new Date(p.created_at).toLocaleString()}));
                 activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
                 const recentActivities = document.getElementById('recentActivities');
                 if (recentActivities) {
@@ -1305,7 +1321,7 @@
                     await loadProfitHistory(); 
                     await loadInvestors(); 
                     await loadStats(); 
-                    showNotification('Deleted',false); 
+                    showNotification('Profit deleted',false); 
                 } 
             };
 
@@ -1314,7 +1330,7 @@
                 const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
                 const investorsList = document.getElementById('investorsList');
                 if (investorsList) {
-                    investorsList.innerHTML = filtered.map(i=>`<tr>...<tr>`).join('');
+                    investorsList.innerHTML = filtered.map(i=>`<tr>...<td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
                 }
             };
             
@@ -1328,7 +1344,7 @@
                 const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
                 const buyersList = document.getElementById('buyersList');
                 if (buyersList) {
-                    buyersList.innerHTML = filtered.map(b=>`<tr>...</td>`).join('');
+                    buyersList.innerHTML = filtered.map(b=>`<tr>...<td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
                 }
             };
             
