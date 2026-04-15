@@ -477,58 +477,6 @@
             box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
         }
         
-        .modal { 
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0; 
-            top: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.8); 
-            backdrop-filter: blur(15px);
-        }
-        
-        .modal-content { 
-            background: linear-gradient(145deg, #1a3d33, #0f2a22);
-            margin: 5% auto; 
-            padding: 35px; 
-            width: 90%; 
-            max-width: 600px; 
-            border-radius: 40px; 
-            animation: slideInModal 0.3s ease;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            border: 1px solid rgba(232,177,60,0.3);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .modal-content h2 { 
-            color: #E8B13C; 
-            margin-bottom: 20px; 
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .close { 
-            float: right; 
-            font-size: 30px; 
-            cursor: pointer; 
-            color: rgba(255,255,255,0.6); 
-            transition: all 0.3s;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-        
-        .close:hover { 
-            color: #E8B13C; 
-            background: rgba(232,177,60,0.2);
-            transform: rotate(90deg);
-        }
-        
         .toast-notification { 
             position: fixed; 
             bottom: 35px; 
@@ -558,7 +506,7 @@
             cursor: pointer;
         }
         
-        /* Chat Styles - Matching Premium Theme */
+        /* Chat Styles */
         .chat-layout { display: flex; gap: 25px; height: 70vh; min-height: 550px; }
         .chat-users-panel { width: 350px; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(232,177,60,0.2); }
         .chat-users-header { padding: 18px; background: #0a2f24; border-bottom: 1px solid rgba(232,177,60,0.3); }
@@ -629,7 +577,6 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
-            <!-- NEW CHAT TAB -->
             <button class="nav-tab" onclick="showSection('chat')"><i class="fas fa-comment-dots"></i> Live Chat <span id="chatUnreadBadge" class="chat-tab-unread" style="display:none;">0</span></button>
         </div>
 
@@ -657,7 +604,7 @@
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
             <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetInvestorSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
@@ -696,7 +643,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></tr></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -745,7 +692,7 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"></table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></tr></div>
         </div>
 
         <!-- Orders Section -->
@@ -759,13 +706,13 @@
                 </div>
             </div>
             <div class="table-container">
-                <tr><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead>
+                <table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead>
                     <tbody id="ordersList"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- NEW CHAT SECTION -->
+        <!-- Chat Section -->
         <div id="chatSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Customer Support</h2>
             <div class="chat-layout">
@@ -795,7 +742,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ========== ORIGINAL JAVASCRIPT CODE (FULLY PRESERVED) ==========
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -823,16 +769,6 @@
                 const targetSection = document.getElementById(`${section}Section`);
                 if (targetSection) targetSection.classList.add('active');
                 if (event && event.target && event.target.classList) event.target.classList.add('active');
-                else {
-                    const btns = document.querySelectorAll('.nav-tab');
-                    for(let btn of btns) {
-                        if(btn.innerText.toLowerCase().includes(section.toLowerCase())) {
-                            btn.classList.add('active');
-                            break;
-                        }
-                    }
-                }
-                // Load chat users when chat section is opened
                 if(section === 'chat') { loadChatUsers(); }
             };
 
@@ -1077,7 +1013,7 @@
                 if (!withdrawalsList) return;
                 
                 if (!allWithdrawals || allWithdrawals.length === 0) {
-                    withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-inbox"></i> No withdrawal requests found</td></tr>';
+                    withdrawalsList.innerHTML = '<td><td colspan="8" class="empty-state"><i class="fas fa-inbox"></i> No withdrawal requests found</td></tr>';
                     return;
                 }
                 
@@ -1128,7 +1064,7 @@
                                 <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button>
                                 <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
                             ` : `<span class="status-badge status-active">Processed</span>`}
-                         </td>
+                        </td>
                     </tr>
                 `).join('');
             };
@@ -1414,7 +1350,7 @@
                 window.location.href = 'index.html'; 
             };
             
-            // ========== CHAT FUNCTIONALITY (ADDED - DOES NOT AFFECT ORIGINAL CODE) ==========
+            // ========== CHAT FUNCTIONALITY ==========
             let currentChatUser = null;
             let currentChatType = null;
             
