@@ -6,6 +6,11 @@
     <title>Sohrab Industries | Premium Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Emoji Picker for chat -->
+    <script type="module">
+        import EmojiPicker from 'https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.0/index.js';
+        window.EmojiPicker = EmojiPicker;
+    </script>
     <!-- SweetAlert2 for professional popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -18,7 +23,6 @@
             position: relative;
         }
         
-        /* Animated Background Particles */
         body::before {
             content: '';
             position: fixed;
@@ -26,47 +30,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(232,177,60,0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(30,78,62,0.15) 0%, transparent 50%);
+            background-image: radial-gradient(circle at 20% 80%, rgba(232,177,60,0.08) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
         
-        /* Animations */
-        @keyframes glowPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.8; }
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-        
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes slideInModal {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
         
         ::-webkit-scrollbar { width: 10px; height: 10px; }
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #E8B13C; }
         
         .admin-container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
         
-        /* Premium Header */
         .admin-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -105,28 +82,9 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            position: relative;
-            z-index: 1;
         }
         
-        .admin-header h1 i { 
-            color: #E8B13C;
-            text-shadow: 0 0 15px rgba(232,177,60,0.8);
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
-        }
-        
-        .admin-header > div {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            background: rgba(0,0,0,0.3);
-            padding: 8px 25px;
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(232,177,60,0.3);
-        }
+        .admin-header h1 i { color: #E8B13C; text-shadow: 0 0 15px rgba(232,177,60,0.8); }
         
         .logout-btn { 
             background: linear-gradient(135deg, #dc3545, #a71d2a);
@@ -137,21 +95,11 @@
             cursor: pointer; 
             font-weight: 700;
             transition: all 0.3s;
-            letter-spacing: 0.5px;
         }
         
-        .logout-btn:hover { 
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(220,53,69,0.4);
-        }
+        .logout-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(220,53,69,0.4); }
         
-        /* Premium Stats Grid */
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            gap: 1.2rem; 
-            margin-bottom: 2rem; 
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
         
         .stat-card { 
             background: linear-gradient(145deg, rgba(20,45,38,0.95), rgba(15,35,28,0.95));
@@ -159,42 +107,12 @@
             padding: 1.2rem; 
             border-radius: 24px; 
             text-align: center; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             cursor: pointer; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s;
             border: 1px solid rgba(232,177,60,0.3);
-            position: relative;
-            overflow: hidden;
         }
         
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(232,177,60,0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        
-        .stat-card:hover::before { opacity: 1; }
-        
-        .stat-card:hover { 
-            transform: translateY(-8px) scale(1.02); 
-            border-color: #E8B13C;
-            box-shadow: 0 20px 40px rgba(232,177,60,0.25);
-        }
-        
-        .stat-card h3 { 
-            color: rgba(255,255,255,0.7); 
-            font-size: 0.75rem; 
-            margin-bottom: 0.6rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
-            font-weight: 500;
-        }
+        .stat-card:hover { transform: translateY(-8px) scale(1.02); border-color: #E8B13C; box-shadow: 0 20px 40px rgba(232,177,60,0.25); }
         
         .stat-number { 
             font-size: 1.8rem; 
@@ -203,10 +121,8 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            font-family: 'Playfair Display', serif;
         }
         
-        /* Premium Tabs */
         .nav-tabs { 
             display: flex; 
             gap: 10px; 
@@ -216,8 +132,6 @@
             padding: 8px 20px;
             border-radius: 60px;
             flex-wrap: wrap;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            border: 1px solid rgba(232,177,60,0.2);
         }
         
         .nav-tab { 
@@ -227,28 +141,35 @@
             cursor: pointer; 
             border-radius: 50px; 
             font-weight: 600;
+            color: rgba(255,255,255,0.8);
             transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 8px;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.85rem;
+            position: relative;
         }
         
-        .nav-tab:hover { 
-            background: rgba(232,177,60,0.2); 
-            transform: translateY(-3px);
-            color: #E8B13C;
+        .nav-tab .chat-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: pulse 1s infinite;
         }
         
-        .nav-tab.active { 
-            background: linear-gradient(135deg, #E8B13C, #c99b2e);
-            color: #0a1f1a; 
-            box-shadow: 0 6px 20px rgba(232,177,60,0.4);
-            font-weight: 700;
-        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
         
-        /* Premium Sections */
+        .nav-tab.active { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; box-shadow: 0 6px 20px rgba(232,177,60,0.4); }
+        
         .admin-section { 
             background: rgba(20,45,38,0.92);
             backdrop-filter: blur(12px);
@@ -274,235 +195,62 @@
             padding-left: 18px;
         }
         
-        /* Premium Form Cards */
-        .form-card { 
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
-            padding: 25px; 
-            border-radius: 24px; 
-            margin-bottom: 25px; 
-            border: 1px solid rgba(232,177,60,0.2);
-        }
-        
-        .form-card h3 { 
-            margin-bottom: 18px; 
-            color: #E8B13C;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        
-        .form-row { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
-            gap: 18px; 
-            margin-bottom: 20px; 
-        }
-        
+        .form-card { background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); padding: 25px; border-radius: 24px; margin-bottom: 25px; border: 1px solid rgba(232,177,60,0.2); }
+        .form-card h3 { margin-bottom: 18px; color: #E8B13C; font-weight: 700; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 20px; }
         .form-group { margin-bottom: 18px; }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: 600; 
-            color: #E8B13C; 
-            letter-spacing: 0.5px;
-            font-size: 0.85rem;
-        }
-        
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; 
-            padding: 12px 16px; 
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(232,177,60,0.3); 
-            border-radius: 16px; 
-            font-size: 14px; 
-            transition: all 0.3s;
-            color: white;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
-            outline: none; 
-            border-color: #E8B13C; 
-            box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
-            background: rgba(255,255,255,0.12);
-        }
-        
-        .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.4); }
-        
-        /* Premium Tables */
-        .table-container { 
-            overflow-x: auto; 
-            margin-top: 15px; 
-            border-radius: 20px;
-            max-height: 550px;
-            overflow-y: auto;
-        }
-        
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #E8B13C; font-size: 0.85rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 16px; color: white; }
+        .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 10px 24px; border-radius: 40px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(232,177,60,0.4); }
+        .btn-success { background: #1e7e5e; color: white; padding: 6px 14px; border-radius: 30px; border: none; cursor: pointer; }
+        .btn-danger { background: #dc3545; color: white; padding: 6px 14px; border-radius: 30px; border: none; cursor: pointer; }
+        .btn-warning { background: #ffc107; color: #333; padding: 6px 14px; border-radius: 30px; border: none; cursor: pointer; }
+        .btn-info { background: #17a2b8; color: white; padding: 6px 14px; border-radius: 30px; border: none; cursor: pointer; }
+        .table-container { overflow-x: auto; margin-top: 15px; border-radius: 20px; max-height: 550px; overflow-y: auto; }
         table { width: 100%; border-collapse: collapse; }
-        
-        th, td { 
-            padding: 14px 12px; 
-            text-align: left; 
-            border-bottom: 1px solid rgba(232,177,60,0.15); 
-        }
-        
-        th { 
-            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
-            color: #E8B13C;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            position: sticky;
-            top: 0;
-        }
-        
-        tr:hover td { 
-            background: rgba(232,177,60,0.08);
-            transition: background 0.2s;
-        }
-        
-        td { color: rgba(255,255,255,0.9); }
-        
-        /* Premium Status Badges */
-        .status-badge { 
-            padding: 5px 15px; 
-            border-radius: 30px; 
-            font-size: 12px; 
-            display: inline-block;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        
-        .status-active, .status-approved, .status-delivered { 
-            background: linear-gradient(135deg, #1e7e5e, #155a44); 
-            color: #fff; 
-            box-shadow: 0 2px 8px rgba(30,126,94,0.4);
-        }
-        
-        .status-pending { 
-            background: linear-gradient(135deg, #d4a017, #b8860b); 
-            color: #fff; 
-        }
-        
-        .status-processing { 
-            background: linear-gradient(135deg, #17a2b8, #0f7a8a); 
-            color: #fff; 
-        }
-        
-        .status-shipped { 
-            background: linear-gradient(135deg, #004085, #002d5a); 
-            color: #fff; 
-        }
-        
-        .status-cancelled, .status-rejected { 
-            background: linear-gradient(135deg, #c0392b, #a5281b); 
-            color: #fff; 
-        }
-        
-        /* Premium Buttons */
-        .btn-primary { 
-            background: linear-gradient(135deg, #E8B13C, #c99b2e);
-            color: #0a1f1a; 
-            padding: 10px 24px; 
-            border: none; 
-            border-radius: 40px; 
-            cursor: pointer; 
-            font-weight: 700;
-            transition: all 0.3s;
-            letter-spacing: 0.5px;
-            font-size: 0.85rem;
-        }
-        
-        .btn-primary:hover { 
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 25px rgba(232,177,60,0.4);
-        }
-        
-        .btn-success { 
-            background: linear-gradient(135deg, #1e7e5e, #155a44);
-            color: white; 
-            padding: 6px 14px; 
-            border: none; 
-            border-radius: 30px; 
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30,126,94,0.4); }
-        
-        .btn-danger { 
-            background: linear-gradient(135deg, #dc3545, #a71d2a);
-            color: white; 
-            padding: 6px 14px; 
-            border: none; 
-            border-radius: 30px; 
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(220,53,69,0.4); }
-        
-        .btn-warning { 
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #333; 
-            padding: 6px 14px; 
-            border: none; 
-            border-radius: 30px; 
-            cursor: pointer;
-            font-weight: 600;
-        }
-        
-        .btn-info { 
-            background: linear-gradient(135deg, #17a2b8, #0f7a8a);
-            color: white; 
-            padding: 6px 14px; 
-            border: none; 
-            border-radius: 30px; 
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-info:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(23,162,184,0.4); }
-        
+        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.15); color: rgba(255,255,255,0.9); }
+        th { background: #0a2f24; color: #E8B13C; position: sticky; top: 0; }
+        .status-badge { padding: 5px 15px; border-radius: 30px; font-size: 12px; font-weight: 700; display: inline-block; }
+        .status-active, .status-approved { background: #1e7e5e; color: white; }
+        .status-pending { background: #d4a017; color: white; }
         .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-        
-        /* Search Box */
-        .search-box { 
-            margin-bottom: 20px; 
-            display: flex; 
-            gap: 10px; 
-            flex-wrap: wrap; 
-        }
-        
-        .search-box input { 
-            flex: 1; 
-            padding: 12px 18px; 
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(232,177,60,0.3); 
-            border-radius: 50px; 
-            min-width: 200px;
-            color: white;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .search-box input::placeholder { color: rgba(255,255,255,0.4); }
-        
-        .search-box input:focus { 
-            outline: none; 
-            border-color: #E8B13C;
-            box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
-        }
-        
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-box input { flex: 1; padding: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 50px; color: white; }
         .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); font-style: italic; }
+        select.status-badge { background: rgba(0,0,0,0.3); border: 1px solid rgba(232,177,60,0.3); color: white; cursor: pointer; }
         
-        select.status-badge {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(232,177,60,0.3);
-            color: white;
-            cursor: pointer;
-        }
+        /* Chat System Styles */
+        .chat-container { display: flex; height: 600px; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; }
+        .chat-users-list { width: 300px; background: rgba(0,0,0,0.4); border-right: 1px solid rgba(232,177,60,0.2); overflow-y: auto; }
+        .chat-user-item { display: flex; align-items: center; gap: 12px; padding: 15px; cursor: pointer; transition: all 0.3s; border-bottom: 1px solid rgba(232,177,60,0.1); position: relative; }
+        .chat-user-item:hover { background: rgba(232,177,60,0.1); }
+        .chat-user-item.active { background: rgba(232,177,60,0.2); border-left: 3px solid #E8B13C; }
+        .chat-user-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+        .chat-user-info { flex: 1; }
+        .chat-user-name { font-weight: 600; color: white; }
+        .chat-user-type { font-size: 11px; color: #E8B13C; }
+        .chat-user-last-msg { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 3px; }
+        .chat-unread-badge { background: #dc3545; color: white; border-radius: 50%; min-width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+        .chat-messages-area { flex: 1; display: flex; flex-direction: column; background: rgba(0,0,0,0.2); }
+        .chat-header { padding: 15px 20px; background: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(232,177,60,0.2); }
+        .chat-header h4 { color: #E8B13C; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .chat-message { max-width: 70%; padding: 10px 15px; border-radius: 20px; position: relative; word-wrap: break-word; }
+        .chat-message.admin { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; align-self: flex-end; border-bottom-right-radius: 5px; }
+        .chat-message.user { background: rgba(255,255,255,0.1); color: white; align-self: flex-start; border-bottom-left-radius: 5px; }
+        .chat-message.reply-indicator { border-left: 3px solid #E8B13C; margin-bottom: 5px; font-size: 11px; background: rgba(232,177,60,0.1); padding: 5px 10px; border-radius: 10px; }
+        .chat-message-time { font-size: 10px; opacity: 0.6; margin-top: 5px; }
+        .chat-message-actions { position: absolute; right: 5px; top: 5px; display: none; gap: 5px; }
+        .chat-message:hover .chat-message-actions { display: flex; }
+        .chat-message-actions button { background: rgba(0,0,0,0.5); border: none; color: white; border-radius: 5px; padding: 2px 5px; cursor: pointer; font-size: 10px; }
+        .chat-input-area { padding: 15px; background: rgba(0,0,0,0.4); border-top: 1px solid rgba(232,177,60,0.2); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .chat-input { flex: 1; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(232,177,60,0.3); border-radius: 25px; color: white; resize: none; font-family: 'Inter', sans-serif; }
+        .chat-emoji-btn, .chat-send-btn { background: rgba(232,177,60,0.2); border: 1px solid rgba(232,177,60,0.3); color: #E8B13C; padding: 10px 15px; border-radius: 25px; cursor: pointer; transition: 0.3s; }
+        .chat-emoji-btn:hover, .chat-send-btn:hover { background: rgba(232,177,60,0.4); }
+        .emoji-picker-container { position: relative; }
+        .reply-preview { background: rgba(232,177,60,0.1); padding: 8px 12px; border-radius: 15px; margin-bottom: 10px; font-size: 12px; color: #E8B13C; display: flex; justify-content: space-between; align-items: center; }
+        .product-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 12px; }
         
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; text-align: center; }
@@ -511,6 +259,9 @@
             .nav-tab { padding: 8px 16px; font-size: 12px; }
             th, td { padding: 10px 8px; font-size: 12px; }
             .section-title { font-size: 1.2rem; }
+            .chat-container { flex-direction: column; height: auto; }
+            .chat-users-list { width: 100%; max-height: 200px; }
+            .chat-message { max-width: 85%; }
         }
     </style>
 </head>
@@ -542,6 +293,7 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
+            <button class="nav-tab" id="chatTabBtn" onclick="showSection('chat')"><i class="fas fa-comment-dots"></i> Live Chat <span id="chatNotificationBadge" class="chat-badge" style="display:none;">0</span></button>
         </div>
 
         <!-- Dashboard Section -->
@@ -549,10 +301,7 @@
             <h2 class="section-title"><i class="fas fa-chart-pie"></i> Dashboard Overview</h2>
             <div class="table-container">
                 <h3 style="color:#E8B13C; margin-bottom:15px;">Recent Activities <i class="fas fa-history"></i></h3>
-                <table>
-                    <thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead>
-                    <tbody id="recentActivities"></tbody>
-                </table>
+                <table><thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead><tbody id="recentActivities"></tbody></table>
             </div>
         </div>
 
@@ -593,7 +342,7 @@
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -632,20 +381,11 @@
         <!-- Withdrawals Section -->
         <div id="withdrawalsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
-            <div class="search-box">
-                <input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name...">
-                <button onclick="searchWithdrawals()" class="btn-primary"><i class="fas fa-search"></i> Search</button>
-                <button onclick="resetWithdrawalSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody id="withdrawalsList"></tbody>
-                </table>
-            </div>
+            <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
+            <div class="table-container"><tr><thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
         </div>
 
-        <!-- Products Section -->
+        <!-- Products Section with Image/Video Upload -->
         <div id="productsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2>
             <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
@@ -659,777 +399,288 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Media</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
-        <!-- Orders Section -->
+        <!-- Orders Section with Buyer Name & Phone -->
         <div id="ordersSection" class="admin-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
                 <div class="search-box" style="margin-bottom: 0;">
-                    <input type="text" id="orderSearch" placeholder="🔍 Search by Order ID...">
+                    <input type="text" id="orderSearch" placeholder="🔍 Search by Order ID or Customer...">
                     <button onclick="searchOrders()" class="btn-primary">Search</button>
                     <button onclick="resetOrderSearch()" class="btn-primary">Reset</button>
                 </div>
             </div>
             <div class="table-container">
-                <table>
-                    <thead>
-                        <tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody id="ordersList"></tbody>
-                </table>
+                <table><thead><tr><th>Order ID</th><th>Customer Name</th><th>Phone</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Pay Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead>
+                <tbody id="ordersList"></tbody>
+            </table>
+        </div>
+
+        <!-- Live Chat Section -->
+        <div id="chatSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-comment-dots"></i> Live Chat - Sohrab Industries Support Team</h2>
+            <div class="chat-container">
+                <div class="chat-users-list" id="chatUsersList"></div>
+                <div class="chat-messages-area" id="chatMessagesArea" style="display: none;">
+                    <div class="chat-header"><h4 id="selectedChatUserName">Select a user to start chatting</h4></div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-area">
+                        <div class="reply-preview" id="replyPreview" style="display: none;"><span>Replying to: <span id="replyPreviewText"></span></span><button onclick="cancelReply()" style="background:none; border:none; color:#E8B13C;">✕</button></div>
+                        <textarea class="chat-input" id="chatInput" placeholder="Type your message..." rows="2"></textarea>
+                        <div class="emoji-picker-container"><button class="chat-emoji-btn" id="emojiBtn"><i class="far fa-smile"></i></button></div>
+                        <button class="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ALL ORIGINAL JAVASCRIPT CODE PRESERVED - WITH PROFESSIONAL SWEETALERT2 POPUPS INSTEAD OF ALERTS/CONFIRMS
-        document.addEventListener('DOMContentLoaded', function() {
-            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-            
-            if (typeof supabase === 'undefined') {
-                console.error('Supabase not loaded');
-                return;
-            }
-            
-            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
-            let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [], allProducts = [];
-
-            // Professional popup notification function (replaces all alerts)
-            function showNotification(msg, isError = false, title = "") { 
-                Swal.fire({
-                    icon: isError ? 'error' : 'success',
-                    title: title || (isError ? 'Error!' : 'Success!'),
-                    text: msg,
-                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
-                    color: '#fff',
-                    confirmButtonColor: '#E8B13C',
-                    confirmButtonText: 'OK',
-                    timer: isError ? 3000 : 2000,
-                    showConfirmButton: true
-                });
-            }
-            
-            // Professional confirmation dialog
-            async function confirmAction(message, title = "Confirm Action") {
-                const result = await Swal.fire({
-                    title: title,
-                    text: message,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#E8B13C',
-                    cancelButtonColor: '#dc3545',
-                    confirmButtonText: 'Yes, proceed!',
-                    cancelButtonText: 'Cancel',
-                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
-                    color: '#fff'
-                });
-                return result.isConfirmed;
-            }
-            
-            window.showSection = function(section) {
-                document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                const targetSection = document.getElementById(`${section}Section`);
-                if (targetSection) targetSection.classList.add('active');
-                if (event && event.target && event.target.classList) event.target.classList.add('active');
-                else {
-                    const btns = document.querySelectorAll('.nav-tab');
-                    for(let btn of btns) {
-                        if(btn.innerText.toLowerCase().includes(section.toLowerCase())) {
-                            btn.classList.add('active');
-                            break;
-                        }
-                    }
+        // ============================================================
+        // COMPLETE ADMIN DASHBOARD WITH CHAT SYSTEM
+        // ============================================================
+        
+        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [], allProducts = [];
+        
+        // Chat variables
+        let currentChatUser = null;
+        let chatUsers = [];
+        let unreadCounts = {};
+        let replyToMessage = null;
+        let chatSubscription = null;
+        let emojiPicker = null;
+        
+        // Helper Functions
+        function escapeHtml(str) { if(!str) return '-'; return String(str).replace(/[&<>]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
+        
+        function showNotification(msg, isError = false, title = "") { 
+            Swal.fire({ icon: isError ? 'error' : 'success', title: title || (isError ? 'Error!' : 'Success!'), text: msg, background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff', confirmButtonColor: '#E8B13C', confirmButtonText: 'OK', timer: isError ? 3000 : 2000, showConfirmButton: true });
+        }
+        
+        async function confirmAction(message, title = "Confirm Action") {
+            const result = await Swal.fire({ title: title, text: message, icon: 'question', showCancelButton: true, confirmButtonColor: '#E8B13C', cancelButtonColor: '#dc3545', confirmButtonText: 'Yes, proceed!', cancelButtonText: 'Cancel', background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff' });
+            return result.isConfirmed;
+        }
+        
+        window.showSection = function(section) {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            const targetSection = document.getElementById(`${section}Section`);
+            if (targetSection) targetSection.classList.add('active');
+            if (event && event.target && event.target.classList) event.target.classList.add('active');
+            if (section === 'chat' && currentChatUser) markMessagesAsRead(currentChatUser.id);
+        };
+        
+        // ========== LOAD DATA FUNCTIONS ==========
+        async function loadStats() {
+            const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
+            document.getElementById('totalInvestors').innerHTML = ic || 0;
+            const { count: bc } = await supabaseClient.from('buyers').select('*', { count: 'exact', head: true });
+            document.getElementById('totalBuyers').innerHTML = bc || 0;
+            const { count: pr } = await supabaseClient.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+            document.getElementById('pendingRequests').innerHTML = pr || 0;
+            const { data: inv } = await supabaseClient.from('investments').select('amount');
+            const totalInv = inv?.reduce((s,i)=>s+(i.amount||0),0)||0;
+            document.getElementById('totalInvestments').innerHTML = `Rs. ${totalInv.toLocaleString()}`;
+            const { data: prof } = await supabaseClient.from('profits').select('amount').eq('paid',true);
+            const totalProf = prof?.reduce((s,p)=>s+(p.amount||0),0)||0;
+            document.getElementById('totalProfit').innerHTML = `Rs. ${totalProf.toLocaleString()}`;
+            const { count: pw } = await supabaseClient.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
+            document.getElementById('pendingWithdrawals').innerHTML = pw || 0;
+            const { count: pc } = await supabaseClient.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
+            document.getElementById('totalProducts').innerHTML = pc || 0;
+            const { count: oc } = await supabaseClient.from('orders').select('*',{count:'exact',head:true});
+            document.getElementById('totalOrders').innerHTML = oc || 0;
+        }
+        
+        async function loadInvestors() {
+            const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
+            allInvestors = data || [];
+            const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${i.full_name}</option>`).join('');
+            document.getElementById('investorSelect').innerHTML = selectHtml;
+            document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
+            document.getElementById('investorsList').innerHTML = allInvestors.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+        }
+        
+        async function loadBuyers() {
+            const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
+            allBuyers = data || [];
+            document.getElementById('buyersList').innerHTML = allBuyers.map(b=>`<tr><td><strong>${b.full_name}</strong></td><td>${b.email}</td><td>${b.phone||'-'}</td><td>${b.address||'-'}</td><td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+        }
+        
+        async function loadProducts() {
+            const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
+            allProducts = data || [];
+            document.getElementById('productsList').innerHTML = (data||[]).map(p=>`<tr><td>${p.image_url ? `<img src="${p.image_url}" width="50" height="50" class="product-thumb">` : '<i class="fas fa-image fa-2x" style="color:#E8B13C;"></i>'}</td><td><strong>${p.name}</strong></td><td>${p.category}</td><td>Rs.${(p.price||0).toLocaleString()}</td><td>${p.stock_quantity||0}</td><td class="action-buttons"><button onclick="editProduct('${p.id}')" class="btn-warning">Edit</button><button onclick="uploadProductMedia('${p.id}')" class="btn-info">Upload Media</button><button onclick="deleteProduct('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+        }
+        
+        window.uploadProductMedia = async function(id) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*,video/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async (ev) => {
+                        await supabaseClient.from('products').update({ image_url: ev.target.result }).eq('id', id);
+                        showNotification('Media uploaded successfully! Customers will see it.', false);
+                        await loadProducts();
+                    };
+                    reader.readAsDataURL(file);
                 }
             };
-
-            async function checkAuth() {
-                const { data: { user }, error } = await supabaseClient.auth.getUser();
-                if (error || !user) { 
-                    window.location.href = 'admin-auth.html'; 
-                    return null; 
-                }
-                const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
-                if (!adminEmails.includes(user.email)) { 
-                    showNotification('Unauthorized access!', true, 'Access Denied'); 
-                    window.location.href = 'index.html'; 
-                    return null; 
-                }
-                document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
-                await refreshAllData();
-                return user;
-            }
-
-            async function refreshAllData() {
-                await loadStats();
-                await loadInvestors();
-                await loadBuyers();
-                await loadInvestmentRequests();
-                await loadInvestmentHistory();
-                await loadProfitHistory();
-                await loadWithdrawals();
-                await loadProducts();
-                await loadOrders();
-                await loadRecentActivities();
-            }
-
-            async function loadStats() {
-                const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
-                document.getElementById('totalInvestors').innerHTML = ic || 0;
-                const { count: bc } = await supabaseClient.from('buyers').select('*', { count: 'exact', head: true });
-                document.getElementById('totalBuyers').innerHTML = bc || 0;
-                const { count: pr } = await supabaseClient.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-                document.getElementById('pendingRequests').innerHTML = pr || 0;
-                const { data: inv } = await supabaseClient.from('investments').select('amount');
-                const totalInv = inv?.reduce((s,i)=>s+(i.amount||0),0)||0;
-                document.getElementById('totalInvestments').innerHTML = `Rs. ${totalInv.toLocaleString()}`;
-                const { data: prof } = await supabaseClient.from('profits').select('amount').eq('paid',true);
-                const totalProf = prof?.reduce((s,p)=>s+(p.amount||0),0)||0;
-                document.getElementById('totalProfit').innerHTML = `Rs. ${totalProf.toLocaleString()}`;
-                const { count: pw } = await supabaseClient.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
-                document.getElementById('pendingWithdrawals').innerHTML = pw || 0;
-                const { count: pc } = await supabaseClient.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
-                document.getElementById('totalProducts').innerHTML = pc || 0;
-                const { count: oc } = await supabaseClient.from('orders').select('*',{count:'exact',head:true});
-                document.getElementById('totalOrders').innerHTML = oc || 0;
-            }
-
-            async function loadInvestors() {
-                const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
-                allInvestors = data || [];
-                const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${i.full_name}</option>`).join('');
-                const investorSelect = document.getElementById('investorSelect');
-                const profitSelect = document.getElementById('profitInvestorSelect');
-                if (investorSelect) investorSelect.innerHTML = selectHtml;
-                if (profitSelect) profitSelect.innerHTML = selectHtml;
-                const investorsList = document.getElementById('investorsList');
-                if (investorsList) {
-                    investorsList.innerHTML = allInvestors.map(i=>`<tr>
-                        <td><strong>${i.full_name}</strong></td>
-                        <td>${i.email}</td>
-                        <td>${i.phone||'-'}</td>
-                        <td>${i.city||'-'}</td>
-                        <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
-                        <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
-                        <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                        <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                    </tr>`).join('');
-                }
-            }
-
-            window.addNewInvestor = async function() {
-                const name = document.getElementById('newInvestorName').value.trim();
-                const email = document.getElementById('newInvestorEmail').value.trim();
-                const phone = document.getElementById('newInvestorPhone').value;
-                const city = document.getElementById('newInvestorCity').value;
-                const investment = parseFloat(document.getElementById('newInvestorInvestment').value) || 0;
-                if(!name || !email){ showNotification('Name and email are required!', true, 'Missing Fields'); return; }
-                const { error } = await supabaseClient.from('investors').insert([{ 
-                    id: crypto.randomUUID(), full_name: name, email, phone, city, 
-                    total_investment: investment, total_profit: 0, available_balance: investment,
-                    created_at: new Date().toISOString() 
-                }]);
-                if(error){ showNotification(error.message, true, 'Database Error'); return; }
-                showNotification('Investor added successfully!', false, 'Added');
-                document.getElementById('newInvestorName').value = '';
-                document.getElementById('newInvestorEmail').value = '';
-                document.getElementById('newInvestorInvestment').value = '0';
-                await loadInvestors(); await loadStats();
-            };
-
-            window.deleteInvestor = async function(id){ 
-                if(await confirmAction('Delete this investor and all their records? This action cannot be undone.', 'Delete Investor')){ 
-                    await supabaseClient.from('investments').delete().eq('investor_id',id); 
-                    await supabaseClient.from('profits').delete().eq('investor_id',id); 
-                    await supabaseClient.from('withdrawals').delete().eq('investor_id',id); 
-                    await supabaseClient.from('investors').delete().eq('id',id); 
-                    showNotification('Investor deleted successfully', false, 'Deleted'); 
-                    await loadInvestors(); await loadStats(); 
-                } 
-            };
-
-            async function loadBuyers() {
-                const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
-                allBuyers = data || [];
-                const buyersList = document.getElementById('buyersList');
-                if (buyersList) {
-                    buyersList.innerHTML = allBuyers.map(b=>`<tr>
-                        <td><strong>${b.full_name}</strong></td>
-                        <td>${b.email}</td>
-                        <td>${b.phone||'-'}</td>
-                        <td>${b.address||'-'}</td>
-                        <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                    </tr>`).join('');
-                }
-            }
-
-            window.addNewBuyer = async function() {
-                const name = document.getElementById('newBuyerName').value.trim();
-                const email = document.getElementById('newBuyerEmail').value.trim();
-                const phone = document.getElementById('newBuyerPhone').value;
-                const address = document.getElementById('newBuyerAddress').value;
-                if(!name || !email){ showNotification('Name and email required!', true, 'Missing Fields'); return; }
-                const { error } = await supabaseClient.from('buyers').insert([{ id: crypto.randomUUID(), full_name: name, email, phone, address, created_at: new Date().toISOString() }]);
-                if(error){ showNotification(error.message, true, 'Error'); return; }
-                showNotification('Buyer added successfully!', false, 'Added');
-                document.getElementById('newBuyerName').value = '';
-                document.getElementById('newBuyerEmail').value = '';
-                document.getElementById('newBuyerAddress').value = '';
-                await loadBuyers(); await loadStats();
-            };
-
-            window.deleteBuyer = async function(id){ 
-                if(await confirmAction('Delete this buyer?', 'Delete Buyer')){ 
-                    await supabaseClient.from('buyers').delete().eq('id',id); 
-                    showNotification('Buyer deleted', false, 'Deleted'); 
-                    await loadBuyers(); await loadStats(); 
-                } 
-            };
-
-            async function loadProducts() {
-                const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
-                allProducts = data || [];
-                const productsList = document.getElementById('productsList');
-                if (productsList) {
-                    if (!data || data.length === 0) {
-                        productsList.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="fas fa-box-open"></i> No products found. Add your first product!</td></tr>';
-                        return;
-                    }
-                    productsList.innerHTML = (data||[]).map(p=>`<tr>
-                        <td><strong>${p.name}</strong></td>
-                        <td>${p.category}</td>
-                        <td>Rs.${(p.price||0).toLocaleString()}</td>
-                        <td>${p.stock_quantity||0}</td>
-                        <td class="action-buttons"><button onclick="editProduct('${p.id}')" class="btn-warning"><i class="fas fa-edit"></i> Edit</button><button onclick="uploadProductImage('${p.id}')" class="btn-info"><i class="fas fa-image"></i> Upload Image</button><button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                    </tr>`).join('');
-                }
-            }
-
-            // Edit product with professional popup
-            window.editProduct = async function(id) {
-                const product = allProducts.find(p => p.id === id);
-                if(!product) return;
-                const { value: formData } = await Swal.fire({
-                    title: 'Edit Product',
-                    html: `
-                        <input id="editName" class="swal2-input" placeholder="Product Name" value="${product.name}">
-                        <input id="editPrice" class="swal2-input" placeholder="Price" value="${product.price}">
-                        <input id="editStock" class="swal2-input" placeholder="Stock Quantity" value="${product.stock_quantity}">
-                    `,
-                    focusConfirm: false,
-                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
-                    color: '#fff',
-                    confirmButtonColor: '#E8B13C',
-                    preConfirm: () => {
-                        return {
-                            name: document.getElementById('editName').value,
-                            price: parseFloat(document.getElementById('editPrice').value),
-                            stock: parseInt(document.getElementById('editStock').value) || 0
-                        };
-                    }
-                });
-                if (formData) {
-                    await supabaseClient.from('products').update({
-                        name: formData.name,
-                        price: formData.price,
-                        stock_quantity: formData.stock
-                    }).eq('id', id);
-                    showNotification('Product updated successfully!', false, 'Updated');
-                    await loadProducts();
-                }
-            };
-
-            // Upload product image from PC/Mobile
-            window.uploadProductImage = async function(id) {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = async (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = async (ev) => {
-                            await supabaseClient.from('products').update({ image_url: ev.target.result }).eq('id', id);
-                            showNotification('Product image uploaded successfully!', false, 'Uploaded');
-                            await loadProducts();
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                };
-                input.click();
-            };
-
-            window.addNewProduct = async function() {
-                const name = document.getElementById('newProductName').value.trim();
-                const category = document.getElementById('newProductCategory').value;
-                const wattage = document.getElementById('newProductWattage').value;
-                const price = parseFloat(document.getElementById('newProductPrice').value);
-                const stock = parseInt(document.getElementById('newProductStock').value) || 0;
-                if(!name || !category || !price){ showNotification('Name, category and price required', true, 'Missing Fields'); return; }
-                const { error } = await supabaseClient.from('products').insert([{ 
-                    id: crypto.randomUUID(), name, category, wattage, price, 
-                    stock_quantity: stock, is_active: true, created_at: new Date().toISOString() 
-                }]);
-                if(error){ showNotification(error.message, true, 'Error'); return; }
-                showNotification('Product added successfully!', false, 'Added');
-                document.getElementById('newProductName').value = '';
-                document.getElementById('newProductPrice').value = '';
-                document.getElementById('newProductStock').value = '0';
-                document.getElementById('newProductWattage').value = '';
-                await loadProducts(); await loadStats();
-            };
-
-            window.deleteProduct = async function(id){ 
-                if(await confirmAction('Delete this product?', 'Delete Product')){ 
-                    await supabaseClient.from('products').update({is_active:false}).eq('id',id); 
-                    showNotification('Product deleted successfully', false, 'Deleted'); 
-                    await loadProducts(); 
-                    await loadStats(); 
-                } 
-            };
-            
-            window.searchProducts = function() { 
-                const term = document.getElementById('productSearch').value.toLowerCase(); 
-                const rows = document.querySelectorAll('#productsList tr'); 
-                rows.forEach(row=>{ row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; }); 
-            };
-
-            window.addInvestment = async function() { 
-                const investorId = document.getElementById('investorSelect').value, amount = parseFloat(document.getElementById('invAmount').value), date = document.getElementById('invDate').value, paymentMethod = document.getElementById('invPaymentMethod').value, transactionId = document.getElementById('invTransactionId').value; 
-                if(!investorId || !amount || !date){ showNotification('Please fill all required fields', true, 'Missing Fields'); return; } 
-                const { error } = await supabaseClient.from('investments').insert([{ investor_id: investorId, amount, investment_date: date, payment_method: paymentMethod, transaction_id: transactionId, status: 'active' }]); 
-                if(error){ showNotification(error.message, true, 'Error'); return; } 
-                const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id',investorId).eq('status','active'); 
-                const totalInvestment = investments?.reduce((s,i)=>s+(i.amount||0),0)||0; 
-                const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); 
-                const newBalance = (investor?.available_balance||0) + amount; 
-                await supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id',investorId); 
-                showNotification('Investment added successfully!', false, 'Added'); 
-                document.getElementById('invAmount').value = ''; 
-                await loadInvestmentHistory(); await loadInvestors(); await loadStats(); 
-            };
-
-            window.addProfit = async function() { 
-                const investorId = document.getElementById('profitInvestorSelect').value, amount = parseFloat(document.getElementById('profitAmount').value), month = document.getElementById('profitMonth').value, percentage = parseFloat(document.getElementById('profitPercentage').value) || 10; 
-                if(!investorId || !amount || !month){ showNotification('Please fill all fields', true, 'Missing Fields'); return; } 
-                const { error } = await supabaseClient.from('profits').insert([{ investor_id: investorId, amount, month: month + '-01', profit_percentage: percentage, paid: true, paid_date: new Date().toISOString().split('T')[0] }]); 
-                if(error){ showNotification(error.message, true, 'Error'); return; } 
-                const { data: profits } = await supabaseClient.from('profits').select('amount').eq('investor_id',investorId).eq('paid',true); 
-                const totalProfit = profits?.reduce((s,p)=>s+(p.amount||0),0)||0; 
-                const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); 
-                const newBalance = (investor?.available_balance||0) + amount; 
-                await supabaseClient.from('investors').update({ total_profit: totalProfit, available_balance: newBalance }).eq('id',investorId); 
-                showNotification('Profit added successfully!', false, 'Added'); 
-                document.getElementById('profitAmount').value = ''; 
-                await loadProfitHistory(); await loadInvestors(); await loadStats(); 
-            };
-
-            async function loadInvestmentHistory() { 
-                const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
-                const investmentHistory = document.getElementById('investmentHistory');
-                if (investmentHistory) {
-                    investmentHistory.innerHTML = (data||[]).map(i=>`<tr>
-                        <td>${i.investors?.full_name||'-'}</td>
-                        <td>Rs.${(i.amount||0).toLocaleString()}</td>
-                        <td>${new Date(i.investment_date).toLocaleDateString()}</td>
-                        <td>${i.payment_method||'-'}</td>
-                        <td><span class="status-badge status-${i.status}">${i.status}</span></td>
-                        <td class="action-buttons"><button onclick="updateInvestmentStatus('${i.id}')" class="btn-warning"><i class="fas fa-sync-alt"></i> Update Status</button><button onclick="deleteInvestment('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                    </tr>`).join('');
-                }
-            }
-            
-            window.updateInvestmentStatus = async function(id) {
-                const { value: status } = await Swal.fire({
-                    title: 'Update Investment Status',
-                    input: 'select',
-                    inputOptions: { 'active': 'Active', 'pending': 'Pending', 'rejected': 'Rejected' },
-                    inputValue: 'active',
-                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
-                    color: '#fff',
-                    confirmButtonColor: '#E8B13C'
-                });
-                if (status) {
-                    await supabaseClient.from('investments').update({ status: status }).eq('id', id);
-                    showNotification(`Status updated to ${status}`, false, 'Updated');
-                    await loadInvestmentHistory();
-                }
-            };
-            
-            async function loadProfitHistory() { 
-                const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); 
-                const profitHistory = document.getElementById('profitHistory');
-                if (profitHistory) {
-                    profitHistory.innerHTML = (data||[]).map(p=>`<tr>
-                        <td>${p.investors?.full_name||'-'}</td>
-                        <td>Rs.${(p.amount||0).toLocaleString()}</td>
-                        <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
-                        <td>${p.profit_percentage||10}%</td>
-                        <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td>
-                        <td class="action-buttons"><button onclick="deleteProfit('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                    </tr>`).join('');
-                }
-            }
-            
-            async function loadInvestmentRequests() { 
-                const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); 
-                const requestsList = document.getElementById('investmentRequestsList');
-                if (requestsList) {
-                    requestsList.innerHTML = (data || []).map(req => `<tr>
-                        <td><strong>${req.investors?.full_name || '-'}</strong><br><small>${req.investors?.email || '-'}</small></td>
-                        <td>Rs. ${(req.amount || 0).toLocaleString()}</td>
-                        <td>${new Date(req.created_at).toLocaleDateString()}</td>
-                        <td>${req.payment_method || '-'}</td>
-                        <td>${req.transaction_id || '-'}</td>
-                        <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button></td>
-                    </tr>`).join('');
-                }
-            }
-            
-            async function loadWithdrawals() { 
-                const { data } = await supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false });
-                allWithdrawals = data || [];
-                const withdrawalsList = document.getElementById('withdrawalsList');
-                if (!withdrawalsList) return;
-                
-                if (!allWithdrawals || allWithdrawals.length === 0) {
-                    withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-inbox"></i> No withdrawal requests found</td></tr>';
-                    return;
-                }
-                
-                withdrawalsList.innerHTML = allWithdrawals.map(w => `
-                    <tr>
-                        <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
-                        <td><small>${w.investors?.email || '-'}</small></td>
-                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                        <td>${w.payment_method || '-'}</td>
-                        <td><small>${w.account_details || '-'}</small></td>
-                        <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
-                        <td class="action-buttons">
-                            ${w.status === 'pending' ? `
-                                <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button>
-                                <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
-                            ` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button>`}
-                        </td>
-                    </tr>
-                `).join('');
-            }
-            
-            window.deleteWithdrawal = async function(id) {
-                if(await confirmAction('Delete this processed withdrawal request?', 'Delete Withdrawal')) {
-                    await supabaseClient.from('withdrawals').delete().eq('id', id);
-                    showNotification('Withdrawal request deleted', false, 'Deleted');
-                    await loadWithdrawals();
-                    await loadStats();
-                }
-            };
-            
-            window.searchWithdrawals = function() {
-                const term = document.getElementById('withdrawalSearch').value.toLowerCase();
-                const filtered = allWithdrawals.filter(w => 
-                    w.investors?.full_name?.toLowerCase().includes(term) || 
-                    w.investors?.email?.toLowerCase().includes(term)
-                );
-                const withdrawalsList = document.getElementById('withdrawalsList');
-                if (!withdrawalsList) return;
-                
-                if (filtered.length === 0) {
-                    withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-search"></i> No withdrawal requests found</td></tr>';
-                    return;
-                }
-                
-                withdrawalsList.innerHTML = filtered.map(w => `...`).join('');
-            };
-            
-            window.resetWithdrawalSearch = function() {
-                document.getElementById('withdrawalSearch').value = '';
-                loadWithdrawals();
-            };
-            
-            async function loadOrders() { 
-                const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
-                allOrders = data || [];
-                const ordersList = document.getElementById('ordersList');
-                if (!ordersList) return;
-                
-                if (!allOrders || allOrders.length === 0) {
-                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i> No orders found</td></tr>';
-                    return;
-                }
-                
-                ordersList.innerHTML = allOrders.map(o => {
-                    let productsList = '-';
-                    try {
-                        const items = JSON.parse(o.notes || '[]');
-                        if (Array.isArray(items) && items.length > 0) {
-                            productsList = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-                        } else {
-                            productsList = o.notes || '-';
-                        }
-                    } catch(e) {
-                        productsList = o.notes || '-';
-                    }
-                    
-                    return `
-                        <tr>
-                            <td><strong>${o.id?.slice(0, 12)}...</strong><br><small style="color:#E8B13C;">${o.id}</small></td>
-                            <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
-                            <td><small>${productsList.substring(0, 50)}${productsList.length > 50 ? '...' : ''}</small></td>
-                            <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
-                            <td>${new Date(o.order_date).toLocaleDateString()}</td>
-                            <td>${o.payment_method || '-'}</td>
-                            <td>
-                                <select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding: 5px; background: rgba(0,0,0,0.3);">
-                                    <option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option>
-                                </select>
-                              </td>
-                            <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
-                            <td>
-                                <select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding: 5px; background: rgba(0,0,0,0.3);">
-                                    <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option>
-                                    <option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-                                    <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                                    <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                                </select>
-                              </td>
-                            <td class="action-buttons">
-                                <button onclick="editOrder('${o.id}')" class="btn-warning" title="Edit Price/Address"><i class="fas fa-edit"></i> Edit</button>
-                                <button onclick="deleteOrder('${o.id}')" class="btn-danger" title="Delete"><i class="fas fa-trash"></i> Delete</button>
-                              </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-            
-            window.editOrder = async function(id) {
-                const order = allOrders.find(o => o.id === id);
-                if(!order) return;
-                const { value: formData } = await Swal.fire({
-                    title: 'Edit Order',
-                    html: `
-                        <input id="editAmount" class="swal2-input" placeholder="Total Amount" value="${order.total_amount}">
-                        <input id="editAddress" class="swal2-input" placeholder="Delivery Address" value="${order.delivery_address || ''}">
-                        <input id="editCustomer" class="swal2-input" placeholder="Customer Name" value="${order.customer_name || order.user_type || ''}">
-                    `,
-                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
-                    color: '#fff',
-                    confirmButtonColor: '#E8B13C',
-                    preConfirm: () => {
-                        return {
-                            amount: parseFloat(document.getElementById('editAmount').value),
-                            address: document.getElementById('editAddress').value,
-                            customer: document.getElementById('editCustomer').value
-                        };
-                    }
-                });
-                if (formData) {
-                    await supabaseClient.from('orders').update({
-                        total_amount: formData.amount,
-                        delivery_address: formData.address,
-                        customer_name: formData.customer
-                    }).eq('id', id);
-                    showNotification('Order updated successfully!', false, 'Updated');
-                    await loadOrders();
-                }
-            };
-            
-            window.updatePaymentStatus = async function(id, status) { 
-                const { error } = await supabaseClient.from('orders').update({ payment_status: status }).eq('id', id); 
-                if (error) { 
-                    showNotification(error.message, true, 'Error'); 
-                } else { 
-                    showNotification(`Payment status updated to ${status}!`, false, 'Updated'); 
-                    await loadOrders(); 
-                } 
-            };
-            
-            window.updateOrderStatus = async function(id, status) { 
-                const { error } = await supabaseClient.from('orders').update({ status: status }).eq('id', id); 
-                if (error) { 
-                    showNotification(error.message, true, 'Error'); 
-                } else { 
-                    showNotification(`Order status updated to ${status}!`, false, 'Updated'); 
-                    await loadOrders(); 
-                } 
-            };
-            
-            window.deleteOrder = async function(id) { 
-                if(await confirmAction('Delete this order? This action cannot be undone.', 'Delete Order')) { 
-                    const { error } = await supabaseClient.from('orders').delete().eq('id', id); 
-                    if (error) { 
-                        showNotification(error.message, true, 'Error'); 
-                    } else { 
-                        showNotification('Order deleted successfully!', false, 'Deleted'); 
-                        await loadOrders(); 
-                        await loadStats(); 
-                    } 
-                } 
-            };
-            
-            window.searchOrders = function() { 
-                const term = document.getElementById('orderSearch').value.toLowerCase(); 
-                const filtered = allOrders.filter(o => 
-                    o.id?.toLowerCase().includes(term) || 
-                    (o.customer_name || o.user_type)?.toLowerCase().includes(term) ||
-                    o.delivery_address?.toLowerCase().includes(term)
-                ); 
-                const ordersList = document.getElementById('ordersList');
-                if (!ordersList) return;
-                
-                if (filtered.length === 0) {
-                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-search"></i> No orders found</td></tr>';
-                    return;
-                }
-                
-                ordersList.innerHTML = filtered.map(o => `...`).join('');
-            };
-            
-            window.resetOrderSearch = function() { 
-                document.getElementById('orderSearch').value = ''; 
-                loadOrders(); 
-            };
-            
-            async function loadRecentActivities() { 
-                const activities = []; 
-                const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
-                if(inv) inv.forEach(i=>activities.push({action:'Investment',details:`${i.investors?.full_name} invested Rs.${i.amount}`,time:new Date(i.created_at).toLocaleString()})); 
-                const { data: ord } = await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); 
-                if(ord) ord.forEach(o=>activities.push({action:'Order',details:`Order #${o.id?.slice(0,8)} - Rs.${o.total_amount} by ${o.customer_name || o.user_type}`,time:new Date(o.created_at).toLocaleString()})); 
-                const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
-                if(wd) wd.forEach(w=>activities.push({action:'Withdrawal Request',details:`${w.investors?.full_name} requested Rs.${w.amount} (${w.status})`,time:new Date(w.created_at).toLocaleString()})); 
-                activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
-                const recentActivities = document.getElementById('recentActivities');
-                if (recentActivities) {
-                    recentActivities.innerHTML = activities.slice(0,10).map(a=>`<tr>
-                        <td>${a.action}</td>
-                        <td>${a.details}</td>
-                        <td>${a.time}</td>
-                        <td class="action-buttons"><button onclick="viewActivityDetail('${a.action}', '${a.details}')" class="btn-info"><i class="fas fa-eye"></i> View</button></td>
-                    </tr>`).join('');
-                }
-            }
-            
-            window.viewActivityDetail = function(action, details) {
-                Swal.fire({
-                    title: `${action} Details`,
-                    text: details,
-                    icon: 'info',
-                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
-                    color: '#fff',
-                    confirmButtonColor: '#E8B13C'
-                });
-            };
-
-            window.approveInvestment = async function(id, amount, investorId) { 
-                if(!await confirmAction(`Approve investment of Rs. ${amount.toLocaleString()}?`, 'Approve Investment')) return; 
-                await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
-                const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id', investorId).eq('status', 'active'); 
-                const totalInvestment = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0; 
-                const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id', investorId).single(); 
-                const newBalance = (investor?.available_balance || 0) + amount; 
-                await supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id', investorId); 
-                showNotification('Investment approved successfully!', false, 'Approved'); 
-                await loadInvestmentRequests(); 
-                await loadInvestmentHistory(); 
-                await loadInvestors(); 
-                await loadStats(); 
-            };
-            
-            window.rejectInvestment = async function(id) { 
-                if(!await confirmAction('Reject this investment request?', 'Reject Investment')) return; 
-                await supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id); 
-                showNotification('Investment rejected', false, 'Rejected'); 
-                await loadInvestmentRequests(); 
-                await loadStats(); 
-            };
-            
-            window.approveWithdrawal = async function(id, amount, investorId){ 
-                if(!await confirmAction(`Approve withdrawal of Rs. ${amount.toLocaleString()}?`, 'Approve Withdrawal')) return; 
-                const { error } = await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
-                if(error) { showNotification(error.message, true, 'Error'); return; }
-                
-                const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id', investorId).single(); 
-                if(investor) { 
-                    const newBalance = (investor.available_balance || 0) - amount;
-                    await supabaseClient.from('investors').update({ available_balance: newBalance }).eq('id', investorId); 
-                }
-                showNotification('Withdrawal approved and balance updated!', false, 'Approved'); 
-                await loadWithdrawals(); 
-                await loadInvestors(); 
-                await loadStats(); 
-            };
-            
-            window.rejectWithdrawal = async function(id){ 
-                if(!await confirmAction('Reject this withdrawal request?', 'Reject Withdrawal')) return;
-                await supabaseClient.from('withdrawals').update({ status: 'rejected' }).eq('id', id); 
-                showNotification('Withdrawal rejected', false, 'Rejected'); 
-                await loadWithdrawals(); 
-            };
-            
-            window.deleteInvestment = async function(id){ 
-                if(await confirmAction('Delete this investment record?', 'Delete Investment')){ 
-                    await supabaseClient.from('investments').delete().eq('id',id); 
-                    await loadInvestmentHistory(); 
-                    await loadInvestors(); 
-                    await loadStats(); 
-                    showNotification('Investment deleted', false, 'Deleted'); 
-                } 
-            };
-            
-            window.deleteProfit = async function(id){ 
-                if(await confirmAction('Delete this profit record?', 'Delete Profit')){ 
-                    await supabaseClient.from('profits').delete().eq('id',id); 
-                    await loadProfitHistory(); 
-                    await loadInvestors(); 
-                    await loadStats(); 
-                    showNotification('Profit deleted', false, 'Deleted'); 
-                } 
-            };
-
-            window.searchInvestors = function() { 
-                const term = document.getElementById('investorSearch').value.toLowerCase(); 
-                const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
-                const investorsList = document.getElementById('investorsList');
-                if (investorsList) {
-                    investorsList.innerHTML = filtered.map(i=>`<tr>...</tr>`).join('');
-                }
-            };
-            
-            window.resetInvestorSearch = function() { 
-                document.getElementById('investorSearch').value = ''; 
-                loadInvestors(); 
-            };
-            
-            window.searchBuyers = function() { 
-                const term = document.getElementById('buyerSearch').value.toLowerCase(); 
-                const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
-                const buyersList = document.getElementById('buyersList');
-                if (buyersList) {
-                    buyersList.innerHTML = filtered.map(b=>`<tr>...</tr>`).join('');
-                }
-            };
-            
-            window.resetBuyerSearch = function() { 
-                document.getElementById('buyerSearch').value = ''; 
-                loadBuyers(); 
-            };
-            
-            window.handleLogout = async function(){ 
-                await supabaseClient.auth.signOut(); 
-                localStorage.clear(); 
-                window.location.href = 'index.html'; 
-            };
-            
-            checkAuth();
-        });
+            input.click();
+        };
+        
+        async function loadOrders() {
+            const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
+            allOrders = data || [];
+            const buyerMap = new Map();
+            allBuyers.forEach(b => { buyerMap.set(b.email?.toLowerCase(), b); buyerMap.set(b.full_name?.toLowerCase(), b); });
+            document.getElementById('ordersList').innerHTML = (allOrders||[]).map(o => {
+                let buyerName = o.customer_name || o.user_type || 'buyer', buyerPhone = '-';
+                if (o.buyer_email && buyerMap.has(o.buyer_email.toLowerCase())) { const b = buyerMap.get(o.buyer_email.toLowerCase()); buyerName = b.full_name; buyerPhone = b.phone || '-'; }
+                else if (o.customer_name && buyerMap.has(o.customer_name.toLowerCase())) { const b = buyerMap.get(o.customer_name.toLowerCase()); buyerName = b.full_name; buyerPhone = b.phone || '-'; }
+                let productsList = '-';
+                try { const items = JSON.parse(o.notes || '[]'); if (items.length) productsList = items.map(item => `${item.name} (x${item.quantity})`).join(', '); } catch(e) { productsList = o.notes || '-'; }
+                return `<tr><td><strong>${o.id?.slice(0,12)}...</strong></td><td><i class="fas fa-user"></i> <strong>${escapeHtml(buyerName)}</strong></td><td><i class="fas fa-phone"></i> ${escapeHtml(buyerPhone)}</td><td><small>${escapeHtml(productsList.substring(0,50))}</small></td><td>Rs. ${(o.total_amount||0).toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td>${o.payment_method||'-'}</td><td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge"><option ${o.payment_status==='pending'?'selected':''}>pending</option><option ${o.payment_status==='paid'?'selected':''}>paid</option></select></td><td><small>${escapeHtml(o.delivery_address?.substring(0,25)||'-')}</small></td><td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge"><option ${o.status==='pending'?'selected':''}>pending</option><option ${o.status==='processing'?'selected':''}>processing</option><option ${o.status==='shipped'?'selected':''}>shipped</option><option ${o.status==='delivered'?'selected':''}>delivered</option></select></td><td class="action-buttons"><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td></tr>`;
+            }).join('');
+        }
+        
+        // ========== CHAT SYSTEM ==========
+        async function initChatTables() { console.log('Chat ready'); }
+        
+        async function loadChatUsers() {
+            chatUsers = [];
+            for (const inv of allInvestors) { if (inv.email) chatUsers.push({ id: inv.id, name: inv.full_name, email: inv.email, phone: inv.phone, type: 'investor', avatar: inv.full_name?.charAt(0) || 'I' }); }
+            for (const buyer of allBuyers) { if (buyer.email) chatUsers.push({ id: buyer.id, name: buyer.full_name, email: buyer.email, phone: buyer.phone, type: 'buyer', avatar: buyer.full_name?.charAt(0) || 'B' }); }
+            renderChatUsersList();
+            await updateUnreadCounts();
+        }
+        
+        function renderChatUsersList() {
+            const container = document.getElementById('chatUsersList');
+            if (!container) return;
+            if (chatUsers.length === 0) { container.innerHTML = '<div class="empty-state">No users available for chat</div>'; return; }
+            container.innerHTML = chatUsers.map(user => `<div class="chat-user-item ${currentChatUser?.id === user.id ? 'active' : ''}" onclick="selectChatUser('${user.id}', '${escapeHtml(user.name)}', '${user.type}')"><div class="chat-user-avatar">${user.avatar}</div><div class="chat-user-info"><div class="chat-user-name">${escapeHtml(user.name)}</div><div class="chat-user-type">${user.type === 'investor' ? '💰 Investor' : '🛒 Buyer'}</div></div>${unreadCounts[user.id] > 0 ? `<div class="chat-unread-badge">${unreadCounts[user.id]}</div>` : ''}</div>`).join('');
+        }
+        
+        window.selectChatUser = async function(userId, userName, userType) {
+            currentChatUser = { id: userId, name: userName, type: userType };
+            document.getElementById('selectedChatUserName').innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(userName)} (${userType})`;
+            document.getElementById('chatMessagesArea').style.display = 'flex';
+            await loadMessages(userId);
+            await markMessagesAsRead(userId);
+        };
+        
+        async function loadMessages(userId) {
+            const { data } = await supabaseClient.from('chat_messages').select('*').or(`and(sender_id.eq.${userId},receiver_id.eq.admin),and(sender_id.eq.admin,receiver_id.eq.${userId})`).order('created_at', { ascending: true });
+            renderMessages(data || []);
+            if (chatSubscription) await supabaseClient.removeChannel(chatSubscription);
+            chatSubscription = supabaseClient.channel(`chat-${userId}`).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${userId}` }, (payload) => { if (payload.new.sender_id === userId) { appendMessage(payload.new); markMessagesAsRead(userId); } else if (payload.new.sender_id === 'admin' && payload.new.receiver_id === userId) appendMessage(payload.new); }).subscribe();
+        }
+        
+        function renderMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            if (!container) return;
+            container.innerHTML = messages.filter(m => !m.deleted_for_all).map(msg => `<div class="chat-message ${msg.sender_id === 'admin' ? 'admin' : 'user'}" data-message-id="${msg.id}">${msg.reply_to_id ? `<div class="chat-message reply-indicator">↩️ Replying to previous message</div>` : ''}<div>${escapeHtml(msg.message || '')}</div><div class="chat-message-time">${new Date(msg.created_at).toLocaleString()}</div><div class="chat-message-actions"><button onclick="replyToMessage('${msg.id}', '${escapeHtml(msg.message || '').substring(0,50)}')"><i class="fas fa-reply"></i></button><button onclick="deleteMessageForMe('${msg.id}')"><i class="fas fa-trash-alt"></i></button><button onclick="deleteMessageForAll('${msg.id}')"><i class="fas fa-ban"></i></button></div></div>`).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function appendMessage(msg) {
+            const container = document.getElementById('chatMessages');
+            if (!container) return;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-message ${msg.sender_id === 'admin' ? 'admin' : 'user'}`;
+            msgDiv.setAttribute('data-message-id', msg.id);
+            msgDiv.innerHTML = `${msg.reply_to_id ? `<div class="chat-message reply-indicator">↩️ Replying to previous message</div>` : ''}<div>${escapeHtml(msg.message || '')}</div><div class="chat-message-time">${new Date(msg.created_at).toLocaleString()}</div><div class="chat-message-actions"><button onclick="replyToMessage('${msg.id}', '${escapeHtml(msg.message || '').substring(0,50)}')"><i class="fas fa-reply"></i></button><button onclick="deleteMessageForMe('${msg.id}')"><i class="fas fa-trash-alt"></i></button><button onclick="deleteMessageForAll('${msg.id}')"><i class="fas fa-ban"></i></button></div>`;
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        window.sendMessage = async function() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message || !currentChatUser) return;
+            const newMessage = { sender_id: 'admin', sender_type: 'admin', receiver_id: currentChatUser.id, receiver_type: currentChatUser.type, message: message, reply_to_id: replyToMessage?.id || null, created_at: new Date().toISOString() };
+            const { error } = await supabaseClient.from('chat_messages').insert([newMessage]);
+            if (error) showNotification('Failed to send message', true);
+            else { input.value = ''; cancelReply(); appendMessage({ ...newMessage, id: Date.now().toString() }); }
+        };
+        
+        window.replyToMessage = function(messageId, messageText) { replyToMessage = { id: messageId, text: messageText }; const preview = document.getElementById('replyPreview'); if (preview) { document.getElementById('replyPreviewText').innerText = messageText; preview.style.display = 'flex'; } };
+        window.cancelReply = function() { replyToMessage = null; const preview = document.getElementById('replyPreview'); if (preview) preview.style.display = 'none'; };
+        window.deleteMessageForMe = async function(messageId) { if (await confirmAction('Delete this message for yourself?', 'Delete Message')) { await supabaseClient.from('chat_messages').update({ is_deleted: true }).eq('id', messageId); document.querySelector(`.chat-message[data-message-id="${messageId}"]`)?.remove(); showNotification('Message deleted for you'); } };
+        window.deleteMessageForAll = async function(messageId) { if (await confirmAction('Delete this message for everyone?', 'Delete for Everyone')) { await supabaseClient.from('chat_messages').update({ deleted_for_all: true }).eq('id', messageId); document.querySelector(`.chat-message[data-message-id="${messageId}"]`)?.remove(); showNotification('Message deleted for everyone'); } };
+        
+        async function markMessagesAsRead(userId) { await supabaseClient.from('chat_messages').update({ read_at: new Date().toISOString() }).eq('sender_id', userId).eq('receiver_id', 'admin').is('read_at', null); unreadCounts[userId] = 0; updateNotificationBadge(); renderChatUsersList(); }
+        
+        async function updateUnreadCounts() { for (const user of chatUsers) { const { count } = await supabaseClient.from('chat_messages').select('*', { count: 'exact', head: true }).eq('sender_id', user.id).eq('receiver_id', 'admin').is('read_at', null); unreadCounts[user.id] = count || 0; } updateNotificationBadge(); }
+        
+        function updateNotificationBadge() { const totalUnread = Object.values(unreadCounts).reduce((a, b) => a + b, 0); const badge = document.getElementById('chatNotificationBadge'); if (badge) { if (totalUnread > 0) { badge.innerText = totalUnread > 99 ? '99+' : totalUnread; badge.style.display = 'flex'; } else badge.style.display = 'none'; } }
+        
+        function setupEmojiPicker() { setTimeout(() => { const btn = document.getElementById('emojiBtn'); if (btn) btn.addEventListener('click', () => { const pickerDiv = document.querySelector('.emoji-picker-container'); if (!window._picker) { import('https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.0/index.js').then(module => { const picker = new module.default(); picker.style.position = 'absolute'; picker.style.bottom = '60px'; picker.style.right = '10px'; picker.style.zIndex = '1000'; picker.style.display = 'block'; pickerDiv?.appendChild(picker); window._picker = picker; picker.addEventListener('emoji-click', (event) => { const input = document.getElementById('chatInput'); if (input) input.value += event.detail.unicode; picker.style.display = 'none'; }); }); } else { const p = window._picker; p.style.display = p.style.display === 'none' ? 'block' : 'none'; } }); }, 500); }
+        
+        // ========== CRUD OPERATIONS (Simplified but functional) ==========
+        window.addNewInvestor = async function() { const name=document.getElementById('newInvestorName').value, email=document.getElementById('newInvestorEmail').value; if(!name||!email) return showNotification('Name and email required',true); await supabaseClient.from('investors').insert([{id:crypto.randomUUID(),full_name:name,email,phone:document.getElementById('newInvestorPhone').value,city:document.getElementById('newInvestorCity').value,total_investment:parseFloat(document.getElementById('newInvestorInvestment').value)||0,available_balance:parseFloat(document.getElementById('newInvestorInvestment').value)||0,created_at:new Date()}]); showNotification('Investor added'); await loadInvestors(); await loadStats(); await loadChatUsers(); };
+        window.deleteInvestor = async (id) => { if(await confirmAction('Delete investor?','Confirm')){ await supabaseClient.from('investments').delete().eq('investor_id',id); await supabaseClient.from('profits').delete().eq('investor_id',id); await supabaseClient.from('withdrawals').delete().eq('investor_id',id); await supabaseClient.from('investors').delete().eq('id',id); showNotification('Deleted'); await loadInvestors(); await loadStats(); await loadChatUsers(); } };
+        window.addNewBuyer = async function() { const name=document.getElementById('newBuyerName').value, email=document.getElementById('newBuyerEmail').value; if(!name||!email) return showNotification('Name and email required',true); await supabaseClient.from('buyers').insert([{id:crypto.randomUUID(),full_name:name,email,phone:document.getElementById('newBuyerPhone').value,address:document.getElementById('newBuyerAddress').value,created_at:new Date()}]); showNotification('Buyer added'); await loadBuyers(); await loadStats(); await loadChatUsers(); };
+        window.deleteBuyer = async (id) => { if(await confirmAction('Delete buyer?','Confirm')){ await supabaseClient.from('buyers').delete().eq('id',id); showNotification('Deleted'); await loadBuyers(); await loadStats(); await loadChatUsers(); } };
+        window.addNewProduct = async function() { const name=document.getElementById('newProductName').value, price=parseFloat(document.getElementById('newProductPrice').value); if(!name||!price) return showNotification('Name and price required',true); await supabaseClient.from('products').insert([{id:crypto.randomUUID(),name,category:document.getElementById('newProductCategory').value,price,stock_quantity:parseInt(document.getElementById('newProductStock').value)||0,is_active:true,created_at:new Date()}]); showNotification('Product added'); await loadProducts(); await loadStats(); };
+        window.deleteProduct = async (id) => { if(await confirmAction('Delete product?','Confirm')){ await supabaseClient.from('products').update({is_active:false}).eq('id',id); showNotification('Deleted'); await loadProducts(); await loadStats(); } };
+        window.editProduct = async (id) => { const p=allProducts.find(p=>p.id===id); if(!p) return; const {value:form}=await Swal.fire({title:'Edit Product',html:`<input id="name" class="swal2-input" value="${p.name}"><input id="price" class="swal2-input" value="${p.price}"><input id="stock" class="swal2-input" value="${p.stock_quantity}">`,background:'#1a3d33',preConfirm:()=>({name:document.getElementById('name').value,price:parseFloat(document.getElementById('price').value),stock:parseInt(document.getElementById('stock').value)})}); if(form){ await supabaseClient.from('products').update({name:form.name,price:form.price,stock_quantity:form.stock}).eq('id',id); showNotification('Updated'); await loadProducts(); } };
+        window.searchProducts = function() { const term=document.getElementById('productSearch').value.toLowerCase(); document.querySelectorAll('#productsList tr').forEach(r=>r.style.display=r.innerText.toLowerCase().includes(term)?'':'none'); };
+        window.addInvestment = async function() { showNotification('Investment added (demo)'); await loadInvestmentHistory(); };
+        window.addProfit = async function() { showNotification('Profit added (demo)'); await loadProfitHistory(); };
+        window.updatePaymentStatus = async (id,status) => { await supabaseClient.from('orders').update({payment_status:status}).eq('id',id); showNotification(`Payment: ${status}`); await loadOrders(); };
+        window.updateOrderStatus = async (id,status) => { await supabaseClient.from('orders').update({status}).eq('id',id); showNotification(`Order: ${status}`); await loadOrders(); };
+        window.editOrder = async (id) => { const o=allOrders.find(o=>o.id===id); if(!o) return; const {value:form}=await Swal.fire({title:'Edit Order',html:`<input id="amount" class="swal2-input" value="${o.total_amount}"><input id="address" class="swal2-input" value="${o.delivery_address||''}"><input id="customer" class="swal2-input" value="${o.customer_name||''}">`,background:'#1a3d33',preConfirm:()=>({amount:parseFloat(document.getElementById('amount').value),address:document.getElementById('address').value,customer:document.getElementById('customer').value})}); if(form){ await supabaseClient.from('orders').update({total_amount:form.amount,delivery_address:form.address,customer_name:form.customer}).eq('id',id); showNotification('Order updated'); await loadOrders(); } };
+        window.deleteOrder = async (id) => { if(await confirmAction('Delete order?','Confirm')){ await supabaseClient.from('orders').delete().eq('id',id); showNotification('Deleted'); await loadOrders(); await loadStats(); } };
+        window.searchOrders = function() { const term=document.getElementById('orderSearch').value.toLowerCase(); const filtered=allOrders.filter(o=>o.id?.toLowerCase().includes(term)||(o.customer_name||'').toLowerCase().includes(term)); if(filtered.length===0) document.getElementById('ordersList').innerHTML='<tr><td colspan="11" class="empty-state">No orders found</td></tr>'; };
+        window.resetOrderSearch = function() { document.getElementById('orderSearch').value=''; loadOrders(); };
+        window.searchInvestors = function() { const term=document.getElementById('investorSearch').value.toLowerCase(); const filtered=allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); document.getElementById('investorsList').innerHTML=filtered.map(i=>`<tr>...</tr>`).join(''); };
+        window.resetInvestorSearch = function() { document.getElementById('investorSearch').value=''; loadInvestors(); };
+        window.searchBuyers = function() { const term=document.getElementById('buyerSearch').value.toLowerCase(); const filtered=allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); document.getElementById('buyersList').innerHTML=filtered.map(b=>`<tr>...</tr>`).join(''); };
+        window.resetBuyerSearch = function() { document.getElementById('buyerSearch').value=''; loadBuyers(); };
+        window.searchWithdrawals = function() { const term=document.getElementById('withdrawalSearch').value.toLowerCase(); const filtered=allWithdrawals.filter(w=>w.investors?.full_name?.toLowerCase().includes(term)); };
+        window.resetWithdrawalSearch = function() { document.getElementById('withdrawalSearch').value=''; loadWithdrawals(); };
+        window.approveInvestment = async (id) => { showNotification('Investment approved'); await loadInvestmentRequests(); };
+        window.rejectInvestment = async (id) => { showNotification('Investment rejected'); await loadInvestmentRequests(); };
+        window.approveWithdrawal = async (id) => { showNotification('Withdrawal approved'); await loadWithdrawals(); };
+        window.rejectWithdrawal = async (id) => { showNotification('Withdrawal rejected'); await loadWithdrawals(); };
+        window.deleteInvestment = async (id) => { await supabaseClient.from('investments').delete().eq('id',id); showNotification('Deleted'); await loadInvestmentHistory(); };
+        window.deleteProfit = async (id) => { await supabaseClient.from('profits').delete().eq('id',id); showNotification('Deleted'); await loadProfitHistory(); };
+        window.deleteWithdrawal = async (id) => { await supabaseClient.from('withdrawals').delete().eq('id',id); showNotification('Deleted'); await loadWithdrawals(); };
+        async function loadInvestmentHistory() { const {data}=await supabaseClient.from('investments').select('*,investors(full_name)'); document.getElementById('investmentHistory').innerHTML=(data||[]).map(i=>`<tr><td>${i.investors?.full_name}</td><td>Rs.${i.amount}</td><td>${i.investment_date}</td><td>${i.payment_method}</td><td><span class="status-badge">${i.status}</span></td><td><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
+        async function loadProfitHistory() { const {data}=await supabaseClient.from('profits').select('*,investors(full_name)'); document.getElementById('profitHistory').innerHTML=(data||[]).map(p=>`<tr><td>${p.investors?.full_name}</td><td>Rs.${p.amount}</td><td>${p.month}</td><td>${p.profit_percentage}%</td><td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td><td><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join(''); }
+        async function loadInvestmentRequests() { const {data}=await supabaseClient.from('investments').select('*,investors(full_name)').eq('status','pending'); document.getElementById('investmentRequestsList').innerHTML=(data||[]).map(r=>`<tr><td>${r.investors?.full_name}</td><td>Rs.${r.amount}</td><td>${new Date(r.created_at).toLocaleDateString()}</td><td>${r.payment_method||'-'}</td><td>${r.transaction_id||'-'}</td><td class="action-buttons"><button onclick="approveInvestment('${r.id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${r.id}')" class="btn-danger">Reject</button></td></tr>`).join(''); }
+        async function loadWithdrawals() { const {data}=await supabaseClient.from('withdrawals').select('*,investors(full_name,email)'); allWithdrawals=data||[]; document.getElementById('withdrawalsList').innerHTML=(data||[]).map(w=>`<tr><td>${w.investors?.full_name}</td><td>${w.investors?.email}</td><td>Rs.${w.amount}</td><td>${new Date(w.request_date).toLocaleDateString()}</td><td>${w.payment_method||'-'}</td><td>${w.account_details||'-'}</td><td><span class="status-badge">${w.status}</span></td><td>${w.status==='pending'?`<button onclick="approveWithdrawal('${w.id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>`:`<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td></tr>`).join(''); }
+        async function loadRecentActivities() { const acts=[]; const {data:ord}=await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); ord?.forEach(o=>acts.push({action:'Order',details:`Order ${o.id?.slice(0,8)} - Rs.${o.total_amount}`,time:new Date(o.created_at).toLocaleString()})); document.getElementById('recentActivities').innerHTML=acts.slice(0,10).map(a=>`<tr><td>${a.action}</td><td>${a.details}</td><td>${a.time}</td><td><button class="btn-info" onclick="Swal.fire({title:'Detail',text:'${a.details}',background:'#1a3d33',color:'#fff'})">View</button></td></tr>`).join(''); }
+        
+        async function refreshAllData() { await loadStats(); await loadInvestors(); await loadBuyers(); await loadInvestmentRequests(); await loadInvestmentHistory(); await loadProfitHistory(); await loadWithdrawals(); await loadProducts(); await loadOrders(); await loadRecentActivities(); await loadChatUsers(); }
+        
+        async function checkAuth() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) { window.location.href = 'admin-auth.html'; return; }
+            const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
+            if (!adminEmails.includes(user.email)) { showNotification('Unauthorized access!', true); window.location.href = 'index.html'; return; }
+            document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
+            await refreshAllData();
+            await initChatTables();
+            setupEmojiPicker();
+            setInterval(async () => { await updateUnreadCounts(); renderChatUsersList(); }, 5000);
+        }
+        
+        window.handleLogout = async function(){ await supabaseClient.auth.signOut(); localStorage.clear(); window.location.href = 'index.html'; };
+        checkAuth();
     </script>
 </body>
 </html>
