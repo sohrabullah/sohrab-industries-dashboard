@@ -8,14 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body { 
             font-family: 'Inter', sans-serif; 
             background: linear-gradient(145deg, #0a1a15 0%, #0d281f 50%, #0a1a15 100%);
             min-height: 100vh;
-            position: relative;
         }
-        
         body::before {
             content: '';
             position: fixed;
@@ -23,34 +20,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(232,177,60,0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(30,78,62,0.15) 0%, transparent 50%);
+            background-image: radial-gradient(circle at 20% 80%, rgba(232,177,60,0.08) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
-        
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-        
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes slideInModal {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes slideUpToast {
-            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-        
-        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
         
@@ -69,54 +43,16 @@
             margin-bottom: 30px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.3);
             border: 1px solid rgba(232,177,60,0.3);
-            position: relative;
-            overflow: hidden;
         }
-        
-        .admin-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(232,177,60,0.1), transparent);
-            animation: shimmer 3s infinite;
-        }
-        
         .admin-header h1 { 
             font-size: 1.8rem; 
             font-family: 'Playfair Display', serif;
-            display: flex; 
-            align-items: center; 
-            gap: 12px;
             background: linear-gradient(135deg, #fff, #E8B13C);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            position: relative;
-            z-index: 1;
         }
-        
-        .admin-header h1 i { 
-            color: #E8B13C;
-            text-shadow: 0 0 15px rgba(232,177,60,0.8);
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
-        }
-        
-        .admin-header > div {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            background: rgba(0,0,0,0.3);
-            padding: 8px 25px;
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(232,177,60,0.3);
-        }
-        
+        .admin-header h1 i { color: #E8B13C; }
         .logout-btn { 
             background: linear-gradient(135deg, #dc3545, #a71d2a);
             color: white; 
@@ -125,13 +61,6 @@
             border-radius: 40px; 
             cursor: pointer; 
             font-weight: 700;
-            transition: all 0.3s;
-            letter-spacing: 0.5px;
-        }
-        
-        .logout-btn:hover { 
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(220,53,69,0.4);
         }
         
         .stats-grid { 
@@ -140,59 +69,19 @@
             gap: 1.2rem; 
             margin-bottom: 2rem; 
         }
-        
         .stat-card { 
             background: linear-gradient(145deg, rgba(20,45,38,0.95), rgba(15,35,28,0.95));
             backdrop-filter: blur(10px);
             padding: 1.2rem; 
             border-radius: 24px; 
             text-align: center; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             cursor: pointer; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid rgba(232,177,60,0.3);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s;
         }
-        
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(232,177,60,0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        
-        .stat-card:hover::before { opacity: 1; }
-        
-        .stat-card:hover { 
-            transform: translateY(-8px) scale(1.02); 
-            border-color: #E8B13C;
-            box-shadow: 0 20px 40px rgba(232,177,60,0.25);
-        }
-        
-        .stat-card h3 { 
-            color: rgba(255,255,255,0.7); 
-            font-size: 0.75rem; 
-            margin-bottom: 0.6rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
-            font-weight: 500;
-        }
-        
-        .stat-number { 
-            font-size: 1.8rem; 
-            font-weight: 800; 
-            background: linear-gradient(135deg, #E8B13C, #ffd966);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Playfair Display', serif;
-        }
+        .stat-card:hover { transform: translateY(-5px); border-color: #E8B13C; }
+        .stat-card h3 { color: rgba(255,255,255,0.7); font-size: 0.75rem; text-transform: uppercase; }
+        .stat-number { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #E8B13C, #ffd966); -webkit-background-clip: text; background-clip: text; color: transparent; }
         
         .nav-tabs { 
             display: flex; 
@@ -203,10 +92,8 @@
             padding: 8px 20px;
             border-radius: 60px;
             flex-wrap: wrap;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             border: 1px solid rgba(232,177,60,0.2);
         }
-        
         .nav-tab { 
             padding: 10px 24px; 
             background: transparent; 
@@ -214,26 +101,14 @@
             cursor: pointer; 
             border-radius: 50px; 
             font-weight: 600;
+            color: rgba(255,255,255,0.8);
             transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 8px;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.85rem;
         }
-        
-        .nav-tab:hover { 
-            background: rgba(232,177,60,0.2); 
-            transform: translateY(-3px);
-            color: #E8B13C;
-        }
-        
-        .nav-tab.active { 
-            background: linear-gradient(135deg, #E8B13C, #c99b2e);
-            color: #0a1f1a; 
-            box-shadow: 0 6px 20px rgba(232,177,60,0.4);
-            font-weight: 700;
-        }
+        .nav-tab:hover { background: rgba(232,177,60,0.2); color: #E8B13C; }
+        .nav-tab.active { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; box-shadow: 0 6px 20px rgba(232,177,60,0.4); }
         
         .admin-section { 
             background: rgba(20,45,38,0.92);
@@ -241,12 +116,10 @@
             padding: 1.8rem; 
             border-radius: 28px; 
             display: none; 
-            box-shadow: 0 20px 45px rgba(0,0,0,0.2);
             border: 1px solid rgba(232,177,60,0.2);
-            animation: fadeSlideUp 0.4s ease-out;
         }
-        
-        .admin-section.active { display: block; }
+        .admin-section.active { display: block; animation: fadeSlideUp 0.3s ease; }
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         .section-title { 
             font-size: 1.5rem; 
@@ -268,296 +141,84 @@
             margin-bottom: 25px; 
             border: 1px solid rgba(232,177,60,0.2);
         }
-        
-        .form-card h3 { 
-            margin-bottom: 18px; 
-            color: #E8B13C;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        
-        .form-row { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
-            gap: 18px; 
-            margin-bottom: 20px; 
-        }
-        
-        .form-group { margin-bottom: 18px; }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: 600; 
-            color: #E8B13C; 
-            letter-spacing: 0.5px;
-            font-size: 0.85rem;
-        }
-        
+        .form-card h3 { color: #E8B13C; margin-bottom: 15px; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #E8B13C; font-size: 0.85rem; }
         .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; 
-            padding: 12px 16px; 
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(232,177,60,0.3); 
-            border-radius: 16px; 
-            font-size: 14px; 
-            transition: all 0.3s;
-            color: white;
-            font-family: 'Inter', sans-serif;
+            width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(232,177,60,0.3); border-radius: 16px; color: white;
         }
         
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
-            outline: none; 
-            border-color: #E8B13C; 
-            box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
-            background: rgba(255,255,255,0.12);
-        }
-        
-        .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.4); }
-        
-        .table-container { 
-            overflow-x: auto; 
-            margin-top: 15px; 
-            border-radius: 20px;
-            max-height: 550px;
-            overflow-y: auto;
-        }
-        
+        .table-container { overflow-x: auto; max-height: 550px; overflow-y: auto; border-radius: 20px; }
         table { width: 100%; border-collapse: collapse; }
-        
-        th, td { 
-            padding: 14px 12px; 
-            text-align: left; 
-            border-bottom: 1px solid rgba(232,177,60,0.15); 
-        }
-        
-        th { 
-            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
-            color: #E8B13C;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            position: sticky;
-            top: 0;
-        }
-        
-        tr:hover td { 
-            background: rgba(232,177,60,0.08);
-            transition: background 0.2s;
-        }
-        
+        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.15); }
+        th { background: #0a2f24; color: #E8B13C; position: sticky; top: 0; }
         td { color: rgba(255,255,255,0.9); }
         
-        .status-badge { 
-            padding: 5px 15px; 
-            border-radius: 30px; 
-            font-size: 12px; 
-            display: inline-block;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
+        .status-badge { padding: 5px 15px; border-radius: 30px; font-size: 12px; display: inline-block; font-weight: 700; }
+        .status-active, .status-approved, .status-delivered { background: #1e7e5e; color: #fff; }
+        .status-pending { background: #d4a017; color: #fff; }
+        .status-processing { background: #17a2b8; color: #fff; }
+        .status-shipped { background: #004085; color: #fff; }
+        .status-cancelled { background: #dc3545; color: #fff; }
         
-        .status-active, .status-approved, .status-delivered { 
-            background: linear-gradient(135deg, #1e7e5e, #155a44); 
-            color: #fff; 
-            box-shadow: 0 2px 8px rgba(30,126,94,0.4);
-        }
+        .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 10px 24px; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; }
+        .btn-success { background: #1e7e5e; color: white; padding: 6px 14px; border: none; border-radius: 30px; cursor: pointer; }
+        .btn-danger { background: #dc3545; color: white; padding: 6px 14px; border: none; border-radius: 30px; cursor: pointer; }
+        .btn-info { background: #17a2b8; color: white; padding: 6px 14px; border: none; border-radius: 30px; cursor: pointer; }
         
-        .status-pending { 
-            background: linear-gradient(135deg, #d4a017, #b8860b); 
-            color: #fff; 
-        }
-        
-        .status-processing { 
-            background: linear-gradient(135deg, #17a2b8, #0f7a8a); 
-            color: #fff; 
-        }
-        
-        .status-shipped { 
-            background: linear-gradient(135deg, #004085, #002d5a); 
-            color: #fff; 
-        }
-        
-        .status-cancelled, .status-rejected { 
-            background: linear-gradient(135deg, #c0392b, #a5281b); 
-            color: #fff; 
-        }
-        
-        .btn-primary { 
-            background: linear-gradient(135deg, #E8B13C, #c99b2e);
-            color: #0a1f1a; 
-            padding: 10px 24px; 
-            border: none; 
-            border-radius: 40px; 
-            cursor: pointer; 
-            font-weight: 700;
-            transition: all 0.3s;
-            letter-spacing: 0.5px;
-            font-size: 0.85rem;
-        }
-        
-        .btn-primary:hover { 
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 25px rgba(232,177,60,0.4);
-        }
-        
-        .btn-success { 
-            background: linear-gradient(135deg, #1e7e5e, #155a44);
-            color: white; 
-            padding: 6px 14px; 
-            border: none; 
-            border-radius: 30px; 
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30,126,94,0.4); }
-        
-        .btn-danger { 
-            background: linear-gradient(135deg, #dc3545, #a71d2a);
-            color: white; 
-            padding: 6px 14px; 
-            border: none; 
-            border-radius: 30px; 
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(220,53,69,0.4); }
-        
-        .btn-warning { 
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #333; 
-            padding: 6px 14px; 
-            border: none; 
-            border-radius: 30px; 
-            cursor: pointer;
-            font-weight: 600;
-        }
-        
-        .btn-info { 
-            background: linear-gradient(135deg, #17a2b8, #0f7a8a);
-            color: white; 
-            padding: 6px 14px; 
-            border: none; 
-            border-radius: 30px; 
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-info:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(23,162,184,0.4); }
-        
+        .search-box { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .search-box input { flex: 1; padding: 12px 18px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 50px; color: white; }
         .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
         
-        .search-box { 
-            margin-bottom: 20px; 
-            display: flex; 
-            gap: 10px; 
-            flex-wrap: wrap; 
-        }
-        
-        .search-box input { 
-            flex: 1; 
-            padding: 12px 18px; 
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(232,177,60,0.3); 
-            border-radius: 50px; 
-            min-width: 200px;
-            color: white;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .search-box input::placeholder { color: rgba(255,255,255,0.4); }
-        
-        .search-box input:focus { 
-            outline: none; 
-            border-color: #E8B13C;
-            box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
-        }
-        
-        .toast-notification { 
-            position: fixed; 
-            bottom: 35px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            padding: 14px 30px; 
-            border-radius: 60px; 
-            color: white; 
-            z-index: 10000; 
-            animation: slideUpToast 0.3s ease; 
-            text-align: center;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-        
-        .toast-success { background: linear-gradient(135deg, #1e7e5e, #155a44); border-left: 4px solid #E8B13C; }
-        .toast-error { background: linear-gradient(135deg, #c0392b, #a5281b); border-left: 4px solid #ffaa00; }
+        .toast-notification { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); padding: 14px 30px; border-radius: 60px; color: white; z-index: 10000; text-align: center; font-weight: 600; }
+        .toast-success { background: #1e7e5e; }
+        .toast-error { background: #dc3545; }
         
         .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); font-style: italic; }
         
-        select.status-badge {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(232,177,60,0.3);
-            color: white;
-            cursor: pointer;
-        }
-        
-        /* Professional Modal Popup */
+        /* Modal */
         .custom-modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
         .custom-modal.active { display: flex; }
-        .custom-modal-content { background: linear-gradient(145deg, #1a3d33, #0f2a22); padding: 30px; border-radius: 24px; width: 90%; max-width: 500px; text-align: center; animation: modalSlideIn 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 1px solid rgba(232,177,60,0.3); }
-        @keyframes modalSlideIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .custom-modal-content h3 { color: #E8B13C; margin-bottom: 20px; font-size: 1.5rem; font-family: 'Playfair Display', serif; }
-        .custom-modal-content p { color: rgba(255,255,255,0.8); margin-bottom: 25px; line-height: 1.5; text-align: left; }
-        .custom-modal-content input, .custom-modal-content textarea { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid rgba(232,177,60,0.3); border-radius: 12px; background: rgba(255,255,255,0.08); color: white; font-family: 'Inter', sans-serif; }
+        .custom-modal-content { background: #1a3d33; padding: 30px; border-radius: 24px; width: 90%; max-width: 450px; text-align: center; border: 1px solid rgba(232,177,60,0.3); }
+        .custom-modal-content h3 { color: #E8B13C; margin-bottom: 15px; }
+        .custom-modal-content p { color: rgba(255,255,255,0.8); margin-bottom: 20px; text-align: left; }
         .modal-buttons { display: flex; gap: 12px; justify-content: center; }
-        .modal-btn { padding: 10px 25px; border: none; border-radius: 40px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .modal-btn-confirm { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
-        .modal-btn-confirm:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(232,177,60,0.4); }
+        .modal-btn { padding: 10px 25px; border: none; border-radius: 40px; cursor: pointer; font-weight: 600; }
+        .modal-btn-confirm { background: #E8B13C; color: #0a1f1a; }
         .modal-btn-cancel { background: #6c757d; color: white; }
-        .modal-btn-cancel:hover { background: #5a6268; }
-        .modal-btn-danger { background: linear-gradient(135deg, #dc3545, #a71d2a); color: white; }
         
         /* Chat Styles */
         .chat-layout { display: flex; gap: 25px; height: 70vh; min-height: 550px; }
         .chat-users-panel { width: 350px; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(232,177,60,0.2); }
         .chat-users-header { padding: 18px; background: #0a2f24; border-bottom: 1px solid rgba(232,177,60,0.3); }
-        .chat-users-header h3 { color: #E8B13C; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
-        .chat-users-header input { width: 100%; margin-top: 12px; padding: 10px; border-radius: 40px; background: rgba(255,255,255,0.1); border: none; color: white; padding-left: 15px; }
+        .chat-users-header h3 { color: #E8B13C; }
+        .chat-users-header input { width: 100%; margin-top: 12px; padding: 10px; border-radius: 40px; background: rgba(255,255,255,0.1); border: none; color: white; }
         .chat-users-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .chat-user-item { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 20px; cursor: pointer; transition: all 0.2s; margin-bottom: 6px; background: rgba(255,255,255,0.03); border: 1px solid transparent; }
+        .chat-user-item { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 20px; cursor: pointer; margin-bottom: 6px; background: rgba(255,255,255,0.03); border: 1px solid transparent; }
         .chat-user-item:hover { background: rgba(232,177,60,0.1); border-color: rgba(232,177,60,0.3); }
-        .chat-user-item.active { background: linear-gradient(135deg, rgba(232,177,60,0.2), rgba(30,78,62,0.3)); border-color: #E8B13C; }
-        .user-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #E8B13C, #b8860b); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0a1f1a; font-size: 1.2rem; }
-        .user-info { flex: 1; }
+        .chat-user-item.active { background: rgba(232,177,60,0.2); border-color: #E8B13C; }
+        .user-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #E8B13C, #b8860b); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0a1f1a; }
         .user-name { font-weight: 700; color: white; }
         .user-type { font-size: 0.7rem; color: #E8B13C; text-transform: uppercase; }
-        .user-last-msg { font-size: 0.7rem; color: rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
-        .unread-badge { background: #E8B13C; color: #0a1f1a; border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; font-weight: bold; margin-left: 8px; }
-        .chat-conversation-panel { flex: 1; background: rgba(0,0,0,0.3); border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(232,177,60,0.2); }
+        .user-last-msg { font-size: 0.7rem; color: rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; max-width: 180px; }
+        .unread-badge { background: #E8B13C; color: #0a1f1a; border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; font-weight: bold; }
+        .chat-conversation-panel { flex: 1; background: rgba(0,0,0,0.3); border-radius: 24px; display: flex; flex-direction: column; border: 1px solid rgba(232,177,60,0.2); }
         .chat-conversation-header { padding: 18px; background: #0a2f24; border-bottom: 1px solid rgba(232,177,60,0.3); display: flex; align-items: center; gap: 12px; }
         .chat-messages-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .message-bubble { max-width: 75%; padding: 12px 16px; border-radius: 24px; font-size: 0.9rem; line-height: 1.4; }
-        .message-received { background: rgba(255,255,255,0.1); color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .message-sent { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+        .message-bubble { max-width: 75%; padding: 12px 16px; border-radius: 24px; font-size: 0.9rem; }
+        .message-received { background: rgba(255,255,255,0.1); color: white; align-self: flex-start; }
+        .message-sent { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; align-self: flex-end; }
         .message-time { font-size: 0.65rem; opacity: 0.7; margin-top: 5px; text-align: right; }
         .chat-input-area { padding: 18px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(232,177,60,0.2); display: flex; gap: 12px; }
-        .chat-input-area input { flex: 1; padding: 14px 18px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 40px; color: white; font-family: 'Inter', sans-serif; }
-        .chat-input-area input:focus { outline: none; border-color: #E8B13C; }
-        .send-btn { background: #E8B13C; border: none; width: 48px; border-radius: 50%; color: #0a1f1a; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
+        .chat-input-area input { flex: 1; padding: 14px 18px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 40px; color: white; }
+        .send-btn { background: #E8B13C; border: none; width: 48px; border-radius: 50%; color: #0a1f1a; cursor: pointer; }
         .empty-chat { display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.4); flex-direction: column; gap: 12px; }
         .chat-tab-unread { background: #E8B13C; color: #0a1f1a; border-radius: 20px; padding: 2px 8px; margin-left: 6px; font-size: 11px; }
         
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; text-align: center; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-            .nav-tabs { justify-content: center; }
-            .nav-tab { padding: 8px 16px; font-size: 12px; }
-            th, td { padding: 10px 8px; font-size: 12px; }
-            .section-title { font-size: 1.2rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .chat-layout { flex-direction: column; height: auto; }
             .chat-users-panel { width: 100%; }
         }
@@ -571,14 +232,14 @@
         </div>
 
         <div class="stats-grid">
-            <div class="stat-card" onclick="showSection('investors')"><h3><i class="fas fa-users"></i> Investors</h3><div class="stat-number" id="totalInvestors">0</div></div>
-            <div class="stat-card" onclick="showSection('buyers')"><h3><i class="fas fa-user-friends"></i> Buyers</h3><div class="stat-number" id="totalBuyers">0</div></div>
-            <div class="stat-card" onclick="showSection('investmentRequests')"><h3><i class="fas fa-clock"></i> Pending Requests</h3><div class="stat-number" id="pendingRequests">0</div></div>
-            <div class="stat-card" onclick="showSection('investments')"><h3><i class="fas fa-chart-line"></i> Total Investment</h3><div class="stat-number" id="totalInvestments">Rs. 0</div></div>
-            <div class="stat-card" onclick="showSection('profits')"><h3><i class="fas fa-coins"></i> Total Profit</h3><div class="stat-number" id="totalProfit">Rs. 0</div></div>
-            <div class="stat-card" onclick="showSection('withdrawals')"><h3><i class="fas fa-money-bill-wave"></i> Pending Withdrawals</h3><div class="stat-number" id="pendingWithdrawals">0</div></div>
-            <div class="stat-card" onclick="showSection('products')"><h3><i class="fas fa-box"></i> Products</h3><div class="stat-number" id="totalProducts">0</div></div>
-            <div class="stat-card" onclick="showSection('orders')"><h3><i class="fas fa-shopping-cart"></i> Orders</h3><div class="stat-number" id="totalOrders">0</div></div>
+            <div class="stat-card" onclick="showSection('investors')"><h3>Investors</h3><div class="stat-number" id="totalInvestors">0</div></div>
+            <div class="stat-card" onclick="showSection('buyers')"><h3>Buyers</h3><div class="stat-number" id="totalBuyers">0</div></div>
+            <div class="stat-card" onclick="showSection('investmentRequests')"><h3>Pending Requests</h3><div class="stat-number" id="pendingRequests">0</div></div>
+            <div class="stat-card" onclick="showSection('investments')"><h3>Total Investment</h3><div class="stat-number" id="totalInvestments">Rs. 0</div></div>
+            <div class="stat-card" onclick="showSection('profits')"><h3>Total Profit</h3><div class="stat-number" id="totalProfit">Rs. 0</div></div>
+            <div class="stat-card" onclick="showSection('withdrawals')"><h3>Pending Withdrawals</h3><div class="stat-number" id="pendingWithdrawals">0</div></div>
+            <div class="stat-card" onclick="showSection('products')"><h3>Products</h3><div class="stat-number" id="totalProducts">0</div></div>
+            <div class="stat-card" onclick="showSection('orders')"><h3>Orders</h3><div class="stat-number" id="totalOrders">0</div></div>
         </div>
 
         <div class="nav-tabs">
@@ -596,7 +257,7 @@
 
         <!-- Dashboard Section -->
         <div id="dashboardSection" class="admin-section active">
-            <h2 class="section-title"><i class="fas fa-chart-pie"></i> Dashboard Overview</h2>
+            <h2 class="section-title">Dashboard Overview</h2>
             <div class="table-container">
                 <h3 style="color:#E8B13C; margin-bottom:15px;">Recent Activities</h3>
                 <table><thead><tr><th>Action</th><th>Details</th><th>Time</th></tr></thead><tbody id="recentActivities"></tbody></table>
@@ -605,7 +266,7 @@
 
         <!-- Investors Section -->
         <div id="investorsSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-users"></i> Investors Management</h2>
+            <h2 class="section-title">Investors Management</h2>
             <div class="form-card">
                 <h3><i class="fas fa-plus-circle"></i> Add New Investor</h3>
                 <div class="form-row">
@@ -613,17 +274,17 @@
                     <div class="form-group"><label>Email *</label><input type="email" id="newInvestorEmail" placeholder="Enter email"></div>
                     <div class="form-group"><label>Phone</label><input type="tel" id="newInvestorPhone" placeholder="Enter phone"></div>
                     <div class="form-group"><label>City</label><input type="text" id="newInvestorCity" placeholder="Enter city"></div>
-                    <div class="form-group"><label>Initial Investment (Rs.)</label><input type="number" id="newInvestorInvestment" placeholder="0" value="0"></div>
+                    <div class="form-group"><label>Initial Investment</label><input type="number" id="newInvestorInvestment" placeholder="0" value="0"></div>
                 </div>
-                <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
+                <button onclick="addNewInvestor()" class="btn-primary">Add Investor</button>
             </div>
-            <div class="search-box"><input type="text" id="investorSearch" placeholder="Search investors..."><button onclick="searchInvestors()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetInvestorSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="search-box"><input type="text" id="investorSearch" placeholder="Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
         <div id="buyersSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-user-friends"></i> Buyers Management</h2>
+            <h2 class="section-title">Buyers Management</h2>
             <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Buyer</h3>
                 <div class="form-row">
                     <div class="form-group"><label>Full Name *</label><input type="text" id="newBuyerName" placeholder="Enter full name"></div>
@@ -631,21 +292,21 @@
                     <div class="form-group"><label>Phone</label><input type="tel" id="newBuyerPhone" placeholder="Enter phone"></div>
                     <div class="form-group"><label>Address</label><textarea id="newBuyerAddress" rows="2" placeholder="Enter address"></textarea></div>
                 </div>
-                <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
+                <button onclick="addNewBuyer()" class="btn-primary">Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"></tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <h2 class="section-title">Pending Investment Requests</h2>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
         <div id="investmentsSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-plus-circle"></i> Manually Add Investment</h2>
+            <h2 class="section-title">Manually Add Investment</h2>
             <div class="form-card">
                 <div class="form-row">
                     <div class="form-group"><label>Select Investor</label><select id="investorSelect"></select></div>
@@ -654,15 +315,15 @@
                     <div class="form-group"><label>Payment Method</label><select id="invPaymentMethod"><option>Bank Transfer</option><option>EasyPaisa</option><option>JazzCash</option></select></div>
                     <div class="form-group"><label>Transaction ID</label><input type="text" id="invTransactionId" placeholder="Transaction ID"></div>
                 </div>
-                <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
+                <button onclick="addInvestment()" class="btn-primary">Add Investment</button>
             </div>
-            <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
+            <h2 class="section-title">All Investments History</h2>
             <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
         <div id="profitsSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-gift"></i> Manually Add Profit</h2>
+            <h2 class="section-title">Manually Add Profit</h2>
             <div class="form-card">
                 <div class="form-row">
                     <div class="form-group"><label>Select Investor</label><select id="profitInvestorSelect"></select></div>
@@ -670,31 +331,30 @@
                     <div class="form-group"><label>Month</label><input type="month" id="profitMonth"></div>
                     <div class="form-group"><label>Profit Percentage</label><input type="number" id="profitPercentage" placeholder="%" value="10"></div>
                 </div>
-                <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
+                <button onclick="addProfit()" class="btn-primary">Add Profit</button>
             </div>
-            <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
+            <h2 class="section-title">Profit History</h2>
             <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
         <!-- Withdrawals Section -->
         <div id="withdrawalsSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
+            <h2 class="section-title">Withdrawal Requests Management</h2>
             <div class="search-box">
                 <input type="text" id="withdrawalSearch" placeholder="Search by investor name...">
-                <button onclick="searchWithdrawals()" class="btn-primary"><i class="fas fa-search"></i> Search</button>
-                <button onclick="resetWithdrawalSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button>
+                <button onclick="searchWithdrawals()" class="btn-primary">Search</button>
+                <button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button>
             </div>
             <div class="table-container">
-                <tr>
-                    <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody id="withdrawalsList"></tbody>
-                </table>
+                <table><thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="withdrawalsList"></tbody>
+            </table>
             </div>
         </div>
 
         <!-- Products Section -->
         <div id="productsSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2>
+            <h2 class="section-title">Products Management</h2>
             <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
                 <div class="form-row">
                     <div class="form-group"><label>Product Name *</label><input type="text" id="newProductName" placeholder="Enter product name"></div>
@@ -703,7 +363,7 @@
                     <div class="form-group"><label>Price (Rs.) *</label><input type="number" id="newProductPrice" placeholder="Enter price"></div>
                     <div class="form-group"><label>Stock Quantity</label><input type="number" id="newProductStock" placeholder="0" value="0"></div>
                 </div>
-                <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
+                <button onclick="addNewProduct()" class="btn-primary">Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
             <div class="table-container"><tr><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
@@ -712,7 +372,7 @@
         <!-- Orders Section -->
         <div id="ordersSection" class="admin-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
+                <h2 class="section-title">Orders Management</h2>
                 <div class="search-box" style="margin-bottom: 0;">
                     <input type="text" id="orderSearch" placeholder="Search by Order ID...">
                     <button onclick="searchOrders()" class="btn-primary">Search</button>
@@ -720,18 +380,15 @@
                 </div>
             </div>
             <div class="table-container">
-                <table>
-                    <thead>
-                        <tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody id="ordersList"></tbody>
-                </table>
+                <tr><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead>
+                <tbody id="ordersList"></tbody>
+            </table>
             </div>
         </div>
 
         <!-- Chat Section -->
         <div id="chatSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Customer Support</h2>
+            <h2 class="section-title">Live Chat - Customer Support</h2>
             <div class="chat-layout">
                 <div class="chat-users-panel">
                     <div class="chat-users-header">
@@ -749,7 +406,7 @@
                         <div class="empty-chat"><i class="fas fa-inbox fa-3x"></i><p>No conversation selected</p></div>
                     </div>
                     <div class="chat-input-area" id="chatInputArea" style="display: none;">
-                        <input type="text" id="chatMessageInput" placeholder="Type your reply... (Sent as 'Sohrab Industries Support')">
+                        <input type="text" id="chatMessageInput" placeholder="Type your reply...">
                         <button class="send-btn" onclick="sendAdminReply()"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
@@ -757,12 +414,11 @@
         </div>
     </div>
 
-    <!-- Professional Modal Popup -->
+    <!-- Modal -->
     <div id="customModal" class="custom-modal">
         <div class="custom-modal-content">
             <h3 id="modalTitle">Confirm Action</h3>
-            <div id="modalMessage" style="color: rgba(255,255,255,0.8); margin-bottom: 20px; text-align: left;"></div>
-            <div id="modalInputContainer" style="display:none;"></div>
+            <p id="modalMessage">Are you sure?</p>
             <div class="modal-buttons">
                 <button id="modalConfirmBtn" class="modal-btn modal-btn-confirm">Confirm</button>
                 <button id="modalCancelBtn" class="modal-btn modal-btn-cancel">Cancel</button>
@@ -772,421 +428,418 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ========== PROFESSIONAL MODAL FUNCTIONS ==========
+        // Modal Functions
         let modalResolve = null;
-        
-        function showModal(title, message, isDanger, inputPlaceholder) {
+        function showModal(title, message, isDanger) {
             return new Promise((resolve) => {
                 modalResolve = resolve;
-                var modal = document.getElementById('customModal');
                 document.getElementById('modalTitle').innerText = title;
                 document.getElementById('modalMessage').innerHTML = message;
-                var inputContainer = document.getElementById('modalInputContainer');
-                var confirmBtn = document.getElementById('modalConfirmBtn');
-                
-                if (inputPlaceholder) {
-                    inputContainer.style.display = 'block';
-                    inputContainer.innerHTML = '<input type="text" id="modalInput" placeholder="' + inputPlaceholder + '" style="width:100%; padding:12px; border:1px solid rgba(232,177,60,0.3); border-radius:12px; background:rgba(255,255,255,0.08); color:white; font-family:\'Inter\',sans-serif;">';
-                } else {
-                    inputContainer.style.display = 'none';
-                }
-                
-                if (isDanger) {
-                    confirmBtn.className = 'modal-btn modal-btn-danger';
-                } else {
-                    confirmBtn.className = 'modal-btn modal-btn-confirm';
-                }
-                
-                modal.classList.add('active');
+                document.getElementById('customModal').classList.add('active');
             });
         }
-        
-        function closeModal(result, inputValue) {
-            var modal = document.getElementById('customModal');
-            modal.classList.remove('active');
-            if (modalResolve) modalResolve({ confirmed: result, value: inputValue });
+        function closeModal(result) {
+            document.getElementById('customModal').classList.remove('active');
+            if (modalResolve) modalResolve({ confirmed: result });
             modalResolve = null;
         }
-        
-        document.getElementById('modalConfirmBtn').onclick = function() {
-            var input = document.getElementById('modalInput');
-            closeModal(true, input ? input.value : null);
-        };
-        document.getElementById('modalCancelBtn').onclick = function() {
-            closeModal(false, null);
-        };
+        document.getElementById('modalConfirmBtn').onclick = () => closeModal(true);
+        document.getElementById('modalCancelBtn').onclick = () => closeModal(false);
         
         function showNotification(msg, isError) {
             var t = document.createElement('div');
             t.className = 'toast-notification ' + (isError ? 'toast-error' : 'toast-success');
-            t.innerHTML = isError ? 'Warning ' + msg : 'Success ' + msg;
+            t.innerHTML = isError ? '⚠️ ' + msg : '✅ ' + msg;
             document.body.appendChild(t);
             setTimeout(function() { t.remove(); }, 3000);
         }
         
-        // ========== MAIN APPLICATION ==========
+        // Main App
         document.addEventListener('DOMContentLoaded', function() {
             var SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-            
-            if (typeof supabase === 'undefined') {
-                console.error('Supabase not loaded');
-                return;
-            }
             
             var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             var allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [];
 
             window.showSection = function(section) {
                 var sections = document.querySelectorAll('.admin-section');
-                for (var i = 0; i < sections.length; i++) {
-                    sections[i].classList.remove('active');
-                }
+                for (var i = 0; i < sections.length; i++) sections[i].classList.remove('active');
                 var tabs = document.querySelectorAll('.nav-tab');
-                for (var i = 0; i < tabs.length; i++) {
-                    tabs[i].classList.remove('active');
-                }
+                for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
                 var targetSection = document.getElementById(section + 'Section');
                 if (targetSection) targetSection.classList.add('active');
                 if (event && event.target) event.target.classList.add('active');
-                if (section === 'chat') { loadChatUsers(); }
-                if (section === 'investors') { loadInvestors(); }
-                if (section === 'buyers') { loadBuyers(); }
-                if (section === 'investmentRequests') { loadInvestmentRequests(); }
-                if (section === 'investments') { loadInvestmentHistory(); }
-                if (section === 'profits') { loadProfitHistory(); }
-                if (section === 'withdrawals') { loadWithdrawals(); }
-                if (section === 'products') { loadProducts(); }
-                if (section === 'orders') { loadOrders(); }
+                if (section === 'chat') loadChatUsers();
             };
 
             function checkAuth() {
                 supabaseClient.auth.getUser().then(function(result) {
                     var user = result.data.user;
-                    var error = result.error;
-                    if (error || !user) {
-                        window.location.href = 'admin-auth.html';
-                        return null;
-                    }
+                    if (result.error || !user) { window.location.href = 'admin-auth.html'; return; }
                     var adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
-                    if (adminEmails.indexOf(user.email) === -1) {
-                        showNotification('Unauthorized', true);
-                        window.location.href = 'index.html';
-                        return null;
-                    }
+                    if (adminEmails.indexOf(user.email) === -1) { showNotification('Unauthorized', true); window.location.href = 'index.html'; return; }
                     document.getElementById('adminEmail').innerHTML = '<i class="fas fa-user-shield"></i> ' + user.email;
                     refreshAllData();
-                    return user;
                 });
             }
 
             function refreshAllData() {
-                loadStats();
-                loadInvestors();
-                loadBuyers();
-                loadInvestmentRequests();
-                loadInvestmentHistory();
-                loadProfitHistory();
-                loadWithdrawals();
-                loadProducts();
-                loadOrders();
-                loadRecentActivities();
+                loadStats(); loadInvestors(); loadBuyers(); loadInvestmentRequests();
+                loadInvestmentHistory(); loadProfitHistory(); loadWithdrawals();
+                loadProducts(); loadOrders(); loadRecentActivities();
             }
 
             function loadStats() {
-                supabaseClient.from('investors').select('*', { count: 'exact', head: true }).then(function(res) {
-                    document.getElementById('totalInvestors').innerHTML = res.count || 0;
+                supabaseClient.from('investors').select('*', { count: 'exact', head: true }).then(function(r) { document.getElementById('totalInvestors').innerHTML = r.count || 0; });
+                supabaseClient.from('buyers').select('*', { count: 'exact', head: true }).then(function(r) { document.getElementById('totalBuyers').innerHTML = r.count || 0; });
+                supabaseClient.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending').then(function(r) { document.getElementById('pendingRequests').innerHTML = r.count || 0; });
+                supabaseClient.from('investments').select('amount').then(function(r) {
+                    var total = 0; for (var i = 0; i < (r.data || []).length; i++) total += r.data[i].amount || 0;
+                    document.getElementById('totalInvestments').innerHTML = 'Rs. ' + total.toLocaleString();
                 });
-                supabaseClient.from('buyers').select('*', { count: 'exact', head: true }).then(function(res) {
-                    document.getElementById('totalBuyers').innerHTML = res.count || 0;
+                supabaseClient.from('profits').select('amount').eq('paid', true).then(function(r) {
+                    var total = 0; for (var i = 0; i < (r.data || []).length; i++) total += r.data[i].amount || 0;
+                    document.getElementById('totalProfit').innerHTML = 'Rs. ' + total.toLocaleString();
                 });
-                supabaseClient.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending').then(function(res) {
-                    document.getElementById('pendingRequests').innerHTML = res.count || 0;
-                });
-                supabaseClient.from('investments').select('amount').then(function(res) {
-                    var inv = res.data || [];
-                    var totalInv = 0;
-                    for (var i = 0; i < inv.length; i++) {
-                        totalInv += inv[i].amount || 0;
-                    }
-                    document.getElementById('totalInvestments').innerHTML = 'Rs. ' + totalInv.toLocaleString();
-                });
-                supabaseClient.from('profits').select('amount').eq('paid', true).then(function(res) {
-                    var prof = res.data || [];
-                    var totalProf = 0;
-                    for (var i = 0; i < prof.length; i++) {
-                        totalProf += prof[i].amount || 0;
-                    }
-                    document.getElementById('totalProfit').innerHTML = 'Rs. ' + totalProf.toLocaleString();
-                });
-                supabaseClient.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'pending').then(function(res) {
-                    document.getElementById('pendingWithdrawals').innerHTML = res.count || 0;
-                });
-                supabaseClient.from('products').select('*', { count: 'exact', head: true }).eq('is_active', true).then(function(res) {
-                    document.getElementById('totalProducts').innerHTML = res.count || 0;
-                });
-                supabaseClient.from('orders').select('*', { count: 'exact', head: true }).then(function(res) {
-                    document.getElementById('totalOrders').innerHTML = res.count || 0;
-                });
+                supabaseClient.from('withdrawals').select('*', { count: 'exact', head: true }).eq('status', 'pending').then(function(r) { document.getElementById('pendingWithdrawals').innerHTML = r.count || 0; });
+                supabaseClient.from('products').select('*', { count: 'exact', head: true }).eq('is_active', true).then(function(r) { document.getElementById('totalProducts').innerHTML = r.count || 0; });
+                supabaseClient.from('orders').select('*', { count: 'exact', head: true }).then(function(r) { document.getElementById('totalOrders').innerHTML = r.count || 0; });
             }
 
             function loadInvestors() {
-                supabaseClient.from('investors').select('*').order('created_at', { ascending: false }).then(function(res) {
-                    allInvestors = res.data || [];
-                    var selectHtml = '<option value="">Select Investor</option>';
+                supabaseClient.from('investors').select('*').order('created_at', { ascending: false }).then(function(r) {
+                    allInvestors = r.data || [];
+                    var options = '<option value="">Select Investor</option>';
+                    for (var i = 0; i < allInvestors.length; i++) options += '<option value="' + allInvestors[i].id + '">' + allInvestors[i].full_name + '</option>';
+                    if (document.getElementById('investorSelect')) document.getElementById('investorSelect').innerHTML = options;
+                    if (document.getElementById('profitInvestorSelect')) document.getElementById('profitInvestorSelect').innerHTML = options;
+                    var tbody = document.getElementById('investorsList');
+                    if (!tbody) return;
+                    if (allInvestors.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>'; return; }
+                    var html = '';
                     for (var i = 0; i < allInvestors.length; i++) {
-                        selectHtml += '<option value="' + allInvestors[i].id + '">' + allInvestors[i].full_name + '</option>';
+                        var inv = allInvestors[i];
+                        html += '<tr><td><strong>' + (inv.full_name || '') + '</strong></td><td>' + (inv.email || '') + '</td><td>' + (inv.phone || '-') + '</td><td>' + (inv.city || '-') + '</td>';
+                        html += '<td>Rs.' + ((inv.total_investment || 0).toLocaleString()) + '</td><td>Rs.' + ((inv.total_profit || 0).toLocaleString()) + '</td>';
+                        html += '<td>Rs.' + ((inv.available_balance || 0).toLocaleString()) + '</td>';
+                        html += '<td class="action-buttons"><button onclick="deleteInvestor(\'' + inv.id + '\')" class="btn-danger">Delete</button> <button class="btn-info" onclick="startChatWith(\'' + inv.id + '\',\'investor\',\'' + (inv.full_name || '').replace(/'/g, "\\'") + '\')">Message</button></td></tr>';
                     }
-                    var investorSelect = document.getElementById('investorSelect');
-                    var profitSelect = document.getElementById('profitInvestorSelect');
-                    if (investorSelect) investorSelect.innerHTML = selectHtml;
-                    if (profitSelect) profitSelect.innerHTML = selectHtml;
-                    var investorsList = document.getElementById('investorsList');
-                    if (investorsList) {
-                        if (allInvestors.length === 0) {
-                            investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>';
-                            return;
-                        }
-                        var html = '';
-                        for (var i = 0; i < allInvestors.length; i++) {
-                            var inv = allInvestors[i];
-                            html += '<tr>';
-                            html += '<td><strong>' + (inv.full_name || '') + '</strong></td>';
-                            html += '<td>' + (inv.email || '') + '</td>';
-                            html += '<td>' + (inv.phone || '-') + '</td>';
-                            html += '<td>' + (inv.city || '-') + '</td>';
-                            html += '<td>Rs.' + ((inv.total_investment || 0).toLocaleString()) + '</td>';
-                            html += '<td>Rs.' + ((inv.total_profit || 0).toLocaleString()) + '</td>';
-                            html += '<td>Rs.' + ((inv.available_balance || 0).toLocaleString()) + '</td>';
-                            html += '<td class="action-buttons"><button onclick="deleteInvestor(\'' + inv.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="startChatWith(\'' + inv.id + '\',\'investor\',\'' + (inv.full_name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-comment"></i> Message</button></td>';
-                            html += '</tr>';
-                        }
-                        investorsList.innerHTML = html;
-                    }
+                    tbody.innerHTML = html;
                 });
             }
 
             window.addNewInvestor = function() {
                 var name = document.getElementById('newInvestorName').value.trim();
                 var email = document.getElementById('newInvestorEmail').value.trim();
-                var phone = document.getElementById('newInvestorPhone').value;
-                var city = document.getElementById('newInvestorCity').value;
-                var investment = parseFloat(document.getElementById('newInvestorInvestment').value) || 0;
-                if (!name || !email) {
-                    showNotification('Name and email required', true);
-                    return;
-                }
+                if (!name || !email) { showNotification('Name and email required', true); return; }
                 supabaseClient.from('investors').insert([{
-                    id: crypto.randomUUID(),
-                    full_name: name,
-                    email: email,
-                    phone: phone,
-                    city: city,
-                    total_investment: investment,
-                    total_profit: 0,
-                    available_balance: investment,
+                    id: crypto.randomUUID(), full_name: name, email: email, phone: document.getElementById('newInvestorPhone').value,
+                    city: document.getElementById('newInvestorCity').value, total_investment: parseFloat(document.getElementById('newInvestorInvestment').value) || 0,
+                    total_profit: 0, available_balance: parseFloat(document.getElementById('newInvestorInvestment').value) || 0,
                     created_at: new Date().toISOString()
-                }]).then(function(result) {
-                    if (result.error) {
-                        showNotification(result.error.message, true);
-                        return;
-                    }
+                }]).then(function(r) {
+                    if (r.error) { showNotification(r.error.message, true); return; }
                     showNotification('Investor added!', false);
                     document.getElementById('newInvestorName').value = '';
                     document.getElementById('newInvestorEmail').value = '';
                     document.getElementById('newInvestorInvestment').value = '0';
-                    loadInvestors();
-                    loadStats();
+                    loadInvestors(); loadStats();
                 });
             };
 
             window.deleteInvestor = function(id) {
-                showModal('Delete Investor', 'Are you sure you want to delete this investor? This will also delete all their investments, profits and withdrawals.', true, null).then(function(result) {
+                showModal('Delete Investor', 'Are you sure you want to delete this investor?', true).then(function(result) {
                     if (result.confirmed) {
                         supabaseClient.from('investments').delete().eq('investor_id', id).then(function() {});
                         supabaseClient.from('profits').delete().eq('investor_id', id).then(function() {});
                         supabaseClient.from('withdrawals').delete().eq('investor_id', id).then(function() {});
-                        supabaseClient.from('investors').delete().eq('id', id).then(function() {
-                            showNotification('Investor deleted', false);
-                            loadInvestors();
-                            loadStats();
-                        });
+                        supabaseClient.from('investors').delete().eq('id', id).then(function() { showNotification('Investor deleted', false); loadInvestors(); loadStats(); });
                     }
                 });
             };
 
             function loadBuyers() {
-                supabaseClient.from('buyers').select('*').order('created_at', { ascending: false }).then(function(res) {
-                    allBuyers = res.data || [];
-                    var buyersList = document.getElementById('buyersList');
-                    if (buyersList) {
-                        if (allBuyers.length === 0) {
-                            buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>';
-                            return;
-                        }
-                        var html = '';
-                        for (var i = 0; i < allBuyers.length; i++) {
-                            var b = allBuyers[i];
-                            html += '<tr>';
-                            html += '<td><strong>' + (b.full_name || '') + '</strong></td>';
-                            html += '<td>' + (b.email || '') + '</td>';
-                            html += '<td>' + (b.phone || '-') + '</td>';
-                            html += '<td>' + (b.address || '-') + '</td>';
-                            html += '<td class="action-buttons"><button onclick="deleteBuyer(\'' + b.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="startChatWith(\'' + b.id + '\',\'buyer\',\'' + (b.full_name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-comment"></i> Message</button></td>';
-                            html += '</tr>';
-                        }
-                        buyersList.innerHTML = html;
+                supabaseClient.from('buyers').select('*').order('created_at', { ascending: false }).then(function(r) {
+                    allBuyers = r.data || [];
+                    var tbody = document.getElementById('buyersList');
+                    if (!tbody) return;
+                    if (allBuyers.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>'; return; }
+                    var html = '';
+                    for (var i = 0; i < allBuyers.length; i++) {
+                        var b = allBuyers[i];
+                        html += '<tr><td><strong>' + (b.full_name || '') + '</strong></td><td>' + (b.email || '') + '</td><td>' + (b.phone || '-') + '</td><td>' + (b.address || '-') + '</td>';
+                        html += '<td class="action-buttons"><button onclick="deleteBuyer(\'' + b.id + '\')" class="btn-danger">Delete</button> <button class="btn-info" onclick="startChatWith(\'' + b.id + '\',\'buyer\',\'' + (b.full_name || '').replace(/'/g, "\\'") + '\')">Message</button></td></tr>';
                     }
+                    tbody.innerHTML = html;
                 });
             }
 
             window.addNewBuyer = function() {
                 var name = document.getElementById('newBuyerName').value.trim();
                 var email = document.getElementById('newBuyerEmail').value.trim();
-                var phone = document.getElementById('newBuyerPhone').value;
-                var address = document.getElementById('newBuyerAddress').value;
-                if (!name || !email) {
-                    showNotification('Name and email required', true);
-                    return;
-                }
+                if (!name || !email) { showNotification('Name and email required', true); return; }
                 supabaseClient.from('buyers').insert([{
-                    id: crypto.randomUUID(),
-                    full_name: name,
-                    email: email,
-                    phone: phone,
-                    address: address,
-                    created_at: new Date().toISOString()
-                }]).then(function(result) {
-                    if (result.error) {
-                        showNotification(result.error.message, true);
-                        return;
-                    }
+                    id: crypto.randomUUID(), full_name: name, email: email, phone: document.getElementById('newBuyerPhone').value,
+                    address: document.getElementById('newBuyerAddress').value, created_at: new Date().toISOString()
+                }]).then(function(r) {
+                    if (r.error) { showNotification(r.error.message, true); return; }
                     showNotification('Buyer added!', false);
                     document.getElementById('newBuyerName').value = '';
                     document.getElementById('newBuyerEmail').value = '';
                     document.getElementById('newBuyerAddress').value = '';
-                    loadBuyers();
-                    loadStats();
+                    loadBuyers(); loadStats();
                 });
             };
 
             window.deleteBuyer = function(id) {
-                showModal('Delete Buyer', 'Are you sure you want to delete this buyer?', true, null).then(function(result) {
-                    if (result.confirmed) {
-                        supabaseClient.from('buyers').delete().eq('id', id).then(function() {
-                            showNotification('Buyer deleted', false);
-                            loadBuyers();
-                            loadStats();
-                        });
-                    }
+                showModal('Delete Buyer', 'Are you sure you want to delete this buyer?', true).then(function(result) {
+                    if (result.confirmed) { supabaseClient.from('buyers').delete().eq('id', id).then(function() { showNotification('Buyer deleted', false); loadBuyers(); loadStats(); }); }
                 });
             };
 
-            function loadProducts() {
-                supabaseClient.from('products').select('*').order('created_at', { ascending: false }).then(function(res) {
-                    var data = res.data || [];
-                    var productsList = document.getElementById('productsList');
-                    if (productsList) {
-                        if (data.length === 0) {
-                            productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>';
-                            return;
-                        }
-                        var html = '';
-                        for (var i = 0; i < data.length; i++) {
-                            var p = data[i];
-                            html += '<tr>';
-                            html += '<td><strong>' + (p.name || '') + '</strong></td>';
-                            html += '<td>' + (p.category || '') + '</td>';
-                            html += '<td>Rs.' + ((p.price || 0).toLocaleString()) + '</td>';
-                            html += '<td>' + (p.stock_quantity || 0) + '</td>';
-                            html += '<td class="action-buttons"><button onclick="deleteProduct(\'' + p.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
-                            html += '</tr>';
-                        }
-                        productsList.innerHTML = html;
+            function loadInvestmentRequests() {
+                supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(function(r) {
+                    var data = r.data || [];
+                    var tbody = document.getElementById('investmentRequestsList');
+                    if (!tbody) return;
+                    if (data.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No pending requests</td></tr>'; return; }
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var req = data[i];
+                        html += '<tr><td><strong>' + (req.investors ? (req.investors.full_name || '-') : '-') + '</strong><br><small>' + (req.investors ? (req.investors.email || '-') : '-') + '</small></td>';
+                        html += '<td>Rs. ' + ((req.amount || 0).toLocaleString()) + '</td><td>' + new Date(req.created_at).toLocaleDateString() + '</td>';
+                        html += '<td>' + (req.payment_method || '-') + '</td><td>' + (req.transaction_id || '-') + '</td>';
+                        html += '<td class="action-buttons"><button onclick="approveInvestment(\'' + req.id + '\', ' + req.amount + ', \'' + req.investor_id + '\')" class="btn-success">Approve</button> <button onclick="rejectInvestment(\'' + req.id + '\')" class="btn-danger">Reject</button></td></tr>';
                     }
+                    tbody.innerHTML = html;
                 });
             }
 
-            window.addNewProduct = function() {
-                var name = document.getElementById('newProductName').value.trim();
-                var category = document.getElementById('newProductCategory').value;
-                var wattage = document.getElementById('newProductWattage').value;
-                var price = parseFloat(document.getElementById('newProductPrice').value);
-                var stock = parseInt(document.getElementById('newProductStock').value) || 0;
-                if (!name || !category || !price) {
-                    showNotification('Name, category and price required', true);
-                    return;
-                }
-                supabaseClient.from('products').insert([{
-                    name: name,
-                    category: category,
-                    wattage: wattage,
-                    price: price,
-                    stock_quantity: stock,
-                    is_active: true,
-                    created_at: new Date().toISOString()
-                }]).then(function(result) {
-                    if (result.error) {
-                        showNotification(result.error.message, true);
-                        return;
+            function loadInvestmentHistory() {
+                supabaseClient.from('investments').select('*, investors(full_name)').order('investment_date', { ascending: false }).then(function(r) {
+                    var data = r.data || [];
+                    var tbody = document.getElementById('investmentHistory');
+                    if (!tbody) return;
+                    if (data.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No investments found</td></tr>'; return; }
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var inv = data[i];
+                        html += '<tr><td>' + (inv.investors ? (inv.investors.full_name || '-') : '-') + '</td>';
+                        html += '<td>Rs.' + ((inv.amount || 0).toLocaleString()) + '</td><td>' + new Date(inv.investment_date).toLocaleDateString() + '</td>';
+                        html += '<td>' + (inv.payment_method || '-') + '</td><td><span class="status-badge status-' + inv.status + '">' + inv.status + '</span></td>';
+                        html += '<td class="action-buttons"><button onclick="deleteInvestment(\'' + inv.id + '\')" class="btn-danger">Delete</button></td></tr>';
                     }
-                    showNotification('Product added!', false);
-                    document.getElementById('newProductName').value = '';
-                    document.getElementById('newProductPrice').value = '';
-                    loadProducts();
-                    loadStats();
+                    tbody.innerHTML = html;
+                });
+            }
+
+            function loadProfitHistory() {
+                supabaseClient.from('profits').select('*, investors(full_name)').order('month', { ascending: false }).then(function(r) {
+                    var data = r.data || [];
+                    var tbody = document.getElementById('profitHistory');
+                    if (!tbody) return;
+                    if (data.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No profits found</td></tr>'; return; }
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var p = data[i];
+                        html += '<tr><td>' + (p.investors ? (p.investors.full_name || '-') : '-') + '</td>';
+                        html += '<td>Rs.' + ((p.amount || 0).toLocaleString()) + '</td><td>' + new Date(p.month).toLocaleDateString('default', { month: 'long', year: 'numeric' }) + '</td>';
+                        html += '<td>' + (p.profit_percentage || 10) + '%</td><td><span class="status-badge ' + (p.paid ? 'status-active' : 'status-pending') + '">' + (p.paid ? 'Paid' : 'Pending') + '</span></td>';
+                        html += '<td class="action-buttons"><button onclick="deleteProfit(\'' + p.id + '\')" class="btn-danger">Delete</button></td></tr>';
+                    }
+                    tbody.innerHTML = html;
+                });
+            }
+
+            function loadProducts() {
+                supabaseClient.from('products').select('*').order('created_at', { ascending: false }).then(function(r) {
+                    var data = r.data || [];
+                    var tbody = document.getElementById('productsList');
+                    if (!tbody) return;
+                    if (data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>'; return; }
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var p = data[i];
+                        html += '<tr><td><strong>' + (p.name || '') + '</strong></td><td>' + (p.category || '') + '</td>';
+                        html += '<td>Rs.' + ((p.price || 0).toLocaleString()) + '</td><td>' + (p.stock_quantity || 0) + '</td>';
+                        html += '<td class="action-buttons"><button onclick="deleteProduct(\'' + p.id + '\')" class="btn-danger">Delete</button></td></tr>';
+                    }
+                    tbody.innerHTML = html;
+                });
+            }
+
+            function loadWithdrawals() {
+                supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false }).then(function(r) {
+                    allWithdrawals = r.data || [];
+                    var tbody = document.getElementById('withdrawalsList');
+                    if (!tbody) return;
+                    if (allWithdrawals.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No withdrawal requests found</td></tr>'; return; }
+                    var html = '';
+                    for (var i = 0; i < allWithdrawals.length; i++) {
+                        var w = allWithdrawals[i];
+                        html += '<tr><td><strong>' + (w.investors ? (w.investors.full_name || 'Unknown') : 'Unknown') + '</strong></td>';
+                        html += '<td><small>' + (w.investors ? (w.investors.email || '-') : '-') + '</small></td><td>Rs. ' + ((w.amount || 0).toLocaleString()) + '</td>';
+                        html += '<td>' + new Date(w.request_date).toLocaleDateString() + '</td><td>' + (w.payment_method || '-') + '</td>';
+                        html += '<td><small>' + (w.account_details || '-') + '</small></td>';
+                        html += '<td><span class="status-badge ' + (w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')) + '">' + w.status + '</span></td>';
+                        if (w.status === 'pending') {
+                            html += '<td class="action-buttons"><button onclick="approveWithdrawal(\'' + w.id + '\', ' + w.amount + ', \'' + w.investor_id + '\')" class="btn-success">Approve</button> <button onclick="rejectWithdrawal(\'' + w.id + '\')" class="btn-danger">Reject</button></td></tr>';
+                        } else {
+                            html += '<td><span class="status-badge status-active">Processed</span></td></tr>';
+                        }
+                    }
+                    tbody.innerHTML = html;
+                });
+            }
+
+            window.searchWithdrawals = function() {
+                var term = document.getElementById('withdrawalSearch').value.toLowerCase();
+                var filtered = allWithdrawals.filter(function(w) {
+                    return (w.investors && w.investors.full_name && w.investors.full_name.toLowerCase().includes(term)) ||
+                           (w.investors && w.investors.email && w.investors.email.toLowerCase().includes(term));
+                });
+                var tbody = document.getElementById('withdrawalsList');
+                if (!tbody) return;
+                if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No withdrawal requests found</td></tr>'; return; }
+                var html = '';
+                for (var i = 0; i < filtered.length; i++) {
+                    var w = filtered[i];
+                    html += '<tr><td><strong>' + (w.investors ? (w.investors.full_name || 'Unknown') : 'Unknown') + '</strong></td>';
+                    html += '<td><small>' + (w.investors ? (w.investors.email || '-') : '-') + '</small></td><td>Rs. ' + ((w.amount || 0).toLocaleString()) + '</td>';
+                    html += '<td>' + new Date(w.request_date).toLocaleDateString() + '</td><td>' + (w.payment_method || '-') + '</td>';
+                    html += '<td><small>' + (w.account_details || '-') + '</small></td>';
+                    html += '<td><span class="status-badge ' + (w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')) + '">' + w.status + '</span></td>';
+                    if (w.status === 'pending') {
+                        html += '<td class="action-buttons"><button onclick="approveWithdrawal(\'' + w.id + '\', ' + w.amount + ', \'' + w.investor_id + '\')" class="btn-success">Approve</button> <button onclick="rejectWithdrawal(\'' + w.id + '\')" class="btn-danger">Reject</button></td></tr>';
+                    } else {
+                        html += '<td><span class="status-badge status-active">Processed</span></td></tr>';
+                    }
+                }
+                tbody.innerHTML = html;
+            };
+
+            window.resetWithdrawalSearch = function() { document.getElementById('withdrawalSearch').value = ''; loadWithdrawals(); };
+
+            function loadOrders() {
+                supabaseClient.from('orders').select('*').order('order_date', { ascending: false }).then(function(r) {
+                    allOrders = r.data || [];
+                    var tbody = document.getElementById('ordersList');
+                    if (!tbody) return;
+                    if (allOrders.length === 0) { tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; return; }
+                    var html = '';
+                    for (var i = 0; i < allOrders.length; i++) {
+                        var o = allOrders[i];
+                        var productsList = '-';
+                        try { var items = JSON.parse(o.notes || '[]'); if (items.length) productsList = items.map(function(it) { return it.name + ' (x' + it.quantity + ')'; }).join(', '); } catch(e) {}
+                        html += '<tr><td><strong>' + (o.id ? o.id.slice(0, 12) : '') + '...</strong><br><small style="color:#E8B13C;">' + (o.id || '') + '</small></td>';
+                        html += '<td>' + (o.user_type || 'buyer') + '</td><td><small>' + productsList.substring(0, 50) + '</small></td>';
+                        html += '<td>Rs. ' + ((o.total_amount || 0).toLocaleString()) + '</td><td>' + new Date(o.order_date).toLocaleDateString() + '</td>';
+                        html += '<td>' + (o.payment_method || '-') + '</td><td><span class="status-badge ' + (o.payment_status === 'paid' ? 'status-active' : 'status-pending') + '">' + (o.payment_status || 'pending') + '</span></td>';
+                        html += '<td><small>' + (o.delivery_address ? o.delivery_address.substring(0, 30) : '-') + '</small></td>';
+                        html += '<td><select onchange="updateOrderStatus(\'' + o.id + '\', this.value)" class="status-badge" style="padding:5px;">';
+                        html += '<option value="pending" ' + (o.status === 'pending' ? 'selected' : '') + '>Pending</option>';
+                        html += '<option value="processing" ' + (o.status === 'processing' ? 'selected' : '') + '>Processing</option>';
+                        html += '<option value="shipped" ' + (o.status === 'shipped' ? 'selected' : '') + '>Shipped</option>';
+                        html += '<option value="delivered" ' + (o.status === 'delivered' ? 'selected' : '') + '>Delivered</option>';
+                        html += '<option value="cancelled" ' + (o.status === 'cancelled' ? 'selected' : '') + '>Cancelled</option></select></td>';
+                        html += '<td class="action-buttons"><button onclick="viewOrderDetails(\'' + o.id + '\')" class="btn-info">View</button> <button onclick="deleteOrder(\'' + o.id + '\')" class="btn-danger">Delete</button></td></tr>';
+                    }
+                    tbody.innerHTML = html;
+                });
+            }
+
+            window.updateOrderStatus = function(id, status) {
+                supabaseClient.from('orders').update({ status: status }).eq('id', id).then(function(r) {
+                    if (r.error) showNotification(r.error.message, true);
+                    else { showNotification('Order status updated to ' + status + '!', false); loadOrders(); }
                 });
             };
 
-            window.deleteProduct = function(id) {
-                showModal('Delete Product', 'Are you sure you want to delete this product?', true, null).then(function(result) {
+            window.deleteOrder = function(id) {
+                showModal('Delete Order', 'Are you sure you want to delete this order?', true).then(function(result) {
                     if (result.confirmed) {
-                        supabaseClient.from('products').update({ is_active: false }).eq('id', id).then(function() {
-                            showNotification('Product deleted', false);
-                            loadProducts();
-                            loadStats();
+                        supabaseClient.from('orders').delete().eq('id', id).then(function(r) {
+                            if (r.error) showNotification(r.error.message, true);
+                            else { showNotification('Order deleted!', false); loadOrders(); loadStats(); }
                         });
                     }
                 });
             };
+
+            window.viewOrderDetails = function(id) {
+                supabaseClient.from('orders').select('*').eq('id', id).then(function(r) {
+                    if (r.data && r.data[0]) {
+                        var o = r.data[0];
+                        var productsHtml = '-';
+                        try { var items = JSON.parse(o.notes || '[]'); if (items.length) productsHtml = items.map(function(it) { return it.name + ' - Qty: ' + it.quantity + ' - Rs.' + it.price; }).join('\n'); } catch(e) {}
+                        alert('Order ID: ' + o.id + '\nCustomer: ' + o.user_type + '\nTotal: Rs.' + o.total_amount + '\nDate: ' + new Date(o.order_date).toLocaleDateString() + '\nStatus: ' + o.status + '\nAddress: ' + o.delivery_address + '\nProducts:\n' + productsHtml);
+                    }
+                });
+            };
+
+            window.searchOrders = function() {
+                var term = document.getElementById('orderSearch').value.toLowerCase();
+                var filtered = allOrders.filter(function(o) { return (o.id && o.id.toLowerCase().includes(term)); });
+                var tbody = document.getElementById('ordersList');
+                if (!tbody) return;
+                if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; return; }
+                var html = '';
+                for (var i = 0; i < filtered.length; i++) {
+                    var o = filtered[i];
+                    var productsList = '-';
+                    try { var items = JSON.parse(o.notes || '[]'); if (items.length) productsList = items.map(function(it) { return it.name + ' (x' + it.quantity + ')'; }).join(', '); } catch(e) {}
+                    html += '<tr><td><strong>' + (o.id ? o.id.slice(0, 12) : '') + '...</strong></td><td>' + (o.user_type || 'buyer') + '</td>';
+                    html += '<td>' + productsList.substring(0, 40) + '</td><td>Rs. ' + ((o.total_amount || 0).toLocaleString()) + '</td>';
+                    html += '<td>' + new Date(o.order_date).toLocaleDateString() + '</td><td>' + (o.payment_method || '-') + '</td>';
+                    html += '<td>' + (o.payment_status || 'pending') + '</td><td>' + (o.delivery_address ? o.delivery_address.substring(0, 20) : '-') + '</td>';
+                    html += '<td><select onchange="updateOrderStatus(\'' + o.id + '\', this.value)"><option value="pending" ' + (o.status === 'pending' ? 'selected' : '') + '>Pending</option><option value="processing" ' + (o.status === 'processing' ? 'selected' : '') + '>Processing</option><option value="shipped" ' + (o.status === 'shipped' ? 'selected' : '') + '>Shipped</option><option value="delivered" ' + (o.status === 'delivered' ? 'selected' : '') + '>Delivered</option></select></td>';
+                    html += '<td class="action-buttons"><button onclick="viewOrderDetails(\'' + o.id + '\')" class="btn-info">View</button> <button onclick="deleteOrder(\'' + o.id + '\')" class="btn-danger">Delete</button></td></tr>';
+                }
+                tbody.innerHTML = html;
+            };
+
+            window.resetOrderSearch = function() { document.getElementById('orderSearch').value = ''; loadOrders(); };
+
+            function loadRecentActivities() {
+                var activities = [];
+                supabaseClient.from('investments').select('*,investors(full_name)').order('created_at', { ascending: false }).limit(5).then(function(r) {
+                    var inv = r.data || [];
+                    for (var i = 0; i < inv.length; i++) activities.push({ action: 'Investment', details: (inv[i].investors ? inv[i].investors.full_name : '') + ' invested Rs.' + inv[i].amount, time: new Date(inv[i].created_at).toLocaleString() });
+                    supabaseClient.from('orders').select('*').order('created_at', { ascending: false }).limit(5).then(function(r2) {
+                        var ord = r2.data || [];
+                        for (var i = 0; i < ord.length; i++) activities.push({ action: 'Order', details: 'Order #' + (ord[i].id ? ord[i].id.slice(0, 8) : '') + ' - Rs.' + ord[i].total_amount, time: new Date(ord[i].created_at).toLocaleString() });
+                        supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at', { ascending: false }).limit(5).then(function(r3) {
+                            var wd = r3.data || [];
+                            for (var i = 0; i < wd.length; i++) activities.push({ action: 'Withdrawal', details: (wd[i].investors ? wd[i].investors.full_name : '') + ' requested Rs.' + wd[i].amount, time: new Date(wd[i].created_at).toLocaleString() });
+                            activities.sort(function(a, b) { return new Date(b.time) - new Date(a.time); });
+                            var tbody = document.getElementById('recentActivities');
+                            if (tbody) {
+                                if (activities.length === 0) { tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No recent activities</td></tr>'; return; }
+                                var html = '';
+                                for (var i = 0; i < Math.min(activities.length, 10); i++) html += '<tr><td>' + activities[i].action + '</td><td>' + activities[i].details + '</td><td>' + activities[i].time + '</td></tr>';
+                                tbody.innerHTML = html;
+                            }
+                        });
+                    });
+                });
+            }
 
             window.addInvestment = function() {
                 var investorId = document.getElementById('investorSelect').value;
                 var amount = parseFloat(document.getElementById('invAmount').value);
                 var date = document.getElementById('invDate').value;
-                var paymentMethod = document.getElementById('invPaymentMethod').value;
-                var transactionId = document.getElementById('invTransactionId').value;
-                if (!investorId || !amount || !date) {
-                    showNotification('Fill all fields', true);
-                    return;
-                }
-                supabaseClient.from('investments').insert([{
-                    investor_id: investorId,
-                    amount: amount,
-                    investment_date: date,
-                    payment_method: paymentMethod,
-                    transaction_id: transactionId,
-                    status: 'active'
-                }]).then(function(result) {
-                    if (result.error) {
-                        showNotification(result.error.message, true);
-                        return;
-                    }
+                if (!investorId || !amount || !date) { showNotification('Fill all fields', true); return; }
+                supabaseClient.from('investments').insert([{ investor_id: investorId, amount: amount, investment_date: date, payment_method: document.getElementById('invPaymentMethod').value, transaction_id: document.getElementById('invTransactionId').value, status: 'active' }]).then(function(r) {
+                    if (r.error) { showNotification(r.error.message, true); return; }
                     supabaseClient.from('investments').select('amount').eq('investor_id', investorId).eq('status', 'active').then(function(invRes) {
-                        var investments = invRes.data || [];
-                        var totalInvestment = 0;
-                        for (var i = 0; i < investments.length; i++) {
-                            totalInvestment += investments[i].amount || 0;
-                        }
+                        var total = 0; for (var i = 0; i < (invRes.data || []).length; i++) total += invRes.data[i].amount || 0;
                         supabaseClient.from('investors').select('available_balance').eq('id', investorId).single().then(function(invData) {
-                            var investor = invData.data;
-                            var newBalance = (investor ? (investor.available_balance || 0) : 0) + amount;
-                            supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id', investorId).then(function() {
+                            var newBalance = (invData.data ? (invData.data.available_balance || 0) : 0) + amount;
+                            supabaseClient.from('investors').update({ total_investment: total, available_balance: newBalance }).eq('id', investorId).then(function() {
                                 showNotification('Investment added!', false);
                                 document.getElementById('invAmount').value = '';
-                                loadInvestmentHistory();
-                                loadInvestors();
-                                loadStats();
+                                loadInvestmentHistory(); loadInvestors(); loadStats();
                             });
                         });
                     });
@@ -1197,405 +850,34 @@
                 var investorId = document.getElementById('profitInvestorSelect').value;
                 var amount = parseFloat(document.getElementById('profitAmount').value);
                 var month = document.getElementById('profitMonth').value;
-                var percentage = parseFloat(document.getElementById('profitPercentage').value) || 10;
-                if (!investorId || !amount || !month) {
-                    showNotification('Fill all fields', true);
-                    return;
-                }
-                supabaseClient.from('profits').insert([{
-                    investor_id: investorId,
-                    amount: amount,
-                    month: month + '-01',
-                    profit_percentage: percentage,
-                    paid: true,
-                    paid_date: new Date().toISOString().split('T')[0]
-                }]).then(function(result) {
-                    if (result.error) {
-                        showNotification(result.error.message, true);
-                        return;
-                    }
+                if (!investorId || !amount || !month) { showNotification('Fill all fields', true); return; }
+                supabaseClient.from('profits').insert([{ investor_id: investorId, amount: amount, month: month + '-01', profit_percentage: parseFloat(document.getElementById('profitPercentage').value) || 10, paid: true, paid_date: new Date().toISOString().split('T')[0] }]).then(function(r) {
+                    if (r.error) { showNotification(r.error.message, true); return; }
                     supabaseClient.from('profits').select('amount').eq('investor_id', investorId).eq('paid', true).then(function(profRes) {
-                        var profits = profRes.data || [];
-                        var totalProfit = 0;
-                        for (var i = 0; i < profits.length; i++) {
-                            totalProfit += profits[i].amount || 0;
-                        }
+                        var total = 0; for (var i = 0; i < (profRes.data || []).length; i++) total += profRes.data[i].amount || 0;
                         supabaseClient.from('investors').select('available_balance').eq('id', investorId).single().then(function(invData) {
-                            var investor = invData.data;
-                            var newBalance = (investor ? (investor.available_balance || 0) : 0) + amount;
-                            supabaseClient.from('investors').update({ total_profit: totalProfit, available_balance: newBalance }).eq('id', investorId).then(function() {
+                            var newBalance = (invData.data ? (invData.data.available_balance || 0) : 0) + amount;
+                            supabaseClient.from('investors').update({ total_profit: total, available_balance: newBalance }).eq('id', investorId).then(function() {
                                 showNotification('Profit added!', false);
                                 document.getElementById('profitAmount').value = '';
-                                loadProfitHistory();
-                                loadInvestors();
-                                loadStats();
+                                loadProfitHistory(); loadInvestors(); loadStats();
                             });
                         });
                     });
                 });
             };
 
-            function loadInvestmentHistory() {
-                supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date', { ascending: false }).then(function(res) {
-                    var data = res.data || [];
-                    var investmentHistory = document.getElementById('investmentHistory');
-                    if (investmentHistory) {
-                        if (data.length === 0) {
-                            investmentHistory.innerHTML = '<tr><td colspan="6" class="empty-state">No investments found</td></tr>';
-                            return;
-                        }
-                        var html = '';
-                        for (var i = 0; i < data.length; i++) {
-                            var inv = data[i];
-                            html += '<tr>';
-                            html += '<td>' + (inv.investors ? (inv.investors.full_name || '-') : '-') + '</td>';
-                            html += '<td>Rs.' + ((inv.amount || 0).toLocaleString()) + '</td>';
-                            html += '<td>' + new Date(inv.investment_date).toLocaleDateString() + '</td>';
-                            html += '<td>' + (inv.payment_method || '-') + '</td>';
-                            html += '<td><span class="status-badge status-' + inv.status + '">' + inv.status + '</span></td>';
-                            html += '<td class="action-buttons"><button onclick="deleteInvestment(\'' + inv.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
-                            html += '</tr>';
-                        }
-                        investmentHistory.innerHTML = html;
-                    }
-                });
-            }
-
-            function loadProfitHistory() {
-                supabaseClient.from('profits').select('*,investors(full_name)').order('month', { ascending: false }).then(function(res) {
-                    var data = res.data || [];
-                    var profitHistory = document.getElementById('profitHistory');
-                    if (profitHistory) {
-                        if (data.length === 0) {
-                            profitHistory.innerHTML = '<tr><td colspan="6" class="empty-state">No profits found</td></tr>';
-                            return;
-                        }
-                        var html = '';
-                        for (var i = 0; i < data.length; i++) {
-                            var p = data[i];
-                            html += '<tr>';
-                            html += '<td>' + (p.investors ? (p.investors.full_name || '-') : '-') + '</td>';
-                            html += '<td>Rs.' + ((p.amount || 0).toLocaleString()) + '</td>';
-                            html += '<td>' + new Date(p.month).toLocaleDateString('default', { month: 'long', year: 'numeric' }) + '</td>';
-                            html += '<td>' + (p.profit_percentage || 10) + '%' + '</td>';
-                            html += '<td><span class="status-badge ' + (p.paid ? 'status-active' : 'status-pending') + '">' + (p.paid ? 'Paid' : 'Pending') + '</span></td>';
-                            html += '<td class="action-buttons"><button onclick="deleteProfit(\'' + p.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
-                            html += '</tr>';
-                        }
-                        profitHistory.innerHTML = html;
-                    }
-                });
-            }
-
-            function loadInvestmentRequests() {
-                supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(function(res) {
-                    var data = res.data || [];
-                    var requestsList = document.getElementById('investmentRequestsList');
-                    if (requestsList) {
-                        if (data.length === 0) {
-                            requestsList.innerHTML = '<tr><td colspan="6" class="empty-state">No pending requests</td></tr>';
-                            return;
-                        }
-                        var html = '';
-                        for (var i = 0; i < data.length; i++) {
-                            var req = data[i];
-                            html += '<tr>';
-                            html += '<td><strong>' + (req.investors ? (req.investors.full_name || '-') : '-') + '</strong><br><small>' + (req.investors ? (req.investors.email || '-') : '-') + '</small></td>';
-                            html += '<td>Rs. ' + ((req.amount || 0).toLocaleString()) + '</td>';
-                            html += '<td>' + new Date(req.created_at).toLocaleDateString() + '</td>';
-                            html += '<td>' + (req.payment_method || '-') + '</td>';
-                            html += '<td>' + (req.transaction_id || '-') + '</td>';
-                            html += '<td class="action-buttons"><button onclick="approveInvestment(\'' + req.id + '\', ' + req.amount + ', \'' + req.investor_id + '\')" class="btn-success"><i class="fas fa-check"></i> Approve</button><button onclick="rejectInvestment(\'' + req.id + '\')" class="btn-danger"><i class="fas fa-times"></i> Reject</button></td>';
-                            html += '</tr>';
-                        }
-                        requestsList.innerHTML = html;
-                    }
-                });
-            }
-
-            function loadWithdrawals() {
-                supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false }).then(function(res) {
-                    allWithdrawals = res.data || [];
-                    var withdrawalsList = document.getElementById('withdrawalsList');
-                    if (!withdrawalsList) return;
-                    if (allWithdrawals.length === 0) {
-                        withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state">No withdrawal requests found</td></tr>';
-                        return;
-                    }
-                    var html = '';
-                    for (var i = 0; i < allWithdrawals.length; i++) {
-                        var w = allWithdrawals[i];
-                        html += '<tr>';
-                        html += '<td><strong>' + (w.investors ? (w.investors.full_name || 'Unknown') : 'Unknown') + '</strong></td>';
-                        html += '<td><small>' + (w.investors ? (w.investors.email || '-') : '-') + '</small></td>';
-                        html += '<td>Rs. ' + ((w.amount || 0).toLocaleString()) + '</td>';
-                        html += '<td>' + new Date(w.request_date).toLocaleDateString() + '</td>';
-                        html += '<td>' + (w.payment_method || '-') + '</td>';
-                        html += '<td><small>' + (w.account_details || '-') + '</small></td>';
-                        html += '<td><span class="status-badge ' + (w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')) + '">' + w.status + '</span></td>';
-                        if (w.status === 'pending') {
-                            html += '<td class="action-buttons"><button onclick="approveWithdrawal(\'' + w.id + '\', ' + w.amount + ', \'' + w.investor_id + '\')" class="btn-success"><i class="fas fa-check"></i> Approve</button><button onclick="rejectWithdrawal(\'' + w.id + '\')" class="btn-danger"><i class="fas fa-times"></i> Reject</button></td>';
-                        } else {
-                            html += '<td class="action-buttons"><span class="status-badge status-active">Processed</span></td>';
-                        }
-                        html += '</tr>';
-                    }
-                    withdrawalsList.innerHTML = html;
-                });
-            }
-
-            window.searchWithdrawals = function() {
-                var term = document.getElementById('withdrawalSearch').value.toLowerCase();
-                var filtered = allWithdrawals.filter(function(w) {
-                    return (w.investors && w.investors.full_name && w.investors.full_name.toLowerCase().includes(term)) ||
-                           (w.investors && w.investors.email && w.investors.email.toLowerCase().includes(term));
-                });
-                var withdrawalsList = document.getElementById('withdrawalsList');
-                if (!withdrawalsList) return;
-                if (filtered.length === 0) {
-                    withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state">No withdrawal requests found</td></tr>';
-                    return;
-                }
-                var html = '';
-                for (var i = 0; i < filtered.length; i++) {
-                    var w = filtered[i];
-                    html += '<tr>';
-                    html += '<td><strong>' + (w.investors ? (w.investors.full_name || 'Unknown') : 'Unknown') + '</strong></td>';
-                    html += '<td><small>' + (w.investors ? (w.investors.email || '-') : '-') + '</small></td>';
-                    html += '<td>Rs. ' + ((w.amount || 0).toLocaleString()) + '</td>';
-                    html += '<td>' + new Date(w.request_date).toLocaleDateString() + '</td>';
-                    html += '<td>' + (w.payment_method || '-') + '</td>';
-                    html += '<td><small>' + (w.account_details || '-') + '</small></td>';
-                    html += '<td><span class="status-badge ' + (w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')) + '">' + w.status + '</span></td>';
-                    if (w.status === 'pending') {
-                        html += '<td class="action-buttons"><button onclick="approveWithdrawal(\'' + w.id + '\', ' + w.amount + ', \'' + w.investor_id + '\')" class="btn-success"><i class="fas fa-check"></i> Approve</button><button onclick="rejectWithdrawal(\'' + w.id + '\')" class="btn-danger"><i class="fas fa-times"></i> Reject</button></td>';
-                    } else {
-                        html += '<td class="action-buttons"><span class="status-badge status-active">Processed</span></td>';
-                    }
-                    html += '</tr>';
-                }
-                withdrawalsList.innerHTML = html;
-            };
-
-            window.resetWithdrawalSearch = function() {
-                document.getElementById('withdrawalSearch').value = '';
-                loadWithdrawals();
-            };
-
-            function loadOrders() {
-                supabaseClient.from('orders').select('*').order('order_date', { ascending: false }).then(function(res) {
-                    allOrders = res.data || [];
-                    var ordersList = document.getElementById('ordersList');
-                    if (!ordersList) return;
-                    if (allOrders.length === 0) {
-                        ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>';
-                        return;
-                    }
-                    var html = '';
-                    for (var i = 0; i < allOrders.length; i++) {
-                        var o = allOrders[i];
-                        var productsList = '-';
-                        try {
-                            var items = JSON.parse(o.notes || '[]');
-                            if (Array.isArray(items) && items.length > 0) {
-                                var productNames = [];
-                                for (var j = 0; j < items.length; j++) {
-                                    productNames.push(items[j].name + ' (x' + items[j].quantity + ')');
-                                }
-                                productsList = productNames.join(', ');
-                            } else {
-                                productsList = o.notes || '-';
-                            }
-                        } catch(e) {
-                            productsList = o.notes || '-';
-                        }
-                        html += '<tr>';
-                        html += '<td><strong>' + (o.id ? o.id.slice(0, 12) : '') + '...</strong><br><small style="color:#E8B13C;">' + (o.id || '') + '</small></td>';
-                        html += '<td>' + (o.user_type || 'buyer') + '</td>';
-                        html += '<td><small>' + (productsList.substring(0, 50) + (productsList.length > 50 ? '...' : '')) + '</small></td>';
-                        html += '<td>Rs. ' + ((o.total_amount || 0).toLocaleString()) + '</td>';
-                        html += '<td>' + new Date(o.order_date).toLocaleDateString() + '</td>';
-                        html += '<td>' + (o.payment_method || '-') + '</td>';
-                        html += '<td><span class="status-badge ' + (o.payment_status === 'paid' ? 'status-active' : 'status-pending') + '">' + (o.payment_status || 'pending') + '</span></td>';
-                        html += '<td><small>' + (o.delivery_address ? o.delivery_address.substring(0, 30) : '-') + '</small></td>';
-                        html += '<td><select onchange="updateOrderStatus(\'' + o.id + '\', this.value)" class="status-badge" style="padding:5px; background:rgba(0,0,0,0.3);">';
-                        html += '<option value="pending" ' + (o.status === 'pending' ? 'selected' : '') + '>Pending</option>';
-                        html += '<option value="processing" ' + (o.status === 'processing' ? 'selected' : '') + '>Processing</option>';
-                        html += '<option value="shipped" ' + (o.status === 'shipped' ? 'selected' : '') + '>Shipped</option>';
-                        html += '<option value="delivered" ' + (o.status === 'delivered' ? 'selected' : '') + '>Delivered</option>';
-                        html += '<option value="cancelled" ' + (o.status === 'cancelled' ? 'selected' : '') + '>Cancelled</option>';
-                        html += '</select></td>';
-                        html += '<td class="action-buttons"><button onclick="viewOrderDetails(\'' + o.id + '\')" class="btn-info" title="View Details"><i class="fas fa-eye"></i></button><button onclick="deleteOrder(\'' + o.id + '\')" class="btn-danger" title="Delete"><i class="fas fa-trash"></i></button></td>';
-                        html += '</tr>';
-                    }
-                    ordersList.innerHTML = html;
-                });
-            }
-
-            window.updateOrderStatus = function(id, status) {
-                supabaseClient.from('orders').update({ status: status }).eq('id', id).then(function(result) {
-                    if (result.error) {
-                        showNotification(result.error.message, true);
-                    } else {
-                        showNotification('Order status updated to ' + status + '!', false);
-                        loadOrders();
-                    }
-                });
-            };
-
-            window.deleteOrder = function(id) {
-                showModal('Delete Order', 'Are you sure you want to delete this order? This action cannot be undone.', true, null).then(function(result) {
-                    if (result.confirmed) {
-                        supabaseClient.from('orders').delete().eq('id', id).then(function(res) {
-                            if (res.error) {
-                                showNotification(res.error.message, true);
-                            } else {
-                                showNotification('Order deleted successfully!', false);
-                                loadOrders();
-                                loadStats();
-                            }
-                        });
-                    }
-                });
-            };
-
-            window.viewOrderDetails = function(id) {
-                supabaseClient.from('orders').select('*').eq('id', id).then(function(res) {
-                    if (res.data && res.data[0]) {
-                        var order = res.data[0];
-                        var productsHtml = '-';
-                        try {
-                            var items = JSON.parse(order.notes || '[]');
-                            if (Array.isArray(items) && items.length > 0) {
-                                var productDetails = [];
-                                for (var i = 0; i < items.length; i++) {
-                                    productDetails.push(items[i].name + ' - Quantity: ' + items[i].quantity + ' - Price: Rs. ' + items[i].price);
-                                }
-                                productsHtml = productDetails.join('<br>');
-                            }
-                        } catch(e) {
-                            productsHtml = order.notes || '-';
-                        }
-                        var details = '<strong>Order ID:</strong> ' + order.id + '<br>' +
-                                      '<strong>Customer:</strong> ' + order.user_type + '<br>' +
-                                      '<strong>Total Amount:</strong> Rs. ' + order.total_amount + '<br>' +
-                                      '<strong>Order Date:</strong> ' + new Date(order.order_date).toLocaleDateString() + '<br>' +
-                                      '<strong>Payment Method:</strong> ' + order.payment_method + '<br>' +
-                                      '<strong>Payment Status:</strong> ' + order.payment_status + '<br>' +
-                                      '<strong>Order Status:</strong> ' + order.status + '<br>' +
-                                      '<strong>Delivery Address:</strong> ' + order.delivery_address + '<br>' +
-                                      '<strong>Products:</strong><br>' + productsHtml;
-                        showModal('Order Details', details, false, null);
-                    }
-                });
-            };
-
-            window.searchOrders = function() {
-                var term = document.getElementById('orderSearch').value.toLowerCase();
-                var filtered = allOrders.filter(function(o) {
-                    return (o.id && o.id.toLowerCase().includes(term)) ||
-                           (o.user_type && o.user_type.toLowerCase().includes(term)) ||
-                           (o.delivery_address && o.delivery_address.toLowerCase().includes(term));
-                });
-                var ordersList = document.getElementById('ordersList');
-                if (!ordersList) return;
-                if (filtered.length === 0) {
-                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>';
-                    return;
-                }
-                var html = '';
-                for (var i = 0; i < filtered.length; i++) {
-                    var o = filtered[i];
-                    var productsList = '-';
-                    try {
-                        var items = JSON.parse(o.notes || '[]');
-                        if (Array.isArray(items) && items.length > 0) {
-                            var productNames = [];
-                            for (var j = 0; j < items.length; j++) {
-                                productNames.push(items[j].name + ' (x' + items[j].quantity + ')');
-                            }
-                            productsList = productNames.join(', ');
-                        }
-                    } catch(e) { productsList = o.notes || '-'; }
-                    html += '<tr>';
-                    html += '<td><strong>' + (o.id ? o.id.slice(0, 12) : '') + '...</strong></td>';
-                    html += '<td>' + (o.user_type || 'buyer') + '</td>';
-                    html += '<td>' + productsList.substring(0, 40) + '</td>';
-                    html += '<td>Rs. ' + ((o.total_amount || 0).toLocaleString()) + '</td>';
-                    html += '<td>' + new Date(o.order_date).toLocaleDateString() + '</td>';
-                    html += '<td>' + (o.payment_method || '-') + '</td>';
-                    html += '<td>' + (o.payment_status || 'pending') + '</td>';
-                    html += '<td>' + (o.delivery_address ? o.delivery_address.substring(0, 20) : '-') + '</td>';
-                    html += '<td><select onchange="updateOrderStatus(\'' + o.id + '\', this.value)"><option value="pending" ' + (o.status === 'pending' ? 'selected' : '') + '>Pending</option><option value="processing" ' + (o.status === 'processing' ? 'selected' : '') + '>Processing</option><option value="shipped" ' + (o.status === 'shipped' ? 'selected' : '') + '>Shipped</option><option value="delivered" ' + (o.status === 'delivered' ? 'selected' : '') + '>Delivered</option></select></td>';
-                    html += '<td class="action-buttons"><button onclick="viewOrderDetails(\'' + o.id + '\')" class="btn-info">View</button><button onclick="deleteOrder(\'' + o.id + '\')" class="btn-danger">Delete</button></td>';
-                    html += '</tr>';
-                }
-                ordersList.innerHTML = html;
-            };
-
-            window.resetOrderSearch = function() {
-                document.getElementById('orderSearch').value = '';
-                loadOrders();
-            };
-
-            function loadRecentActivities() {
-                var activities = [];
-                supabaseClient.from('investments').select('*,investors(full_name)').order('created_at', { ascending: false }).limit(5).then(function(res) {
-                    var inv = res.data || [];
-                    for (var i = 0; i < inv.length; i++) {
-                        activities.push({ action: 'Investment', details: (inv[i].investors ? inv[i].investors.full_name : '') + ' invested Rs.' + inv[i].amount, time: new Date(inv[i].created_at).toLocaleString() });
-                    }
-                    supabaseClient.from('orders').select('*').order('created_at', { ascending: false }).limit(5).then(function(ordRes) {
-                        var ord = ordRes.data || [];
-                        for (var i = 0; i < ord.length; i++) {
-                            activities.push({ action: 'Order', details: 'Order #' + (ord[i].id ? ord[i].id.slice(0, 8) : '') + ' - Rs.' + ord[i].total_amount, time: new Date(ord[i].created_at).toLocaleString() });
-                        }
-                        supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at', { ascending: false }).limit(5).then(function(wdRes) {
-                            var wd = wdRes.data || [];
-                            for (var i = 0; i < wd.length; i++) {
-                                activities.push({ action: 'Withdrawal Request', details: (wd[i].investors ? wd[i].investors.full_name : '') + ' requested Rs.' + wd[i].amount + ' (' + wd[i].status + ')', time: new Date(wd[i].created_at).toLocaleString() });
-                            }
-                            activities.sort(function(a, b) { return new Date(b.time) - new Date(a.time); });
-                            var recentActivities = document.getElementById('recentActivities');
-                            if (recentActivities) {
-                                if (activities.length === 0) {
-                                    recentActivities.innerHTML = '<tr><td colspan="3" class="empty-state">No recent activities</td></tr>';
-                                    return;
-                                }
-                                var html = '';
-                                for (var i = 0; i < Math.min(activities.length, 10); i++) {
-                                    html += '<tr>';
-                                    html += '<td>' + activities[i].action + '</td>';
-                                    html += '<td>' + activities[i].details + '</td>';
-                                    html += '<td>' + activities[i].time + '</td>';
-                                    html += '</tr>';
-                                }
-                                recentActivities.innerHTML = html;
-                            }
-                        });
-                    });
-                });
-            }
-
             window.approveInvestment = function(id, amount, investorId) {
-                showModal('Approve Investment', 'Approve investment of Rs. ' + amount.toLocaleString() + '?', false, null).then(function(result) {
+                showModal('Approve Investment', 'Approve investment of Rs. ' + amount.toLocaleString() + '?', false).then(function(result) {
                     if (result.confirmed) {
                         supabaseClient.from('investments').update({ status: 'active' }).eq('id', id).then(function() {
                             supabaseClient.from('investments').select('amount').eq('investor_id', investorId).eq('status', 'active').then(function(invRes) {
-                                var investments = invRes.data || [];
-                                var totalInvestment = 0;
-                                for (var i = 0; i < investments.length; i++) {
-                                    totalInvestment += investments[i].amount || 0;
-                                }
+                                var total = 0; for (var i = 0; i < (invRes.data || []).length; i++) total += invRes.data[i].amount || 0;
                                 supabaseClient.from('investors').select('available_balance').eq('id', investorId).single().then(function(invData) {
-                                    var investor = invData.data;
-                                    var newBalance = (investor ? (investor.available_balance || 0) : 0) + amount;
-                                    supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id', investorId).then(function() {
+                                    var newBalance = (invData.data ? (invData.data.available_balance || 0) : 0) + amount;
+                                    supabaseClient.from('investors').update({ total_investment: total, available_balance: newBalance }).eq('id', investorId).then(function() {
                                         showNotification('Investment approved!', false);
-                                        loadInvestmentRequests();
-                                        loadInvestmentHistory();
-                                        loadInvestors();
-                                        loadStats();
+                                        loadInvestmentRequests(); loadInvestmentHistory(); loadInvestors(); loadStats();
                                     });
                                 });
                             });
@@ -1605,37 +887,23 @@
             };
 
             window.rejectInvestment = function(id) {
-                showModal('Reject Investment', 'Are you sure you want to reject this investment request?', true, null).then(function(result) {
-                    if (result.confirmed) {
-                        supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id).then(function() {
-                            showNotification('Investment rejected', false);
-                            loadInvestmentRequests();
-                            loadStats();
-                        });
-                    }
+                showModal('Reject Investment', 'Are you sure you want to reject this investment request?', true).then(function(result) {
+                    if (result.confirmed) { supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id).then(function() { showNotification('Investment rejected', false); loadInvestmentRequests(); loadStats(); }); }
                 });
             };
 
             window.approveWithdrawal = function(id, amount, investorId) {
-                showModal('Approve Withdrawal', 'Approve withdrawal of Rs. ' + amount.toLocaleString() + '?', false, null).then(function(result) {
+                showModal('Approve Withdrawal', 'Approve withdrawal of Rs. ' + amount.toLocaleString() + '?', false).then(function(result) {
                     if (result.confirmed) {
                         supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id).then(function() {
                             supabaseClient.from('investors').select('available_balance').eq('id', investorId).single().then(function(invData) {
-                                var investor = invData.data;
-                                if (investor) {
-                                    var newBalance = (investor.available_balance || 0) - amount;
+                                if (invData.data) {
+                                    var newBalance = (invData.data.available_balance || 0) - amount;
                                     supabaseClient.from('investors').update({ available_balance: newBalance }).eq('id', investorId).then(function() {
                                         showNotification('Withdrawal approved!', false);
-                                        loadWithdrawals();
-                                        loadInvestors();
-                                        loadStats();
+                                        loadWithdrawals(); loadInvestors(); loadStats();
                                     });
-                                } else {
-                                    showNotification('Withdrawal approved!', false);
-                                    loadWithdrawals();
-                                    loadInvestors();
-                                    loadStats();
-                                }
+                                } else { showNotification('Withdrawal approved!', false); loadWithdrawals(); loadInvestors(); loadStats(); }
                             });
                         });
                     }
@@ -1643,150 +911,103 @@
             };
 
             window.rejectWithdrawal = function(id) {
-                showModal('Reject Withdrawal', 'Are you sure you want to reject this withdrawal request?', true, null).then(function(result) {
-                    if (result.confirmed) {
-                        supabaseClient.from('withdrawals').update({ status: 'rejected' }).eq('id', id).then(function() {
-                            showNotification('Withdrawal rejected', false);
-                            loadWithdrawals();
-                        });
-                    }
+                showModal('Reject Withdrawal', 'Are you sure you want to reject this withdrawal request?', true).then(function(result) {
+                    if (result.confirmed) { supabaseClient.from('withdrawals').update({ status: 'rejected' }).eq('id', id).then(function() { showNotification('Withdrawal rejected', false); loadWithdrawals(); }); }
                 });
             };
 
             window.deleteInvestment = function(id) {
-                showModal('Delete Investment', 'Are you sure you want to delete this investment?', true, null).then(function(result) {
-                    if (result.confirmed) {
-                        supabaseClient.from('investments').delete().eq('id', id).then(function() {
-                            loadInvestmentHistory();
-                            loadInvestors();
-                            loadStats();
-                            showNotification('Investment deleted', false);
-                        });
-                    }
+                showModal('Delete Investment', 'Are you sure you want to delete this investment?', true).then(function(result) {
+                    if (result.confirmed) { supabaseClient.from('investments').delete().eq('id', id).then(function() { loadInvestmentHistory(); loadInvestors(); loadStats(); showNotification('Investment deleted', false); }); }
                 });
             };
 
             window.deleteProfit = function(id) {
-                showModal('Delete Profit', 'Are you sure you want to delete this profit record?', true, null).then(function(result) {
-                    if (result.confirmed) {
-                        supabaseClient.from('profits').delete().eq('id', id).then(function() {
-                            loadProfitHistory();
-                            loadInvestors();
-                            loadStats();
-                            showNotification('Profit deleted', false);
-                        });
-                    }
+                showModal('Delete Profit', 'Are you sure you want to delete this profit record?', true).then(function(result) {
+                    if (result.confirmed) { supabaseClient.from('profits').delete().eq('id', id).then(function() { loadProfitHistory(); loadInvestors(); loadStats(); showNotification('Profit deleted', false); }); }
+                });
+            };
+
+            window.addNewProduct = function() {
+                var name = document.getElementById('newProductName').value.trim();
+                var price = parseFloat(document.getElementById('newProductPrice').value);
+                if (!name || !price) { showNotification('Name and price required', true); return; }
+                supabaseClient.from('products').insert([{ name: name, category: document.getElementById('newProductCategory').value, wattage: document.getElementById('newProductWattage').value, price: price, stock_quantity: parseInt(document.getElementById('newProductStock').value) || 0, is_active: true, created_at: new Date().toISOString() }]).then(function(r) {
+                    if (r.error) { showNotification(r.error.message, true); return; }
+                    showNotification('Product added!', false);
+                    document.getElementById('newProductName').value = '';
+                    document.getElementById('newProductPrice').value = '';
+                    loadProducts(); loadStats();
+                });
+            };
+
+            window.deleteProduct = function(id) {
+                showModal('Delete Product', 'Are you sure you want to delete this product?', true).then(function(result) {
+                    if (result.confirmed) { supabaseClient.from('products').update({ is_active: false }).eq('id', id).then(function() { showNotification('Product deleted', false); loadProducts(); loadStats(); }); }
                 });
             };
 
             window.searchInvestors = function() {
                 var term = document.getElementById('investorSearch').value.toLowerCase();
-                var filtered = allInvestors.filter(function(i) {
-                    return (i.full_name && i.full_name.toLowerCase().includes(term)) || (i.email && i.email.toLowerCase().includes(term));
-                });
-                var investorsList = document.getElementById('investorsList');
-                if (investorsList) {
-                    if (filtered.length === 0) {
-                        investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>';
-                        return;
-                    }
-                    var html = '';
-                    for (var i = 0; i < filtered.length; i++) {
-                        var inv = filtered[i];
-                        html += '<tr>';
-                        html += '<td><strong>' + (inv.full_name || '') + '</strong></td>';
-                        html += '<td>' + (inv.email || '') + '</td>';
-                        html += '<td>' + (inv.phone || '-') + '</td>';
-                        html += '<td>' + (inv.city || '-') + '</td>';
-                        html += '<td>Rs.' + ((inv.total_investment || 0).toLocaleString()) + '</td>';
-                        html += '<td>Rs.' + ((inv.total_profit || 0).toLocaleString()) + '</td>';
-                        html += '<td>Rs.' + ((inv.available_balance || 0).toLocaleString()) + '</td>';
-                        html += '<td class="action-buttons"><button onclick="deleteInvestor(\'' + inv.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="startChatWith(\'' + inv.id + '\',\'investor\',\'' + (inv.full_name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-comment"></i> Message</button></td>';
-                        html += '</tr>';
-                    }
-                    investorsList.innerHTML = html;
+                var filtered = allInvestors.filter(function(i) { return (i.full_name && i.full_name.toLowerCase().includes(term)) || (i.email && i.email.toLowerCase().includes(term)); });
+                var tbody = document.getElementById('investorsList');
+                if (!tbody) return;
+                if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>'; return; }
+                var html = '';
+                for (var i = 0; i < filtered.length; i++) {
+                    var inv = filtered[i];
+                    html += '<tr><td><strong>' + (inv.full_name || '') + '</strong></td><td>' + (inv.email || '') + '</td><td>' + (inv.phone || '-') + '</td>';
+                    html += '<td>' + (inv.city || '-') + '</td><td>Rs.' + ((inv.total_investment || 0).toLocaleString()) + '</td>';
+                    html += '<td>Rs.' + ((inv.total_profit || 0).toLocaleString()) + '</td><td>Rs.' + ((inv.available_balance || 0).toLocaleString()) + '</td>';
+                    html += '<td class="action-buttons"><button onclick="deleteInvestor(\'' + inv.id + '\')" class="btn-danger">Delete</button> <button class="btn-info" onclick="startChatWith(\'' + inv.id + '\',\'investor\',\'' + (inv.full_name || '').replace(/'/g, "\\'") + '\')">Message</button></td></tr>';
                 }
+                tbody.innerHTML = html;
             };
 
-            window.resetInvestorSearch = function() {
-                document.getElementById('investorSearch').value = '';
-                loadInvestors();
-            };
+            window.resetInvestorSearch = function() { document.getElementById('investorSearch').value = ''; loadInvestors(); };
 
             window.searchBuyers = function() {
                 var term = document.getElementById('buyerSearch').value.toLowerCase();
-                var filtered = allBuyers.filter(function(b) {
-                    return (b.full_name && b.full_name.toLowerCase().includes(term)) || (b.email && b.email.toLowerCase().includes(term));
-                });
-                var buyersList = document.getElementById('buyersList');
-                if (buyersList) {
-                    if (filtered.length === 0) {
-                        buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>';
-                        return;
-                    }
-                    var html = '';
-                    for (var i = 0; i < filtered.length; i++) {
-                        var b = filtered[i];
-                        html += '<tr>';
-                        html += '<td><strong>' + (b.full_name || '') + '</strong></td>';
-                        html += '<td>' + (b.email || '') + '</td>';
-                        html += '<td>' + (b.phone || '-') + '</td>';
-                        html += '<td>' + (b.address || '-') + '</td>';
-                        html += '<td class="action-buttons"><button onclick="deleteBuyer(\'' + b.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="startChatWith(\'' + b.id + '\',\'buyer\',\'' + (b.full_name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-comment"></i> Message</button></td>';
-                        html += '</tr>';
-                    }
-                    buyersList.innerHTML = html;
+                var filtered = allBuyers.filter(function(b) { return (b.full_name && b.full_name.toLowerCase().includes(term)) || (b.email && b.email.toLowerCase().includes(term)); });
+                var tbody = document.getElementById('buyersList');
+                if (!tbody) return;
+                if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>'; return; }
+                var html = '';
+                for (var i = 0; i < filtered.length; i++) {
+                    var b = filtered[i];
+                    html += '<tr><td><strong>' + (b.full_name || '') + '</strong></td><td>' + (b.email || '') + '</td>';
+                    html += '<td>' + (b.phone || '-') + '</td><td>' + (b.address || '-') + '</td>';
+                    html += '<td class="action-buttons"><button onclick="deleteBuyer(\'' + b.id + '\')" class="btn-danger">Delete</button> <button class="btn-info" onclick="startChatWith(\'' + b.id + '\',\'buyer\',\'' + (b.full_name || '').replace(/'/g, "\\'") + '\')">Message</button></td></tr>';
                 }
+                tbody.innerHTML = html;
             };
 
-            window.resetBuyerSearch = function() {
-                document.getElementById('buyerSearch').value = '';
-                loadBuyers();
-            };
+            window.resetBuyerSearch = function() { document.getElementById('buyerSearch').value = ''; loadBuyers(); };
 
             window.searchProducts = function() {
                 var term = document.getElementById('productSearch').value.toLowerCase();
                 var rows = document.querySelectorAll('#productsList tr');
                 for (var i = 0; i < rows.length; i++) {
-                    var row = rows[i];
-                    if (row.innerText.toLowerCase().includes(term)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
+                    rows[i].style.display = rows[i].innerText.toLowerCase().includes(term) ? '' : 'none';
                 }
             };
 
-            window.handleLogout = function() {
-                supabaseClient.auth.signOut().then(function() {
-                    localStorage.clear();
-                    window.location.href = 'index.html';
-                });
-            };
+            window.handleLogout = function() { supabaseClient.auth.signOut().then(function() { localStorage.clear(); window.location.href = 'index.html'; }); };
 
-            // ========== CHAT FUNCTIONALITY ==========
-            var currentChatUser = null;
-            var currentChatType = null;
+            // Chat Functions
+            var currentChatUser = null, currentChatType = null;
 
             window.startChatWith = function(id, type, name) {
                 showSection('chat');
-                setTimeout(function() {
-                    selectChatContact(id, type, name);
-                }, 100);
+                setTimeout(function() { selectChatContact(id, type, name); }, 100);
             };
 
             function loadChatUsers() {
-                supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false }).then(function(res) {
-                    var messages = res.data || [];
+                supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false }).then(function(r) {
+                    var messages = r.data || [];
                     var contactsMap = new Map();
-                    for (var i = 0; i < allBuyers.length; i++) {
-                        var b = allBuyers[i];
-                        contactsMap.set('buyer_' + b.id, { id: b.id, type: 'buyer', name: b.full_name, lastMsg: 'Click to message', unread: 0 });
-                    }
-                    for (var i = 0; i < allInvestors.length; i++) {
-                        var inv = allInvestors[i];
-                        contactsMap.set('investor_' + inv.id, { id: inv.id, type: 'investor', name: inv.full_name, lastMsg: 'Click to message', unread: 0 });
-                    }
+                    for (var i = 0; i < allBuyers.length; i++) contactsMap.set('buyer_' + allBuyers[i].id, { id: allBuyers[i].id, type: 'buyer', name: allBuyers[i].full_name, lastMsg: 'Click to message', unread: 0 });
+                    for (var i = 0; i < allInvestors.length; i++) contactsMap.set('investor_' + allInvestors[i].id, { id: allInvestors[i].id, type: 'investor', name: allInvestors[i].full_name, lastMsg: 'Click to message', unread: 0 });
                     for (var i = 0; i < messages.length; i++) {
                         var msg = messages[i];
                         var contactId = msg.buyer_id || msg.user_id;
@@ -1796,45 +1017,31 @@
                             if (contactsMap.has(key)) {
                                 var contact = contactsMap.get(key);
                                 contact.lastMsg = msg.message ? msg.message.substring(0, 40) : '';
-                                if (msg.receiver_type === 'admin' && !msg.is_admin_read) {
-                                    contact.unread += 1;
-                                }
+                                if (msg.receiver_type === 'admin' && !msg.is_admin_read) contact.unread++;
                                 contactsMap.set(key, contact);
                             }
                         }
                     }
                     var contactsArray = Array.from(contactsMap.values());
                     var totalUnread = 0;
-                    for (var i = 0; i < contactsArray.length; i++) {
-                        totalUnread += contactsArray[i].unread || 0;
-                    }
+                    for (var i = 0; i < contactsArray.length; i++) totalUnread += contactsArray[i].unread || 0;
                     var unreadBadge = document.getElementById('chatUnreadBadge');
                     if (unreadBadge) {
-                        if (totalUnread > 0) {
-                            unreadBadge.style.display = 'inline-block';
-                            unreadBadge.innerText = totalUnread;
-                        } else {
-                            unreadBadge.style.display = 'none';
-                        }
+                        if (totalUnread > 0) { unreadBadge.style.display = 'inline-block'; unreadBadge.innerText = totalUnread; }
+                        else { unreadBadge.style.display = 'none'; }
                     }
                     var container = document.getElementById('chatUsersList');
-                    if (contactsArray.length === 0) {
-                        container.innerHTML = '<div class="empty-state">No contacts found</div>';
-                        return;
-                    }
+                    if (!container) return;
+                    if (contactsArray.length === 0) { container.innerHTML = '<div class="empty-state">No contacts found</div>'; return; }
                     var html = '';
                     for (var i = 0; i < contactsArray.length; i++) {
-                        var contact = contactsArray[i];
-                        var activeClass = (currentChatUser === contact.id && currentChatType === contact.type) ? 'active' : '';
-                        html += '<div class="chat-user-item ' + activeClass + '" onclick="selectChatContact(\'' + contact.id + '\', \'' + contact.type + '\', \'' + (contact.name || '').replace(/'/g, "\\'") + '\')">';
-                        html += '<div class="user-avatar">' + (contact.name ? contact.name.charAt(0).toUpperCase() : '?') + '</div>';
-                        html += '<div class="user-info">';
-                        html += '<div class="user-name">' + (contact.name || 'Unknown') + ' <span class="user-type">(' + (contact.type === 'buyer' ? 'Customer' : 'Investor') + ')</span></div>';
-                        html += '<div class="user-last-msg">' + (contact.lastMsg || '') + '</div>';
-                        html += '</div>';
-                        if (contact.unread > 0) {
-                            html += '<div class="unread-badge">' + contact.unread + '</div>';
-                        }
+                        var c = contactsArray[i];
+                        var activeClass = (currentChatUser === c.id && currentChatType === c.type) ? 'active' : '';
+                        html += '<div class="chat-user-item ' + activeClass + '" onclick="selectChatContact(\'' + c.id + '\', \'' + c.type + '\', \'' + (c.name || '').replace(/'/g, "\\'") + '\')">';
+                        html += '<div class="user-avatar">' + (c.name ? c.name.charAt(0).toUpperCase() : '?') + '</div>';
+                        html += '<div class="user-info"><div class="user-name">' + (c.name || 'Unknown') + ' <span class="user-type">(' + (c.type === 'buyer' ? 'Customer' : 'Investor') + ')</span></div>';
+                        html += '<div class="user-last-msg">' + (c.lastMsg || '') + '</div></div>';
+                        if (c.unread > 0) html += '<div class="unread-badge">' + c.unread + '</div>';
                         html += '</div>';
                     }
                     container.innerHTML = html;
@@ -1843,19 +1050,17 @@
                         searchInput.oninput = function() {
                             var term = this.value.toLowerCase();
                             var filtered = contactsArray.filter(function(c) { return c.name.toLowerCase().includes(term); });
-                            var filteredHtml = '';
+                            var fhtml = '';
                             for (var j = 0; j < filtered.length; j++) {
                                 var fc = filtered[j];
-                                filteredHtml += '<div class="chat-user-item" onclick="selectChatContact(\'' + fc.id + '\', \'' + fc.type + '\', \'' + (fc.name || '').replace(/'/g, "\\'") + '\')">';
-                                filteredHtml += '<div class="user-avatar">' + (fc.name ? fc.name.charAt(0).toUpperCase() : '?') + '</div>';
-                                filteredHtml += '<div class="user-info">';
-                                filteredHtml += '<div class="user-name">' + (fc.name || 'Unknown') + ' <span class="user-type">(' + (fc.type === 'buyer' ? 'Customer' : 'Investor') + ')</span></div>';
-                                filteredHtml += '<div class="user-last-msg">' + (fc.lastMsg || '') + '</div>';
-                                filteredHtml += '</div>';
-                                if (fc.unread > 0) filteredHtml += '<div class="unread-badge">' + fc.unread + '</div>';
-                                filteredHtml += '</div>';
+                                fhtml += '<div class="chat-user-item" onclick="selectChatContact(\'' + fc.id + '\', \'' + fc.type + '\', \'' + (fc.name || '').replace(/'/g, "\\'") + '\')">';
+                                fhtml += '<div class="user-avatar">' + (fc.name ? fc.name.charAt(0).toUpperCase() : '?') + '</div>';
+                                fhtml += '<div class="user-info"><div class="user-name">' + (fc.name || 'Unknown') + ' <span class="user-type">(' + (fc.type === 'buyer' ? 'Customer' : 'Investor') + ')</span></div>';
+                                fhtml += '<div class="user-last-msg">' + (fc.lastMsg || '') + '</div></div>';
+                                if (fc.unread > 0) fhtml += '<div class="unread-badge">' + fc.unread + '</div>';
+                                fhtml += '</div>';
                             }
-                            container.innerHTML = filteredHtml;
+                            container.innerHTML = fhtml;
                         };
                     }
                 });
@@ -1867,39 +1072,27 @@
                 document.getElementById('chatHeaderPlaceholder').innerHTML = '<div class="user-avatar" style="width:45px;height:45px;">' + (name ? name.charAt(0).toUpperCase() : '?') + '</div><div><div class="user-name">' + (name || 'Unknown') + '</div><div class="user-type">' + (type === 'buyer' ? 'Customer' : 'Investor') + '</div></div>';
                 document.getElementById('chatInputArea').style.display = 'flex';
                 loadConversation(id, type);
-                supabaseClient.from('contact_messages').update({ is_admin_read: true }).eq('buyer_id', id).eq('receiver_type', 'admin').then(function() {
-                    loadChatUsers();
-                });
+                supabaseClient.from('contact_messages').update({ is_admin_read: true }).eq('buyer_id', id).eq('receiver_type', 'admin').then(function() { loadChatUsers(); });
             };
 
             function loadConversation(userId, userType) {
-                supabaseClient.from('contact_messages').select('*').eq('buyer_id', userId).order('created_at', { ascending: true }).then(function(res1) {
-                    var messages1 = res1.data || [];
-                    supabaseClient.from('contact_messages').select('*').eq('user_id', userId).order('created_at', { ascending: true }).then(function(res2) {
-                        var messages2 = res2.data || [];
-                        var allMsgs = messages1.concat(messages2);
-                        var uniqueMsgs = [];
-                        var seenIds = {};
+                supabaseClient.from('contact_messages').select('*').eq('buyer_id', userId).order('created_at', { ascending: true }).then(function(r1) {
+                    var msgs = r1.data || [];
+                    supabaseClient.from('contact_messages').select('*').eq('user_id', userId).order('created_at', { ascending: true }).then(function(r2) {
+                        var msgs2 = r2.data || [];
+                        var allMsgs = msgs.concat(msgs2);
+                        var unique = [], seen = {};
                         for (var i = 0; i < allMsgs.length; i++) {
-                            if (!seenIds[allMsgs[i].id]) {
-                                seenIds[allMsgs[i].id] = true;
-                                uniqueMsgs.push(allMsgs[i]);
-                            }
+                            if (!seen[allMsgs[i].id]) { seen[allMsgs[i].id] = true; unique.push(allMsgs[i]); }
                         }
-                        uniqueMsgs.sort(function(a, b) { return new Date(a.created_at) - new Date(b.created_at); });
+                        unique.sort(function(a, b) { return new Date(a.created_at) - new Date(b.created_at); });
                         var area = document.getElementById('chatMessagesArea');
-                        if (uniqueMsgs.length === 0) {
-                            area.innerHTML = '<div class="empty-chat"><i class="fas fa-comment"></i><p>No messages yet. Send a message to start conversation.</p></div>';
-                            return;
-                        }
+                        if (unique.length === 0) { area.innerHTML = '<div class="empty-chat"><i class="fas fa-comment"></i><p>No messages yet</p></div>'; return; }
                         var html = '';
-                        for (var i = 0; i < uniqueMsgs.length; i++) {
-                            var msg = uniqueMsgs[i];
+                        for (var i = 0; i < unique.length; i++) {
+                            var msg = unique[i];
                             var bubbleClass = msg.sender_type === 'admin' ? 'message-sent' : 'message-received';
-                            html += '<div class="message-bubble ' + bubbleClass + '">';
-                            html += (msg.message || '');
-                            html += '<div class="message-time">' + new Date(msg.created_at).toLocaleString() + '</div>';
-                            html += '</div>';
+                            html += '<div class="message-bubble ' + bubbleClass + '">' + (msg.message || '') + '<div class="message-time">' + new Date(msg.created_at).toLocaleString() + '</div></div>';
                         }
                         area.innerHTML = html;
                         area.scrollTop = area.scrollHeight;
@@ -1910,28 +1103,15 @@
             window.sendAdminReply = function() {
                 var input = document.getElementById('chatMessageInput');
                 var message = input.value.trim();
-                if (!message || !currentChatUser) {
-                    showNotification('Select a contact first', true);
-                    return;
-                }
+                if (!message || !currentChatUser) { showNotification('Select a contact first', true); return; }
                 var newMsg = {
-                    id: crypto.randomUUID(),
-                    buyer_id: currentChatType === 'buyer' ? currentChatUser : null,
-                    user_id: currentChatType !== 'buyer' ? currentChatUser : null,
-                    user_type: currentChatType,
-                    sender_type: 'admin',
-                    receiver_type: currentChatType,
-                    message: message,
-                    created_at: new Date().toISOString(),
-                    is_admin_read: true,
-                    status: 'sent'
+                    id: crypto.randomUUID(), buyer_id: currentChatType === 'buyer' ? currentChatUser : null, user_id: currentChatType !== 'buyer' ? currentChatUser : null,
+                    user_type: currentChatType, sender_type: 'admin', receiver_type: currentChatType, message: message,
+                    created_at: new Date().toISOString(), is_admin_read: true, status: 'sent'
                 };
-                supabaseClient.from('contact_messages').insert([newMsg]).then(function(result) {
-                    if (result.error) {
-                        showNotification('Error: ' + result.error.message, true);
-                    } else {
-                        showNotification('Reply sent to ' + (currentChatType === 'buyer' ? 'Customer' : 'Investor') + ' from Sohrab Industries Support', false);
-                    }
+                supabaseClient.from('contact_messages').insert([newMsg]).then(function(r) {
+                    if (r.error) { showNotification('Error: ' + r.error.message, true); }
+                    else { showNotification('Reply sent!', false); }
                     input.value = '';
                     loadConversation(currentChatUser, currentChatType);
                     loadChatUsers();
@@ -1939,18 +1119,12 @@
             };
 
             function setupChatRealtime() {
-                supabaseClient.channel('public:contact_messages')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, function(payload) {
-                        if (document.getElementById('chatSection') && document.getElementById('chatSection').classList.contains('active')) {
-                            loadChatUsers();
-                            if (currentChatUser && (payload.new && (payload.new.buyer_id === currentChatUser || payload.new.user_id === currentChatUser))) {
-                                loadConversation(currentChatUser, currentChatType);
-                            }
-                        } else {
-                            loadChatUsers();
-                        }
-                    })
-                    .subscribe();
+                supabaseClient.channel('public:contact_messages').on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, function() {
+                    if (document.getElementById('chatSection') && document.getElementById('chatSection').classList.contains('active')) {
+                        loadChatUsers();
+                        if (currentChatUser) loadConversation(currentChatUser, currentChatType);
+                    } else { loadChatUsers(); }
+                }).subscribe();
             }
 
             checkAuth();
