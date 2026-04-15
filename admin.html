@@ -18,6 +18,7 @@
             position: relative;
         }
         
+        /* Animated Background Particles */
         body::before {
             content: '';
             position: fixed;
@@ -25,20 +26,47 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: radial-gradient(circle at 20% 80%, rgba(232,177,60,0.08) 0%, transparent 50%);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(232,177,60,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(30,78,62,0.15) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
         
-        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+        /* Animations */
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideInModal {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
         
         ::-webkit-scrollbar { width: 10px; height: 10px; }
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #E8B13C; }
         
         .admin-container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
         
+        /* Premium Header */
         .admin-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -77,9 +105,28 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            position: relative;
+            z-index: 1;
         }
         
-        .admin-header h1 i { color: #E8B13C; text-shadow: 0 0 15px rgba(232,177,60,0.8); }
+        .admin-header h1 i { 
+            color: #E8B13C;
+            text-shadow: 0 0 15px rgba(232,177,60,0.8);
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+        }
+        
+        .admin-header > div {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(232,177,60,0.3);
+        }
         
         .logout-btn { 
             background: linear-gradient(135deg, #dc3545, #a71d2a);
@@ -90,11 +137,21 @@
             cursor: pointer; 
             font-weight: 700;
             transition: all 0.3s;
+            letter-spacing: 0.5px;
         }
         
-        .logout-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(220,53,69,0.4); }
+        .logout-btn:hover { 
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(220,53,69,0.4);
+        }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+        /* Premium Stats Grid */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 1.2rem; 
+            margin-bottom: 2rem; 
+        }
         
         .stat-card { 
             background: linear-gradient(145deg, rgba(20,45,38,0.95), rgba(15,35,28,0.95));
@@ -102,12 +159,42 @@
             padding: 1.2rem; 
             border-radius: 24px; 
             text-align: center; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             cursor: pointer; 
-            transition: all 0.4s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid rgba(232,177,60,0.3);
+            position: relative;
+            overflow: hidden;
         }
         
-        .stat-card:hover { transform: translateY(-8px) scale(1.02); border-color: #E8B13C; box-shadow: 0 20px 40px rgba(232,177,60,0.25); }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(232,177,60,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .stat-card:hover::before { opacity: 1; }
+        
+        .stat-card:hover { 
+            transform: translateY(-8px) scale(1.02); 
+            border-color: #E8B13C;
+            box-shadow: 0 20px 40px rgba(232,177,60,0.25);
+        }
+        
+        .stat-card h3 { 
+            color: rgba(255,255,255,0.7); 
+            font-size: 0.75rem; 
+            margin-bottom: 0.6rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
         
         .stat-number { 
             font-size: 1.8rem; 
@@ -116,8 +203,10 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            font-family: 'Playfair Display', serif;
         }
         
+        /* Premium Tabs */
         .nav-tabs { 
             display: flex; 
             gap: 10px; 
@@ -127,6 +216,8 @@
             padding: 8px 20px;
             border-radius: 60px;
             flex-wrap: wrap;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border: 1px solid rgba(232,177,60,0.2);
         }
         
         .nav-tab { 
@@ -136,39 +227,28 @@
             cursor: pointer; 
             border-radius: 50px; 
             font-weight: 600;
-            color: rgba(255,255,255,0.8);
             transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 8px;
-            position: relative;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
         }
         
-        .nav-tab .chat-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #dc3545;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            animation: pulse 1s infinite;
+        .nav-tab:hover { 
+            background: rgba(232,177,60,0.2); 
+            transform: translateY(-3px);
+            color: #E8B13C;
         }
-        
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
         
         .nav-tab.active { 
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             color: #0a1f1a; 
             box-shadow: 0 6px 20px rgba(232,177,60,0.4);
+            font-weight: 700;
         }
         
+        /* Premium Sections */
         .admin-section { 
             background: rgba(20,45,38,0.92);
             backdrop-filter: blur(12px);
@@ -194,60 +274,235 @@
             padding-left: 18px;
         }
         
-        .form-card { background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); padding: 25px; border-radius: 24px; margin-bottom: 25px; border: 1px solid rgba(232,177,60,0.2); }
-        .form-card h3 { margin-bottom: 18px; color: #E8B13C; font-weight: 700; }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #E8B13C; font-size: 0.85rem; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 16px; color: white; }
-        .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 10px 24px; border-radius: 40px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(232,177,60,0.4); }
-        .btn-success { background: #1e7e5e; color: white; padding: 6px 14px; border-radius: 30px; border: none; cursor: pointer; }
-        .btn-danger { background: #dc3545; color: white; padding: 6px 14px; border-radius: 30px; border: none; cursor: pointer; }
-        .btn-warning { background: #ffc107; color: #333; padding: 6px 14px; border-radius: 30px; border: none; cursor: pointer; }
-        .btn-info { background: #17a2b8; color: white; padding: 6px 14px; border-radius: 30px; border: none; cursor: pointer; }
-        .table-container { overflow-x: auto; margin-top: 15px; border-radius: 20px; max-height: 550px; overflow-y: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.15); color: rgba(255,255,255,0.9); }
-        th { background: #0a2f24; color: #E8B13C; position: sticky; top: 0; }
-        .status-badge { padding: 5px 15px; border-radius: 30px; font-size: 12px; font-weight: 700; display: inline-block; }
-        .status-active, .status-approved { background: #1e7e5e; color: white; }
-        .status-pending { background: #d4a017; color: white; }
-        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-        .search-box { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .search-box input { flex: 1; padding: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 50px; color: white; }
-        .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); font-style: italic; }
-        select.status-badge { background: rgba(0,0,0,0.3); border: 1px solid rgba(232,177,60,0.3); color: white; cursor: pointer; }
+        /* Premium Form Cards */
+        .form-card { 
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(8px);
+            padding: 25px; 
+            border-radius: 24px; 
+            margin-bottom: 25px; 
+            border: 1px solid rgba(232,177,60,0.2);
+        }
         
-        /* Chat System Styles */
-        .chat-container { display: flex; height: 600px; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; }
-        .chat-users-list { width: 300px; background: rgba(0,0,0,0.4); border-right: 1px solid rgba(232,177,60,0.2); overflow-y: auto; }
-        .chat-user-item { display: flex; align-items: center; gap: 12px; padding: 15px; cursor: pointer; transition: all 0.3s; border-bottom: 1px solid rgba(232,177,60,0.1); position: relative; }
-        .chat-user-item:hover { background: rgba(232,177,60,0.1); }
-        .chat-user-item.active { background: rgba(232,177,60,0.2); border-left: 3px solid #E8B13C; }
-        .chat-user-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; color: #0a1f1a; }
-        .chat-user-info { flex: 1; }
-        .chat-user-name { font-weight: 600; color: white; }
-        .chat-user-type { font-size: 11px; color: #E8B13C; }
-        .chat-unread-badge { background: #dc3545; color: white; border-radius: 50%; min-width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
-        .chat-messages-area { flex: 1; display: flex; flex-direction: column; background: rgba(0,0,0,0.2); }
-        .chat-header { padding: 15px 20px; background: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(232,177,60,0.2); }
-        .chat-header h4 { color: #E8B13C; margin: 0; }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .chat-message { max-width: 70%; padding: 10px 15px; border-radius: 20px; position: relative; word-wrap: break-word; }
-        .chat-message.admin { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; align-self: flex-end; border-bottom-right-radius: 5px; }
-        .chat-message.user { background: rgba(255,255,255,0.1); color: white; align-self: flex-start; border-bottom-left-radius: 5px; }
-        .chat-message.reply-indicator { border-left: 3px solid #E8B13C; margin-bottom: 5px; font-size: 11px; background: rgba(232,177,60,0.1); padding: 5px 10px; border-radius: 10px; }
-        .chat-message-time { font-size: 10px; opacity: 0.6; margin-top: 5px; }
-        .chat-message-actions { position: absolute; right: 5px; top: 5px; display: none; gap: 5px; }
-        .chat-message:hover .chat-message-actions { display: flex; }
-        .chat-message-actions button { background: rgba(0,0,0,0.5); border: none; color: white; border-radius: 5px; padding: 2px 5px; cursor: pointer; font-size: 10px; }
-        .chat-input-area { padding: 15px; background: rgba(0,0,0,0.4); border-top: 1px solid rgba(232,177,60,0.2); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .chat-input { flex: 1; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(232,177,60,0.3); border-radius: 25px; color: white; resize: none; font-family: 'Inter', sans-serif; }
-        .chat-emoji-btn, .chat-send-btn { background: rgba(232,177,60,0.2); border: 1px solid rgba(232,177,60,0.3); color: #E8B13C; padding: 10px 15px; border-radius: 25px; cursor: pointer; transition: 0.3s; }
-        .chat-emoji-btn:hover, .chat-send-btn:hover { background: rgba(232,177,60,0.4); }
-        .emoji-picker-container { position: relative; }
-        .reply-preview { background: rgba(232,177,60,0.1); padding: 8px 12px; border-radius: 15px; margin-bottom: 10px; font-size: 12px; color: #E8B13C; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .form-card h3 { 
+            margin-bottom: 18px; 
+            color: #E8B13C;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-row { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 18px; 
+            margin-bottom: 20px; 
+        }
+        
+        .form-group { margin-bottom: 18px; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: #E8B13C; 
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; 
+            padding: 12px 16px; 
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(232,177,60,0.3); 
+            border-radius: 16px; 
+            font-size: 14px; 
+            transition: all 0.3s;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
+            outline: none; 
+            border-color: #E8B13C; 
+            box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
+            background: rgba(255,255,255,0.12);
+        }
+        
+        .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.4); }
+        
+        /* Premium Tables */
+        .table-container { 
+            overflow-x: auto; 
+            margin-top: 15px; 
+            border-radius: 20px;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+        
+        table { width: 100%; border-collapse: collapse; }
+        
+        th, td { 
+            padding: 14px 12px; 
+            text-align: left; 
+            border-bottom: 1px solid rgba(232,177,60,0.15); 
+        }
+        
+        th { 
+            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
+            color: #E8B13C;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover td { 
+            background: rgba(232,177,60,0.08);
+            transition: background 0.2s;
+        }
+        
+        td { color: rgba(255,255,255,0.9); }
+        
+        /* Premium Status Badges */
+        .status-badge { 
+            padding: 5px 15px; 
+            border-radius: 30px; 
+            font-size: 12px; 
+            display: inline-block;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-active, .status-approved, .status-delivered { 
+            background: linear-gradient(135deg, #1e7e5e, #155a44); 
+            color: #fff; 
+            box-shadow: 0 2px 8px rgba(30,126,94,0.4);
+        }
+        
+        .status-pending { 
+            background: linear-gradient(135deg, #d4a017, #b8860b); 
+            color: #fff; 
+        }
+        
+        .status-processing { 
+            background: linear-gradient(135deg, #17a2b8, #0f7a8a); 
+            color: #fff; 
+        }
+        
+        .status-shipped { 
+            background: linear-gradient(135deg, #004085, #002d5a); 
+            color: #fff; 
+        }
+        
+        .status-cancelled, .status-rejected { 
+            background: linear-gradient(135deg, #c0392b, #a5281b); 
+            color: #fff; 
+        }
+        
+        /* Premium Buttons */
+        .btn-primary { 
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a; 
+            padding: 10px 24px; 
+            border: none; 
+            border-radius: 40px; 
+            cursor: pointer; 
+            font-weight: 700;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-primary:hover { 
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(232,177,60,0.4);
+        }
+        
+        .btn-success { 
+            background: linear-gradient(135deg, #1e7e5e, #155a44);
+            color: white; 
+            padding: 6px 14px; 
+            border: none; 
+            border-radius: 30px; 
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30,126,94,0.4); }
+        
+        .btn-danger { 
+            background: linear-gradient(135deg, #dc3545, #a71d2a);
+            color: white; 
+            padding: 6px 14px; 
+            border: none; 
+            border-radius: 30px; 
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(220,53,69,0.4); }
+        
+        .btn-warning { 
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #333; 
+            padding: 6px 14px; 
+            border: none; 
+            border-radius: 30px; 
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn-info { 
+            background: linear-gradient(135deg, #17a2b8, #0f7a8a);
+            color: white; 
+            padding: 6px 14px; 
+            border: none; 
+            border-radius: 30px; 
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-info:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(23,162,184,0.4); }
+        
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        /* Search Box */
+        .search-box { 
+            margin-bottom: 20px; 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+        }
+        
+        .search-box input { 
+            flex: 1; 
+            padding: 12px 18px; 
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(232,177,60,0.3); 
+            border-radius: 50px; 
+            min-width: 200px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .search-box input::placeholder { color: rgba(255,255,255,0.4); }
+        
+        .search-box input:focus { 
+            outline: none; 
+            border-color: #E8B13C;
+            box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
+        }
+        
+        .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); font-style: italic; }
+        
+        select.status-badge {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(232,177,60,0.3);
+            color: white;
+            cursor: pointer;
+        }
         
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; text-align: center; }
@@ -256,9 +511,6 @@
             .nav-tab { padding: 8px 16px; font-size: 12px; }
             th, td { padding: 10px 8px; font-size: 12px; }
             .section-title { font-size: 1.2rem; }
-            .chat-container { flex-direction: column; height: auto; }
-            .chat-users-list { width: 100%; max-height: 200px; }
-            .chat-message { max-width: 85%; }
         }
     </style>
 </head>
@@ -290,7 +542,6 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
-            <button class="nav-tab" id="chatTabBtn" onclick="showSection('chat')"><i class="fas fa-comment-dots"></i> Live Chat <span id="chatNotificationBadge" class="chat-badge" style="display:none;">0</span></button>
         </div>
 
         <!-- Dashboard Section -->
@@ -298,7 +549,10 @@
             <h2 class="section-title"><i class="fas fa-chart-pie"></i> Dashboard Overview</h2>
             <div class="table-container">
                 <h3 style="color:#E8B13C; margin-bottom:15px;">Recent Activities <i class="fas fa-history"></i></h3>
-                <tr><thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead><tbody id="recentActivities"></tbody></table>
+                <table>
+                    <thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead>
+                    <tbody id="recentActivities"></tbody>
+                </table>
             </div>
         </div>
 
@@ -333,13 +587,13 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"></table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -372,14 +626,23 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
         <!-- Withdrawals Section -->
         <div id="withdrawalsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
-            <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
-            <div class="table-container"></table><thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="search-box">
+                <input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name...">
+                <button onclick="searchWithdrawals()" class="btn-primary"><i class="fas fa-search"></i> Search</button>
+                <button onclick="resetWithdrawalSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="withdrawalsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Products Section -->
@@ -396,7 +659,7 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"></table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
         <!-- Orders Section -->
@@ -410,47 +673,19 @@
                 </div>
             </div>
             <div class="table-container">
-                <table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead>
+                <table>
+                    <thead>
+                        <tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="ordersList"></tbody>
                 </table>
-            </div>
-        </div>
-
-        <!-- Live Chat Section -->
-        <div id="chatSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-comment-dots"></i> Live Chat - Sohrab Industries Support Team</h2>
-            <div class="chat-container">
-                <div class="chat-users-list" id="chatUsersList">
-                    <div class="empty-state">Loading users...</div>
-                </div>
-                <div class="chat-messages-area" id="chatMessagesArea" style="display: none;">
-                    <div class="chat-header">
-                        <h4 id="selectedChatUserName">Select a user to start chatting</h4>
-                    </div>
-                    <div class="chat-messages" id="chatMessages"></div>
-                    <div class="chat-input-area">
-                        <div class="reply-preview" id="replyPreview" style="display: none;">
-                            <span>Replying to: <span id="replyPreviewText"></span></span>
-                            <button onclick="cancelReply()" style="background:none; border:none; color:#E8B13C; cursor:pointer;">✕</button>
-                        </div>
-                        <textarea class="chat-input" id="chatInput" placeholder="Type your message..." rows="2"></textarea>
-                        <div class="emoji-picker-container">
-                            <button class="chat-emoji-btn" id="emojiBtn"><i class="far fa-smile"></i></button>
-                        </div>
-                        <button class="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================================
-        // YOUR COMPLETE ORIGINAL JAVASCRIPT CODE - FULLY PRESERVED
-        // ONLY CHAT SYSTEM ADDED AT THE BOTTOM
-        // ============================================================
-        
+        // ALL ORIGINAL JAVASCRIPT CODE PRESERVED - WITH PROFESSIONAL SWEETALERT2 POPUPS INSTEAD OF ALERTS/CONFIRMS
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -463,15 +698,8 @@
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
             let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [], allProducts = [];
-            
-            // Chat System Variables
-            let currentChatUser = null;
-            let chatUsers = [];
-            let unreadCounts = {};
-            let replyToMessage = null;
-            let chatSubscription = null;
-            let emojiPickerInstance = null;
 
+            // Professional popup notification function (replaces all alerts)
             function showNotification(msg, isError = false, title = "") { 
                 Swal.fire({
                     icon: isError ? 'error' : 'success',
@@ -486,6 +714,7 @@
                 });
             }
             
+            // Professional confirmation dialog
             async function confirmAction(message, title = "Confirm Action") {
                 const result = await Swal.fire({
                     title: title,
@@ -500,16 +729,6 @@
                     color: '#fff'
                 });
                 return result.isConfirmed;
-            }
-            
-            function escapeHtml(str) { 
-                if(!str) return '-'; 
-                return String(str).replace(/[&<>]/g, function(m) { 
-                    if(m === '&') return '&amp;'; 
-                    if(m === '<') return '&lt;'; 
-                    if(m === '>') return '&gt;'; 
-                    return m; 
-                }); 
             }
             
             window.showSection = function(section) {
@@ -527,9 +746,6 @@
                         }
                     }
                 }
-                if (section === 'chat' && currentChatUser) {
-                    markMessagesAsRead(currentChatUser.id);
-                }
             };
 
             async function checkAuth() {
@@ -546,12 +762,6 @@
                 }
                 document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
                 await refreshAllData();
-                await loadChatUsers();
-                setupEmojiPicker();
-                setInterval(async () => {
-                    await updateUnreadCounts();
-                    renderChatUsersList();
-                }, 5000);
                 return user;
             }
 
@@ -600,10 +810,10 @@
                 const investorsList = document.getElementById('investorsList');
                 if (investorsList) {
                     investorsList.innerHTML = allInvestors.map(i=>`<tr>
-                        <td><strong>${escapeHtml(i.full_name)}</strong></td>
-                        <td>${escapeHtml(i.email)}</td>
-                        <td>${escapeHtml(i.phone||'-')}</td>
-                        <td>${escapeHtml(i.city||'-')}</td>
+                        <td><strong>${i.full_name}</strong></td>
+                        <td>${i.email}</td>
+                        <td>${i.phone||'-'}</td>
+                        <td>${i.city||'-'}</td>
                         <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
                         <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                         <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
@@ -629,7 +839,7 @@
                 document.getElementById('newInvestorName').value = '';
                 document.getElementById('newInvestorEmail').value = '';
                 document.getElementById('newInvestorInvestment').value = '0';
-                await loadInvestors(); await loadStats(); await loadChatUsers();
+                await loadInvestors(); await loadStats();
             };
 
             window.deleteInvestor = async function(id){ 
@@ -639,7 +849,7 @@
                     await supabaseClient.from('withdrawals').delete().eq('investor_id',id); 
                     await supabaseClient.from('investors').delete().eq('id',id); 
                     showNotification('Investor deleted successfully', false, 'Deleted'); 
-                    await loadInvestors(); await loadStats(); await loadChatUsers();
+                    await loadInvestors(); await loadStats(); 
                 } 
             };
 
@@ -649,10 +859,10 @@
                 const buyersList = document.getElementById('buyersList');
                 if (buyersList) {
                     buyersList.innerHTML = allBuyers.map(b=>`<tr>
-                        <td><strong>${escapeHtml(b.full_name)}</strong></td>
-                        <td>${escapeHtml(b.email)}</td>
-                        <td>${escapeHtml(b.phone||'-')}</td>
-                        <td>${escapeHtml(b.address||'-')}</td>
+                        <td><strong>${b.full_name}</strong></td>
+                        <td>${b.email}</td>
+                        <td>${b.phone||'-'}</td>
+                        <td>${b.address||'-'}</td>
                         <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
                     </tr>`).join('');
                 }
@@ -670,14 +880,14 @@
                 document.getElementById('newBuyerName').value = '';
                 document.getElementById('newBuyerEmail').value = '';
                 document.getElementById('newBuyerAddress').value = '';
-                await loadBuyers(); await loadStats(); await loadChatUsers();
+                await loadBuyers(); await loadStats();
             };
 
             window.deleteBuyer = async function(id){ 
                 if(await confirmAction('Delete this buyer?', 'Delete Buyer')){ 
                     await supabaseClient.from('buyers').delete().eq('id',id); 
                     showNotification('Buyer deleted', false, 'Deleted'); 
-                    await loadBuyers(); await loadStats(); await loadChatUsers();
+                    await loadBuyers(); await loadStats(); 
                 } 
             };
 
@@ -691,8 +901,8 @@
                         return;
                     }
                     productsList.innerHTML = (data||[]).map(p=>`<tr>
-                        <td><strong>${escapeHtml(p.name)}</strong></td>
-                        <td>${escapeHtml(p.category)}</td>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.category}</td>
                         <td>Rs.${(p.price||0).toLocaleString()}</td>
                         <td>${p.stock_quantity||0}</td>
                         <td class="action-buttons"><button onclick="editProduct('${p.id}')" class="btn-warning"><i class="fas fa-edit"></i> Edit</button><button onclick="uploadProductImage('${p.id}')" class="btn-info"><i class="fas fa-image"></i> Upload Image</button><button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
@@ -700,13 +910,14 @@
                 }
             }
 
+            // Edit product with professional popup
             window.editProduct = async function(id) {
                 const product = allProducts.find(p => p.id === id);
                 if(!product) return;
                 const { value: formData } = await Swal.fire({
                     title: 'Edit Product',
                     html: `
-                        <input id="editName" class="swal2-input" placeholder="Product Name" value="${escapeHtml(product.name)}">
+                        <input id="editName" class="swal2-input" placeholder="Product Name" value="${product.name}">
                         <input id="editPrice" class="swal2-input" placeholder="Price" value="${product.price}">
                         <input id="editStock" class="swal2-input" placeholder="Stock Quantity" value="${product.stock_quantity}">
                     `,
@@ -733,6 +944,7 @@
                 }
             };
 
+            // Upload product image from PC/Mobile
             window.uploadProductImage = async function(id) {
                 const input = document.createElement('input');
                 input.type = 'file';
@@ -892,12 +1104,12 @@
                 
                 withdrawalsList.innerHTML = allWithdrawals.map(w => `
                     <tr>
-                        <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
-                        <td><small>${escapeHtml(w.investors?.email || '-')}</small></td>
+                        <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
+                        <td><small>${w.investors?.email || '-'}</small></td>
                         <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
                         <td>${new Date(w.request_date).toLocaleDateString()}</td>
                         <td>${w.payment_method || '-'}</td>
-                        <td><small>${escapeHtml(w.account_details || '-')}</small></td>
+                        <td><small>${w.account_details || '-'}</small></td>
                         <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
                         <td class="action-buttons">
                             ${w.status === 'pending' ? `
@@ -967,8 +1179,8 @@
                     return `
                         <tr>
                             <td><strong>${o.id?.slice(0, 12)}...</strong><br><small style="color:#E8B13C;">${o.id}</small></td>
-                            <td><strong>${escapeHtml(o.customer_name || o.user_type || 'buyer')}</strong></td>
-                            <td><small>${escapeHtml(productsList.substring(0, 50))}${productsList.length > 50 ? '...' : ''}</small></td>
+                            <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
+                            <td><small>${productsList.substring(0, 50)}${productsList.length > 50 ? '...' : ''}</small></td>
                             <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
                             <td>${new Date(o.order_date).toLocaleDateString()}</td>
                             <td>${o.payment_method || '-'}</td>
@@ -978,7 +1190,7 @@
                                     <option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option>
                                 </select>
                               </td>
-                            <td><small>${escapeHtml(o.delivery_address?.substring(0, 30) || '-')}</small></td>
+                            <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
                             <td>
                                 <select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding: 5px; background: rgba(0,0,0,0.3);">
                                     <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option>
@@ -1201,7 +1413,7 @@
                 const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
                 const buyersList = document.getElementById('buyersList');
                 if (buyersList) {
-                    buyersList.innerHTML = filtered.map(b=>`<tr>...</td>`).join('');
+                    buyersList.innerHTML = filtered.map(b=>`<tr>...</tr>`).join('');
                 }
             };
             
@@ -1209,266 +1421,6 @@
                 document.getElementById('buyerSearch').value = ''; 
                 loadBuyers(); 
             };
-            
-            // ========== CHAT SYSTEM FUNCTIONS (ADDED) ==========
-            
-            async function loadChatUsers() {
-                chatUsers = [];
-                for (const inv of allInvestors) {
-                    if (inv.email) {
-                        chatUsers.push({
-                            id: inv.id,
-                            name: inv.full_name,
-                            email: inv.email,
-                            phone: inv.phone,
-                            type: 'investor',
-                            avatar: inv.full_name?.charAt(0) || 'I'
-                        });
-                    }
-                }
-                for (const buyer of allBuyers) {
-                    if (buyer.email) {
-                        chatUsers.push({
-                            id: buyer.id,
-                            name: buyer.full_name,
-                            email: buyer.email,
-                            phone: buyer.phone,
-                            type: 'buyer',
-                            avatar: buyer.full_name?.charAt(0) || 'B'
-                        });
-                    }
-                }
-                renderChatUsersList();
-                await updateUnreadCounts();
-            }
-            
-            function renderChatUsersList() {
-                const container = document.getElementById('chatUsersList');
-                if (!container) return;
-                
-                if (chatUsers.length === 0) {
-                    container.innerHTML = '<div class="empty-state">No users available for chat</div>';
-                    return;
-                }
-                
-                container.innerHTML = chatUsers.map(user => `
-                    <div class="chat-user-item ${currentChatUser?.id === user.id ? 'active' : ''}" onclick="selectChatUser('${user.id}', '${escapeHtml(user.name)}', '${user.type}')">
-                        <div class="chat-user-avatar">${escapeHtml(user.avatar)}</div>
-                        <div class="chat-user-info">
-                            <div class="chat-user-name">${escapeHtml(user.name)}</div>
-                            <div class="chat-user-type">${user.type === 'investor' ? '💰 Investor' : '🛒 Buyer'}</div>
-                        </div>
-                        ${unreadCounts[user.id] > 0 ? `<div class="chat-unread-badge">${unreadCounts[user.id]}</div>` : ''}
-                    </div>
-                `).join('');
-            }
-            
-            window.selectChatUser = async function(userId, userName, userType) {
-                currentChatUser = { id: userId, name: userName, type: userType };
-                document.getElementById('selectedChatUserName').innerHTML = `<i class="fas fa-user"></i> ${escapeHtml(userName)} (${userType})`;
-                document.getElementById('chatMessagesArea').style.display = 'flex';
-                await loadMessages(userId);
-                await markMessagesAsRead(userId);
-            };
-            
-            async function loadMessages(userId) {
-                const { data } = await supabaseClient
-                    .from('chat_messages')
-                    .select('*')
-                    .or(`and(sender_id.eq.${userId},receiver_id.eq.admin),and(sender_id.eq.admin,receiver_id.eq.${userId})`)
-                    .order('created_at', { ascending: true });
-                
-                renderMessages(data || []);
-                
-                if (chatSubscription) {
-                    await supabaseClient.removeChannel(chatSubscription);
-                }
-                chatSubscription = supabaseClient
-                    .channel(`chat-${userId}`)
-                    .on('postgres_changes', { 
-                        event: 'INSERT', 
-                        schema: 'public', 
-                        table: 'chat_messages',
-                        filter: `receiver_id=eq.${userId}`
-                    }, (payload) => {
-                        if (payload.new.sender_id === userId) {
-                            appendMessage(payload.new);
-                            markMessagesAsRead(userId);
-                        } else if (payload.new.sender_id === 'admin' && payload.new.receiver_id === userId) {
-                            appendMessage(payload.new);
-                        }
-                    })
-                    .subscribe();
-            }
-            
-            function renderMessages(messages) {
-                const container = document.getElementById('chatMessages');
-                if (!container) return;
-                
-                container.innerHTML = messages.filter(m => !m.deleted_for_all).map(msg => `
-                    <div class="chat-message ${msg.sender_id === 'admin' ? 'admin' : 'user'}" data-message-id="${msg.id}">
-                        ${msg.reply_to_id ? `<div class="chat-message reply-indicator">↩️ Replying to previous message</div>` : ''}
-                        <div>${escapeHtml(msg.message || '')}</div>
-                        <div class="chat-message-time">${new Date(msg.created_at).toLocaleString()}</div>
-                        <div class="chat-message-actions">
-                            <button onclick="replyToMessage('${msg.id}', '${escapeHtml(msg.message || '').substring(0, 50)}')" title="Reply"><i class="fas fa-reply"></i></button>
-                            <button onclick="deleteMessageForMe('${msg.id}')" title="Delete for me"><i class="fas fa-trash-alt"></i></button>
-                            <button onclick="deleteMessageForAll('${msg.id}')" title="Delete for everyone"><i class="fas fa-ban"></i></button>
-                        </div>
-                    </div>
-                `).join('');
-                
-                container.scrollTop = container.scrollHeight;
-            }
-            
-            function appendMessage(msg) {
-                const container = document.getElementById('chatMessages');
-                if (!container) return;
-                
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `chat-message ${msg.sender_id === 'admin' ? 'admin' : 'user'}`;
-                msgDiv.setAttribute('data-message-id', msg.id);
-                msgDiv.innerHTML = `
-                    ${msg.reply_to_id ? `<div class="chat-message reply-indicator">↩️ Replying to previous message</div>` : ''}
-                    <div>${escapeHtml(msg.message || '')}</div>
-                    <div class="chat-message-time">${new Date(msg.created_at).toLocaleString()}</div>
-                    <div class="chat-message-actions">
-                        <button onclick="replyToMessage('${msg.id}', '${escapeHtml(msg.message || '').substring(0, 50)}')"><i class="fas fa-reply"></i></button>
-                        <button onclick="deleteMessageForMe('${msg.id}')"><i class="fas fa-trash-alt"></i></button>
-                        <button onclick="deleteMessageForAll('${msg.id}')"><i class="fas fa-ban"></i></button>
-                    </div>
-                `;
-                container.appendChild(msgDiv);
-                container.scrollTop = container.scrollHeight;
-            }
-            
-            window.sendMessage = async function() {
-                const input = document.getElementById('chatInput');
-                const message = input.value.trim();
-                if (!message || !currentChatUser) {
-                    showNotification('Please select a user and enter a message', true);
-                    return;
-                }
-                
-                const newMessage = {
-                    sender_id: 'admin',
-                    sender_type: 'admin',
-                    receiver_id: currentChatUser.id,
-                    receiver_type: currentChatUser.type,
-                    message: message,
-                    reply_to_id: replyToMessage?.id || null,
-                    created_at: new Date().toISOString()
-                };
-                
-                const { error } = await supabaseClient.from('chat_messages').insert([newMessage]);
-                if (error) {
-                    showNotification('Failed to send message: ' + error.message, true);
-                } else {
-                    input.value = '';
-                    cancelReply();
-                    appendMessage({ ...newMessage, id: Date.now().toString() });
-                }
-            };
-            
-            window.replyToMessage = function(messageId, messageText) {
-                replyToMessage = { id: messageId, text: messageText };
-                const preview = document.getElementById('replyPreview');
-                const previewText = document.getElementById('replyPreviewText');
-                if (preview && previewText) {
-                    previewText.innerText = messageText;
-                    preview.style.display = 'flex';
-                }
-            };
-            
-            window.cancelReply = function() {
-                replyToMessage = null;
-                const preview = document.getElementById('replyPreview');
-                if (preview) preview.style.display = 'none';
-            };
-            
-            window.deleteMessageForMe = async function(messageId) {
-                if (await confirmAction('Delete this message for yourself?', 'Delete Message')) {
-                    await supabaseClient.from('chat_messages').update({ is_deleted: true }).eq('id', messageId);
-                    document.querySelector(`.chat-message[data-message-id="${messageId}"]`)?.remove();
-                    showNotification('Message deleted for you');
-                }
-            };
-            
-            window.deleteMessageForAll = async function(messageId) {
-                if (await confirmAction('Delete this message for everyone? This cannot be undone.', 'Delete for Everyone')) {
-                    await supabaseClient.from('chat_messages').update({ deleted_for_all: true }).eq('id', messageId);
-                    document.querySelector(`.chat-message[data-message-id="${messageId}"]`)?.remove();
-                    showNotification('Message deleted for everyone');
-                }
-            };
-            
-            async function markMessagesAsRead(userId) {
-                await supabaseClient
-                    .from('chat_messages')
-                    .update({ read_at: new Date().toISOString() })
-                    .eq('sender_id', userId)
-                    .eq('receiver_id', 'admin')
-                    .is('read_at', null);
-                unreadCounts[userId] = 0;
-                updateNotificationBadge();
-                renderChatUsersList();
-            }
-            
-            async function updateUnreadCounts() {
-                for (const user of chatUsers) {
-                    const { count } = await supabaseClient
-                        .from('chat_messages')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('sender_id', user.id)
-                        .eq('receiver_id', 'admin')
-                        .is('read_at', null);
-                    unreadCounts[user.id] = count || 0;
-                }
-                updateNotificationBadge();
-            }
-            
-            function updateNotificationBadge() {
-                const totalUnread = Object.values(unreadCounts).reduce((a, b) => a + b, 0);
-                const badge = document.getElementById('chatNotificationBadge');
-                if (badge) {
-                    if (totalUnread > 0) {
-                        badge.innerText = totalUnread > 99 ? '99+' : totalUnread;
-                        badge.style.display = 'flex';
-                    } else {
-                        badge.style.display = 'none';
-                    }
-                }
-            }
-            
-            function setupEmojiPicker() {
-                setTimeout(() => {
-                    const btn = document.getElementById('emojiBtn');
-                    if (btn) {
-                        btn.addEventListener('click', () => {
-                            import('https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.0/index.js').then(module => {
-                                if (!emojiPickerInstance) {
-                                    emojiPickerInstance = new module.default();
-                                    emojiPickerInstance.style.position = 'absolute';
-                                    emojiPickerInstance.style.bottom = '70px';
-                                    emojiPickerInstance.style.right = '10px';
-                                    emojiPickerInstance.style.zIndex = '1000';
-                                    emojiPickerInstance.style.display = 'block';
-                                    document.querySelector('.emoji-picker-container')?.appendChild(emojiPickerInstance);
-                                    emojiPickerInstance.addEventListener('emoji-click', (event) => {
-                                        const input = document.getElementById('chatInput');
-                                        if (input) {
-                                            input.value += event.detail.unicode;
-                                        }
-                                        emojiPickerInstance.style.display = 'none';
-                                    });
-                                } else {
-                                    emojiPickerInstance.style.display = emojiPickerInstance.style.display === 'none' ? 'block' : 'none';
-                                }
-                            });
-                        });
-                    }
-                }, 1000);
-            }
             
             window.handleLogout = async function(){ 
                 await supabaseClient.auth.signOut(); 
