@@ -581,6 +581,37 @@
             cursor: pointer;
         }
         
+        /* Chat Styles - Only CSS, no JS */
+        .chat-layout { display: flex; gap: 25px; height: 70vh; min-height: 550px; }
+        .chat-users-panel { width: 350px; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(232,177,60,0.2); }
+        .chat-users-header { padding: 18px; background: #0a2f24; border-bottom: 1px solid rgba(232,177,60,0.3); }
+        .chat-users-header h3 { color: #E8B13C; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .chat-users-header input { width: 100%; margin-top: 12px; padding: 10px; border-radius: 40px; background: rgba(255,255,255,0.1); border: none; color: white; padding-left: 15px; }
+        .chat-users-header input::placeholder { color: rgba(255,255,255,0.5); }
+        .chat-users-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .chat-user-item { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 20px; cursor: pointer; transition: all 0.2s; margin-bottom: 6px; background: rgba(255,255,255,0.03); border: 1px solid transparent; }
+        .chat-user-item:hover { background: rgba(232,177,60,0.1); border-color: rgba(232,177,60,0.3); }
+        .chat-user-item.active { background: linear-gradient(135deg, rgba(232,177,60,0.2), rgba(30,78,62,0.3)); border-color: #E8B13C; }
+        .user-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #E8B13C, #b8860b); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0a1f1a; font-size: 1.2rem; }
+        .user-info { flex: 1; }
+        .user-name { font-weight: 700; color: white; }
+        .user-type { font-size: 0.7rem; color: #E8B13C; text-transform: uppercase; }
+        .user-last-msg { font-size: 0.7rem; color: rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+        .unread-badge { background: #E8B13C; color: #0a1f1a; border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; font-weight: bold; margin-left: 8px; }
+        .chat-conversation-panel { flex: 1; background: rgba(0,0,0,0.3); border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(232,177,60,0.2); }
+        .chat-conversation-header { padding: 18px; background: #0a2f24; border-bottom: 1px solid rgba(232,177,60,0.3); display: flex; align-items: center; gap: 12px; }
+        .chat-messages-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .message-bubble { max-width: 75%; padding: 12px 16px; border-radius: 24px; font-size: 0.9rem; line-height: 1.4; }
+        .message-received { background: rgba(255,255,255,0.1); color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .message-sent { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+        .message-time { font-size: 0.65rem; opacity: 0.7; margin-top: 5px; text-align: right; }
+        .chat-input-area { padding: 18px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(232,177,60,0.2); display: flex; gap: 12px; }
+        .chat-input-area input { flex: 1; padding: 14px 18px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 40px; color: white; font-family: 'Inter', sans-serif; }
+        .chat-input-area input:focus { outline: none; border-color: #E8B13C; }
+        .send-btn { background: #E8B13C; border: none; width: 48px; border-radius: 50%; color: #0a1f1a; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
+        .empty-chat { display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.4); flex-direction: column; gap: 12px; }
+        .chat-tab-unread { background: #E8B13C; color: #0a1f1a; border-radius: 20px; padding: 2px 8px; margin-left: 6px; font-size: 11px; }
+        
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; text-align: center; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
@@ -588,6 +619,8 @@
             .nav-tab { padding: 8px 16px; font-size: 12px; }
             th, td { padding: 10px 8px; font-size: 12px; }
             .section-title { font-size: 1.2rem; }
+            .chat-layout { flex-direction: column; height: auto; }
+            .chat-users-panel { width: 100%; }
         }
     </style>
 </head>
@@ -619,6 +652,8 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
+            <!-- CHAT TAB -->
+            <button class="nav-tab" onclick="showSection('chat')"><i class="fas fa-comment-dots"></i> Live Chat <span id="chatUnreadBadge" class="chat-tab-unread" style="display:none;">0</span></button>
         </div>
 
         <!-- Dashboard Section -->
@@ -651,8 +686,10 @@
             </div>
             <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetInvestorSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
             <div class="table-container">
-                <table>
-                    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead>
+                <tr>
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="investorsList"></tbody>
                 </table>
             </div>
@@ -673,7 +710,9 @@
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead>
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="buyersList"></tbody>
                 </table>
             </div>
@@ -683,8 +722,10 @@
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
             <div class="table-container">
-                <table>
-                    <thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead>
+                <tr>
+                    <thead>
+                        <tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="investmentRequestsList"></tbody>
                 </table>
             </div>
@@ -706,7 +747,9 @@
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead>
+                    <thead>
+                        <tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="investmentHistory"></tbody>
                 </table>
             </div>
@@ -727,7 +770,9 @@
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead>
+                    <thead>
+                        <tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="profitHistory"></tbody>
                 </table>
             </div>
@@ -743,7 +788,9 @@
             </div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead>
+                    <thead>
+                        <tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
             </div>
@@ -765,7 +812,9 @@
             <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+                    <thead>
+                        <tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
+                    </thead>
                     <tbody id="productsList"></tbody>
                 </table>
             </div>
@@ -788,6 +837,36 @@
                     </thead>
                     <tbody id="ordersList"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- CHAT SECTION - HTML ONLY, NO JAVASCRIPT -->
+        <div id="chatSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Customer Support</h2>
+            <div class="chat-layout">
+                <div class="chat-users-panel">
+                    <div class="chat-users-header">
+                        <h3><i class="fas fa-users"></i> Conversations</h3>
+                        <input type="text" id="chatSearch" placeholder="🔍 Search by name...">
+                    </div>
+                    <div class="chat-users-list" id="chatUsersList">
+                        <!-- Chat contacts will be loaded here by JavaScript -->
+                        <div class="empty-state">Loading contacts...</div>
+                    </div>
+                </div>
+                <div class="chat-conversation-panel">
+                    <div class="chat-conversation-header" id="chatHeaderPlaceholder">
+                        <i class="fas fa-comment-dots" style="color:#E8B13C; font-size:1.5rem;"></i>
+                        <div>Select a customer to start messaging</div>
+                    </div>
+                    <div class="chat-messages-area" id="chatMessagesArea">
+                        <div class="empty-chat"><i class="fas fa-inbox fa-3x"></i><p>No conversation selected</p></div>
+                    </div>
+                    <div class="chat-input-area" id="chatInputArea" style="display: none;">
+                        <input type="text" id="chatMessageInput" placeholder="Type your reply... (Sent as 'Sohrab Industries Support')">
+                        <button class="send-btn" id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
