@@ -437,7 +437,7 @@
             to { transform: translateY(0); opacity: 1; }
         }
         .modal-content h2 { color: #E8B13C; margin-bottom: 20px; font-family: 'Playfair Display', serif; }
-        .modal-content textarea, .modal-content select {
+        .modal-content textarea, .modal-content select, .modal-content input {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
@@ -447,7 +447,7 @@
             color: white;
             font-family: 'Inter', sans-serif;
         }
-        .modal-content textarea:focus, .modal-content select:focus { outline: none; border-color: #E8B13C; }
+        .modal-content textarea:focus, .modal-content select:focus, .modal-content input:focus { outline: none; border-color: #E8B13C; }
         
         /* Table Styles */
         .table-container { overflow-x: auto; margin-top: 15px; border-radius: 20px; }
@@ -502,6 +502,13 @@
         }
         
         .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); font-style: italic; }
+        .contact-message-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid #E8B13C;
+        }
         
         @media (max-width: 768px) {
             .buyer-header { flex-direction: column; text-align: center; }
@@ -535,6 +542,7 @@
             <button class="tab-btn active" data-tab="shop"><i class="fas fa-store"></i> Shop</button>
             <button class="tab-btn" data-tab="orders"><i class="fas fa-truck"></i> My Orders</button>
             <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> My Profile</button>
+            <button class="tab-btn" data-tab="contact"><i class="fas fa-headset"></i> Contact Support</button>
         </div>
 
         <!-- Shop Tab -->
@@ -572,6 +580,25 @@
                     <div><label style="color:#E8B13C; font-weight:600;">Total Orders</label><input type="text" id="profileTotalOrders" readonly style="width:100%; padding: 12px; background:rgba(255,255,255,0.08); border:1px solid rgba(232,177,60,0.3); border-radius:12px; color:white;"></div>
                     <div><label style="color:#E8B13C; font-weight:600;">Total Spent</label><input type="text" id="profileTotalSpent" readonly style="width:100%; padding: 12px; background:rgba(255,255,255,0.08); border:1px solid rgba(232,177,60,0.3); border-radius:12px; color:white;"></div>
                     <div><label style="color:#E8B13C; font-weight:600;">Member Since</label><input type="text" id="profileMemberSince" readonly style="width:100%; padding: 12px; background:rgba(255,255,255,0.08); border:1px solid rgba(232,177,60,0.3); border-radius:12px; color:white;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Support Tab -->
+        <div id="contactTab" class="tab-content">
+            <h2 class="section-title"><i class="fas fa-headset"></i> Contact Customer Support</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 25px;">
+                <div class="form-card">
+                    <h3 style="color:#E8B13C; margin-bottom: 15px;"><i class="fas fa-envelope"></i> Send a Message</h3>
+                    <input type="text" id="contactSubject" placeholder="Subject" style="width:100%; margin-bottom:12px; padding:12px; background:rgba(255,255,255,0.08); border:1px solid rgba(232,177,60,0.3); border-radius:16px; color:white;">
+                    <textarea id="contactMessage" rows="5" placeholder="Describe your issue or inquiry..." style="width:100%; margin-bottom:12px;"></textarea>
+                    <button id="sendContactBtn" class="checkout-btn" style="background: linear-gradient(135deg, #E8B13C, #c99b2e); color:#0a1f1a;"><i class="fas fa-paper-plane"></i> Send Message</button>
+                </div>
+                <div class="form-card">
+                    <h3 style="color:#E8B13C; margin-bottom: 15px;"><i class="fas fa-history"></i> Your Conversations</h3>
+                    <div id="contactMessagesList" style="max-height: 350px; overflow-y: auto;">
+                        <div class="empty-state">No messages yet. Send a query to support.</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -624,6 +651,7 @@
                 document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
                 document.getElementById(`${tabName}Tab`).classList.add('active');
                 document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active');
+                if(tabName === 'contact') loadContactMessages();
             }
 
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -653,6 +681,7 @@
                 await loadOrders();
                 await loadProfile();
                 loadCart();
+                await loadContactMessages();
             }
 
             async function loadProducts() {
@@ -771,6 +800,40 @@
                     else { showNotification(`${dbField} updated!`, false); await loadProfile(); }
                 }
             };
+            
+            // Contact System
+            async function loadContactMessages() {
+                const { data, error } = await supabaseClient.from('contact_messages').select('*').eq('buyer_id', currentBuyerId).order('created_at', { ascending: false });
+                const container = document.getElementById('contactMessagesList');
+                if (error || !data || data.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i> No messages yet. Send a query to support.</div>'; return; }
+                container.innerHTML = data.map(msg => `
+                    <div class="contact-message-card">
+                        <div style="display:flex; justify-content:space-between;"><strong style="color:#E8B13C;">${msg.subject || 'General Inquiry'}</strong><small>${new Date(msg.created_at).toLocaleString()}</small></div>
+                        <p style="margin:8px 0; color:#ddd;">${msg.message}</p>
+                        <div style="font-size:12px; margin-top:5px;"><span class="status-badge" style="background:${msg.reply ? '#1e7e5e' : '#b8860b'}">${msg.reply ? 'Replied' : 'Awaiting Reply'}</span></div>
+                        ${msg.reply ? `<div style="margin-top:8px; padding:8px; background:rgba(0,0,0,0.3); border-radius:12px;"><i class="fas fa-reply"></i> <strong>Support:</strong> ${msg.reply}</div>` : ''}
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('sendContactBtn')?.addEventListener('click', async () => {
+                const subject = document.getElementById('contactSubject').value.trim();
+                const message = document.getElementById('contactMessage').value.trim();
+                if(!message) { showNotification('Please write a message', true); return; }
+                const { error } = await supabaseClient.from('contact_messages').insert([{
+                    buyer_id: currentBuyerId,
+                    subject: subject || 'General Support',
+                    message: message,
+                    status: 'pending',
+                    created_at: new Date().toISOString(),
+                    reply: null
+                }]);
+                if(error) { showNotification(error.message, true); return; }
+                showNotification('Message sent to support!', false);
+                document.getElementById('contactSubject').value = '';
+                document.getElementById('contactMessage').value = '';
+                await loadContactMessages();
+            });
             
             document.getElementById('placeOrderBtn').onclick = async function() {
                 const address = document.getElementById('checkoutAddress').value;
