@@ -1,37 +1,45 @@
 // ============================================
-// ADMIN CHAT SYSTEM - Standalone Module
+// SEPARATE CHAT MODULE - No conflicts with existing admin.js
 // ============================================
-// This file handles all chat functionality for the admin panel
+// This file works independently and does not modify any existing functions
 // Save as: admin-chat.js
-// Include in HTML after admin.js: <script src="admin-chat.js"></script>
+// Include after admin.js: <script src="admin-chat.js"></script>
 // ============================================
 
 (function() {
     'use strict';
     
-    // Configuration
-    const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+    // Use different variable names to avoid conflicts
+    const CHAT_SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+    const CHAT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
     
-    // State variables
-    let supabaseChat = null;
-    let currentChatUser = null;
-    let currentChatType = null;
-    let currentChatName = null;
-    let allInvestors = [];
-    let allBuyers = [];
+    let chatSupabase = null;
+    let chatCurrentUser = null;
+    let chatCurrentType = null;
+    let chatCurrentName = null;
+    let chatRefreshInterval = null;
     let chatInitialized = false;
-    let refreshInterval = null;
     
     // DOM Elements
-    let chatUsersList, chatMessagesArea, chatHeaderPlaceholder, chatInputArea;
-    let chatMessageInput, sendChatBtn, chatSearch, chatUnreadBadge;
+    let chatUsersListEl = null;
+    let chatMessagesAreaEl = null;
+    let chatHeaderPlaceholderEl = null;
+    let chatInputAreaEl = null;
+    let chatMessageInputEl = null;
+    let sendChatBtnEl = null;
+    let chatSearchEl = null;
+    let chatUnreadBadgeEl = null;
     
-    // ============================================
-    // UTILITY FUNCTIONS
-    // ============================================
+    // Helper function to get investors and buyers from global variables
+    function getInvestorsAndBuyers() {
+        // Access global variables set by admin.js
+        const investors = (typeof window.allInvestors !== 'undefined') ? window.allInvestors : [];
+        const buyers = (typeof window.allBuyers !== 'undefined') ? window.allBuyers : [];
+        return { investors, buyers };
+    }
     
-    function escapeHtml(str) {
+    // Escape HTML
+    function chatEscapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
@@ -41,64 +49,49 @@
         });
     }
     
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        toast.className = `toast-notification toast-${type === 'success' ? 'success' : 'error'}`;
-        toast.innerHTML = type === 'success' ? `✅ ${message}` : `❌ ${message}`;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
-    
-    // ============================================
-    // DATA LOADING FUNCTIONS
-    // ============================================
-    
-    function loadInvestorsAndBuyers() {
-        // Try to get data from global variables (set by main admin.js)
-        if (typeof window.allInvestors !== 'undefined' && window.allInvestors) {
-            allInvestors = window.allInvestors;
-        }
-        if (typeof window.allBuyers !== 'undefined' && window.allBuyers) {
-            allBuyers = window.allBuyers;
-        }
-        
-        // If not available, fetch directly from Supabase
-        if (allInvestors.length === 0 || allBuyers.length === 0) {
-            const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-            if (supabase) {
-                Promise.all([
-                    supabase.from('investors').select('*'),
-                    supabase.from('buyers').select('*')
-                ]).then(([investorsRes, buyersRes]) => {
-                    if (investorsRes.data) allInvestors = investorsRes.data;
-                    if (buyersRes.data) allBuyers = buyersRes.data;
-                    loadChatContacts();
-                }).catch(err => console.error('Error fetching users:', err));
-            }
+    // Show toast notification (reuse existing or create own)
+    function chatShowNotification(message, isError = false) {
+        // Try to use existing showNotification if available
+        if (typeof window.showNotification === 'function') {
+            window.showNotification(message, isError);
+        } else {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
+            toast.innerHTML = isError ? `⚠️ ${message}` : `✨ ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
     }
     
-    // ============================================
-    // CHAT CONTACTS LIST
-    // ============================================
+    // Initialize Supabase for chat
+    function initChatSupabase() {
+        if (typeof supabase === 'undefined') {
+            console.error('[Chat] Supabase not loaded');
+            return false;
+        }
+        chatSupabase = supabase.createClient(CHAT_SUPABASE_URL, CHAT_SUPABASE_ANON_KEY);
+        return true;
+    }
     
-    async function loadChatContacts() {
-        if (!supabaseChat) return;
+    // Load chat contacts (buyers and investors with messages)
+    async function chatLoadContacts() {
+        if (!chatSupabase) return;
         
         try {
-            // Get all messages
-            const { data: messages, error } = await supabaseChat
+            const { investors, buyers } = getInvestorsAndBuyers();
+            
+            const { data: messages, error } = await chatSupabase
                 .from('contact_messages')
                 .select('*')
                 .order('created_at', { ascending: false });
             
             if (error) throw error;
             
-            // Build contacts map from investors and buyers
+            // Build contacts map
             const contactsMap = new Map();
             
             // Add all buyers
-            allBuyers.forEach(buyer => {
+            buyers.forEach(buyer => {
                 contactsMap.set(`buyer_${buyer.id}`, {
                     id: buyer.id,
                     type: 'buyer',
@@ -111,7 +104,7 @@
             });
             
             // Add all investors
-            allInvestors.forEach(investor => {
+            investors.forEach(investor => {
                 contactsMap.set(`investor_${investor.id}`, {
                     id: investor.id,
                     type: 'investor',
@@ -123,7 +116,7 @@
                 });
             });
             
-            // Update with actual message data
+            // Update with message data
             if (messages && messages.length > 0) {
                 for (const msg of messages) {
                     let contactId = msg.buyer_id || msg.user_id;
@@ -136,7 +129,6 @@
                             contact.lastMsg = msg.message ? msg.message.substring(0, 40) : '';
                             contact.timestamp = msg.created_at;
                             
-                            // Count unread messages (received by admin, not read)
                             if (msg.receiver_type === 'admin' && !msg.is_admin_read) {
                                 contact.unread = (contact.unread || 0) + 1;
                             }
@@ -146,7 +138,7 @@
                 }
             }
             
-            // Convert to array and sort by latest message
+            // Convert to array and sort
             let contactsArray = Array.from(contactsMap.values());
             contactsArray.sort((a, b) => {
                 if (!a.timestamp && !b.timestamp) return 0;
@@ -157,133 +149,121 @@
             
             // Update unread badge
             const totalUnread = contactsArray.reduce((sum, c) => sum + (c.unread || 0), 0);
-            if (chatUnreadBadge) {
+            if (chatUnreadBadgeEl) {
                 if (totalUnread > 0) {
-                    chatUnreadBadge.style.display = 'inline-block';
-                    chatUnreadBadge.innerText = totalUnread;
+                    chatUnreadBadgeEl.style.display = 'inline-block';
+                    chatUnreadBadgeEl.innerText = totalUnread;
                 } else {
-                    chatUnreadBadge.style.display = 'none';
+                    chatUnreadBadgeEl.style.display = 'none';
                 }
             }
             
-            // Render contacts list
-            renderContactsList(contactsArray);
+            // Render contacts
+            chatRenderContactsList(contactsArray);
             
         } catch (err) {
-            console.error('Error loading chat contacts:', err);
-            if (chatUsersList) {
-                chatUsersList.innerHTML = '<div class="empty-state">Error loading contacts. Please refresh.</div>';
-            }
+            console.error('[Chat] Error loading contacts:', err);
         }
     }
     
-    function renderContactsList(contacts) {
-        if (!chatUsersList) return;
+    function chatRenderContactsList(contacts) {
+        if (!chatUsersListEl) return;
         
         if (contacts.length === 0) {
-            chatUsersList.innerHTML = '<div class="empty-state">No contacts found</div>';
+            chatUsersListEl.innerHTML = '<div class="empty-state">No contacts found</div>';
             return;
         }
         
         let html = '';
         for (const contact of contacts) {
-            const isActive = (currentChatUser === contact.id && currentChatType === contact.type);
+            const isActive = (chatCurrentUser === contact.id && chatCurrentType === contact.type);
             const activeClass = isActive ? 'active' : '';
             
             html += `
-                <div class="chat-user-item ${activeClass}" data-user-id="${contact.id}" data-user-type="${contact.type}" data-user-name="${escapeHtml(contact.name)}">
+                <div class="chat-user-item ${activeClass}" data-chat-id="${contact.id}" data-chat-type="${contact.type}" data-chat-name="${chatEscapeHtml(contact.name)}">
                     <div class="user-avatar">${contact.name ? contact.name.charAt(0).toUpperCase() : '?'}</div>
                     <div class="user-info">
-                        <div class="user-name">${escapeHtml(contact.name)} <span class="user-type">(${contact.type === 'buyer' ? 'Customer' : 'Investor'})</span></div>
-                        <div class="user-last-msg">${escapeHtml(contact.lastMsg)}</div>
+                        <div class="user-name">${chatEscapeHtml(contact.name)} <span class="user-type">(${contact.type === 'buyer' ? 'Customer' : 'Investor'})</span></div>
+                        <div class="user-last-msg">${chatEscapeHtml(contact.lastMsg)}</div>
                     </div>
                     ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
                 </div>
             `;
         }
         
-        chatUsersList.innerHTML = html;
+        chatUsersListEl.innerHTML = html;
         
-        // Attach click events to contact items
-        const contactItems = chatUsersList.querySelectorAll('.chat-user-item');
-        contactItems.forEach(item => {
+        // Attach click events
+        const items = chatUsersListEl.querySelectorAll('.chat-user-item');
+        items.forEach(item => {
             item.addEventListener('click', () => {
-                const userId = item.dataset.userId;
-                const userType = item.dataset.userType;
-                const userName = item.dataset.userName;
-                selectChatContact(userId, userType, userName);
+                const userId = item.dataset.chatId;
+                const userType = item.dataset.chatType;
+                const userName = item.dataset.chatName;
+                chatSelectContact(userId, userType, userName);
             });
         });
         
-        // Setup search functionality
-        if (chatSearch) {
+        // Search functionality
+        if (chatSearchEl) {
             const originalContacts = [...contacts];
-            chatSearch.oninput = function() {
+            chatSearchEl.oninput = function() {
                 const term = this.value.toLowerCase();
                 const filtered = originalContacts.filter(c => c.name.toLowerCase().includes(term));
-                renderContactsList(filtered);
+                chatRenderContactsList(filtered);
             };
         }
     }
     
-    // ============================================
-    // CONVERSATION FUNCTIONS
-    // ============================================
-    
-    async function selectChatContact(userId, userType, userName) {
-        currentChatUser = userId;
-        currentChatType = userType;
-        currentChatName = userName;
+    async function chatSelectContact(userId, userType, userName) {
+        chatCurrentUser = userId;
+        chatCurrentType = userType;
+        chatCurrentName = userName;
         
-        // Update header
-        if (chatHeaderPlaceholder) {
-            chatHeaderPlaceholder.innerHTML = `
+        if (chatHeaderPlaceholderEl) {
+            chatHeaderPlaceholderEl.innerHTML = `
                 <div class="user-avatar" style="width:45px;height:45px;">${userName ? userName.charAt(0).toUpperCase() : '?'}</div>
                 <div>
-                    <div class="user-name">${escapeHtml(userName)}</div>
+                    <div class="user-name">${chatEscapeHtml(userName)}</div>
                     <div class="user-type">${userType === 'buyer' ? 'Customer' : 'Investor'}</div>
                 </div>
             `;
         }
         
-        // Show input area
-        if (chatInputArea) {
-            chatInputArea.style.display = 'flex';
+        if (chatInputAreaEl) {
+            chatInputAreaEl.style.display = 'flex';
         }
         
-        // Load conversation
-        await loadConversation(userId, userType);
+        await chatLoadConversation(userId, userType);
         
         // Mark messages as read
-        await supabaseChat
-            .from('contact_messages')
-            .update({ is_admin_read: true })
-            .eq('buyer_id', userId)
-            .eq('receiver_type', 'admin');
+        if (chatSupabase) {
+            await chatSupabase
+                .from('contact_messages')
+                .update({ is_admin_read: true })
+                .eq('buyer_id', userId)
+                .eq('receiver_type', 'admin');
+        }
         
-        // Refresh contacts to update unread counts
-        await loadChatContacts();
+        await chatLoadContacts();
     }
     
-    async function loadConversation(userId, userType) {
-        if (!supabaseChat) return;
+    async function chatLoadConversation(userId, userType) {
+        if (!chatSupabase) return;
         
         try {
-            // Get messages where buyer_id matches (for buyers)
-            const { data: messages1 } = await supabaseChat
+            const { data: messages1 } = await chatSupabase
                 .from('contact_messages')
                 .select('*')
                 .eq('buyer_id', userId)
                 .order('created_at', { ascending: true });
             
-            // Get messages where user_id matches (for investors)
-            const { data: messages2 } = await supabaseChat
+            const { data: messages2 } = await chatSupabase
                 .from('contact_messages')
                 .select('*')
                 .eq('user_id', userId)
                 .order('created_at', { ascending: true });
             
-            // Combine and deduplicate messages
             let allMessages = [...(messages1 || []), ...(messages2 || [])];
             const uniqueMessages = [];
             const seenIds = new Set();
@@ -295,25 +275,19 @@
                 }
             }
             
-            // Sort by creation time
             uniqueMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-            
-            // Render messages
-            renderMessages(uniqueMessages);
+            chatRenderMessages(uniqueMessages);
             
         } catch (err) {
-            console.error('Error loading conversation:', err);
-            if (chatMessagesArea) {
-                chatMessagesArea.innerHTML = '<div class="empty-chat"><i class="fas fa-exclamation-triangle"></i><p>Error loading messages</p></div>';
-            }
+            console.error('[Chat] Error loading conversation:', err);
         }
     }
     
-    function renderMessages(messages) {
-        if (!chatMessagesArea) return;
+    function chatRenderMessages(messages) {
+        if (!chatMessagesAreaEl) return;
         
         if (messages.length === 0) {
-            chatMessagesArea.innerHTML = '<div class="empty-chat"><i class="fas fa-comment"></i><p>No messages yet. Send a message to start conversation.</p></div>';
+            chatMessagesAreaEl.innerHTML = '<div class="empty-chat"><i class="fas fa-comment"></i><p>No messages yet. Send a message to start conversation.</p></div>';
             return;
         }
         
@@ -324,47 +298,41 @@
             const time = new Date(msg.created_at).toLocaleString();
             
             html += `
-                <div class="message-bubble ${bubbleClass}" data-msg-id="${msg.id}">
-                    ${escapeHtml(msg.message)}
+                <div class="message-bubble ${bubbleClass}">
+                    ${chatEscapeHtml(msg.message)}
                     <div class="message-time">${time}</div>
                 </div>
             `;
         }
         
-        chatMessagesArea.innerHTML = html;
-        
-        // Scroll to bottom
-        chatMessagesArea.scrollTop = chatMessagesArea.scrollHeight;
+        chatMessagesAreaEl.innerHTML = html;
+        chatMessagesAreaEl.scrollTop = chatMessagesAreaEl.scrollHeight;
     }
     
-    // ============================================
-    // SEND MESSAGE FUNCTION
-    // ============================================
-    
-    async function sendMessage() {
-        if (!supabaseChat) {
-            showToast('Chat not initialized', 'error');
+    async function chatSendMessage() {
+        if (!chatSupabase) {
+            chatShowNotification('Chat not initialized', true);
             return;
         }
         
-        if (!currentChatUser) {
-            showToast('Please select a contact first', 'error');
+        if (!chatCurrentUser) {
+            chatShowNotification('Please select a contact first', true);
             return;
         }
         
-        const message = chatMessageInput ? chatMessageInput.value.trim() : '';
+        const message = chatMessageInputEl ? chatMessageInputEl.value.trim() : '';
         if (!message) {
-            showToast('Please enter a message', 'error');
+            chatShowNotification('Please enter a message', true);
             return;
         }
         
         const newMessage = {
             id: crypto.randomUUID(),
-            buyer_id: currentChatType === 'buyer' ? currentChatUser : null,
-            user_id: currentChatType !== 'buyer' ? currentChatUser : null,
-            user_type: currentChatType,
+            buyer_id: chatCurrentType === 'buyer' ? chatCurrentUser : null,
+            user_id: chatCurrentType !== 'buyer' ? chatCurrentUser : null,
+            user_type: chatCurrentType,
             sender_type: 'admin',
-            receiver_type: currentChatType,
+            receiver_type: chatCurrentType,
             message: message,
             created_at: new Date().toISOString(),
             is_admin_read: true,
@@ -372,157 +340,142 @@
         };
         
         try {
-            const { error } = await supabaseChat
+            const { error } = await chatSupabase
                 .from('contact_messages')
                 .insert([newMessage]);
             
             if (error) throw error;
             
-            // Clear input
-            if (chatMessageInput) chatMessageInput.value = '';
+            if (chatMessageInputEl) chatMessageInputEl.value = '';
             
-            // Reload conversation
-            await loadConversation(currentChatUser, currentChatType);
+            await chatLoadConversation(chatCurrentUser, chatCurrentType);
+            await chatLoadContacts();
             
-            // Refresh contacts list
-            await loadChatContacts();
-            
-            showToast(`Message sent to ${currentChatName} from Sohrab Industries Support`, 'success');
+            chatShowNotification(`Message sent to ${chatCurrentName} from Sohrab Industries Support`, false);
             
         } catch (err) {
-            console.error('Error sending message:', err);
-            showToast('Error sending message: ' + err.message, 'error');
+            console.error('[Chat] Error sending message:', err);
+            chatShowNotification('Error sending message: ' + err.message, true);
         }
     }
     
-    // ============================================
-    // REAL-TIME SUBSCRIPTION
-    // ============================================
-    
-    function setupRealtimeSubscription() {
-        if (!supabaseChat) return;
+    function chatSetupRealtime() {
+        if (!chatSupabase) return;
         
-        const channel = supabaseChat
-            .channel('admin-chat')
+        chatSupabase
+            .channel('admin-chat-channel')
             .on('postgres_changes', {
                 event: '*',
                 schema: 'public',
                 table: 'contact_messages'
             }, (payload) => {
-                // Refresh contacts list
-                loadChatContacts();
-                
-                // If the current conversation is affected, reload it
-                if (currentChatUser) {
+                chatLoadContacts();
+                if (chatCurrentUser) {
                     const newMsg = payload.new;
-                    if (newMsg && (newMsg.buyer_id === currentChatUser || newMsg.user_id === currentChatUser)) {
-                        loadConversation(currentChatUser, currentChatType);
+                    if (newMsg && (newMsg.buyer_id === chatCurrentUser || newMsg.user_id === chatCurrentUser)) {
+                        chatLoadConversation(chatCurrentUser, chatCurrentType);
                     }
                 }
             })
             .subscribe();
     }
     
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-    
-    function getDOMElements() {
-        chatUsersList = document.getElementById('chatUsersList');
-        chatMessagesArea = document.getElementById('chatMessagesArea');
-        chatHeaderPlaceholder = document.getElementById('chatHeaderPlaceholder');
-        chatInputArea = document.getElementById('chatInputArea');
-        chatMessageInput = document.getElementById('chatMessageInput');
-        sendChatBtn = document.getElementById('sendChatBtn');
-        chatSearch = document.getElementById('chatSearch');
-        chatUnreadBadge = document.getElementById('chatUnreadBadge');
+    function chatGetElements() {
+        chatUsersListEl = document.getElementById('chatUsersList');
+        chatMessagesAreaEl = document.getElementById('chatMessagesArea');
+        chatHeaderPlaceholderEl = document.getElementById('chatHeaderPlaceholder');
+        chatInputAreaEl = document.getElementById('chatInputArea');
+        chatMessageInputEl = document.getElementById('chatMessageInput');
+        sendChatBtnEl = document.getElementById('sendChatBtn');
+        chatSearchEl = document.getElementById('chatSearch');
+        chatUnreadBadgeEl = document.getElementById('chatUnreadBadge');
     }
     
-    function attachEventListeners() {
-        if (sendChatBtn) {
-            sendChatBtn.addEventListener('click', sendMessage);
+    function chatAttachEvents() {
+        if (sendChatBtnEl) {
+            sendChatBtnEl.addEventListener('click', chatSendMessage);
         }
         
-        if (chatMessageInput) {
-            chatMessageInput.addEventListener('keypress', (e) => {
+        if (chatMessageInputEl) {
+            chatMessageInputEl.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    sendMessage();
+                    chatSendMessage();
                 }
             });
         }
     }
     
-    function initSupabase() {
-        if (typeof supabase !== 'undefined') {
-            supabaseChat = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            return true;
-        } else {
-            console.error('Supabase library not loaded');
-            return false;
-        }
-    }
-    
-    function startPeriodicRefresh() {
-        // Refresh contacts every 5 seconds as fallback for real-time
-        if (refreshInterval) clearInterval(refreshInterval);
-        refreshInterval = setInterval(() => {
-            if (document.getElementById('chatSection') && 
-                document.getElementById('chatSection').classList.contains('active')) {
-                loadChatContacts();
+    function chatStartPeriodicRefresh() {
+        if (chatRefreshInterval) clearInterval(chatRefreshInterval);
+        chatRefreshInterval = setInterval(() => {
+            const chatSection = document.getElementById('chatSection');
+            if (chatSection && chatSection.classList.contains('active')) {
+                chatLoadContacts();
             }
         }, 5000);
     }
     
-    function init() {
+    // Check if chat section exists in the page
+    function chatSectionExists() {
+        return document.getElementById('chatSection') !== null;
+    }
+    
+    // Override showSection to also handle chat loading
+    const originalShowSection = window.showSection;
+    if (typeof originalShowSection === 'function') {
+        window.showSection = function(section) {
+            originalShowSection(section);
+            if (section === 'chat') {
+                setTimeout(() => {
+                    chatLoadContacts();
+                }, 100);
+            }
+        };
+    }
+    
+    // Initialize chat module
+    function chatInit() {
         if (chatInitialized) return;
         
-        // Get DOM elements
-        getDOMElements();
+        // Check if chat section exists in DOM
+        if (!chatSectionExists()) {
+            console.log('[Chat] Chat section not found in DOM, skipping initialization');
+            return;
+        }
         
-        // Initialize Supabase
-        if (!initSupabase()) return;
+        chatGetElements();
         
-        // Attach event listeners
-        attachEventListeners();
+        if (!initChatSupabase()) {
+            console.error('[Chat] Failed to initialize Supabase');
+            return;
+        }
         
-        // Load initial data
-        loadInvestorsAndBuyers();
+        chatAttachEvents();
+        chatSetupRealtime();
+        chatStartPeriodicRefresh();
         
-        // Setup real-time subscription
-        setupRealtimeSubscription();
-        
-        // Start periodic refresh
-        startPeriodicRefresh();
+        // Initial load after a short delay to ensure main data is loaded
+        setTimeout(() => {
+            chatLoadContacts();
+        }, 1000);
         
         chatInitialized = true;
-        console.log('Chat system initialized');
+        console.log('[Chat] Chat module initialized successfully');
     }
     
     // Wait for DOM to be ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', chatInit);
     } else {
-        // If DOM is already loaded, wait a bit for main data to be available
-        setTimeout(init, 500);
+        setTimeout(chatInit, 500);
     }
     
-    // Also try to initialize when main data might be loaded
-    setTimeout(() => {
-        if (!chatInitialized) {
-            loadInvestorsAndBuyers();
-            if (supabaseChat) {
-                loadChatContacts();
-                setupRealtimeSubscription();
-            }
+    // Also try to initialize when window loads (ensures all scripts are loaded)
+    window.addEventListener('load', function() {
+        if (!chatInitialized && chatSectionExists()) {
+            setTimeout(chatInit, 500);
         }
-    }, 2000);
-    
-    // Expose some functions globally for debugging if needed
-    window.chatSystem = {
-        refreshContacts: loadChatContacts,
-        sendMessage: sendMessage,
-        getCurrentUser: () => ({ id: currentChatUser, type: currentChatType, name: currentChatName })
-    };
+    });
     
 })();
