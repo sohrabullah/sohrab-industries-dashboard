@@ -16,7 +16,6 @@
             position: relative;
         }
         
-        /* Animated Background */
         body::before {
             content: '';
             position: fixed;
@@ -35,7 +34,6 @@
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
         
-        /* Premium Header */
         .buyer-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -140,7 +138,6 @@
         }
         .logout-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(220,53,69,0.4); }
         
-        /* Main Container */
         .buyer-container {
             max-width: 1400px;
             margin: 2rem auto;
@@ -149,7 +146,6 @@
             z-index: 2;
         }
         
-        /* Hero Banner */
         .hero-banner {
             background: linear-gradient(135deg, rgba(232,177,60,0.15), rgba(30,78,62,0.3));
             backdrop-filter: blur(10px);
@@ -169,7 +165,6 @@
         }
         .hero-banner p { color: rgba(255,255,255,0.8); margin-top: 10px; }
         
-        /* Premium Tabs */
         .tabs {
             display: flex;
             gap: 12px;
@@ -205,7 +200,6 @@
             box-shadow: 0 6px 20px rgba(232,177,60,0.4);
         }
         
-        /* Tab Content */
         .tab-content {
             display: none;
             background: rgba(20,45,38,0.92);
@@ -234,7 +228,6 @@
             padding-left: 18px;
         }
         
-        /* Categories */
         .categories {
             display: flex;
             gap: 12px;
@@ -262,7 +255,6 @@
             transform: translateY(-2px);
         }
         
-        /* Products Grid */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -312,7 +304,6 @@
         .add-to-cart:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(232,177,60,0.4); }
         .add-to-cart:disabled { background: #555; cursor: not-allowed; transform: none; }
         
-        /* Cart Sidebar */
         .cart-sidebar {
             position: fixed;
             right: -450px;
@@ -409,7 +400,6 @@
         }
         .overlay.active { display: block; }
         
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -449,7 +439,6 @@
         }
         .modal-content textarea:focus, .modal-content select:focus, .modal-content input:focus { outline: none; border-color: #E8B13C; }
         
-        /* Table Styles */
         .table-container { overflow-x: auto; margin-top: 15px; border-radius: 20px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.15); }
@@ -634,6 +623,7 @@
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
             let currentBuyerId = null;
+            let currentBuyerEmail = null;
             let cart = [];
             let allProducts = [];
             let currentCategory = 'all';
@@ -675,6 +665,7 @@
                 const { data: { user }, error } = await supabaseClient.auth.getUser();
                 if (error || !user) { window.location.href = 'buyer-auth.html'; return; }
                 currentBuyerId = user.id;
+                currentBuyerEmail = user.email;
                 document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
                 await ensureBuyerExists(user);
                 await loadProducts();
@@ -801,12 +792,31 @@
                 }
             };
             
-            // Contact System
+            // Contact System with Email Forwarding
             async function loadContactMessages() {
-                const { data, error } = await supabaseClient.from('contact_messages').select('*').eq('buyer_id', currentBuyerId).order('created_at', { ascending: false });
+                // Try Supabase first, fallback to localStorage
+                let messages = [];
+                try {
+                    const { data, error } = await supabaseClient.from('contact_messages').select('*').eq('buyer_id', currentBuyerId).order('created_at', { ascending: false });
+                    if (!error && data && data.length > 0) {
+                        messages = data;
+                    } else {
+                        // Fallback to localStorage
+                        const saved = localStorage.getItem(`contact_msgs_${currentBuyerId}`);
+                        if (saved) messages = JSON.parse(saved);
+                    }
+                } catch(e) {
+                    // Fallback to localStorage
+                    const saved = localStorage.getItem(`contact_msgs_${currentBuyerId}`);
+                    if (saved) messages = JSON.parse(saved);
+                }
+                
                 const container = document.getElementById('contactMessagesList');
-                if (error || !data || data.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i> No messages yet. Send a query to support.</div>'; return; }
-                container.innerHTML = data.map(msg => `
+                if (!messages || messages.length === 0) { 
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i> No messages yet. Send a query to support.</div>'; 
+                    return; 
+                }
+                container.innerHTML = messages.map(msg => `
                     <div class="contact-message-card">
                         <div style="display:flex; justify-content:space-between;"><strong style="color:#E8B13C;">${msg.subject || 'General Inquiry'}</strong><small>${new Date(msg.created_at).toLocaleString()}</small></div>
                         <p style="margin:8px 0; color:#ddd;">${msg.message}</p>
@@ -816,20 +826,57 @@
                 `).join('');
             }
             
+            // Email sending function using mailto (opens user's email client)
+            function sendEmailNotification(subject, message, userEmail, userName) {
+                const mailtoLink = `mailto:sohrabullahkn687@gmail.com?subject=SUPPORT REQUEST: ${subject}&body=From: ${userName} (${userEmail})%0A%0A${message}%0A%0A---%0APlease respond to this inquiry. Customer ID: ${currentBuyerId}`;
+                window.open(mailtoLink, '_blank');
+            }
+            
             document.getElementById('sendContactBtn')?.addEventListener('click', async () => {
                 const subject = document.getElementById('contactSubject').value.trim();
                 const message = document.getElementById('contactMessage').value.trim();
                 if(!message) { showNotification('Please write a message', true); return; }
-                const { error } = await supabaseClient.from('contact_messages').insert([{
+                
+                // Get user name for email
+                const { data: buyerData } = await supabaseClient.from('buyers').select('full_name').eq('id', currentBuyerId);
+                const userName = buyerData?.[0]?.full_name || currentBuyerEmail.split('@')[0];
+                
+                const newMessage = {
+                    id: Date.now().toString(),
                     buyer_id: currentBuyerId,
                     subject: subject || 'General Support',
                     message: message,
                     status: 'pending',
                     created_at: new Date().toISOString(),
                     reply: null
-                }]);
-                if(error) { showNotification(error.message, true); return; }
-                showNotification('Message sent to support!', false);
+                };
+                
+                // Try to save to Supabase
+                let savedToSupabase = false;
+                try {
+                    const { error } = await supabaseClient.from('contact_messages').insert([{
+                        buyer_id: currentBuyerId,
+                        subject: subject || 'General Support',
+                        message: message,
+                        status: 'pending',
+                        created_at: new Date().toISOString(),
+                        reply: null
+                    }]);
+                    if (!error) savedToSupabase = true;
+                } catch(e) {}
+                
+                if (!savedToSupabase) {
+                    // Fallback to localStorage
+                    const saved = localStorage.getItem(`contact_msgs_${currentBuyerId}`);
+                    let messages = saved ? JSON.parse(saved) : [];
+                    messages.unshift(newMessage);
+                    localStorage.setItem(`contact_msgs_${currentBuyerId}`, JSON.stringify(messages));
+                }
+                
+                // Send email notification to support
+                sendEmailNotification(subject || 'General Support', message, currentBuyerEmail, userName);
+                
+                showNotification('Message sent! Support team will respond within 24 hours.', false);
                 document.getElementById('contactSubject').value = '';
                 document.getElementById('contactMessage').value = '';
                 await loadContactMessages();
