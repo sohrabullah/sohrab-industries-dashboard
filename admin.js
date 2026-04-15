@@ -726,7 +726,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
         const buyersList = document.getElementById('buyersList');
         if (buyersList) {
-            buyersList.innerHTML = filtered.map(b=>`<td>...</td>`).join('');
+            buyersList.innerHTML = filtered.map(b=>`<tr>...</td>`).join('');
         }
     };
     
