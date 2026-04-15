@@ -40,7 +40,7 @@
         .status-pending { background: #fff3cd; color: #856404; }
         .status-processing { background: #d1ecf1; color: #0c5460; }
         .status-shipped { background: #cce5ff; color: #004085; }
-        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .status-cancelled, .status-blocked { background: #f8d7da; color: #721c24; }
         .btn-primary { background: #1E4E3E; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
         .btn-primary:hover { background: #2A6B58; transform: translateY(-2px); }
         .btn-success { background: #28a745; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
@@ -51,15 +51,24 @@
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #333; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Inter', sans-serif; }
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
-        .modal-content { background: white; margin: 5% auto; padding: 30px; width: 90%; max-width: 600px; border-radius: 20px; animation: slideIn 0.3s ease; max-height: 80vh; overflow-y: auto; }
-        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .close { float: right; font-size: 28px; cursor: pointer; color: #999; transition: all 0.3s; }
-        .close:hover { color: #333; }
-        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 10000; animation: slideUp 0.3s ease; text-align: center; }
-        .toast-success { background: #28a745; }
-        .toast-error { background: #dc3545; }
-        @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        
+        /* Attractive Popup Modal */
+        .custom-modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
+        .custom-modal.active { display: flex; }
+        .custom-modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; animation: modalSlideIn 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        @keyframes modalSlideIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .custom-modal-content h3 { color: #1E4E3E; margin-bottom: 15px; font-size: 1.5rem; }
+        .custom-modal-content p { color: #666; margin-bottom: 25px; }
+        .custom-modal-content input, .custom-modal-content textarea { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 10px; font-family: 'Inter', sans-serif; }
+        .modal-buttons { display: flex; gap: 12px; justify-content: center; }
+        .modal-btn { padding: 10px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .modal-btn-confirm { background: #1E4E3E; color: white; }
+        .modal-btn-confirm:hover { background: #2A6B58; transform: scale(1.02); }
+        .modal-btn-cancel { background: #6c757d; color: white; }
+        .modal-btn-cancel:hover { background: #5a6268; }
+        .modal-btn-danger { background: #dc3545; color: white; }
+        .modal-btn-danger:hover { background: #c82333; }
+        
         .search-box { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
         .search-box input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; min-width: 200px; }
         .action-buttons { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -85,13 +94,22 @@
         .user-type { font-size: 0.65rem; color: #E8B13C; text-transform: uppercase; }
         .user-last-msg { font-size: 0.7rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
         .unread-badge { background: #dc3545; color: white; border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; font-weight: bold; }
+        .blocked-badge { background: #6c757d; color: white; border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; margin-left: 5px; }
         .chat-conversation-panel { flex: 1; background: #f8f9fa; border-radius: 15px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #e0e0e0; }
-        .chat-conversation-header { padding: 18px; background: white; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; gap: 12px; }
+        .chat-conversation-header { padding: 18px; background: white; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; justify-content: space-between; }
+        .chat-user-details { display: flex; align-items: center; gap: 12px; }
+        .chat-actions { display: flex; gap: 8px; }
+        .chat-action-btn { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px; transition: all 0.3s; color: #666; }
+        .chat-action-btn:hover { background: #e9ecef; color: #1E4E3E; }
         .chat-messages-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: #fff; }
-        .message-bubble { max-width: 75%; padding: 10px 15px; border-radius: 18px; font-size: 0.9rem; line-height: 1.4; }
+        .message-bubble { max-width: 75%; padding: 10px 15px; border-radius: 18px; font-size: 0.9rem; line-height: 1.4; position: relative; }
         .message-received { background: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 4px; }
         .message-sent { background: #1E4E3E; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         .message-time { font-size: 0.65rem; opacity: 0.7; margin-top: 5px; text-align: right; }
+        .message-actions { position: absolute; top: 5px; right: 5px; display: none; gap: 5px; background: rgba(0,0,0,0.5); border-radius: 15px; padding: 2px 5px; }
+        .message-bubble:hover .message-actions { display: flex; }
+        .message-action-btn { background: none; border: none; color: white; cursor: pointer; font-size: 10px; padding: 2px 5px; border-radius: 10px; }
+        .message-action-btn:hover { background: rgba(255,255,255,0.3); }
         .chat-input-area { padding: 18px; background: white; border-top: 1px solid #e0e0e0; display: flex; gap: 12px; }
         .chat-input-area input { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 25px; font-family: 'Inter', sans-serif; }
         .chat-input-area input:focus { outline: none; border-color: #1E4E3E; }
@@ -99,6 +117,13 @@
         .send-btn:hover { background: #2A6B58; transform: scale(1.05); }
         .empty-chat { display: flex; align-items: center; justify-content: center; height: 100%; color: #999; flex-direction: column; gap: 12px; }
         .chat-tab-unread { background: #dc3545; color: white; border-radius: 20px; padding: 2px 8px; margin-left: 8px; font-size: 11px; }
+        .blocked-message { text-align: center; padding: 20px; color: #dc3545; font-style: italic; }
+        
+        .toast-notification { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 40px; color: white; z-index: 10000; animation: slideUp 0.3s ease; text-align: center; }
+        .toast-success { background: #28a745; }
+        .toast-error { background: #dc3545; }
+        .toast-info { background: #17a2b8; }
+        @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
         
         @media (max-width: 768px) { .admin-header { flex-direction: column; text-align: center; } .stats-grid { grid-template-columns: repeat(2, 1fr); } .nav-tabs { justify-content: center; } .chat-layout { flex-direction: column; height: auto; } .chat-users-panel { width: 100%; } }
     </style>
@@ -131,7 +156,6 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
-            <!-- NEW CHAT TAB -->
             <button class="nav-tab" onclick="showSection('chat')"><i class="fas fa-comment-dots"></i> Live Chat <span id="chatUnreadBadge" style="display:none;" class="chat-tab-unread">0</span></button>
         </div>
 
@@ -176,13 +200,13 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -199,7 +223,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -215,13 +239,25 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
-        <!-- Withdrawals Section -->
+        <!-- Withdrawals Section - RESTORED UI -->
         <div id="withdrawalsSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
+            <div class="search-box">
+                <input type="text" id="withdrawalSearch" placeholder="Search by investor name...">
+                <button onclick="searchWithdrawals()" class="btn-primary"><i class="fas fa-search"></i> Search</button>
+                <button onclick="resetWithdrawalSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="withdrawalsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Products Section -->
@@ -238,7 +274,7 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></td></div>
         </div>
 
         <!-- Orders Section -->
@@ -261,9 +297,9 @@
             </div>
         </div>
 
-        <!-- NEW CHAT SECTION -->
+        <!-- Chat Section -->
         <div id="chatSection" class="admin-section">
-            <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Customer Support</h2>
+            <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Sohrab Industries Support</h2>
             <div class="chat-layout">
                 <div class="chat-users-panel">
                     <div class="chat-users-header">
@@ -274,14 +310,16 @@
                 </div>
                 <div class="chat-conversation-panel">
                     <div class="chat-conversation-header" id="chatHeaderPlaceholder">
-                        <i class="fas fa-comment-dots" style="color:#1E4E3E; font-size:1.5rem;"></i>
-                        <div>Select a customer to start messaging</div>
+                        <div class="chat-user-details">
+                            <i class="fas fa-comment-dots" style="color:#1E4E3E; font-size:1.5rem;"></i>
+                            <div>Select a customer to start messaging</div>
+                        </div>
                     </div>
                     <div class="chat-messages-area" id="chatMessagesArea">
                         <div class="empty-chat"><i class="fas fa-inbox fa-3x"></i><p>No conversation selected</p></div>
                     </div>
                     <div class="chat-input-area" id="chatInputArea" style="display: none;">
-                        <input type="text" id="chatMessageInput" placeholder="Type your reply... (Customer will see as 'Sohrab Industries Support')">
+                        <input type="text" id="chatMessageInput" placeholder="Type your reply... (Sent as 'Sohrab Industries Support Team')">
                         <button class="send-btn" onclick="sendAdminReply()"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
@@ -289,9 +327,22 @@
         </div>
     </div>
 
+    <!-- Custom Modal Popup -->
+    <div id="customModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <h3 id="modalTitle">Confirm Action</h3>
+            <p id="modalMessage">Are you sure?</p>
+            <div id="modalInputContainer" style="display:none;"></div>
+            <div class="modal-buttons">
+                <button id="modalConfirmBtn" class="modal-btn modal-btn-confirm">Confirm</button>
+                <button id="modalCancelBtn" class="modal-btn modal-btn-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ========== ORIGINAL JAVASCRIPT CODE (FULLY PRESERVED) ==========
+        // ========== ORIGINAL JAVASCRIPT CODE (PRESERVED) ==========
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -303,12 +354,45 @@
             
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            let allInvestors = [], allBuyers = [], allOrders = [];
+            let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [];
+            let blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '[]');
 
-            function showNotification(msg, isError) { 
+            // Custom Modal Functions
+            let modalResolve = null;
+            function showModal(title, message, inputPlaceholder = null) {
+                return new Promise((resolve) => {
+                    modalResolve = resolve;
+                    const modal = document.getElementById('customModal');
+                    document.getElementById('modalTitle').innerText = title;
+                    document.getElementById('modalMessage').innerHTML = message;
+                    const inputContainer = document.getElementById('modalInputContainer');
+                    if (inputPlaceholder) {
+                        inputContainer.style.display = 'block';
+                        inputContainer.innerHTML = `<input type="text" id="modalInput" placeholder="${inputPlaceholder}" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">`;
+                    } else {
+                        inputContainer.style.display = 'none';
+                    }
+                    modal.classList.add('active');
+                });
+            }
+            
+            function closeModal(result, inputValue = null) {
+                const modal = document.getElementById('customModal');
+                modal.classList.remove('active');
+                if (modalResolve) modalResolve({ confirmed: result, value: inputValue });
+                modalResolve = null;
+            }
+            
+            document.getElementById('modalConfirmBtn').onclick = () => {
+                const input = document.getElementById('modalInput');
+                closeModal(true, input ? input.value : null);
+            };
+            document.getElementById('modalCancelBtn').onclick = () => closeModal(false);
+            
+            function showNotification(msg, type = 'success') { 
                 const t = document.createElement('div'); 
-                t.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`; 
-                t.innerHTML = isError ? `❌ ${msg}` : `✅ ${msg}`; 
+                t.className = `toast-notification toast-${type}`; 
+                t.innerHTML = type === 'success' ? `✅ ${msg}` : (type === 'error' ? `❌ ${msg}` : `ℹ️ ${msg}`); 
                 document.body.appendChild(t); 
                 setTimeout(() => t.remove(), 3000); 
             }
@@ -330,7 +414,7 @@
                 }
                 const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
                 if (!adminEmails.includes(user.email)) { 
-                    showNotification('Unauthorized', true); 
+                    showNotification('Unauthorized', 'error'); 
                     window.location.href = 'index.html'; 
                     return null; 
                 }
@@ -399,24 +483,30 @@
             window.addNewInvestor = async function() {
                 const name = document.getElementById('newInvestorName').value.trim();
                 const email = document.getElementById('newInvestorEmail').value.trim();
-                const phone = document.getElementById('newInvestorPhone').value;
-                const city = document.getElementById('newInvestorCity').value;
-                const investment = parseFloat(document.getElementById('newInvestorInvestment').value) || 0;
-                if(!name || !email){ showNotification('Name and email required', true); return; }
+                if(!name || !email){ showNotification('Name and email required', 'error'); return; }
                 const { error } = await supabaseClient.from('investors').insert([{ 
-                    id: crypto.randomUUID(), full_name: name, email, phone, city, 
-                    total_investment: investment, total_profit: 0, available_balance: investment,
+                    id: crypto.randomUUID(), full_name: name, email, phone: document.getElementById('newInvestorPhone').value, city: document.getElementById('newInvestorCity').value,
+                    total_investment: parseFloat(document.getElementById('newInvestorInvestment').value)||0, total_profit: 0, available_balance: parseFloat(document.getElementById('newInvestorInvestment').value)||0,
                     created_at: new Date().toISOString() 
                 }]);
-                if(error){ showNotification(error.message, true); return; }
-                showNotification('Investor added!', false);
+                if(error){ showNotification(error.message, 'error'); return; }
+                showNotification('Investor added!', 'success');
                 document.getElementById('newInvestorName').value = '';
                 document.getElementById('newInvestorEmail').value = '';
-                document.getElementById('newInvestorInvestment').value = '0';
                 await loadInvestors(); await loadStats();
             };
 
-            window.deleteInvestor = async function(id){ if(confirm('Delete this investor?')){ await supabaseClient.from('investments').delete().eq('investor_id',id); await supabaseClient.from('profits').delete().eq('investor_id',id); await supabaseClient.from('withdrawals').delete().eq('investor_id',id); await supabaseClient.from('investors').delete().eq('id',id); showNotification('Investor deleted', false); await loadInvestors(); await loadStats(); } };
+            window.deleteInvestor = async function(id){ 
+                const result = await showModal('Delete Investor', 'Are you sure you want to delete this investor? This will also delete all their investments, profits and withdrawals.');
+                if(result.confirmed){
+                    await supabaseClient.from('investments').delete().eq('investor_id',id); 
+                    await supabaseClient.from('profits').delete().eq('investor_id',id); 
+                    await supabaseClient.from('withdrawals').delete().eq('investor_id',id); 
+                    await supabaseClient.from('investors').delete().eq('id',id); 
+                    showNotification('Investor deleted', 'success'); 
+                    await loadInvestors(); await loadStats(); 
+                }
+            };
 
             async function loadBuyers() {
                 const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
@@ -436,19 +526,24 @@
             window.addNewBuyer = async function() {
                 const name = document.getElementById('newBuyerName').value.trim();
                 const email = document.getElementById('newBuyerEmail').value.trim();
-                const phone = document.getElementById('newBuyerPhone').value;
-                const address = document.getElementById('newBuyerAddress').value;
-                if(!name || !email){ showNotification('Name and email required', true); return; }
-                const { error } = await supabaseClient.from('buyers').insert([{ id: crypto.randomUUID(), full_name: name, email, phone, address, created_at: new Date().toISOString() }]);
-                if(error){ showNotification(error.message, true); return; }
-                showNotification('Buyer added!', false);
+                if(!name || !email){ showNotification('Name and email required', 'error'); return; }
+                const { error } = await supabaseClient.from('buyers').insert([{ id: crypto.randomUUID(), full_name: name, email, phone: document.getElementById('newBuyerPhone').value, address: document.getElementById('newBuyerAddress').value, created_at: new Date().toISOString() }]);
+                if(error){ showNotification(error.message, 'error'); return; }
+                showNotification('Buyer added!', 'success');
                 document.getElementById('newBuyerName').value = '';
                 document.getElementById('newBuyerEmail').value = '';
                 document.getElementById('newBuyerAddress').value = '';
                 await loadBuyers(); await loadStats();
             };
 
-            window.deleteBuyer = async function(id){ if(confirm('Delete this buyer?')){ await supabaseClient.from('buyers').delete().eq('id',id); showNotification('Buyer deleted', false); await loadBuyers(); await loadStats(); } };
+            window.deleteBuyer = async function(id){ 
+                const result = await showModal('Delete Buyer', 'Are you sure you want to delete this buyer?');
+                if(result.confirmed){
+                    await supabaseClient.from('buyers').delete().eq('id',id); 
+                    showNotification('Buyer deleted', 'success'); 
+                    await loadBuyers(); await loadStats(); 
+                }
+            };
 
             async function loadProducts() {
                 const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
@@ -466,47 +561,47 @@
 
             window.addNewProduct = async function() {
                 const name = document.getElementById('newProductName').value.trim();
-                const category = document.getElementById('newProductCategory').value;
-                const wattage = document.getElementById('newProductWattage').value;
                 const price = parseFloat(document.getElementById('newProductPrice').value);
-                const stock = parseInt(document.getElementById('newProductStock').value) || 0;
-                if(!name || !category || !price){ showNotification('Name, category and price required', true); return; }
-                const { error } = await supabaseClient.from('products').insert([{ name, category, wattage, price, stock_quantity: stock, is_active: true, created_at: new Date().toISOString() }]);
-                if(error){ showNotification(error.message, true); return; }
-                showNotification('Product added!', false);
-                document.getElementById('newProductName').value = '';
-                document.getElementById('newProductPrice').value = '';
+                if(!name || !price){ showNotification('Name and price required', 'error'); return; }
+                const { error } = await supabaseClient.from('products').insert([{ name, category: document.getElementById('newProductCategory').value, wattage: document.getElementById('newProductWattage').value, price, stock_quantity: parseInt(document.getElementById('newProductStock').value)||0, is_active: true, created_at: new Date().toISOString() }]);
+                if(error){ showNotification(error.message, 'error'); return; }
+                showNotification('Product added!', 'success');
                 await loadProducts(); await loadStats();
             };
 
-            window.deleteProduct = async function(id){ if(confirm('Delete this product?')){ await supabaseClient.from('products').update({is_active:false}).eq('id',id); showNotification('Product deleted', false); await loadProducts(); await loadStats(); } };
+            window.deleteProduct = async function(id){ 
+                const result = await showModal('Delete Product', 'Are you sure you want to delete this product?');
+                if(result.confirmed){
+                    await supabaseClient.from('products').update({is_active:false}).eq('id',id); 
+                    showNotification('Product deleted', 'success'); 
+                    await loadProducts(); await loadStats(); 
+                }
+            };
 
             window.addInvestment = async function() { 
-                const investorId = document.getElementById('investorSelect').value, amount = parseFloat(document.getElementById('invAmount').value), date = document.getElementById('invDate').value, paymentMethod = document.getElementById('invPaymentMethod').value, transactionId = document.getElementById('invTransactionId').value; 
-                if(!investorId || !amount || !date){ showNotification('Fill all fields',true); return; } 
-                const { error } = await supabaseClient.from('investments').insert([{ investor_id: investorId, amount, investment_date: date, payment_method: paymentMethod, transaction_id: transactionId, status: 'active' }]); 
-                if(error){ showNotification(error.message,true); return; } 
+                const investorId = document.getElementById('investorSelect').value, amount = parseFloat(document.getElementById('invAmount').value), date = document.getElementById('invDate').value; 
+                if(!investorId || !amount || !date){ showNotification('Fill all fields', 'error'); return; } 
+                const { error } = await supabaseClient.from('investments').insert([{ investor_id: investorId, amount, investment_date: date, payment_method: document.getElementById('invPaymentMethod').value, transaction_id: document.getElementById('invTransactionId').value, status: 'active' }]); 
+                if(error){ showNotification(error.message, 'error'); return; } 
                 const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id',investorId).eq('status','active'); 
                 const totalInvestment = investments?.reduce((s,i)=>s+(i.amount||0),0)||0; 
                 const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); 
-                const newBalance = (investor?.available_balance||0) + amount; 
-                await supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id',investorId); 
-                showNotification('Investment added!',false); 
+                await supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: (investor?.available_balance||0) + amount }).eq('id',investorId); 
+                showNotification('Investment added!', 'success'); 
                 document.getElementById('invAmount').value = ''; 
                 await loadInvestmentHistory(); await loadInvestors(); await loadStats(); 
             };
 
             window.addProfit = async function() { 
                 const investorId = document.getElementById('profitInvestorSelect').value, amount = parseFloat(document.getElementById('profitAmount').value), month = document.getElementById('profitMonth').value, percentage = parseFloat(document.getElementById('profitPercentage').value) || 10; 
-                if(!investorId || !amount || !month){ showNotification('Fill all fields',true); return; } 
+                if(!investorId || !amount || !month){ showNotification('Fill all fields', 'error'); return; } 
                 const { error } = await supabaseClient.from('profits').insert([{ investor_id: investorId, amount, month: month + '-01', profit_percentage: percentage, paid: true, paid_date: new Date().toISOString().split('T')[0] }]); 
-                if(error){ showNotification(error.message,true); return; } 
+                if(error){ showNotification(error.message, 'error'); return; } 
                 const { data: profits } = await supabaseClient.from('profits').select('amount').eq('investor_id',investorId).eq('paid',true); 
                 const totalProfit = profits?.reduce((s,p)=>s+(p.amount||0),0)||0; 
                 const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); 
-                const newBalance = (investor?.available_balance||0) + amount; 
-                await supabaseClient.from('investors').update({ total_profit: totalProfit, available_balance: newBalance }).eq('id',investorId); 
-                showNotification('Profit added!',false); 
+                await supabaseClient.from('investors').update({ total_profit: totalProfit, available_balance: (investor?.available_balance||0) + amount }).eq('id',investorId); 
+                showNotification('Profit added!', 'success'); 
                 document.getElementById('profitAmount').value = ''; 
                 await loadProfitHistory(); await loadInvestors(); await loadStats(); 
             };
@@ -557,19 +652,72 @@
             }
             
             async function loadWithdrawals() { 
-                const { data } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('request_date',{ascending:false}); 
+                const { data } = await supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false });
+                allWithdrawals = data || [];
                 const withdrawalsList = document.getElementById('withdrawalsList');
-                if (withdrawalsList) {
-                    withdrawalsList.innerHTML = (data||[]).map(w=>`<tr>
-                        <td>${w.investors?.full_name||'-'}</td>
-                        <td>Rs.${(w.amount||0).toLocaleString()}</td>
-                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                        <td>${w.payment_method||'-'}</td>
-                        <td><span class="status-badge status-${w.status}">${w.status}</span></td>
-                        <td class="action-buttons">${w.status==='pending'?`<button onclick="approveWithdrawal('${w.id}',${w.amount},'${w.investor_id}')" class="btn-success">Approve</button> <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>`:'-'}</td>
-                    </tr>`).join('');
+                if (!withdrawalsList) return;
+                
+                if (!allWithdrawals || allWithdrawals.length === 0) {
+                    withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state" style="text-align:center;padding:40px;">No withdrawal requests found</td></tr>';
+                    return;
                 }
+                
+                withdrawalsList.innerHTML = allWithdrawals.map(w => `
+                    <tr>
+                        <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
+                        <td><small>${w.investors?.email || '-'}</small></td>
+                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                        <td>${w.payment_method || '-'}</td>
+                        <td><small>${w.account_details || '-'}</small></td>
+                        <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
+                        <td class="action-buttons">
+                            ${w.status === 'pending' ? `
+                                <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button>
+                                <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>
+                            ` : `<span class="status-badge status-active">Processed</span>`}
+                        </td>
+                    </tr>
+                `).join('');
             }
+            
+            window.searchWithdrawals = function() {
+                const term = document.getElementById('withdrawalSearch').value.toLowerCase();
+                const filtered = allWithdrawals.filter(w => 
+                    w.investors?.full_name?.toLowerCase().includes(term) || 
+                    w.investors?.email?.toLowerCase().includes(term)
+                );
+                const withdrawalsList = document.getElementById('withdrawalsList');
+                if (!withdrawalsList) return;
+                
+                if (filtered.length === 0) {
+                    withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state" style="text-align:center;padding:40px;">No withdrawal requests found</td></tr>';
+                    return;
+                }
+                
+                withdrawalsList.innerHTML = filtered.map(w => `
+                    <tr>
+                        <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
+                        <td><small>${w.investors?.email || '-'}</small></td>
+                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                        <td>${w.payment_method || '-'}</td>
+                        <td><small>${w.account_details || '-'}</small></td>
+                        <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
+                        <td class="action-buttons">
+                            ${w.status === 'pending' ? `
+                                <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button>
+                                <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>
+                            ` : `<span class="status-badge status-active">Processed</span>`}
+                        </td>
+                    </tr>
+                `).join('');
+            };
+            
+            window.resetWithdrawalSearch = function() {
+                document.getElementById('withdrawalSearch').value = '';
+                loadWithdrawals();
+            };
             
             async function loadOrders() { 
                 const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
@@ -626,24 +774,25 @@
             window.updateOrderStatus = async function(id, status) { 
                 const { error } = await supabaseClient.from('orders').update({ status: status }).eq('id', id); 
                 if (error) { 
-                    showNotification(error.message, true); 
+                    showNotification(error.message, 'error'); 
                 } else { 
-                    showNotification(`Order status updated to ${status}!`, false); 
+                    showNotification(`Order status updated to ${status}!`, 'success'); 
                     await loadOrders(); 
                 } 
             };
             
             window.deleteOrder = async function(id) { 
-                if (confirm('Delete this order? This action cannot be undone.')) { 
+                const result = await showModal('Delete Order', 'Are you sure you want to delete this order? This action cannot be undone.');
+                if(result.confirmed){
                     const { error } = await supabaseClient.from('orders').delete().eq('id', id); 
                     if (error) { 
-                        showNotification(error.message, true); 
+                        showNotification(error.message, 'error'); 
                     } else { 
-                        showNotification('Order deleted successfully!', false); 
+                        showNotification('Order deleted successfully!', 'success'); 
                         await loadOrders(); 
                         await loadStats(); 
                     } 
-                } 
+                }
             };
             
             window.viewOrderDetails = async function(id) {
@@ -659,8 +808,17 @@
                     } catch(e) {
                         productsHtml = order.notes || '-';
                     }
-                    
-                    alert(`📦 ORDER DETAILS\n\nOrder ID: ${order.id}\nCustomer: ${order.user_type}\nTotal Amount: Rs. ${order.total_amount}\nOrder Date: ${new Date(order.order_date).toLocaleDateString()}\nPayment Method: ${order.payment_method}\nPayment Status: ${order.payment_status}\nOrder Status: ${order.status}\nDelivery Address: ${order.delivery_address}\n\nProducts:\n${productsHtml}`);
+                    await showModal('Order Details', `
+                        <strong>Order ID:</strong> ${order.id}<br>
+                        <strong>Customer:</strong> ${order.user_type}<br>
+                        <strong>Total Amount:</strong> Rs. ${order.total_amount}<br>
+                        <strong>Order Date:</strong> ${new Date(order.order_date).toLocaleDateString()}<br>
+                        <strong>Payment Method:</strong> ${order.payment_method}<br>
+                        <strong>Payment Status:</strong> ${order.payment_status}<br>
+                        <strong>Order Status:</strong> ${order.status}<br>
+                        <strong>Delivery Address:</strong> ${order.delivery_address}<br>
+                        <strong>Products:</strong><br>${productsHtml.replace(/\n/g, '<br>')}
+                    `);
                 }
             };
             
@@ -727,63 +885,74 @@
             }
 
             window.approveInvestment = async function(id, amount, investorId) { 
-                if (!confirm(`Approve investment of Rs. ${amount.toLocaleString()}?`)) return; 
-                await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
-                const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id', investorId).eq('status', 'active'); 
-                const totalInvestment = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0; 
-                const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id', investorId).single(); 
-                const newBalance = (investor?.available_balance || 0) + amount; 
-                await supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id', investorId); 
-                showNotification('Investment approved!', false); 
-                await loadInvestmentRequests(); 
-                await loadInvestmentHistory(); 
-                await loadInvestors(); 
-                await loadStats(); 
+                const result = await showModal('Approve Investment', `Approve investment of Rs. ${amount.toLocaleString()}?`);
+                if(result.confirmed){
+                    await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
+                    const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id', investorId).eq('status', 'active'); 
+                    const totalInvestment = investments?.reduce((s, i) => s + (i.amount || 0), 0) || 0; 
+                    const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id', investorId).single(); 
+                    const newBalance = (investor?.available_balance || 0) + amount; 
+                    await supabaseClient.from('investors').update({ total_investment: totalInvestment, available_balance: newBalance }).eq('id', investorId); 
+                    showNotification('Investment approved!', 'success'); 
+                    await loadInvestmentRequests(); 
+                    await loadInvestmentHistory(); 
+                    await loadInvestors(); 
+                    await loadStats(); 
+                }
             };
             
             window.rejectInvestment = async function(id) { 
-                if (!confirm('Reject this investment request?')) return; 
-                await supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id); 
-                showNotification('Investment rejected', false); 
-                await loadInvestmentRequests(); 
-                await loadStats(); 
+                const result = await showModal('Reject Investment', 'Are you sure you want to reject this investment request?');
+                if(result.confirmed){
+                    await supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id); 
+                    showNotification('Investment rejected', 'info'); 
+                    await loadInvestmentRequests(); 
+                    await loadStats(); 
+                }
             };
             
-            window.approveWithdrawal = async function(id,amount,investorId){ 
-                if(!confirm('Approve withdrawal?'))return; 
-                await supabaseClient.from('withdrawals').update({status:'approved'}).eq('id',id); 
-                const{data:i}=await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); 
-                if(i) await supabaseClient.from('investors').update({available_balance:(i.available_balance||0)-amount}).eq('id',investorId); 
-                showNotification('Approved!',false); 
-                await loadWithdrawals(); 
-                await loadInvestors(); 
-                await loadStats(); 
+            window.approveWithdrawal = async function(id, amount, investorId){ 
+                const result = await showModal('Approve Withdrawal', `Approve withdrawal of Rs. ${amount.toLocaleString()}?`);
+                if(result.confirmed){
+                    await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
+                    const{data:i}=await supabaseClient.from('investors').select('available_balance').eq('id',investorId).single(); 
+                    if(i) await supabaseClient.from('investors').update({available_balance:(i.available_balance||0)-amount}).eq('id',investorId); 
+                    showNotification('Withdrawal approved!', 'success'); 
+                    await loadWithdrawals(); 
+                    await loadInvestors(); 
+                    await loadStats(); 
+                }
             };
             
             window.rejectWithdrawal = async function(id){ 
-                await supabaseClient.from('withdrawals').update({status:'rejected'}).eq('id',id); 
-                showNotification('Rejected',false); 
-                await loadWithdrawals(); 
+                const result = await showModal('Reject Withdrawal', 'Are you sure you want to reject this withdrawal request?');
+                if(result.confirmed){
+                    await supabaseClient.from('withdrawals').update({ status: 'rejected' }).eq('id', id); 
+                    showNotification('Withdrawal rejected', 'info'); 
+                    await loadWithdrawals(); 
+                }
             };
             
             window.deleteInvestment = async function(id){ 
-                if(confirm('Delete this investment?')){ 
+                const result = await showModal('Delete Investment', 'Are you sure you want to delete this investment?');
+                if(result.confirmed){
                     await supabaseClient.from('investments').delete().eq('id',id); 
                     await loadInvestmentHistory(); 
                     await loadInvestors(); 
                     await loadStats(); 
-                    showNotification('Deleted',false); 
-                } 
+                    showNotification('Deleted', 'success'); 
+                }
             };
             
             window.deleteProfit = async function(id){ 
-                if(confirm('Delete this profit?')){ 
+                const result = await showModal('Delete Profit', 'Are you sure you want to delete this profit record?');
+                if(result.confirmed){
                     await supabaseClient.from('profits').delete().eq('id',id); 
                     await loadProfitHistory(); 
                     await loadInvestors(); 
                     await loadStats(); 
-                    showNotification('Deleted',false); 
-                } 
+                    showNotification('Deleted', 'success'); 
+                }
             };
 
             window.searchInvestors = function() { 
@@ -841,9 +1010,10 @@
                 window.location.href = 'index.html'; 
             };
             
-            // ========== CHAT FUNCTIONALITY (ADDED) ==========
+            // ========== CHAT FUNCTIONALITY WITH FULL CONTROL ==========
             let currentChatUser = null;
             let currentChatType = null;
+            let currentChatName = null;
             
             window.startChatWith = function(id, type, name) {
                 showSection('chat');
@@ -855,10 +1025,12 @@
                 const contactsMap = new Map();
                 
                 allBuyers.forEach(b => {
-                    contactsMap.set(`buyer_${b.id}`, { id: b.id, type: 'buyer', name: b.full_name, lastMsg: 'Click to message', unread: 0 });
+                    const isBlocked = blockedUsers.includes(`buyer_${b.id}`);
+                    contactsMap.set(`buyer_${b.id}`, { id: b.id, type: 'buyer', name: b.full_name, lastMsg: 'Click to message', unread: 0, blocked: isBlocked });
                 });
                 allInvestors.forEach(i => {
-                    contactsMap.set(`investor_${i.id}`, { id: i.id, type: 'investor', name: i.full_name, lastMsg: 'Click to message', unread: 0 });
+                    const isBlocked = blockedUsers.includes(`investor_${i.id}`);
+                    contactsMap.set(`investor_${i.id}`, { id: i.id, type: 'investor', name: i.full_name, lastMsg: 'Click to message', unread: 0, blocked: isBlocked });
                 });
                 
                 if(messages && messages.length > 0) {
@@ -870,7 +1042,7 @@
                             if(contactsMap.has(key)) {
                                 let contact = contactsMap.get(key);
                                 contact.lastMsg = msg.message?.substring(0, 40) || '';
-                                if(msg.receiver_type === 'admin' && !msg.is_admin_read) contact.unread += 1;
+                                if(msg.receiver_type === 'admin' && !msg.is_admin_read && !contact.blocked) contact.unread += 1;
                                 contactsMap.set(key, contact);
                             }
                         }
@@ -896,7 +1068,7 @@
                     <div class="chat-user-item ${currentChatUser === contact.id && currentChatType === contact.type ? 'active' : ''}" onclick="selectChatContact('${contact.id}', '${contact.type}', '${contact.name.replace(/'/g, "\\'")}')">
                         <div class="user-avatar">${contact.name.charAt(0).toUpperCase()}</div>
                         <div class="user-info">
-                            <div class="user-name">${contact.name} <span class="user-type">(${contact.type === 'buyer' ? 'Customer' : 'Investor'})</span></div>
+                            <div class="user-name">${contact.name} <span class="user-type">(${contact.type === 'buyer' ? 'Customer' : 'Investor'})</span>${contact.blocked ? '<span class="blocked-badge">Blocked</span>' : ''}</div>
                             <div class="user-last-msg">${contact.lastMsg}</div>
                         </div>
                         ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
@@ -912,7 +1084,7 @@
                             <div class="chat-user-item" onclick="selectChatContact('${contact.id}', '${contact.type}', '${contact.name.replace(/'/g, "\\'")}')">
                                 <div class="user-avatar">${contact.name.charAt(0).toUpperCase()}</div>
                                 <div class="user-info">
-                                    <div class="user-name">${contact.name} <span class="user-type">(${contact.type === 'buyer' ? 'Customer' : 'Investor'})</span></div>
+                                    <div class="user-name">${contact.name} <span class="user-type">(${contact.type === 'buyer' ? 'Customer' : 'Investor'})</span>${contact.blocked ? '<span class="blocked-badge">Blocked</span>' : ''}</div>
                                     <div class="user-last-msg">${contact.lastMsg}</div>
                                 </div>
                                 ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
@@ -923,15 +1095,31 @@
             }
             
             window.selectChatContact = async function(id, type, name) {
+                const isBlocked = blockedUsers.includes(`${type}_${id}`);
                 currentChatUser = id;
                 currentChatType = type;
+                currentChatName = name;
                 
                 document.getElementById('chatHeaderPlaceholder').innerHTML = `
-                    <div class="user-avatar" style="width:45px;height:45px;">${name.charAt(0).toUpperCase()}</div>
-                    <div><div class="user-name" style="font-weight:700;">${name}</div><div class="user-type" style="font-size:0.8rem;color:#666;">${type === 'buyer' ? 'Customer' : 'Investor'}</div></div>
+                    <div class="chat-user-details">
+                        <div class="user-avatar" style="width:45px;height:45px;">${name.charAt(0).toUpperCase()}</div>
+                        <div><div class="user-name" style="font-weight:700;">${name}</div><div class="user-type" style="font-size:0.8rem;color:#666;">${type === 'buyer' ? 'Customer' : 'Investor'}</div></div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="chat-action-btn" onclick="editLastMessage()" title="Edit Last Message"><i class="fas fa-edit"></i></button>
+                        <button class="chat-action-btn" onclick="deleteLastMessage()" title="Delete Last Message"><i class="fas fa-trash"></i></button>
+                        <button class="chat-action-btn" onclick="blockUser()" title="${isBlocked ? 'Unblock User' : 'Block User'}"><i class="fas ${isBlocked ? 'fa-unlock' : 'fa-ban'}"></i></button>
+                        <button class="chat-action-btn" onclick="clearConversation()" title="Clear All Messages"><i class="fas fa-trash-alt"></i></button>
+                    </div>
                 `;
-                document.getElementById('chatInputArea').style.display = 'flex';
-                await loadConversation(id, type);
+                
+                if(isBlocked) {
+                    document.getElementById('chatInputArea').style.display = 'none';
+                    document.getElementById('chatMessagesArea').innerHTML = '<div class="blocked-message"><i class="fas fa-ban"></i> You have blocked this user. Unblock to send messages.</div>';
+                } else {
+                    document.getElementById('chatInputArea').style.display = 'flex';
+                    await loadConversation(id, type);
+                }
                 
                 await supabaseClient.from('contact_messages')
                     .update({ is_admin_read: true })
@@ -968,31 +1156,127 @@
                     return; 
                 }
                 
-                area.innerHTML = uniqueMsgs.map(msg => `
-                    <div class="message-bubble ${msg.sender_type === 'admin' ? 'message-sent' : 'message-received'}">
+                area.innerHTML = uniqueMsgs.map((msg, index) => `
+                    <div class="message-bubble ${msg.sender_type === 'admin' ? 'message-sent' : 'message-received'}" data-msg-id="${msg.id}" data-msg-index="${index}">
                         ${escapeHtml(msg.message)}
                         <div class="message-time">${new Date(msg.created_at).toLocaleString()}</div>
+                        ${msg.sender_type === 'admin' ? `
+                            <div class="message-actions">
+                                <button class="message-action-btn" onclick="editMessage('${msg.id}', '${escapeHtml(msg.message).replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i></button>
+                                <button class="message-action-btn" onclick="deleteMessage('${msg.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        ` : ''}
                     </div>
                 `).join('');
                 area.scrollTop = area.scrollHeight;
             }
             
-            function escapeHtml(str) {
-                if(!str) return '';
-                return str.replace(/[&<>]/g, function(m) {
-                    if(m === '&') return '&amp;';
-                    if(m === '<') return '&lt;';
-                    if(m === '>') return '&gt;';
-                    return m;
-                });
-            }
+            window.editMessage = async function(msgId, oldMessage) {
+                const result = await showModal('Edit Message', 'Edit your message:', 'Edit message...');
+                if(result.confirmed && result.value && result.value.trim()) {
+                    const { error } = await supabaseClient.from('contact_messages')
+                        .update({ message: result.value.trim(), updated_at: new Date().toISOString() })
+                        .eq('id', msgId);
+                    if(error) { showNotification('Error: ' + error.message, 'error'); return; }
+                    showNotification('Message updated!', 'success');
+                    await loadConversation(currentChatUser, currentChatType);
+                }
+            };
+            
+            window.deleteMessage = async function(msgId) {
+                const result = await showModal('Delete Message', 'Are you sure you want to delete this message?');
+                if(result.confirmed) {
+                    const { error } = await supabaseClient.from('contact_messages').delete().eq('id', msgId);
+                    if(error) { showNotification('Error: ' + error.message, 'error'); return; }
+                    showNotification('Message deleted!', 'success');
+                    await loadConversation(currentChatUser, currentChatType);
+                    await loadChatUsers();
+                }
+            };
+            
+            window.editLastMessage = async function() {
+                const { data: messages } = await supabaseClient.from('contact_messages')
+                    .select('*')
+                    .or(`buyer_id.eq.${currentChatUser},user_id.eq.${currentChatUser}`)
+                    .eq('sender_type', 'admin')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+                
+                if(!messages || messages.length === 0) {
+                    showNotification('No messages to edit', 'error');
+                    return;
+                }
+                await editMessage(messages[0].id, messages[0].message);
+            };
+            
+            window.deleteLastMessage = async function() {
+                const { data: messages } = await supabaseClient.from('contact_messages')
+                    .select('*')
+                    .or(`buyer_id.eq.${currentChatUser},user_id.eq.${currentChatUser}`)
+                    .eq('sender_type', 'admin')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+                
+                if(!messages || messages.length === 0) {
+                    showNotification('No messages to delete', 'error');
+                    return;
+                }
+                await deleteMessage(messages[0].id);
+            };
+            
+            window.blockUser = async function() {
+                const key = `${currentChatType}_${currentChatUser}`;
+                const isBlocked = blockedUsers.includes(key);
+                
+                const result = await showModal(isBlocked ? 'Unblock User' : 'Block User', 
+                    isBlocked ? `Unblock ${currentChatName}? They will be able to message you again.` : 
+                    `Block ${currentChatName}? They will not be able to send you messages.`);
+                
+                if(result.confirmed) {
+                    if(isBlocked) {
+                        blockedUsers = blockedUsers.filter(k => k !== key);
+                        showNotification(`${currentChatName} unblocked`, 'success');
+                    } else {
+                        blockedUsers.push(key);
+                        showNotification(`${currentChatName} blocked`, 'info');
+                    }
+                    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+                    await loadChatUsers();
+                    if(isBlocked) {
+                        document.getElementById('chatInputArea').style.display = 'flex';
+                        await loadConversation(currentChatUser, currentChatType);
+                    } else {
+                        document.getElementById('chatInputArea').style.display = 'none';
+                        document.getElementById('chatMessagesArea').innerHTML = '<div class="blocked-message"><i class="fas fa-ban"></i> You have blocked this user. Unblock to send messages.</div>';
+                    }
+                }
+            };
+            
+            window.clearConversation = async function() {
+                const result = await showModal('Clear Conversation', `Delete ALL messages with ${currentChatName}? This cannot be undone.`);
+                if(result.confirmed) {
+                    const { error } = await supabaseClient.from('contact_messages')
+                        .delete()
+                        .or(`buyer_id.eq.${currentChatUser},user_id.eq.${currentChatUser}`);
+                    if(error) { showNotification('Error: ' + error.message, 'error'); return; }
+                    showNotification('Conversation cleared!', 'success');
+                    await loadConversation(currentChatUser, currentChatType);
+                    await loadChatUsers();
+                }
+            };
             
             window.sendAdminReply = async function() {
                 const input = document.getElementById('chatMessageInput');
                 const message = input.value.trim();
                 if(!message || !currentChatUser) { 
-                    showNotification('Select a contact first', true); 
+                    showNotification('Select a contact first', 'error'); 
                     return; 
+                }
+                
+                const isBlocked = blockedUsers.includes(`${currentChatType}_${currentChatUser}`);
+                if(isBlocked) {
+                    showNotification('This user is blocked. Unblock to send messages.', 'error');
+                    return;
                 }
                 
                 const newMsg = {
@@ -1010,21 +1294,31 @@
                 
                 const { error } = await supabaseClient.from('contact_messages').insert([newMsg]);
                 if(error) { 
-                    showNotification('Error: ' + error.message, true);
+                    showNotification('Error: ' + error.message, 'error');
                 } else {
-                    showNotification(`Reply sent to ${currentChatType === 'buyer' ? 'Customer' : 'Investor'}`, false);
+                    showNotification(`Message sent to ${currentChatName} from Sohrab Industries Support Team`, 'success');
                 }
                 input.value = '';
                 await loadConversation(currentChatUser, currentChatType);
                 await loadChatUsers();
             };
             
+            function escapeHtml(str) {
+                if(!str) return '';
+                return str.replace(/[&<>]/g, function(m) {
+                    if(m === '&') return '&amp;';
+                    if(m === '<') return '&lt;';
+                    if(m === '>') return '&gt;';
+                    return m;
+                });
+            }
+            
             function setupChatRealtime() {
                 supabaseClient.channel('public:contact_messages')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, payload => {
                         if(document.getElementById('chatSection')?.classList.contains('active')) {
                             loadChatUsers();
-                            if(currentChatUser && (payload.new.buyer_id === currentChatUser || payload.new.user_id === currentChatUser)) {
+                            if(currentChatUser && (payload.new?.buyer_id === currentChatUser || payload.new?.user_id === currentChatUser)) {
                                 loadConversation(currentChatUser, currentChatType);
                             }
                         } else {
