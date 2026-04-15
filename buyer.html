@@ -499,7 +499,6 @@
             border-left: 4px solid #E8B13C;
         }
         
-        /* Chat bubble styling for support replies */
         .admin-reply {
             background: rgba(232,177,60,0.15);
             border-left: 3px solid #E8B13C;
@@ -582,7 +581,7 @@
             </div>
         </div>
 
-        <!-- Contact Support Tab with Full Chat System -->
+        <!-- Contact Support Tab -->
         <div id="contactTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-headset"></i> Contact Sohrab Industries Support</h2>
             <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 25px;">
@@ -593,7 +592,7 @@
                     <button id="sendContactBtn" class="checkout-btn" style="background: linear-gradient(135deg, #E8B13C, #c99b2e); color:#0a1f1a;"><i class="fas fa-paper-plane"></i> Send to Support</button>
                 </div>
                 <div class="form-card">
-                    <h3 style="color:#E8B13C; margin-bottom: 15px;"><i class="fas fa-history"></i> Your Conversations with Sohrab Industries</h3>
+                    <h3 style="color:#E8B13C; margin-bottom: 15px;"><i class="fas fa-history"></i> Your Conversations</h3>
                     <div id="contactMessagesList" style="max-height: 400px; overflow-y: auto;">
                         <div class="empty-state">No messages yet. Send a message to support.</div>
                     </div>
@@ -632,7 +631,6 @@
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
             let currentBuyerId = null;
-            let currentBuyerName = '';
             let cart = [];
             let allProducts = [];
             let currentCategory = 'all';
@@ -659,12 +657,9 @@
 
             async function ensureBuyerExists(user) {
                 const { data: existing } = await supabaseClient.from('buyers').select('*').eq('id', user.id);
-                if (existing && existing.length > 0) {
-                    currentBuyerName = existing[0].full_name;
-                    return existing[0];
-                }
+                if (existing && existing.length > 0) return existing[0];
+                
                 const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
-                currentBuyerName = fullName;
                 await supabaseClient.from('buyers').insert([{
                     id: user.id, email: user.email, full_name: fullName, phone: '', address: '',
                     total_orders: 0, total_spent: 0, created_at: new Date().toISOString()
@@ -784,7 +779,6 @@
                 const { data } = await supabaseClient.from('buyers').select('*').eq('id', currentBuyerId);
                 if (data && data[0]) {
                     const b = data[0];
-                    currentBuyerName = b.full_name;
                     document.getElementById('profileName').value = b.full_name || '';
                     document.getElementById('profileEmail').value = b.email || '';
                     document.getElementById('profilePhone').value = b.phone || '';
@@ -805,7 +799,7 @@
                 }
             };
             
-            // ========== UPDATED CHAT SYSTEM (No Email, Direct to Admin) ==========
+            // ========== CHAT SYSTEM (Direct to Admin - No Email) ==========
             async function loadContactMessages() {
                 try {
                     const { data, error } = await supabaseClient
@@ -823,7 +817,7 @@
                     container.innerHTML = data.map(msg => `
                         <div class="contact-message-card">
                             <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
-                                <strong style="color:#E8B13C;">${msg.subject || 'General Inquiry'}</strong>
+                                <strong style="color:#E8B13C;">${escapeHtml(msg.subject || 'General Inquiry')}</strong>
                                 <small>${new Date(msg.created_at).toLocaleString()}</small>
                             </div>
                             <p style="margin:8px 0; color:#ddd;"><strong>You:</strong> ${escapeHtml(msg.message)}</p>
@@ -880,7 +874,6 @@
                 await loadContactMessages();
             });
             
-            // Real-time message updates
             function setupRealtimeMessages() {
                 supabaseClient.channel('public:contact_messages')
                     .on('postgres_changes', { 
