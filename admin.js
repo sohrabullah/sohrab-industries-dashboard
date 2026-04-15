@@ -19,6 +19,17 @@ function initSupabase() {
     return true;
 }
 
+// Escape HTML function (defined first)
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
 // Toast Notification
 function showNotification(msg, isError) { 
     const t = document.createElement('div'); 
@@ -80,97 +91,57 @@ async function refreshAllData() {
 
 // Load Statistics
 async function loadStats() {
-    try {
-        const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
-        const totalInvestorsEl = document.getElementById('totalInvestors');
-        if (totalInvestorsEl) totalInvestorsEl.innerHTML = ic || 0;
-        
-        const { count: bc } = await supabaseClient.from('buyers').select('*', { count: 'exact', head: true });
-        const totalBuyersEl = document.getElementById('totalBuyers');
-        if (totalBuyersEl) totalBuyersEl.innerHTML = bc || 0;
-        
-        const { count: pr } = await supabaseClient.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-        const pendingRequestsEl = document.getElementById('pendingRequests');
-        if (pendingRequestsEl) pendingRequestsEl.innerHTML = pr || 0;
-        
-        const { data: inv } = await supabaseClient.from('investments').select('amount');
-        const totalInv = inv?.reduce((s,i)=>s+(i.amount||0),0)||0;
-        const totalInvestmentsEl = document.getElementById('totalInvestments');
-        if (totalInvestmentsEl) totalInvestmentsEl.innerHTML = `Rs. ${totalInv.toLocaleString()}`;
-        
-        const { data: prof } = await supabaseClient.from('profits').select('amount').eq('paid',true);
-        const totalProf = prof?.reduce((s,p)=>s+(p.amount||0),0)||0;
-        const totalProfitEl = document.getElementById('totalProfit');
-        if (totalProfitEl) totalProfitEl.innerHTML = `Rs. ${totalProf.toLocaleString()}`;
-        
-        const { count: pw } = await supabaseClient.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
-        const pendingWithdrawalsEl = document.getElementById('pendingWithdrawals');
-        if (pendingWithdrawalsEl) pendingWithdrawalsEl.innerHTML = pw || 0;
-        
-        const { count: pc } = await supabaseClient.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
-        const totalProductsEl = document.getElementById('totalProducts');
-        if (totalProductsEl) totalProductsEl.innerHTML = pc || 0;
-        
-        const { count: oc } = await supabaseClient.from('orders').select('*',{count:'exact',head:true});
-        const totalOrdersEl = document.getElementById('totalOrders');
-        if (totalOrdersEl) totalOrdersEl.innerHTML = oc || 0;
-    } catch(e) {
-        console.error('Error loading stats:', e);
-    }
+    const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
+    document.getElementById('totalInvestors').innerHTML = ic || 0;
+    const { count: bc } = await supabaseClient.from('buyers').select('*', { count: 'exact', head: true });
+    document.getElementById('totalBuyers').innerHTML = bc || 0;
+    const { count: pr } = await supabaseClient.from('investments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+    document.getElementById('pendingRequests').innerHTML = pr || 0;
+    const { data: inv } = await supabaseClient.from('investments').select('amount');
+    const totalInv = inv?.reduce((s,i)=>s+(i.amount||0),0)||0;
+    document.getElementById('totalInvestments').innerHTML = `Rs. ${totalInv.toLocaleString()}`;
+    const { data: prof } = await supabaseClient.from('profits').select('amount').eq('paid',true);
+    const totalProf = prof?.reduce((s,p)=>s+(p.amount||0),0)||0;
+    document.getElementById('totalProfit').innerHTML = `Rs. ${totalProf.toLocaleString()}`;
+    const { count: pw } = await supabaseClient.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
+    document.getElementById('pendingWithdrawals').innerHTML = pw || 0;
+    const { count: pc } = await supabaseClient.from('products').select('*',{count:'exact',head:true}).eq('is_active',true);
+    document.getElementById('totalProducts').innerHTML = pc || 0;
+    const { count: oc } = await supabaseClient.from('orders').select('*',{count:'exact',head:true});
+    document.getElementById('totalOrders').innerHTML = oc || 0;
 }
 
-// Load Investors
+// ========== INVESTORS TAB - FIXED ==========
 async function loadInvestors() {
-    try {
-        const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
-        allInvestors = data || [];
-        
-        const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${escapeHtml(i.full_name)}</option>`).join('');
-        
-        const investorSelect = document.getElementById('investorSelect');
-        const profitSelect = document.getElementById('profitInvestorSelect');
-        if (investorSelect) investorSelect.innerHTML = selectHtml;
-        if (profitSelect) profitSelect.innerHTML = selectHtml;
-        
-        const investorsList = document.getElementById('investorsList');
-        if (investorsList) {
-            if (allInvestors.length === 0) {
-                investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            for (let i = 0; i < allInvestors.length; i++) {
-                const inv = allInvestors[i];
-                html += `<tr>
-                    <td><strong>${escapeHtml(inv.full_name)}</strong></td>
-                    <td>${escapeHtml(inv.email)}</td>
-                    <td>${escapeHtml(inv.phone || '-')}</td>
-                    <td>${escapeHtml(inv.city || '-')}</td>
-                    <td>Rs.${(inv.total_investment || 0).toLocaleString()}</td>
-                    <td>Rs.${(inv.total_profit || 0).toLocaleString()}</td>
-                    <td>Rs.${(inv.available_balance || 0).toLocaleString()}</td>
-                    <td class="action-buttons"><button onclick="deleteInvestor('${inv.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                </tr>`;
-            }
-            investorsList.innerHTML = html;
+    const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
+    allInvestors = data || [];
+    const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${escapeHtml(i.full_name)}</option>`).join('');
+    const investorSelect = document.getElementById('investorSelect');
+    const profitSelect = document.getElementById('profitInvestorSelect');
+    if (investorSelect) investorSelect.innerHTML = selectHtml;
+    if (profitSelect) profitSelect.innerHTML = selectHtml;
+    const investorsList = document.getElementById('investorsList');
+    if (investorsList) {
+        if (allInvestors.length === 0) {
+            investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>';
+            return;
         }
-    } catch(e) {
-        console.error('Error loading investors:', e);
-        const investorsList = document.getElementById('investorsList');
-        if (investorsList) investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">Error loading investors</td></tr>';
+        let html = '';
+        for (let i = 0; i < allInvestors.length; i++) {
+            const inv = allInvestors[i];
+            html += '<tr>';
+            html += '<td><strong>' + escapeHtml(inv.full_name) + '</strong></td>';
+            html += '<td>' + escapeHtml(inv.email) + '</td>';
+            html += '<td>' + escapeHtml(inv.phone || '-') + '</td>';
+            html += '<td>' + escapeHtml(inv.city || '-') + '</td>';
+            html += '<td>Rs.' + (inv.total_investment || 0).toLocaleString() + '</td>';
+            html += '<td>Rs.' + (inv.total_profit || 0).toLocaleString() + '</td>';
+            html += '<td>Rs.' + (inv.available_balance || 0).toLocaleString() + '</td>';
+            html += '<td class="action-buttons"><button onclick="deleteInvestor(\'' + inv.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
+            html += '</tr>';
+        }
+        investorsList.innerHTML = html;
     }
-}
-
-// Helper function to escape HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
 }
 
 // Add New Investor
@@ -206,36 +177,28 @@ window.deleteInvestor = async function(id){
     } 
 };
 
-// Load Buyers
+// ========== BUYERS TAB ==========
 async function loadBuyers() {
-    try {
-        const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
-        allBuyers = data || [];
-        
-        const buyersList = document.getElementById('buyersList');
-        if (buyersList) {
-            if (allBuyers.length === 0) {
-                buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            for (let i = 0; i < allBuyers.length; i++) {
-                const b = allBuyers[i];
-                html += `<tr>
-                    <td><strong>${escapeHtml(b.full_name)}</strong></td>
-                    <td>${escapeHtml(b.email)}</td>
-                    <td>${escapeHtml(b.phone || '-')}</td>
-                    <td>${escapeHtml(b.address || '-')}</td>
-                    <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                </tr>`;
-            }
-            buyersList.innerHTML = html;
+    const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
+    allBuyers = data || [];
+    const buyersList = document.getElementById('buyersList');
+    if (buyersList) {
+        if (allBuyers.length === 0) {
+            buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>';
+            return;
         }
-    } catch(e) {
-        console.error('Error loading buyers:', e);
-        const buyersList = document.getElementById('buyersList');
-        if (buyersList) buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">Error loading buyers</td></tr>';
+        let html = '';
+        for (let i = 0; i < allBuyers.length; i++) {
+            const b = allBuyers[i];
+            html += '<tr>';
+            html += '<td><strong>' + escapeHtml(b.full_name) + '</strong></td>';
+            html += '<td>' + escapeHtml(b.email) + '</td>';
+            html += '<td>' + escapeHtml(b.phone || '-') + '</td>';
+            html += '<td>' + escapeHtml(b.address || '-') + '</td>';
+            html += '<td class="action-buttons"><button onclick="deleteBuyer(\'' + b.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
+            html += '</tr>';
+        }
+        buyersList.innerHTML = html;
     }
 }
 
@@ -264,32 +227,52 @@ window.deleteBuyer = async function(id){
     } 
 };
 
-// Load Products
-async function loadProducts() {
-    try {
-        const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
-        const productsList = document.getElementById('productsList');
-        if (productsList) {
-            if (!data || data.length === 0) {
-                productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            for (let i = 0; i < data.length; i++) {
-                const p = data[i];
-                html += `<tr>
-                    <td><strong>${escapeHtml(p.name)}</strong></td>
-                    <td>${escapeHtml(p.category)}</td>
-                    <td>Rs.${(p.price || 0).toLocaleString()}</td>
-                    <td>${p.stock_quantity || 0}</td>
-                    <td class="action-buttons"><button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                </tr>`;
-            }
-            productsList.innerHTML = html;
+// ========== INVESTMENT REQUESTS TAB - FIXED ==========
+async function loadInvestmentRequests() { 
+    const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); 
+    const requestsList = document.getElementById('investmentRequestsList');
+    if (requestsList) {
+        if (!data || data.length === 0) {
+            requestsList.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests</td></tr>';
+            return;
         }
-    } catch(e) {
-        console.error('Error loading products:', e);
+        let html = '';
+        for (let i = 0; i < data.length; i++) {
+            const req = data[i];
+            html += '<tr>';
+            html += '<td><strong>' + escapeHtml(req.investors?.full_name || '-') + '</strong><br><small>' + escapeHtml(req.investors?.email || '-') + '</small></td>';
+            html += '<td>Rs. ' + (req.amount || 0).toLocaleString() + '</td>';
+            html += '<td>' + new Date(req.created_at).toLocaleDateString() + '</td>';
+            html += '<td>' + escapeHtml(req.payment_method || '-') + '</td>';
+            html += '<td>' + escapeHtml(req.transaction_id || '-') + '</td>';
+            html += '<td class="action-buttons"><button onclick="approveInvestment(\'' + req.id + '\', ' + req.amount + ', \'' + req.investor_id + '\')" class="btn-success"><i class="fas fa-check"></i> Approve</button> <button onclick="rejectInvestment(\'' + req.id + '\')" class="btn-danger"><i class="fas fa-times"></i> Reject</button></td>';
+            html += '</tr>';
+        }
+        requestsList.innerHTML = html;
+    }
+}
+
+// ========== PRODUCTS TAB ==========
+async function loadProducts() {
+    const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
+    const productsList = document.getElementById('productsList');
+    if (productsList) {
+        if (!data || data.length === 0) {
+            productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>';
+            return;
+        }
+        let html = '';
+        for (let i = 0; i < data.length; i++) {
+            const p = data[i];
+            html += '<tr>';
+            html += '<td><strong>' + escapeHtml(p.name) + '</strong></td>';
+            html += '<td>' + escapeHtml(p.category) + '</td>';
+            html += '<td>Rs.' + (p.price || 0).toLocaleString() + '</td>';
+            html += '<td>' + (p.stock_quantity || 0) + '</td>';
+            html += '<td class="action-buttons"><button onclick="deleteProduct(\'' + p.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
+            html += '</tr>';
+        }
+        productsList.innerHTML = html;
     }
 }
 
@@ -318,7 +301,7 @@ window.deleteProduct = async function(id){
     } 
 };
 
-// Add Investment
+// ========== INVESTMENTS TAB ==========
 window.addInvestment = async function() { 
     const investorId = document.getElementById('investorSelect').value;
     const amount = parseFloat(document.getElementById('invAmount').value);
@@ -338,7 +321,42 @@ window.addInvestment = async function() {
     await loadInvestmentHistory(); await loadInvestors(); await loadStats(); 
 };
 
-// Add Profit
+async function loadInvestmentHistory() { 
+    const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
+    const investmentHistory = document.getElementById('investmentHistory');
+    if (investmentHistory) {
+        if (!data || data.length === 0) {
+            investmentHistory.innerHTML = '<tr><td colspan="6" class="empty-state">No investments found</td></tr>';
+            return;
+        }
+        let html = '';
+        for (let i = 0; i < data.length; i++) {
+            const inv = data[i];
+            html += '<tr>';
+            html += '<td>' + escapeHtml(inv.investors?.full_name || '-') + '</td>';
+            html += '<td>Rs.' + (inv.amount || 0).toLocaleString() + '</td>';
+            html += '<td>' + new Date(inv.investment_date).toLocaleDateString() + '</td>';
+            html += '<td>' + escapeHtml(inv.payment_method || '-') + '</td>';
+            html += '<td><span class="status-badge status-' + inv.status + '">' + inv.status + '</span></td>';
+            html += '<td class="action-buttons"><button onclick="deleteInvestment(\'' + inv.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
+            html += '</tr>';
+        }
+        investmentHistory.innerHTML = html;
+    }
+}
+
+// Delete Investment
+window.deleteInvestment = async function(id){ 
+    if(confirm('Delete this investment?')){ 
+        await supabaseClient.from('investments').delete().eq('id',id); 
+        await loadInvestmentHistory(); 
+        await loadInvestors(); 
+        await loadStats(); 
+        showNotification('Deleted',false); 
+    } 
+};
+
+// ========== PROFITS TAB ==========
 window.addProfit = async function() { 
     const investorId = document.getElementById('profitInvestorSelect').value;
     const amount = parseFloat(document.getElementById('profitAmount').value);
@@ -357,134 +375,74 @@ window.addProfit = async function() {
     await loadProfitHistory(); await loadInvestors(); await loadStats(); 
 };
 
-// Load Investment History
-async function loadInvestmentHistory() { 
-    try {
-        const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
-        const investmentHistory = document.getElementById('investmentHistory');
-        if (investmentHistory) {
-            if (!data || data.length === 0) {
-                investmentHistory.innerHTML = '<tr><td colspan="6" class="empty-state">No investments found</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            for (let i = 0; i < data.length; i++) {
-                const inv = data[i];
-                html += `<tr>
-                    <td>${escapeHtml(inv.investors?.full_name || '-')}</td>
-                    <td>Rs.${(inv.amount || 0).toLocaleString()}</td>
-                    <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
-                    <td>${escapeHtml(inv.payment_method || '-')}</td>
-                    <td><span class="status-badge status-${inv.status}">${inv.status}</span></td>
-                    <td class="action-buttons"><button onclick="deleteInvestment('${inv.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                </tr>`;
-            }
-            investmentHistory.innerHTML = html;
-        }
-    } catch(e) {
-        console.error('Error loading investment history:', e);
-    }
-}
-
-// Load Profit History
 async function loadProfitHistory() { 
-    try {
-        const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); 
-        const profitHistory = document.getElementById('profitHistory');
-        if (profitHistory) {
-            if (!data || data.length === 0) {
-                profitHistory.innerHTML = '<tr><td colspan="6" class="empty-state">No profits found</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            for (let i = 0; i < data.length; i++) {
-                const p = data[i];
-                html += `<tr>
-                    <td>${escapeHtml(p.investors?.full_name || '-')}</td>
-                    <td>Rs.${(p.amount || 0).toLocaleString()}</td>
-                    <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
-                    <td>${p.profit_percentage || 10}%</td>
-                    <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td>
-                    <td class="action-buttons"><button onclick="deleteProfit('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-                </tr>`;
-            }
-            profitHistory.innerHTML = html;
-        }
-    } catch(e) {
-        console.error('Error loading profit history:', e);
-    }
-}
-
-// Load Investment Requests - FIXED
-async function loadInvestmentRequests() { 
-    try {
-        const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); 
-        const requestsList = document.getElementById('investmentRequestsList');
-        if (requestsList) {
-            if (!data || data.length === 0) {
-                requestsList.innerHTML = '<tr><td colspan="6" class="empty-state">No pending investment requests</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            for (let i = 0; i < data.length; i++) {
-                const req = data[i];
-                html += `<tr>
-                    <td><strong>${escapeHtml(req.investors?.full_name || '-')}</strong><br><small>${escapeHtml(req.investors?.email || '-')}</small></td>
-                    <td>Rs. ${(req.amount || 0).toLocaleString()}</td>
-                    <td>${new Date(req.created_at).toLocaleDateString()}</td>
-                    <td>${escapeHtml(req.payment_method || '-')}</td>
-                    <td>${escapeHtml(req.transaction_id || '-')}</td>
-                    <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button> <button onclick="rejectInvestment('${req.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button></td>
-                </tr>`;
-            }
-            requestsList.innerHTML = html;
-        }
-    } catch(e) {
-        console.error('Error loading investment requests:', e);
-        const requestsList = document.getElementById('investmentRequestsList');
-        if (requestsList) requestsList.innerHTML = '<tr><td colspan="6" class="empty-state">Error loading requests</td></tr>';
-    }
-}
-
-// Load Withdrawals
-async function loadWithdrawals() { 
-    try {
-        const { data } = await supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false });
-        allWithdrawals = data || [];
-        const withdrawalsList = document.getElementById('withdrawalsList');
-        if (!withdrawalsList) return;
-        
-        if (!allWithdrawals || allWithdrawals.length === 0) {
-            withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-inbox"></i> No withdrawal requests found</td></tr>';
+    const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); 
+    const profitHistory = document.getElementById('profitHistory');
+    if (profitHistory) {
+        if (!data || data.length === 0) {
+            profitHistory.innerHTML = '<tr><td colspan="6" class="empty-state">No profits found</td></tr>';
             return;
         }
-        
         let html = '';
-        for (let i = 0; i < allWithdrawals.length; i++) {
-            const w = allWithdrawals[i];
-            html += `<tr>
-                <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
-                <td><small>${escapeHtml(w.investors?.email || '-')}</small></td>
-                <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                <td>${escapeHtml(w.payment_method || '-')}</td>
-                <td><small>${escapeHtml(w.account_details || '-')}</small></td>
-                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
-                <td class="action-buttons">
-                    ${w.status === 'pending' ? `
-                        <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button>
-                        <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
-                    ` : `<span class="status-badge status-active">Processed</span>`}
-                </td>
-            </tr>`;
+        for (let i = 0; i < data.length; i++) {
+            const p = data[i];
+            html += '<tr>';
+            html += '<td>' + escapeHtml(p.investors?.full_name || '-') + '</td>';
+            html += '<td>Rs.' + (p.amount || 0).toLocaleString() + '</td>';
+            html += '<td>' + new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'}) + '</td>';
+            html += '<td>' + (p.profit_percentage || 10) + '%</td>';
+            html += '<td><span class="status-badge ' + (p.paid ? 'status-active' : 'status-pending') + '">' + (p.paid ? 'Paid' : 'Pending') + '</span></td>';
+            html += '<td class="action-buttons"><button onclick="deleteProfit(\'' + p.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
+            html += '</tr>';
         }
-        withdrawalsList.innerHTML = html;
-    } catch(e) {
-        console.error('Error loading withdrawals:', e);
+        profitHistory.innerHTML = html;
     }
+}
+
+// Delete Profit
+window.deleteProfit = async function(id){ 
+    if(confirm('Delete this profit?')){ 
+        await supabaseClient.from('profits').delete().eq('id',id); 
+        await loadProfitHistory(); 
+        await loadInvestors(); 
+        await loadStats(); 
+        showNotification('Deleted',false); 
+    } 
+};
+
+// ========== WITHDRAWALS TAB ==========
+async function loadWithdrawals() { 
+    const { data } = await supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false });
+    allWithdrawals = data || [];
+    const withdrawalsList = document.getElementById('withdrawalsList');
+    if (!withdrawalsList) return;
+    
+    if (!allWithdrawals || allWithdrawals.length === 0) {
+        withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-inbox"></i> No withdrawal requests found</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    for (let i = 0; i < allWithdrawals.length; i++) {
+        const w = allWithdrawals[i];
+        html += '<tr>';
+        html += '<td><strong>' + escapeHtml(w.investors?.full_name || 'Unknown') + '</strong></td>';
+        html += '<td><small>' + escapeHtml(w.investors?.email || '-') + '</small></td>';
+        html += '<td>Rs. ' + (w.amount || 0).toLocaleString() + '</td>';
+        html += '<td>' + new Date(w.request_date).toLocaleDateString() + '</td>';
+        html += '<td>' + escapeHtml(w.payment_method || '-') + '</td>';
+        html += '<td><small>' + escapeHtml(w.account_details || '-') + '</small></td>';
+        html += '<td><span class="status-badge ' + (w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')) + '">' + w.status + '</span></td>';
+        html += '<td class="action-buttons">';
+        if (w.status === 'pending') {
+            html += '<button onclick="approveWithdrawal(\'' + w.id + '\', ' + w.amount + ', \'' + w.investor_id + '\')" class="btn-success"><i class="fas fa-check"></i> Approve</button> ';
+            html += '<button onclick="rejectWithdrawal(\'' + w.id + '\')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>';
+        } else {
+            html += '<span class="status-badge status-active">Processed</span>';
+        }
+        html += '</td></tr>';
+    }
+    withdrawalsList.innerHTML = html;
 }
 
 // Search Withdrawals
@@ -505,21 +463,22 @@ window.searchWithdrawals = function() {
     let html = '';
     for (let i = 0; i < filtered.length; i++) {
         const w = filtered[i];
-        html += `<tr>
-            <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
-            <td><small>${escapeHtml(w.investors?.email || '-')}</small></td>
-            <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-            <td>${new Date(w.request_date).toLocaleDateString()}</td>
-            <td>${escapeHtml(w.payment_method || '-')}</td>
-            <td><small>${escapeHtml(w.account_details || '-')}</small></td>
-            <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')}">${w.status}</span></td>
-            <td class="action-buttons">
-                ${w.status === 'pending' ? `
-                    <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button>
-                    <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
-                ` : `<span class="status-badge status-active">Processed</span>`}
-            </td>
-        </tr>`;
+        html += '<tr>';
+        html += '<td><strong>' + escapeHtml(w.investors?.full_name || 'Unknown') + '</strong></td>';
+        html += '<td><small>' + escapeHtml(w.investors?.email || '-') + '</small></td>';
+        html += '<td>Rs. ' + (w.amount || 0).toLocaleString() + '</td>';
+        html += '<td>' + new Date(w.request_date).toLocaleDateString() + '</td>';
+        html += '<td>' + escapeHtml(w.payment_method || '-') + '</td>';
+        html += '<td><small>' + escapeHtml(w.account_details || '-') + '</small></td>';
+        html += '<td><span class="status-badge ' + (w.status === 'pending' ? 'status-pending' : (w.status === 'approved' ? 'status-active' : 'status-cancelled')) + '">' + w.status + '</span></td>';
+        html += '<td class="action-buttons">';
+        if (w.status === 'pending') {
+            html += '<button onclick="approveWithdrawal(\'' + w.id + '\', ' + w.amount + ', \'' + w.investor_id + '\')" class="btn-success"><i class="fas fa-check"></i> Approve</button> ';
+            html += '<button onclick="rejectWithdrawal(\'' + w.id + '\')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>';
+        } else {
+            html += '<span class="status-badge status-active">Processed</span>';
+        }
+        html += '</td></tr>';
     }
     withdrawalsList.innerHTML = html;
 };
@@ -530,62 +489,78 @@ window.resetWithdrawalSearch = function() {
     loadWithdrawals();
 };
 
-// Load Orders
+// Approve Withdrawal
+window.approveWithdrawal = async function(id, amount, investorId){ 
+    if(!confirm(`Approve withdrawal of Rs. ${amount.toLocaleString()}?`)) return; 
+    const { error } = await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
+    if(error) { showNotification(error.message, true); return; }
+    
+    const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id', investorId).single(); 
+    if(investor) { 
+        const newBalance = (investor.available_balance || 0) - amount;
+        await supabaseClient.from('investors').update({ available_balance: newBalance }).eq('id', investorId); 
+    }
+    showNotification('Withdrawal approved and balance updated!', false); 
+    await loadWithdrawals(); 
+    await loadInvestors(); 
+    await loadStats(); 
+};
+
+// Reject Withdrawal
+window.rejectWithdrawal = async function(id){ 
+    if(!confirm('Reject this withdrawal request?')) return;
+    await supabaseClient.from('withdrawals').update({ status: 'rejected' }).eq('id', id); 
+    showNotification('Withdrawal rejected', false); 
+    await loadWithdrawals(); 
+};
+
+// ========== ORDERS TAB ==========
 async function loadOrders() { 
-    try {
-        const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
-        allOrders = data || [];
-        const ordersList = document.getElementById('ordersList');
-        if (!ordersList) return;
-        
-        if (!allOrders || allOrders.length === 0) {
-            ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i> No orders found</td></tr>';
-            return;
-        }
-        
-        let html = '';
-        for (let i = 0; i < allOrders.length; i++) {
-            const o = allOrders[i];
-            let productsList = '-';
-            try {
-                const items = JSON.parse(o.notes || '[]');
-                if (Array.isArray(items) && items.length > 0) {
-                    productsList = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-                } else {
-                    productsList = o.notes || '-';
-                }
-            } catch(e) {
+    const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
+    allOrders = data || [];
+    const ordersList = document.getElementById('ordersList');
+    if (!ordersList) return;
+    
+    if (!allOrders || allOrders.length === 0) {
+        ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i> No orders found</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    for (let i = 0; i < allOrders.length; i++) {
+        const o = allOrders[i];
+        let productsList = '-';
+        try {
+            const items = JSON.parse(o.notes || '[]');
+            if (Array.isArray(items) && items.length > 0) {
+                productsList = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+            } else {
                 productsList = o.notes || '-';
             }
-            
-            html += `<tr>
-                <td><strong>${o.id?.slice(0, 12)}...</strong><br><small style="color:#E8B13C;">${o.id}</small></td>
-                <td>${o.user_type || 'buyer'}</td>
-                <td><small>${productsList.substring(0, 50)}${productsList.length > 50 ? '...' : ''}</small></td>
-                <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
-                <td>${new Date(o.order_date).toLocaleDateString()}</td>
-                <td>${o.payment_method || '-'}</td>
-                <td><span class="status-badge ${o.payment_status === 'paid' ? 'status-active' : 'status-pending'}">${o.payment_status || 'pending'}</span></td>
-                <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
-                <td>
-                    <select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding: 5px; background: rgba(0,0,0,0.3);">
-                        <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option>
-                        <option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-                        <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                        <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                    </select>
-                </td>
-                <td class="action-buttons">
-                    <button onclick="viewOrderDetails('${o.id}')" class="btn-info" title="View Details"><i class="fas fa-eye"></i></button>
-                    <button onclick="deleteOrder('${o.id}')" class="btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
+        } catch(e) {
+            productsList = o.notes || '-';
         }
-        ordersList.innerHTML = html;
-    } catch(e) {
-        console.error('Error loading orders:', e);
+        
+        html += '<tr>';
+        html += '<td><strong>' + (o.id?.slice(0, 12) || '') + '...</strong><br><small style="color:#E8B13C;">' + (o.id || '') + '</small></td>';
+        html += '<td>' + (o.user_type || 'buyer') + '</td>';
+        html += '<td><small>' + (productsList.substring(0, 50) + (productsList.length > 50 ? '...' : '')) + '</small></td>';
+        html += '<td>Rs. ' + (o.total_amount || 0).toLocaleString() + '</td>';
+        html += '<td>' + new Date(o.order_date).toLocaleDateString() + '</td>';
+        html += '<td>' + (o.payment_method || '-') + '</td>';
+        html += '<td><span class="status-badge ' + (o.payment_status === 'paid' ? 'status-active' : 'status-pending') + '">' + (o.payment_status || 'pending') + '</span></td>';
+        html += '<td><small>' + (o.delivery_address?.substring(0, 30) || '-') + '</small></td>';
+        html += '<td><select onchange="updateOrderStatus(\'' + o.id + '\', this.value)" class="status-badge" style="padding: 5px; background: rgba(0,0,0,0.3);">';
+        html += '<option value="pending" ' + (o.status === 'pending' ? 'selected' : '') + '>Pending</option>';
+        html += '<option value="processing" ' + (o.status === 'processing' ? 'selected' : '') + '>Processing</option>';
+        html += '<option value="shipped" ' + (o.status === 'shipped' ? 'selected' : '') + '>Shipped</option>';
+        html += '<option value="delivered" ' + (o.status === 'delivered' ? 'selected' : '') + '>Delivered</option>';
+        html += '<option value="cancelled" ' + (o.status === 'cancelled' ? 'selected' : '') + '>Cancelled</option>';
+        html += '</select></td>';
+        html += '<td class="action-buttons"><button onclick="viewOrderDetails(\'' + o.id + '\')" class="btn-info" title="View Details"><i class="fas fa-eye"></i></button> <button onclick="deleteOrder(\'' + o.id + '\')" class="btn-danger" title="Delete"><i class="fas fa-trash"></i></button></td>';
+        html += '</tr>';
     }
+    ordersList.innerHTML = html;
 }
 
 // Update Order Status
@@ -658,18 +633,18 @@ window.searchOrders = function() {
                 productsList = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
             }
         } catch(e) { productsList = o.notes || '-'; }
-        html += `<tr>
-            <td><strong>${o.id?.slice(0, 12)}...</strong></td>
-            <td>${o.user_type || 'buyer'}</td>
-            <td>${productsList.substring(0, 40)}</td>
-            <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
-            <td>${new Date(o.order_date).toLocaleDateString()}</td>
-            <td>${o.payment_method || '-'}</td>
-            <td>${o.payment_status || 'pending'}</td>
-            <td>${o.delivery_address?.substring(0, 20) || '-'}</td>
-            <td><select onchange="updateOrderStatus('${o.id}', this.value)"><option value="pending" ${o.status==='pending'?'selected':''}>Pending</option><option value="processing" ${o.status==='processing'?'selected':''}>Processing</option><option value="shipped" ${o.status==='shipped'?'selected':''}>Shipped</option><option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option></select></td>
-            <td class="action-buttons"><button onclick="viewOrderDetails('${o.id}')" class="btn-info">View</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td>
-        </tr>`;
+        html += '<tr>';
+        html += '<td><strong>' + (o.id?.slice(0, 12) || '') + '...</strong></td>';
+        html += '<td>' + (o.user_type || 'buyer') + '</td>';
+        html += '<td>' + productsList.substring(0, 40) + '</td>';
+        html += '<td>Rs. ' + (o.total_amount || 0).toLocaleString() + '</td>';
+        html += '<td>' + new Date(o.order_date).toLocaleDateString() + '</td>';
+        html += '<td>' + (o.payment_method || '-') + '</td>';
+        html += '<td>' + (o.payment_status || 'pending') + '</td>';
+        html += '<td>' + (o.delivery_address?.substring(0, 20) || '-') + '</td>';
+        html += '<td><select onchange="updateOrderStatus(\'' + o.id + '\', this.value)"><option value="pending" ' + (o.status === 'pending' ? 'selected' : '') + '>Pending</option><option value="processing" ' + (o.status === 'processing' ? 'selected' : '') + '>Processing</option><option value="shipped" ' + (o.status === 'shipped' ? 'selected' : '') + '>Shipped</option><option value="delivered" ' + (o.status === 'delivered' ? 'selected' : '') + '>Delivered</option></select></td>';
+        html += '<td class="action-buttons"><button onclick="viewOrderDetails(\'' + o.id + '\')" class="btn-info">View</button><button onclick="deleteOrder(\'' + o.id + '\')" class="btn-danger">Delete</button></td>';
+        html += '</tr>';
     }
     ordersList.innerHTML = html;
 };
@@ -680,54 +655,47 @@ window.resetOrderSearch = function() {
     loadOrders(); 
 };
 
-// Load Recent Activities
+// ========== RECENT ACTIVITIES ==========
 async function loadRecentActivities() { 
-    try {
-        const activities = []; 
-        const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
-        if(inv && inv.length > 0) {
-            for(let i = 0; i < inv.length; i++) {
-                activities.push({action:'Investment', details:`${inv[i].investors?.full_name} invested Rs.${inv[i].amount}`, time:new Date(inv[i].created_at).toLocaleString()});
-            }
+    const activities = []; 
+    const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
+    if(inv && inv.length > 0) {
+        for(let i = 0; i < inv.length; i++) {
+            activities.push({action:'Investment', details: escapeHtml(inv[i].investors?.full_name || '') + ' invested Rs.' + inv[i].amount, time: new Date(inv[i].created_at).toLocaleString()});
         }
-        
-        const { data: ord } = await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); 
-        if(ord && ord.length > 0) {
-            for(let i = 0; i < ord.length; i++) {
-                activities.push({action:'Order', details:`Order #${ord[i].id?.slice(0,8)} - Rs.${ord[i].total_amount}`, time:new Date(ord[i].created_at).toLocaleString()});
-            }
+    }
+    const { data: ord } = await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); 
+    if(ord && ord.length > 0) {
+        for(let i = 0; i < ord.length; i++) {
+            activities.push({action:'Order', details: 'Order #' + (ord[i].id?.slice(0,8) || '') + ' - Rs.' + ord[i].total_amount, time: new Date(ord[i].created_at).toLocaleString()});
         }
-        
-        const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
-        if(wd && wd.length > 0) {
-            for(let i = 0; i < wd.length; i++) {
-                activities.push({action:'Withdrawal Request', details:`${wd[i].investors?.full_name} requested Rs.${wd[i].amount} (${wd[i].status})`, time:new Date(wd[i].created_at).toLocaleString()});
-            }
+    }
+    const { data: wd } = await supabaseClient.from('withdrawals').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
+    if(wd && wd.length > 0) {
+        for(let i = 0; i < wd.length; i++) {
+            activities.push({action:'Withdrawal Request', details: escapeHtml(wd[i].investors?.full_name || '') + ' requested Rs.' + wd[i].amount + ' (' + wd[i].status + ')', time: new Date(wd[i].created_at).toLocaleString()});
         }
-        
-        activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
-        const recentActivities = document.getElementById('recentActivities');
-        if (recentActivities) {
-            if (activities.length === 0) {
-                recentActivities.innerHTML = '<tr><td colspan="3" class="empty-state">No recent activities</td></tr>'；
-                return;
-            }
-            let html = '';
-            for (let i = 0; i < Math.min(activities.length, 10); i++) {
-                html += `<tr>
-                    <td>${activities[i].action}</td>
-                    <td>${activities[i].details}</td>
-                    <td>${activities[i].time}</td>
-                </tr>`;
-            }
-            recentActivities.innerHTML = html;
+    }
+    activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
+    const recentActivities = document.getElementById('recentActivities');
+    if (recentActivities) {
+        if (activities.length === 0) {
+            recentActivities.innerHTML = '<tr><td colspan="3" class="empty-state">No recent activities</td></tr>';
+            return;
         }
-    } catch(e) {
-        console.error('Error loading recent activities:', e);
+        let html = '';
+        for (let i = 0; i < Math.min(activities.length, 10); i++) {
+            html += '<tr>';
+            html += '<td>' + activities[i].action + '</td>';
+            html += '<td>' + activities[i].details + '</td>';
+            html += '<td>' + activities[i].time + '</td>';
+            html += '</tr>';
+        }
+        recentActivities.innerHTML = html;
     }
 }
 
-// Approve Investment
+// ========== APPROVE/REJECT FUNCTIONS ==========
 window.approveInvestment = async function(id, amount, investorId) { 
     if (!confirm(`Approve investment of Rs. ${amount.toLocaleString()}?`)) return; 
     await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
@@ -743,7 +711,6 @@ window.approveInvestment = async function(id, amount, investorId) {
     await loadStats(); 
 };
 
-// Reject Investment
 window.rejectInvestment = async function(id) { 
     if (!confirm('Reject this investment request?')) return; 
     await supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id); 
@@ -752,129 +719,82 @@ window.rejectInvestment = async function(id) {
     await loadStats(); 
 };
 
-// Approve Withdrawal
-window.approveWithdrawal = async function(id, amount, investorId){ 
-    if(!confirm(`Approve withdrawal of Rs. ${amount.toLocaleString()}?`)) return; 
-    const { error } = await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
-    if(error) { showNotification(error.message, true); return; }
-    
-    const { data: investor } = await supabaseClient.from('investors').select('available_balance').eq('id', investorId).single(); 
-    if(investor) { 
-        const newBalance = (investor.available_balance || 0) - amount;
-        await supabaseClient.from('investors').update({ available_balance: newBalance }).eq('id', investorId); 
-    }
-    showNotification('Withdrawal approved and balance updated!', false); 
-    await loadWithdrawals(); 
-    await loadInvestors(); 
-    await loadStats(); 
-};
-
-// Reject Withdrawal
-window.rejectWithdrawal = async function(id){ 
-    if(!confirm('Reject this withdrawal request?')) return;
-    await supabaseClient.from('withdrawals').update({ status: 'rejected' }).eq('id', id); 
-    showNotification('Withdrawal rejected', false); 
-    await loadWithdrawals(); 
-};
-
-// Delete Investment
-window.deleteInvestment = async function(id){ 
-    if(confirm('Delete this investment?')){ 
-        await supabaseClient.from('investments').delete().eq('id',id); 
-        await loadInvestmentHistory(); 
-        await loadInvestors(); 
-        await loadStats(); 
-        showNotification('Deleted',false); 
-    } 
-};
-
-// Delete Profit
-window.deleteProfit = async function(id){ 
-    if(confirm('Delete this profit?')){ 
-        await supabaseClient.from('profits').delete().eq('id',id); 
-        await loadProfitHistory(); 
-        await loadInvestors(); 
-        await loadStats(); 
-        showNotification('Deleted',false); 
-    } 
-};
-
-// Search Investors
+// ========== SEARCH FUNCTIONS ==========
 window.searchInvestors = function() { 
     const term = document.getElementById('investorSearch').value.toLowerCase(); 
     const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
     const investorsList = document.getElementById('investorsList');
     if (investorsList) {
         if (filtered.length === 0) {
-            investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>'；
+            investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>';
             return;
         }
         let html = '';
         for (let i = 0; i < filtered.length; i++) {
             const inv = filtered[i];
-            html += `<tr>
-                <td><strong>${escapeHtml(inv.full_name)}</strong></td>
-                <td>${escapeHtml(inv.email)}</td>`;
-            html += `<td>${escapeHtml(inv.phone || '-')}</td><td>${escapeHtml(inv.city || '-')}</td>`;
-            html += `<td>Rs.${(inv.total_investment || 0).toLocaleString()}</td><td>Rs.${(inv.total_profit || 0).toLocaleString()}</td>`;
-            html += `<td>Rs.${(inv.available_balance || 0).toLocaleString()}</td>`;
-            html += `<td class="action-buttons"><button onclick="deleteInvestor('${inv.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>`;
-            html += `</tr>`;
+            html += '<tr>';
+            html += '<td><strong>' + escapeHtml(inv.full_name) + '</strong></td>';
+            html += '<td>' + escapeHtml(inv.email) + '</td>';
+            html += '<td>' + escapeHtml(inv.phone || '-') + '</td>';
+            html += '<td>' + escapeHtml(inv.city || '-') + '</td>';
+            html += '<td>Rs.' + (inv.total_investment || 0).toLocaleString() + '</td>';
+            html += '<td>Rs.' + (inv.total_profit || 0).toLocaleString() + '</td>';
+            html += '<td>Rs.' + (inv.available_balance || 0).toLocaleString() + '</td>';
+            html += '<td class="action-buttons"><button onclick="deleteInvestor(\'' + inv.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
+            html += '</tr>';
         }
         investorsList.innerHTML = html;
     }
 };
 
-// Reset Investor Search
 window.resetInvestorSearch = function() { 
     document.getElementById('investorSearch').value = ''; 
     loadInvestors(); 
 };
 
-// Search Buyers
 window.searchBuyers = function() { 
     const term = document.getElementById('buyerSearch').value.toLowerCase(); 
     const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
     const buyersList = document.getElementById('buyersList');
     if (buyersList) {
         if (filtered.length === 0) {
-            buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>'；
+            buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>';
             return;
         }
         let html = '';
         for (let i = 0; i < filtered.length; i++) {
             const b = filtered[i];
-            html += `<tr>
-                <td><strong>${escapeHtml(b.full_name)}</strong></td>
-                <td>${escapeHtml(b.email)}</td><td>${escapeHtml(b.phone || '-')}</td><td>${escapeHtml(b.address || '-')}</td>
-                <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
-            </tr>`;
+            html += '<tr>';
+            html += '<td><strong>' + escapeHtml(b.full_name) + '</strong></td>';
+            html += '<td>' + escapeHtml(b.email) + '</td>';
+            html += '<td>' + escapeHtml(b.phone || '-') + '</td>';
+            html += '<td>' + escapeHtml(b.address || '-') + '</td>';
+            html += '<td class="action-buttons"><button onclick="deleteBuyer(\'' + b.id + '\')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>';
+            html += '</tr>';
         }
         buyersList.innerHTML = html;
     }
 };
 
-// Reset Buyer Search
 window.resetBuyerSearch = function() { 
     document.getElementById('buyerSearch').value = ''; 
     loadBuyers(); 
 };
 
-// Search Products
 window.searchProducts = function() { 
     const term = document.getElementById('productSearch').value.toLowerCase(); 
     const rows = document.querySelectorAll('#productsList tr'); 
     rows.forEach(row=>{ row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; }); 
 };
 
-// Logout
+// ========== LOGOUT ==========
 window.handleLogout = async function(){ 
     await supabaseClient.auth.signOut(); 
     localStorage.clear(); 
     window.location.href = 'index.html'; 
 };
 
-// Initialize on page load
+// ========== INITIALIZATION ==========
 document.addEventListener('DOMContentLoaded', function() {
     if (initSupabase()) {
         checkAuth();
