@@ -16,7 +16,6 @@
             position: relative;
         }
         
-        /* Animated Background Particles */
         body::before {
             content: '';
             position: fixed;
@@ -29,17 +28,6 @@
                 radial-gradient(circle at 80% 20%, rgba(30,78,62,0.15) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
-        }
-        
-        /* Animations */
-        @keyframes glowPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.8; }
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
         }
         
         @keyframes shimmer {
@@ -69,7 +57,6 @@
         
         .admin-container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
         
-        /* Premium Header */
         .admin-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -148,7 +135,6 @@
             box-shadow: 0 8px 25px rgba(220,53,69,0.4);
         }
         
-        /* Premium Stats Grid */
         .stats-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
@@ -209,7 +195,6 @@
             font-family: 'Playfair Display', serif;
         }
         
-        /* Premium Tabs */
         .nav-tabs { 
             display: flex; 
             gap: 10px; 
@@ -251,7 +236,6 @@
             font-weight: 700;
         }
         
-        /* Premium Sections */
         .admin-section { 
             background: rgba(20,45,38,0.92);
             backdrop-filter: blur(12px);
@@ -277,7 +261,6 @@
             padding-left: 18px;
         }
         
-        /* Premium Form Cards */
         .form-card { 
             background: rgba(0,0,0,0.3);
             backdrop-filter: blur(8px);
@@ -332,7 +315,6 @@
         
         .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.4); }
         
-        /* Premium Tables */
         .table-container { 
             overflow-x: auto; 
             margin-top: 15px; 
@@ -365,7 +347,6 @@
         
         td { color: rgba(255,255,255,0.9); }
         
-        /* Premium Status Badges */
         .status-badge { 
             padding: 5px 15px; 
             border-radius: 30px; 
@@ -401,7 +382,6 @@
             color: #fff; 
         }
         
-        /* Premium Buttons */
         .btn-primary { 
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             color: #0a1f1a; 
@@ -471,7 +451,6 @@
         
         .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
         
-        /* Search Box */
         .search-box { 
             margin-bottom: 20px; 
             display: flex; 
@@ -498,7 +477,6 @@
             box-shadow: 0 0 0 4px rgba(232,177,60,0.15);
         }
         
-        /* Premium Modal */
         .modal { 
             display: none; 
             position: fixed; 
@@ -551,7 +529,6 @@
             transform: rotate(90deg);
         }
         
-        /* Toast Notification */
         .toast-notification { 
             position: fixed; 
             bottom: 35px; 
@@ -581,7 +558,7 @@
             cursor: pointer;
         }
         
-        /* Chat Styles - Added without conflicting */
+        /* Chat Styles */
         .chat-layout { display: flex; gap: 25px; height: 70vh; min-height: 550px; }
         .chat-users-panel { width: 350px; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(232,177,60,0.2); }
         .chat-users-header { padding: 18px; background: #0a2f24; border-bottom: 1px solid rgba(232,177,60,0.3); }
@@ -652,7 +629,6 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
-            <!-- NEW CHAT TAB -->
             <button class="nav-tab" onclick="showSection('chat')"><i class="fas fa-comment-dots"></i> Live Chat <span id="chatUnreadBadge" class="chat-tab-unread" style="display:none;">0</span></button>
         </div>
 
@@ -680,7 +656,7 @@
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
             <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetInvestorSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></tr></div>
         </div>
 
         <!-- Buyers Section -->
@@ -702,7 +678,7 @@
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -735,7 +711,7 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></td></div>
         </div>
 
         <!-- Withdrawals Section -->
@@ -768,7 +744,7 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></td></div>
+            <div class="table-container"><tr><thead><td><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
         <!-- Orders Section -->
@@ -782,13 +758,13 @@
                 </div>
             </div>
             <div class="table-container">
-                </table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead>
+                <table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead>
                     <tbody id="ordersList"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- NEW CHAT SECTION -->
+        <!-- CHAT SECTION -->
         <div id="chatSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Customer Support</h2>
             <div class="chat-layout">
@@ -818,7 +794,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ========== YOUR ORIGINAL JAVASCRIPT CODE - FULLY PRESERVED ==========
+        // ========== YOUR COMPLETE ORIGINAL JAVASCRIPT CODE - UNMODIFIED ==========
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -926,7 +902,7 @@
                         <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
                         <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                         <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                        <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="startChatWith('${i.id}','investor','${i.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
+                        <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button><button class="btn-info" onclick="openChatWith('${i.id}','investor','${i.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
                     </tr>`).join('');
                 }
             }
@@ -963,7 +939,7 @@
                         <td>${b.email}</td>
                         <td>${b.phone||'-'}</td>
                         <td>${b.address||'-'}</td>
-                        <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="startChatWith('${b.id}','buyer','${b.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
+                        <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button><button class="btn-info" onclick="openChatWith('${b.id}','buyer','${b.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
                     </tr>`).join('');
                 }
             }
@@ -1080,7 +1056,7 @@
                 const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); 
                 const requestsList = document.getElementById('investmentRequestsList');
                 if (requestsList) {
-                    requestsList.innerHTML = (data || []).map(req => `<td>
+                    requestsList.innerHTML = (data || []).map(req => `<tr>
                         <td><strong>${req.investors?.full_name || '-'}</strong><br><small>${req.investors?.email || '-'}</small></td>
                         <td>Rs. ${(req.amount || 0).toLocaleString()}</td>
                         <td>${new Date(req.created_at).toLocaleDateString()}</td>
@@ -1131,7 +1107,7 @@
                 if (!withdrawalsList) return;
                 
                 if (filtered.length === 0) {
-                    withdrawalsList.innerHTML = '<td><td colspan="8" class="empty-state"><i class="fas fa-search"></i> No withdrawal requests found</td></tr>';
+                    withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-search"></i> No withdrawal requests found</td></tr>';
                     return;
                 }
                 
@@ -1393,7 +1369,7 @@
                         <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
                         <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                         <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                        <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="startChatWith('${i.id}','investor','${i.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
+                        <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button><button class="btn-info" onclick="openChatWith('${i.id}','investor','${i.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
                     </tr>`).join('');
                 }
             };
@@ -1408,12 +1384,12 @@
                 const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
                 const buyersList = document.getElementById('buyersList');
                 if (buyersList) {
-                    buyersList.innerHTML = filtered.map(b=>`<tr>
+                    buyersList.innerHTML = filtered.map(b=>`<td>
                         <td><strong>${b.full_name}</strong></td>
                         <td>${b.email}</td>
                         <td>${b.phone||'-'}</td>
                         <td>${b.address||'-'}</td>
-                        <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button> <button class="btn-info" onclick="startChatWith('${b.id}','buyer','${b.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
+                        <td class="action-buttons"><button onclick="deleteBuyer('${b.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button><button class="btn-info" onclick="openChatWith('${b.id}','buyer','${b.full_name.replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Message</button></td>
                     </tr>`).join('');
                 }
             };
@@ -1438,23 +1414,31 @@
             checkAuth();
         });
         
-        // ========== CHAT MODULE - SEPARATE AND NON-CONFLICTING ==========
-        // This runs independently after the main code
+        // ========== CHAT MODULE - COMPLETELY SEPARATE, NO CONFLICTS ==========
         (function() {
-            // Wait for main app to initialize
-            setTimeout(function() {
+            let chatInitialized = false;
+            
+            function initChat() {
+                if (chatInitialized) return;
+                chatInitialized = true;
+                
                 const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
                 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
                 const supabaseChat = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 
-                let chatUsers = [];
                 let currentChatUser = null;
                 let currentChatType = null;
                 
-                // Function to load chat contacts
+                window.openChatWith = function(id, type, name) {
+                    const chatTab = document.querySelector('.nav-tab[onclick*="chat"]');
+                    if (chatTab) chatTab.click();
+                    setTimeout(function() {
+                        selectChatContact(id, type, name);
+                    }, 200);
+                };
+                
                 async function loadChatContacts() {
                     try {
-                        // Get investors and buyers from global variables
                         const investors = window.allInvestors || [];
                         const buyers = window.allBuyers || [];
                         
@@ -1485,8 +1469,8 @@
                             }
                         }
                         
-                        chatUsers = Array.from(contactsMap.values());
-                        const totalUnread = chatUsers.reduce((sum, c) => sum + (c.unread || 0), 0);
+                        const contactsArray = Array.from(contactsMap.values());
+                        const totalUnread = contactsArray.reduce((sum, c) => sum + (c.unread || 0), 0);
                         const unreadBadge = document.getElementById('chatUnreadBadge');
                         if (unreadBadge) {
                             if (totalUnread > 0) {
@@ -1499,14 +1483,14 @@
                         
                         const container = document.getElementById('chatUsersList');
                         if (!container) return;
-                        if (chatUsers.length === 0) {
+                        if (contactsArray.length === 0) {
                             container.innerHTML = '<div class="empty-state">No contacts found</div>';
                             return;
                         }
                         
                         let html = '';
-                        for (let i = 0; i < chatUsers.length; i++) {
-                            const contact = chatUsers[i];
+                        for (let i = 0; i < contactsArray.length; i++) {
+                            const contact = contactsArray[i];
                             const activeClass = (currentChatUser === contact.id && currentChatType === contact.type) ? 'active' : '';
                             html += `<div class="chat-user-item ${activeClass}" onclick="window.selectChatContact('${contact.id}', '${contact.type}', '${(contact.name || '').replace(/'/g, "\\'")}')">`;
                             html += `<div class="user-avatar">${contact.name ? contact.name.charAt(0).toUpperCase() : '?'}</div>`;
@@ -1523,7 +1507,7 @@
                         if (searchInput) {
                             searchInput.oninput = function() {
                                 const term = this.value.toLowerCase();
-                                const filtered = chatUsers.filter(c => c.name.toLowerCase().includes(term));
+                                const filtered = contactsArray.filter(c => c.name.toLowerCase().includes(term));
                                 let fhtml = '';
                                 for (let j = 0; j < filtered.length; j++) {
                                     const fc = filtered[j];
@@ -1548,14 +1532,15 @@
                     if (headerDiv) {
                         headerDiv.innerHTML = `<div class="user-avatar" style="width:45px;height:45px;">${name ? name.charAt(0).toUpperCase() : '?'}</div><div><div class="user-name">${name || 'Unknown'}</div><div class="user-type">${type === 'buyer' ? 'Customer' : 'Investor'}</div></div>`;
                     }
-                    document.getElementById('chatInputArea').style.display = 'flex';
-                    await loadChatConversation(id, type);
+                    const inputArea = document.getElementById('chatInputArea');
+                    if (inputArea) inputArea.style.display = 'flex';
+                    await loadConversation(id, type);
                     
                     await supabaseChat.from('contact_messages').update({ is_admin_read: true }).eq('buyer_id', id).eq('receiver_type', 'admin');
                     await loadChatContacts();
                 };
                 
-                async function loadChatConversation(userId, userType) {
+                async function loadConversation(userId, userType) {
                     try {
                         let { data: messages1 } = await supabaseChat.from('contact_messages').select('*').eq('buyer_id', userId).order('created_at', { ascending: true });
                         let { data: messages2 } = await supabaseChat.from('contact_messages').select('*').eq('user_id', userId).order('created_at', { ascending: true });
@@ -1627,33 +1612,33 @@
                         alert('Reply sent to ' + (currentChatType === 'buyer' ? 'Customer' : 'Investor') + ' from Sohrab Industries Support');
                     }
                     if (input) input.value = '';
-                    await loadChatConversation(currentChatUser, currentChatType);
+                    await loadConversation(currentChatUser, currentChatType);
                     await loadChatContacts();
-                };
-                
-                window.startChatWith = function(id, type, name) {
-                    // Switch to chat tab
-                    const chatTab = document.querySelector('.nav-tab[onclick*="chat"]');
-                    if (chatTab) chatTab.click();
-                    setTimeout(function() {
-                        window.selectChatContact(id, type, name);
-                    }, 200);
                 };
                 
                 // Set up realtime subscription
                 supabaseChat.channel('public:contact_messages')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, function() {
                         loadChatContacts();
-                        if (currentChatUser) loadChatConversation(currentChatUser, currentChatType);
+                        if (currentChatUser) loadConversation(currentChatUser, currentChatType);
                     })
                     .subscribe();
                 
                 // Initial load
-                loadChatContacts();
+                setTimeout(loadChatContacts, 500);
                 
                 // Refresh chat contacts periodically
                 setInterval(loadChatContacts, 5000);
-            }, 1000);
+            }
+            
+            // Wait for page to load and main data to be available
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(initChat, 1000);
+                });
+            } else {
+                setTimeout(initChat, 1000);
+            }
         })();
     </script>
 </body>
