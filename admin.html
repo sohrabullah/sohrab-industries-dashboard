@@ -504,15 +504,6 @@
             cursor: pointer;
         }
         
-        /* Product image/video preview styling */
-        .product-media-preview {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 12px;
-            background: #1a3d33;
-        }
-        
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; text-align: center; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
@@ -580,7 +571,7 @@
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
             <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary"><i class="fas fa-search"></i> Search</button><button onclick="resetInvestorSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
@@ -596,7 +587,7 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
@@ -619,7 +610,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -654,7 +645,7 @@
             </div>
         </div>
 
-        <!-- Products Section - ENHANCED with Image/Video Upload -->
+        <!-- Products Section -->
         <div id="productsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2>
             <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
@@ -668,15 +659,15 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><table><thead><tr><th>Media</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
-        <!-- Orders Section - ENHANCED with Buyer Name & Phone -->
+        <!-- Orders Section -->
         <div id="ordersSection" class="admin-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
                 <div class="search-box" style="margin-bottom: 0;">
-                    <input type="text" id="orderSearch" placeholder="🔍 Search by Order ID or Customer...">
+                    <input type="text" id="orderSearch" placeholder="🔍 Search by Order ID...">
                     <button onclick="searchOrders()" class="btn-primary">Search</button>
                     <button onclick="resetOrderSearch()" class="btn-primary">Reset</button>
                 </div>
@@ -684,7 +675,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Order ID</th><th>Customer Name</th><th>Phone</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Pay Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr>
+                        <tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="ordersList"></tbody>
                 </table>
@@ -694,11 +685,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================================
-        // COMPLETE ORIGINAL JAVASCRIPT CODE - FULLY PRESERVED
-        // ONLY ADDED: Buyer name/phone fetching + Product image/video upload with Supabase Storage
-        // ============================================================
-        
+        // ALL ORIGINAL JAVASCRIPT CODE PRESERVED - WITH PROFESSIONAL SWEETALERT2 POPUPS INSTEAD OF ALERTS/CONFIRMS
         document.addEventListener('DOMContentLoaded', function() {
             const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
@@ -709,25 +696,6 @@
             }
             
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
-            // Initialize Supabase Storage bucket for product media
-            const STORAGE_BUCKET = 'product-media';
-            
-            // Create bucket if not exists (run once)
-            async function initStorage() {
-                try {
-                    const { data: buckets } = await supabaseClient.storage.listBuckets();
-                    const bucketExists = buckets?.some(b => b.name === STORAGE_BUCKET);
-                    if (!bucketExists) {
-                        await supabaseClient.storage.createBucket(STORAGE_BUCKET, {
-                            public: true,
-                            allowedMimeTypes: ['image/*', 'video/*'],
-                            fileSizeLimit: 52428800 // 50MB
-                        });
-                    }
-                } catch(e) { console.log('Storage init:', e); }
-            }
-            initStorage();
             
             let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [], allProducts = [];
 
@@ -923,116 +891,25 @@
                 } 
             };
 
-            // ============================================================
-            // ENHANCED PRODUCTS FUNCTIONS - WITH SUPABASE STORAGE FOR IMAGES/VIDEOS
-            // ============================================================
-            
             async function loadProducts() {
                 const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
                 allProducts = data || [];
                 const productsList = document.getElementById('productsList');
                 if (productsList) {
                     if (!data || data.length === 0) {
-                        productsList.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-box-open"></i> No products found. Add your first product!</td></tr>';
+                        productsList.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="fas fa-box-open"></i> No products found. Add your first product!</td></tr>';
                         return;
                     }
                     productsList.innerHTML = (data||[]).map(p=>`<tr>
-                        <td>
-                            ${p.media_url ? 
-                                (p.media_type === 'video' ? 
-                                    `<video src="${p.media_url}" width="50" height="50" style="border-radius:12px; object-fit:cover;"></video>` : 
-                                    `<img src="${p.media_url}" width="50" height="50" style="border-radius:12px; object-fit:cover;">`) : 
-                                '<i class="fas fa-image fa-2x" style="color:#E8B13C;"></i>'}
-                        </td>
                         <td><strong>${p.name}</strong></td>
                         <td>${p.category}</td>
                         <td>Rs.${(p.price||0).toLocaleString()}</td>
                         <td>${p.stock_quantity||0}</td>
-                        <td class="action-buttons">
-                            <button onclick="editProduct('${p.id}')" class="btn-warning"><i class="fas fa-edit"></i> Edit</button>
-                            <button onclick="uploadProductMedia('${p.id}')" class="btn-info"><i class="fas fa-upload"></i> Upload Media</button>
-                            <button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
+                        <td class="action-buttons"><button onclick="editProduct('${p.id}')" class="btn-warning"><i class="fas fa-edit"></i> Edit</button><button onclick="uploadProductImage('${p.id}')" class="btn-info"><i class="fas fa-image"></i> Upload Image</button><button onclick="deleteProduct('${p.id}')" class="btn-danger"><i class="fas fa-trash"></i> Delete</button></td>
                     </tr>`).join('');
                 }
             }
-            
-            // Upload image/video to Supabase Storage
-            window.uploadProductMedia = async function(id) {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*,video/*';
-                input.onchange = async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    
-                    // Show loading
-                    Swal.fire({ title: 'Uploading...', text: 'Please wait', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-                    
-                    try {
-                        // Generate unique file name
-                        const fileExt = file.name.split('.').pop();
-                        const fileName = `${id}/${Date.now()}.${fileExt}`;
-                        const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
-                        
-                        // Upload to Supabase Storage
-                        const { error: uploadError } = await supabaseClient.storage
-                            .from(STORAGE_BUCKET)
-                            .upload(fileName, file);
-                        
-                        if (uploadError) throw uploadError;
-                        
-                        // Get public URL
-                        const { data: urlData } = supabaseClient.storage
-                            .from(STORAGE_BUCKET)
-                            .getPublicUrl(fileName);
-                        
-                        const publicUrl = urlData.publicUrl;
-                        
-                        // Update product record with media URL
-                        const { error: updateError } = await supabaseClient
-                            .from('products')
-                            .update({ media_url: publicUrl, media_type: mediaType })
-                            .eq('id', id);
-                        
-                        if (updateError) throw updateError;
-                        
-                        Swal.close();
-                        showNotification(`${mediaType === 'video' ? 'Video' : 'Image'} uploaded successfully! Customers will see it in the store.`, false, 'Uploaded');
-                        await loadProducts();
-                    } catch (error) {
-                        Swal.close();
-                        showNotification('Upload failed: ' + error.message, true, 'Error');
-                    }
-                };
-                input.click();
-            };
-            
-            // Delete product and its associated media from storage
-            window.deleteProductWithMedia = async function(id, mediaUrl) {
-                if (!await confirmAction('Delete this product? Media will also be removed from storage.', 'Delete Product')) return;
-                
-                try {
-                    // Delete media file from storage if exists
-                    if (mediaUrl) {
-                        // Extract file path from URL
-                        const urlParts = mediaUrl.split('/');
-                        const filePath = urlParts.slice(urlParts.indexOf(STORAGE_BUCKET) + 1).join('/');
-                        if (filePath) {
-                            await supabaseClient.storage.from(STORAGE_BUCKET).remove([filePath]);
-                        }
-                    }
-                    
-                    // Soft delete product
-                    await supabaseClient.from('products').update({ is_active: false }).eq('id', id);
-                    showNotification('Product deleted successfully', false, 'Deleted');
-                    await loadProducts();
-                    await loadStats();
-                } catch (error) {
-                    showNotification('Error deleting product: ' + error.message, true, 'Error');
-                }
-            };
-            
+
             // Edit product with professional popup
             window.editProduct = async function(id) {
                 const product = allProducts.find(p => p.id === id);
@@ -1043,13 +920,6 @@
                         <input id="editName" class="swal2-input" placeholder="Product Name" value="${product.name}">
                         <input id="editPrice" class="swal2-input" placeholder="Price" value="${product.price}">
                         <input id="editStock" class="swal2-input" placeholder="Stock Quantity" value="${product.stock_quantity}">
-                        <select id="editCategory" class="swal2-select">
-                            <option ${product.category === 'LED Bulbs' ? 'selected' : ''}>LED Bulbs</option>
-                            <option ${product.category === 'Energy Saving' ? 'selected' : ''}>Energy Saving</option>
-                            <option ${product.category === 'Decorative' ? 'selected' : ''}>Decorative</option>
-                            <option ${product.category === 'Street Light' ? 'selected' : ''}>Street Light</option>
-                            <option ${product.category === 'Solar' ? 'selected' : ''}>Solar</option>
-                        </select>
                     `,
                     focusConfirm: false,
                     background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
@@ -1059,8 +929,7 @@
                         return {
                             name: document.getElementById('editName').value,
                             price: parseFloat(document.getElementById('editPrice').value),
-                            stock: parseInt(document.getElementById('editStock').value) || 0,
-                            category: document.getElementById('editCategory').value
+                            stock: parseInt(document.getElementById('editStock').value) || 0
                         };
                     }
                 });
@@ -1068,12 +937,31 @@
                     await supabaseClient.from('products').update({
                         name: formData.name,
                         price: formData.price,
-                        stock_quantity: formData.stock,
-                        category: formData.category
+                        stock_quantity: formData.stock
                     }).eq('id', id);
                     showNotification('Product updated successfully!', false, 'Updated');
                     await loadProducts();
                 }
+            };
+
+            // Upload product image from PC/Mobile
+            window.uploadProductImage = async function(id) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = async (ev) => {
+                            await supabaseClient.from('products').update({ image_url: ev.target.result }).eq('id', id);
+                            showNotification('Product image uploaded successfully!', false, 'Uploaded');
+                            await loadProducts();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
             };
 
             window.addNewProduct = async function() {
@@ -1097,8 +985,12 @@
             };
 
             window.deleteProduct = async function(id){ 
-                const product = allProducts.find(p => p.id === id);
-                await window.deleteProductWithMedia(id, product?.media_url);
+                if(await confirmAction('Delete this product?', 'Delete Product')){ 
+                    await supabaseClient.from('products').update({is_active:false}).eq('id',id); 
+                    showNotification('Product deleted successfully', false, 'Deleted'); 
+                    await loadProducts(); 
+                    await loadStats(); 
+                } 
             };
             
             window.searchProducts = function() { 
@@ -1260,26 +1152,14 @@
                 loadWithdrawals();
             };
             
-            // ============================================================
-            // ENHANCED ORDERS FUNCTION - WITH BUYER NAME & PHONE FETCHING
-            // ============================================================
-            
             async function loadOrders() { 
                 const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
                 allOrders = data || [];
-                
-                // Create buyer lookup map
-                const buyerMap = new Map();
-                allBuyers.forEach(b => {
-                    buyerMap.set(b.email?.toLowerCase(), b);
-                    buyerMap.set(b.full_name?.toLowerCase(), b);
-                });
-                
                 const ordersList = document.getElementById('ordersList');
                 if (!ordersList) return;
                 
                 if (!allOrders || allOrders.length === 0) {
-                    ordersList.innerHTML = '<tr><td colspan="11" class="empty-state"><i class="fas fa-inbox"></i> No orders found</td></tr>';
+                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i> No orders found</td></tr>';
                     return;
                 }
                 
@@ -1296,43 +1176,11 @@
                         productsList = o.notes || '-';
                     }
                     
-                    // Fetch buyer name and phone
-                    let buyerName = o.customer_name || o.user_type || 'buyer';
-                    let buyerPhone = '-';
-                    
-                    // Try to match by email
-                    if (o.buyer_email && buyerMap.has(o.buyer_email.toLowerCase())) {
-                        const buyer = buyerMap.get(o.buyer_email.toLowerCase());
-                        buyerName = buyer.full_name;
-                        buyerPhone = buyer.phone || '-';
-                    }
-                    // Try to match by customer name
-                    else if (o.customer_name && buyerMap.has(o.customer_name.toLowerCase())) {
-                        const buyer = buyerMap.get(o.customer_name.toLowerCase());
-                        buyerName = buyer.full_name;
-                        buyerPhone = buyer.phone || '-';
-                    }
-                    // Try to match by user_type if it's an email
-                    else if (o.user_type && o.user_type.includes('@') && buyerMap.has(o.user_type.toLowerCase())) {
-                        const buyer = buyerMap.get(o.user_type.toLowerCase());
-                        buyerName = buyer.full_name;
-                        buyerPhone = buyer.phone || '-';
-                    }
-                    // Try partial match
-                    else if (o.customer_name) {
-                        const match = allBuyers.find(b => o.customer_name.toLowerCase().includes(b.full_name.toLowerCase()));
-                        if (match) {
-                            buyerName = match.full_name;
-                            buyerPhone = match.phone || '-';
-                        }
-                    }
-                    
                     return `
                         <tr>
                             <td><strong>${o.id?.slice(0, 12)}...</strong><br><small style="color:#E8B13C;">${o.id}</small></td>
-                            <td><i class="fas fa-user"></i> <strong>${escapeHtml(buyerName)}</strong></td>
-                            <td><i class="fas fa-phone"></i> ${escapeHtml(buyerPhone)}</td>
-                            <td><small>${escapeHtml(productsList.substring(0, 50))}${productsList.length > 50 ? '...' : ''}</small></td>
+                            <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
+                            <td><small>${productsList.substring(0, 50)}${productsList.length > 50 ? '...' : ''}</small></td>
                             <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
                             <td>${new Date(o.order_date).toLocaleDateString()}</td>
                             <td>${o.payment_method || '-'}</td>
@@ -1342,7 +1190,7 @@
                                     <option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option>
                                 </select>
                               </td>
-                            <td><small>${escapeHtml(o.delivery_address?.substring(0, 30) || '-')}</small></td>
+                            <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
                             <td>
                                 <select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding: 5px; background: rgba(0,0,0,0.3);">
                                     <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option>
@@ -1360,8 +1208,6 @@
                     `;
                 }).join('');
             }
-            
-            function escapeHtml(str) { if(!str) return '-'; return str.replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }); }
             
             window.editOrder = async function(id) {
                 const order = allOrders.find(o => o.id === id);
@@ -1439,11 +1285,10 @@
                 if (!ordersList) return;
                 
                 if (filtered.length === 0) {
-                    ordersList.innerHTML = '<tr><td colspan="11" class="empty-state"><i class="fas fa-search"></i> No orders found</td></tr>';
+                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-search"></i> No orders found</td></tr>';
                     return;
                 }
                 
-                // Re-render filtered orders (simplified)
                 ordersList.innerHTML = filtered.map(o => `...`).join('');
             };
             
@@ -1568,7 +1413,7 @@
                 const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
                 const buyersList = document.getElementById('buyersList');
                 if (buyersList) {
-                    buyersList.innerHTML = filtered.map(b=>`<tr>...</td>`).join('');
+                    buyersList.innerHTML = filtered.map(b=>`<tr>...</tr>`).join('');
                 }
             };
             
