@@ -563,7 +563,7 @@
         .chat-users-panel { width: 350px; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid rgba(232,177,60,0.2); }
         .chat-users-header { padding: 18px; background: #0a2f24; border-bottom: 1px solid rgba(232,177,60,0.3); }
         .chat-users-header h3 { color: #E8B13C; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
-        .chat-users-header input { width: 100%; margin-top: 12px; padding: 8px; border-radius: 40px; background: rgba(255,255,255,0.1); border: none; color: white; padding-left: 15px; }
+        .chat-users-header input { width: 100%; margin-top: 12px; padding: 10px; border-radius: 40px; background: rgba(255,255,255,0.1); border: none; color: white; }
         .chat-users-list { flex: 1; overflow-y: auto; padding: 10px; }
         .chat-user-item { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 20px; cursor: pointer; transition: all 0.2s; margin-bottom: 6px; background: rgba(255,255,255,0.03); border: 1px solid transparent; }
         .chat-user-item:hover { background: rgba(232,177,60,0.1); border-color: rgba(232,177,60,0.3); }
@@ -670,13 +670,13 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -709,7 +709,7 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
         <!-- Withdrawals Section -->
@@ -721,7 +721,7 @@
                 <button onclick="resetWithdrawalSearch()" class="btn-primary"><i class="fas fa-sync"></i> Reset</button>
             </div>
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
@@ -742,7 +742,7 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
         <!-- Orders Section -->
@@ -1082,7 +1082,7 @@
                                 <button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success"><i class="fas fa-check"></i> Approve</button>
                                 <button onclick="rejectWithdrawal('${w.id}')" class="btn-danger"><i class="fas fa-times"></i> Reject</button>
                             ` : `<span class="status-badge status-active">Processed</span>`}
-                         </td>
+                          </td>
                     </tr>
                 `).join('');
             }
@@ -1229,7 +1229,7 @@
                 if (!ordersList) return;
                 
                 if (filtered.length === 0) {
-                    ordersList.innerHTML = '<td><td colspan="10" class="empty-state"><i class="fas fa-search"></i> No orders found</td></tr>';
+                    ordersList.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-search"></i> No orders found</td></tr>';
                     return;
                 }
                 
@@ -1401,7 +1401,7 @@
                 window.location.href = 'index.html'; 
             };
             
-            // ========== CHAT FUNCTIONALITY (FIXED FOR YOUR BUYER FILE) ==========
+            // ========== CHAT FUNCTIONALITY (FIXED) ==========
             let currentChatUser = null;
             let currentChatType = null;
             
@@ -1411,44 +1411,51 @@
             };
             
             async function loadChatUsers() {
-                // Get all messages from the contact_messages table
+                // Get all messages
                 const { data: messages } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
                 
-                // Build unique contacts from buyers and investors
+                // Build contacts from buyers and investors
                 const contactsMap = new Map();
                 
                 // Add all buyers
                 allBuyers.forEach(b => {
-                    contactsMap.set(`buyer_${b.id}`, { id: b.id, type: 'buyer', name: b.full_name, lastMsg: 'Click to message', unread: 0, lastTime: '' });
+                    contactsMap.set(`buyer_${b.id}`, { id: b.id, type: 'buyer', name: b.full_name, lastMsg: 'Click to message', unread: 0 });
                 });
                 
                 // Add all investors
                 allInvestors.forEach(i => {
-                    contactsMap.set(`investor_${i.id}`, { id: i.id, type: 'investor', name: i.full_name, lastMsg: 'Click to message', unread: 0, lastTime: '' });
+                    contactsMap.set(`investor_${i.id}`, { id: i.id, type: 'investor', name: i.full_name, lastMsg: 'Click to message', unread: 0 });
                 });
                 
-                // Update with actual message data
-                if(messages) {
+                // Update with message data
+                if(messages && messages.length > 0) {
                     for(let msg of messages) {
-                        // Check both buyer_id and user_id fields
-                        const contactId = msg.buyer_id || msg.user_id;
-                        const contactType = msg.user_type || (msg.buyer_id ? 'buyer' : 'investor');
-                        const key = `${contactType}_${contactId}`;
+                        let contactId = null;
+                        let contactType = null;
                         
-                        if(contactsMap.has(key)) {
-                            let contact = contactsMap.get(key);
-                            contact.lastMsg = msg.message?.substring(0, 40) || '';
-                            contact.lastTime = msg.created_at;
-                            if(msg.receiver_type === 'admin' && !msg.is_admin_read) {
-                                contact.unread += 1;
+                        if(msg.buyer_id) {
+                            contactId = msg.buyer_id;
+                            contactType = 'buyer';
+                        } else if(msg.user_id) {
+                            contactId = msg.user_id;
+                            contactType = msg.user_type;
+                        }
+                        
+                        if(contactId && contactType) {
+                            const key = `${contactType}_${contactId}`;
+                            if(contactsMap.has(key)) {
+                                let contact = contactsMap.get(key);
+                                contact.lastMsg = msg.message?.substring(0, 40) || '';
+                                if(msg.receiver_type === 'admin' && !msg.is_admin_read) {
+                                    contact.unread += 1;
+                                }
+                                contactsMap.set(key, contact);
                             }
-                            contactsMap.set(key, contact);
                         }
                     }
                 }
                 
                 let contactsArray = Array.from(contactsMap.values());
-                contactsArray.sort((a,b) => new Date(b.lastTime || 0) - new Date(a.lastTime || 0));
                 
                 const totalUnread = contactsArray.reduce((sum,c) => sum + (c.unread||0), 0);
                 document.getElementById('chatUnreadTotal').innerText = totalUnread;
@@ -1507,37 +1514,50 @@
                     .eq('buyer_id', id)
                     .eq('receiver_type', 'admin');
                 
-                await supabaseClient.from('contact_messages')
-                    .update({ is_admin_read: true })
-                    .eq('user_id', id)
-                    .eq('receiver_type', 'admin');
-                
                 await loadChatUsers();
             };
             
             async function loadConversation(userId, userType) {
-                // Try both buyer_id and user_id columns
-                let { data } = await supabaseClient.from('contact_messages')
+                // Query for messages where buyer_id matches (for buyers)
+                let { data: messages1 } = await supabaseClient.from('contact_messages')
                     .select('*')
-                    .or(`buyer_id.eq.${userId},user_id.eq.${userId}`)
+                    .eq('buyer_id', userId)
                     .order('created_at', { ascending: true });
                 
-                const msgs = data || [];
+                // Also query for messages where user_id matches (for investors)
+                let { data: messages2 } = await supabaseClient.from('contact_messages')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .order('created_at', { ascending: true });
+                
+                // Combine and deduplicate
+                let allMsgs = [...(messages1 || []), ...(messages2 || [])];
+                const uniqueMsgs = [];
+                const seenIds = new Set();
+                for(const msg of allMsgs) {
+                    if(!seenIds.has(msg.id)) {
+                        seenIds.add(msg.id);
+                        uniqueMsgs.push(msg);
+                    }
+                }
+                uniqueMsgs.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+                
                 const area = document.getElementById('chatMessagesArea');
-                if(!msgs.length) { 
+                if(!uniqueMsgs.length) { 
                     area.innerHTML = '<div class="empty-chat"><i class="fas fa-comment"></i><p>No messages yet. Send a message to start conversation.</p></div>'; 
                     return; 
                 }
-                area.innerHTML = msgs.map(msg => `
+                
+                area.innerHTML = uniqueMsgs.map(msg => `
                     <div class="message-bubble ${msg.sender_type === 'admin' ? 'message-sent' : 'message-received'}">
-                        ${escapeHtmlContent(msg.message)}
+                        ${escapeHtml(msg.message)}
                         <div class="message-time">${new Date(msg.created_at).toLocaleString()}</div>
                     </div>
                 `).join('');
                 area.scrollTop = area.scrollHeight;
             }
             
-            function escapeHtmlContent(str) {
+            function escapeHtml(str) {
                 if(!str) return '';
                 return str.replace(/[&<>]/g, function(m) {
                     if(m === '&') return '&amp;';
@@ -1558,7 +1578,7 @@
                 const newMsg = {
                     id: crypto.randomUUID(),
                     buyer_id: currentChatType === 'buyer' ? currentChatUser : null,
-                    user_id: currentChatUser,
+                    user_id: currentChatType !== 'buyer' ? currentChatUser : null,
                     user_type: currentChatType,
                     sender_type: 'admin',
                     receiver_type: currentChatType,
@@ -1572,7 +1592,7 @@
                 if(error) { 
                     showNotification('Error: ' + error.message, true);
                 } else {
-                    showNotification(`Reply sent to ${currentChatUser === 'buyer' ? 'Customer' : 'Investor'}`, false);
+                    showNotification(`Reply sent to ${currentChatType === 'buyer' ? 'Customer' : 'Investor'}`, false);
                 }
                 input.value = '';
                 await loadConversation(currentChatUser, currentChatType);
@@ -1581,7 +1601,7 @@
             
             function setupChatRealtime() {
                 supabaseClient.channel('public:contact_messages')
-                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'contact_messages' }, payload => {
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, payload => {
                         if(document.getElementById('chatSection')?.classList.contains('active')) {
                             loadChatUsers();
                             if(currentChatUser && (payload.new.buyer_id === currentChatUser || payload.new.user_id === currentChatUser)) {
