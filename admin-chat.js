@@ -1,41 +1,36 @@
 // ============================================
-// SEPARATE CHAT MODULE - NO CONFLICTS
-// Works with your existing admin.js
+// ADMIN CHAT SYSTEM - Standalone Module
+// ============================================
+// This file handles all chat functionality for the admin panel
 // Save as: admin-chat.js
+// Include in HTML after admin.js: <script src="admin-chat.js"></script>
 // ============================================
 
 (function() {
     'use strict';
     
-    // Chat configuration
-    const CHAT_SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-    const CHAT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+    // Configuration
+    const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
     
-    let chatSupabase = null;
+    // State variables
+    let supabaseChat = null;
     let currentChatUser = null;
     let currentChatType = null;
     let currentChatName = null;
+    let allInvestors = [];
+    let allBuyers = [];
     let chatInitialized = false;
     let refreshInterval = null;
     
     // DOM Elements
-    let chatUsersList = null;
-    let chatMessagesArea = null;
-    let chatHeaderPlaceholder = null;
-    let chatInputArea = null;
-    let chatMessageInput = null;
-    let sendChatBtn = null;
-    let chatSearch = null;
-    let chatUnreadBadge = null;
+    let chatUsersList, chatMessagesArea, chatHeaderPlaceholder, chatInputArea;
+    let chatMessageInput, sendChatBtn, chatSearch, chatUnreadBadge;
     
-    // Helper to get investors and buyers from global variables
-    function getInvestorsAndBuyers() {
-        const investors = (typeof window.allInvestors !== 'undefined') ? window.allInvestors : [];
-        const buyers = (typeof window.allBuyers !== 'undefined') ? window.allBuyers : [];
-        return { investors, buyers };
-    }
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
     
-    // Escape HTML
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -46,48 +41,64 @@
         });
     }
     
-    // Show notification (reuse existing function if available)
-    function showChatNotification(message, isError) {
-        if (typeof window.showNotification === 'function') {
-            window.showNotification(message, isError);
-        } else {
-            const toast = document.createElement('div');
-            toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
-            toast.innerHTML = isError ? `⚠️ ${message}` : `✨ ${message}`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast-notification toast-${type === 'success' ? 'success' : 'error'}`;
+        toast.innerHTML = type === 'success' ? `✅ ${message}` : `❌ ${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    // ============================================
+    // DATA LOADING FUNCTIONS
+    // ============================================
+    
+    function loadInvestorsAndBuyers() {
+        // Try to get data from global variables (set by main admin.js)
+        if (typeof window.allInvestors !== 'undefined' && window.allInvestors) {
+            allInvestors = window.allInvestors;
+        }
+        if (typeof window.allBuyers !== 'undefined' && window.allBuyers) {
+            allBuyers = window.allBuyers;
+        }
+        
+        // If not available, fetch directly from Supabase
+        if (allInvestors.length === 0 || allBuyers.length === 0) {
+            const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+            if (supabase) {
+                Promise.all([
+                    supabase.from('investors').select('*'),
+                    supabase.from('buyers').select('*')
+                ]).then(([investorsRes, buyersRes]) => {
+                    if (investorsRes.data) allInvestors = investorsRes.data;
+                    if (buyersRes.data) allBuyers = buyersRes.data;
+                    loadChatContacts();
+                }).catch(err => console.error('Error fetching users:', err));
+            }
         }
     }
     
-    // Initialize Supabase for chat
-    function initChatSupabase() {
-        if (typeof supabase === 'undefined') {
-            console.error('[Chat] Supabase not loaded');
-            return false;
-        }
-        chatSupabase = supabase.createClient(CHAT_SUPABASE_URL, CHAT_SUPABASE_ANON_KEY);
-        return true;
-    }
+    // ============================================
+    // CHAT CONTACTS LIST
+    // ============================================
     
-    // Load chat contacts
     async function loadChatContacts() {
-        if (!chatSupabase) return;
+        if (!supabaseChat) return;
         
         try {
-            const { investors, buyers } = getInvestorsAndBuyers();
-            
-            const { data: messages, error } = await chatSupabase
+            // Get all messages
+            const { data: messages, error } = await supabaseChat
                 .from('contact_messages')
                 .select('*')
                 .order('created_at', { ascending: false });
             
             if (error) throw error;
             
-            // Build contacts map
+            // Build contacts map from investors and buyers
             const contactsMap = new Map();
             
             // Add all buyers
-            buyers.forEach(buyer => {
+            allBuyers.forEach(buyer => {
                 contactsMap.set(`buyer_${buyer.id}`, {
                     id: buyer.id,
                     type: 'buyer',
@@ -100,7 +111,7 @@
             });
             
             // Add all investors
-            investors.forEach(investor => {
+            allInvestors.forEach(investor => {
                 contactsMap.set(`investor_${investor.id}`, {
                     id: investor.id,
                     type: 'investor',
@@ -112,7 +123,7 @@
                 });
             });
             
-            // Update with message data
+            // Update with actual message data
             if (messages && messages.length > 0) {
                 for (const msg of messages) {
                     let contactId = msg.buyer_id || msg.user_id;
@@ -125,6 +136,7 @@
                             contact.lastMsg = msg.message ? msg.message.substring(0, 40) : '';
                             contact.timestamp = msg.created_at;
                             
+                            // Count unread messages (received by admin, not read)
                             if (msg.receiver_type === 'admin' && !msg.is_admin_read) {
                                 contact.unread = (contact.unread || 0) + 1;
                             }
@@ -134,7 +146,7 @@
                 }
             }
             
-            // Convert to array and sort
+            // Convert to array and sort by latest message
             let contactsArray = Array.from(contactsMap.values());
             contactsArray.sort((a, b) => {
                 if (!a.timestamp && !b.timestamp) return 0;
@@ -154,11 +166,14 @@
                 }
             }
             
-            // Render contacts
+            // Render contacts list
             renderContactsList(contactsArray);
             
         } catch (err) {
-            console.error('[Chat] Error loading contacts:', err);
+            console.error('Error loading chat contacts:', err);
+            if (chatUsersList) {
+                chatUsersList.innerHTML = '<div class="empty-state">Error loading contacts. Please refresh.</div>';
+            }
         }
     }
     
@@ -176,7 +191,7 @@
             const activeClass = isActive ? 'active' : '';
             
             html += `
-                <div class="chat-user-item ${activeClass}" data-chat-id="${contact.id}" data-chat-type="${contact.type}" data-chat-name="${escapeHtml(contact.name)}">
+                <div class="chat-user-item ${activeClass}" data-user-id="${contact.id}" data-user-type="${contact.type}" data-user-name="${escapeHtml(contact.name)}">
                     <div class="user-avatar">${contact.name ? contact.name.charAt(0).toUpperCase() : '?'}</div>
                     <div class="user-info">
                         <div class="user-name">${escapeHtml(contact.name)} <span class="user-type">(${contact.type === 'buyer' ? 'Customer' : 'Investor'})</span></div>
@@ -189,18 +204,18 @@
         
         chatUsersList.innerHTML = html;
         
-        // Attach click events
-        const items = chatUsersList.querySelectorAll('.chat-user-item');
-        items.forEach(item => {
+        // Attach click events to contact items
+        const contactItems = chatUsersList.querySelectorAll('.chat-user-item');
+        contactItems.forEach(item => {
             item.addEventListener('click', () => {
-                const userId = item.dataset.chatId;
-                const userType = item.dataset.chatType;
-                const userName = item.dataset.chatName;
+                const userId = item.dataset.userId;
+                const userType = item.dataset.userType;
+                const userName = item.dataset.userName;
                 selectChatContact(userId, userType, userName);
             });
         });
         
-        // Search functionality
+        // Setup search functionality
         if (chatSearch) {
             const originalContacts = [...contacts];
             chatSearch.oninput = function() {
@@ -211,11 +226,16 @@
         }
     }
     
+    // ============================================
+    // CONVERSATION FUNCTIONS
+    // ============================================
+    
     async function selectChatContact(userId, userType, userName) {
         currentChatUser = userId;
         currentChatType = userType;
         currentChatName = userName;
         
+        // Update header
         if (chatHeaderPlaceholder) {
             chatHeaderPlaceholder.innerHTML = `
                 <div class="user-avatar" style="width:45px;height:45px;">${userName ? userName.charAt(0).toUpperCase() : '?'}</div>
@@ -226,40 +246,44 @@
             `;
         }
         
+        // Show input area
         if (chatInputArea) {
             chatInputArea.style.display = 'flex';
         }
         
+        // Load conversation
         await loadConversation(userId, userType);
         
         // Mark messages as read
-        if (chatSupabase) {
-            await chatSupabase
-                .from('contact_messages')
-                .update({ is_admin_read: true })
-                .eq('buyer_id', userId)
-                .eq('receiver_type', 'admin');
-        }
+        await supabaseChat
+            .from('contact_messages')
+            .update({ is_admin_read: true })
+            .eq('buyer_id', userId)
+            .eq('receiver_type', 'admin');
         
+        // Refresh contacts to update unread counts
         await loadChatContacts();
     }
     
     async function loadConversation(userId, userType) {
-        if (!chatSupabase) return;
+        if (!supabaseChat) return;
         
         try {
-            const { data: messages1 } = await chatSupabase
+            // Get messages where buyer_id matches (for buyers)
+            const { data: messages1 } = await supabaseChat
                 .from('contact_messages')
                 .select('*')
                 .eq('buyer_id', userId)
                 .order('created_at', { ascending: true });
             
-            const { data: messages2 } = await chatSupabase
+            // Get messages where user_id matches (for investors)
+            const { data: messages2 } = await supabaseChat
                 .from('contact_messages')
                 .select('*')
                 .eq('user_id', userId)
                 .order('created_at', { ascending: true });
             
+            // Combine and deduplicate messages
             let allMessages = [...(messages1 || []), ...(messages2 || [])];
             const uniqueMessages = [];
             const seenIds = new Set();
@@ -271,11 +295,14 @@
                 }
             }
             
+            // Sort by creation time
             uniqueMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            
+            // Render messages
             renderMessages(uniqueMessages);
             
         } catch (err) {
-            console.error('[Chat] Error loading conversation:', err);
+            console.error('Error loading conversation:', err);
             if (chatMessagesArea) {
                 chatMessagesArea.innerHTML = '<div class="empty-chat"><i class="fas fa-exclamation-triangle"></i><p>Error loading messages</p></div>';
             }
@@ -297,7 +324,7 @@
             const time = new Date(msg.created_at).toLocaleString();
             
             html += `
-                <div class="message-bubble ${bubbleClass}">
+                <div class="message-bubble ${bubbleClass}" data-msg-id="${msg.id}">
                     ${escapeHtml(msg.message)}
                     <div class="message-time">${time}</div>
                 </div>
@@ -305,23 +332,29 @@
         }
         
         chatMessagesArea.innerHTML = html;
+        
+        // Scroll to bottom
         chatMessagesArea.scrollTop = chatMessagesArea.scrollHeight;
     }
     
+    // ============================================
+    // SEND MESSAGE FUNCTION
+    // ============================================
+    
     async function sendMessage() {
-        if (!chatSupabase) {
-            showChatNotification('Chat not initialized', true);
+        if (!supabaseChat) {
+            showToast('Chat not initialized', 'error');
             return;
         }
         
         if (!currentChatUser) {
-            showChatNotification('Please select a contact first', true);
+            showToast('Please select a contact first', 'error');
             return;
         }
         
         const message = chatMessageInput ? chatMessageInput.value.trim() : '';
         if (!message) {
-            showChatNotification('Please enter a message', true);
+            showToast('Please enter a message', 'error');
             return;
         }
         
@@ -339,36 +372,47 @@
         };
         
         try {
-            const { error } = await chatSupabase
+            const { error } = await supabaseChat
                 .from('contact_messages')
                 .insert([newMessage]);
             
             if (error) throw error;
             
+            // Clear input
             if (chatMessageInput) chatMessageInput.value = '';
             
+            // Reload conversation
             await loadConversation(currentChatUser, currentChatType);
+            
+            // Refresh contacts list
             await loadChatContacts();
             
-            showChatNotification(`Message sent to ${currentChatName} from Sohrab Industries Support`, false);
+            showToast(`Message sent to ${currentChatName} from Sohrab Industries Support`, 'success');
             
         } catch (err) {
-            console.error('[Chat] Error sending message:', err);
-            showChatNotification('Error sending message: ' + err.message, true);
+            console.error('Error sending message:', err);
+            showToast('Error sending message: ' + err.message, 'error');
         }
     }
     
+    // ============================================
+    // REAL-TIME SUBSCRIPTION
+    // ============================================
+    
     function setupRealtimeSubscription() {
-        if (!chatSupabase) return;
+        if (!supabaseChat) return;
         
-        chatSupabase
-            .channel('admin-chat-channel')
+        const channel = supabaseChat
+            .channel('admin-chat')
             .on('postgres_changes', {
                 event: '*',
                 schema: 'public',
                 table: 'contact_messages'
             }, (payload) => {
+                // Refresh contacts list
                 loadChatContacts();
+                
+                // If the current conversation is affected, reload it
                 if (currentChatUser) {
                     const newMsg = payload.new;
                     if (newMsg && (newMsg.buyer_id === currentChatUser || newMsg.user_id === currentChatUser)) {
@@ -379,15 +423,9 @@
             .subscribe();
     }
     
-    function startPeriodicRefresh() {
-        if (refreshInterval) clearInterval(refreshInterval);
-        refreshInterval = setInterval(() => {
-            const chatSection = document.getElementById('chatSection');
-            if (chatSection && chatSection.classList.contains('active')) {
-                loadChatContacts();
-            }
-        }, 5000);
-    }
+    // ============================================
+    // INITIALIZATION
+    // ============================================
     
     function getDOMElements() {
         chatUsersList = document.getElementById('chatUsersList');
@@ -415,52 +453,76 @@
         }
     }
     
-    // Check if chat section exists
-    function chatSectionExists() {
-        return document.getElementById('chatSection') !== null;
+    function initSupabase() {
+        if (typeof supabase !== 'undefined') {
+            supabaseChat = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            return true;
+        } else {
+            console.error('Supabase library not loaded');
+            return false;
+        }
     }
     
-    // Initialize chat module
-    function initChat() {
+    function startPeriodicRefresh() {
+        // Refresh contacts every 5 seconds as fallback for real-time
+        if (refreshInterval) clearInterval(refreshInterval);
+        refreshInterval = setInterval(() => {
+            if (document.getElementById('chatSection') && 
+                document.getElementById('chatSection').classList.contains('active')) {
+                loadChatContacts();
+            }
+        }, 5000);
+    }
+    
+    function init() {
         if (chatInitialized) return;
         
-        if (!chatSectionExists()) {
-            console.log('[Chat] Chat section not found, skipping initialization');
-            return;
-        }
-        
+        // Get DOM elements
         getDOMElements();
         
-        if (!initChatSupabase()) {
-            console.error('[Chat] Failed to initialize Supabase');
-            return;
-        }
+        // Initialize Supabase
+        if (!initSupabase()) return;
         
+        // Attach event listeners
         attachEventListeners();
+        
+        // Load initial data
+        loadInvestorsAndBuyers();
+        
+        // Setup real-time subscription
         setupRealtimeSubscription();
+        
+        // Start periodic refresh
         startPeriodicRefresh();
         
-        // Initial load after a delay to ensure main data is loaded
-        setTimeout(() => {
-            loadChatContacts();
-        }, 1500);
-        
         chatInitialized = true;
-        console.log('[Chat] Chat module initialized successfully');
+        console.log('Chat system initialized');
     }
     
-    // Start initialization when DOM is ready
+    // Wait for DOM to be ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initChat);
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        setTimeout(initChat, 500);
+        // If DOM is already loaded, wait a bit for main data to be available
+        setTimeout(init, 500);
     }
     
-    // Also try when window loads
-    window.addEventListener('load', function() {
-        if (!chatInitialized && chatSectionExists()) {
-            setTimeout(initChat, 300);
+    // Also try to initialize when main data might be loaded
+    setTimeout(() => {
+        if (!chatInitialized) {
+            loadInvestorsAndBuyers();
+            if (supabaseChat) {
+                loadChatContacts();
+                setupRealtimeSubscription();
+            }
         }
-    });
+    }, 2000);
+    
+    // Expose some functions globally for debugging if needed
+    window.chatSystem = {
+        refreshContacts: loadChatContacts,
+        sendMessage: sendMessage,
+        getCurrentUser: () => ({ id: currentChatUser, type: currentChatType, name: currentChatName })
+    };
     
 })();
