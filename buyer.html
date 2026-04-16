@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sohrab Industries | Premium Buyer Dashboard - Shop LED Bulbs</title>
+    <title>Sohrab Industries | Premium LED Solutions - Shop Quality Bulbs</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Swiper for carousel -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -34,6 +37,33 @@
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
         
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideInModal {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes blinkRed {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes typingDots {
+            0%, 20% { opacity: 0.2; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+            80%, 100% { opacity: 0.2; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Header Styles */
         .buyer-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -146,16 +176,24 @@
             z-index: 2;
         }
         
-        .hero-banner {
+        /* Hero Carousel */
+        .hero-carousel {
+            margin-bottom: 2rem;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+        .swiper {
+            border-radius: 28px;
+            overflow: hidden;
+        }
+        .swiper-slide {
             background: linear-gradient(135deg, rgba(232,177,60,0.15), rgba(30,78,62,0.3));
             backdrop-filter: blur(10px);
-            border-radius: 28px;
             padding: 3rem;
             text-align: center;
-            margin-bottom: 2rem;
             border: 1px solid rgba(232,177,60,0.3);
         }
-        .hero-banner h2 {
+        .swiper-slide h2 {
             font-size: 2rem;
             font-family: 'Playfair Display', serif;
             background: linear-gradient(135deg, #E8B13C, #ffd966);
@@ -163,7 +201,43 @@
             background-clip: text;
             color: transparent;
         }
-        .hero-banner p { color: rgba(255,255,255,0.8); margin-top: 10px; }
+        .swiper-slide p { color: rgba(255,255,255,0.8); margin-top: 10px; }
+        .swiper-button-next, .swiper-button-prev { color: #E8B13C; }
+        .swiper-pagination-bullet-active { background: #E8B13C; }
+        
+        /* Countdown Timer */
+        .countdown-timer {
+            background: linear-gradient(135deg, rgba(232,177,60,0.2), rgba(30,78,62,0.3));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        .countdown-timer h3 { color: #E8B13C; margin-bottom: 15px; font-size: 1.3rem; }
+        .countdown-numbers {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .countdown-block {
+            background: rgba(0,0,0,0.3);
+            padding: 15px 25px;
+            border-radius: 15px;
+            min-width: 80px;
+        }
+        .countdown-block span:first-child {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #E8B13C;
+            display: block;
+        }
+        .countdown-block span:last-child {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+        }
         
         .tabs {
             display: flex;
@@ -211,10 +285,6 @@
             animation: fadeSlideUp 0.4s ease-out;
         }
         .tab-content.active { display: block; }
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
         
         .section-title {
             font-size: 1.5rem;
@@ -228,6 +298,7 @@
             padding-left: 18px;
         }
         
+        /* Categories */
         .categories {
             display: flex;
             gap: 12px;
@@ -247,7 +318,11 @@
             transition: all 0.3s;
             font-weight: 500;
             color: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+        .category-btn i { font-size: 1rem; }
         .category-btn.active, .category-btn:hover {
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             color: #0a1f1a;
@@ -255,6 +330,7 @@
             transform: translateY(-2px);
         }
         
+        /* Products Grid */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -267,43 +343,189 @@
             overflow: hidden;
             border: 1px solid rgba(232,177,60,0.2);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
         }
         .product-card:hover {
             transform: translateY(-8px);
             border-color: #E8B13C;
             box-shadow: 0 20px 40px rgba(232,177,60,0.2);
         }
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            z-index: 2;
+        }
+        .badge-sale { background: #dc3545; color: white; }
+        .badge-new { background: #28a745; color: white; }
+        .badge-featured { background: #E8B13C; color: #0a1f1a; }
         .product-image {
             background: linear-gradient(135deg, rgba(232,177,60,0.1), rgba(30,78,62,0.2));
-            height: 200px;
+            height: 220px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 4rem;
             color: #E8B13C;
+            position: relative;
+            cursor: pointer;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .product-info { padding: 20px; }
         .product-name { font-size: 1.2rem; font-weight: 700; color: #E8B13C; margin-bottom: 5px; }
         .product-category { font-size: 0.75rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
         .product-price { font-size: 1.5rem; font-weight: 800; color: #E8B13C; margin: 10px 0; font-family: 'Playfair Display', serif; }
-        .product-wattage { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
-        .product-stock { font-size: 0.8rem; margin-bottom: 15px; }
-        .in-stock { color: #1e7e5e; }
-        .out-of-stock { color: #dc3545; }
-        .add-to-cart {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #E8B13C, #c99b2e);
-            color: #0a1f1a;
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .product-actions button {
+            flex: 1;
+            padding: 10px;
             border: none;
             border-radius: 40px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             transition: all 0.3s;
         }
-        .add-to-cart:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(232,177,60,0.4); }
-        .add-to-cart:disabled { background: #555; cursor: not-allowed; transform: none; }
+        .add-to-cart {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+        }
+        .view-details {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .add-to-cart:hover, .view-details:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
         
+        /* Product Detail Modal */
+        .product-detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+        .product-detail-modal.active {
+            display: block;
+            animation: fadeSlideUp 0.3s ease-out;
+        }
+        .product-detail-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 30px;
+            padding: 2rem;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        .product-detail-close {
+            float: right;
+            background: none;
+            border: none;
+            color: #E8B13C;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .product-detail-close:hover { transform: rotate(90deg); }
+        .product-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .product-gallery {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 1rem;
+        }
+        .product-gallery-main {
+            background: rgba(232,177,60,0.1);
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-gallery-main img, .product-gallery-main video {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+        }
+        .product-gallery-thumbs {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+            overflow-x: auto;
+        }
+        .gallery-thumb {
+            width: 80px;
+            height: 80px;
+            background: rgba(232,177,60,0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .gallery-thumb:hover, .gallery-thumb.active {
+            border: 2px solid #E8B13C;
+            transform: scale(1.05);
+        }
+        .gallery-thumb img, .gallery-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .product-detail-info h2 { color: #E8B13C; font-size: 2rem; margin-bottom: 1rem; }
+        .product-detail-price { font-size: 2rem; font-weight: 800; color: #E8B13C; margin: 1rem 0; }
+        .product-detail-description { color: rgba(255,255,255,0.8); line-height: 1.6; margin: 1rem 0; }
+        .product-detail-stock { margin: 1rem 0; }
+        .product-detail-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .product-detail-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-buy { background: linear-gradient(135deg, #28a745, #1e7e5e); color: white; }
+        .btn-chat { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
+        .related-products {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(232,177,60,0.2);
+        }
+        .related-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        /* Cart Sidebar */
         .cart-sidebar {
             position: fixed;
             right: -450px;
@@ -422,10 +644,6 @@
             border: 1px solid rgba(232,177,60,0.3);
             animation: slideInModal 0.3s ease;
         }
-        @keyframes slideInModal {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
         .modal-content h2 { color: #E8B13C; margin-bottom: 20px; font-family: 'Playfair Display', serif; }
         .modal-content textarea, .modal-content select, .modal-content input {
             width: 100%;
@@ -491,20 +709,374 @@
         }
         
         .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); font-style: italic; }
-        .contact-message-card {
-            background: rgba(0,0,0,0.2);
-            border-radius: 20px;
-            padding: 15px;
-            margin-bottom: 12px;
-            border-left: 4px solid #E8B13C;
+        
+        /* ========== CHAT SYSTEM STYLES ========== */
+        .chat-float-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .chat-float-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 35px rgba(232,177,60,0.5);
+        }
+        .chat-float-icon i {
+            font-size: 28px;
+            color: #0a1f1a;
+        }
+        .chat-float-icon.has-unread {
+            background: linear-gradient(135deg, #dc3545, #c0392b);
+            animation: blinkRed 0.8s ease-in-out infinite;
+        }
+        .chat-float-icon.has-unread i {
+            color: white;
         }
         
-        .admin-reply {
-            background: rgba(232,177,60,0.15);
-            border-left: 3px solid #E8B13C;
-            margin-top: 8px;
-            padding: 10px;
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 380px;
+            height: 550px;
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            border: 1px solid rgba(232,177,60,0.3);
+            overflow: hidden;
+            animation: slideInModal 0.3s ease-out;
+        }
+        .chat-window.open {
+            display: flex;
+        }
+        .chat-header {
+            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(232,177,60,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-header h3 {
+            color: #E8B13C;
+            margin: 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-close {
+            background: none;
+            border: none;
+            color: #E8B13C;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        .chat-close:hover {
+            background: rgba(232,177,60,0.2);
+            transform: rotate(90deg);
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message {
+            max-width: 85%;
+            display: flex;
+            flex-direction: column;
+            animation: fadeSlideUp 0.3s ease-out;
+        }
+        .message.sent {
+            align-self: flex-end;
+        }
+        .message.received {
+            align-self: flex-start;
+        }
+        .message-bubble {
+            padding: 10px 14px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+        }
+        .message.sent .message-bubble {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+            border-bottom-right-radius: 4px;
+        }
+        .message.received .message-bubble {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-bottom-left-radius: 4px;
+        }
+        .message-text {
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+        .message-media {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .voice-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 180px;
+        }
+        .voice-play-btn {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        .voice-play-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        .voice-progress {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+        .voice-progress-bar {
+            height: 100%;
+            background: #E8B13C;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        .voice-time {
+            font-size: 0.7rem;
+            min-width: 40px;
+        }
+        .product-card-message {
+            background: rgba(0,0,0,0.3);
             border-radius: 12px;
+            padding: 10px;
+            margin-top: 5px;
+            display: flex;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .product-card-message:hover {
+            background: rgba(0,0,0,0.5);
+            transform: translateX(-5px);
+        }
+        .product-card-message img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .product-card-message-info {
+            flex: 1;
+        }
+        .product-card-message-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 0.85rem;
+            color: #E8B13C;
+        }
+        .product-card-message-info p {
+            margin: 0;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.7);
+        }
+        .message-time {
+            font-size: 0.65rem;
+            opacity: 0.7;
+            margin-top: 3px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .message.sent .message-time {
+            justify-content: flex-end;
+        }
+        .message-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .message:hover .message-actions {
+            opacity: 1;
+        }
+        .message-action-btn {
+            background: none;
+            border: none;
+            color: #E8B13C;
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        .message-action-btn:hover {
+            background: rgba(232,177,60,0.2);
+        }
+        .reply-preview {
+            background: rgba(232,177,60,0.1);
+            padding: 8px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            font-size: 0.75rem;
+            border-left: 3px solid #E8B13C;
+        }
+        .typing-indicator {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            display: inline-flex;
+            gap: 5px;
+            align-items: center;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+            margin: 0 15px 10px 15px;
+        }
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: #E8B13C;
+            border-radius: 50%;
+            display: inline-block;
+            animation: typingDots 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid rgba(232,177,60,0.2);
+            background: rgba(0,0,0,0.2);
+        }
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+        .chat-input {
+            flex: 1;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(232,177,60,0.3);
+            border-radius: 20px;
+            padding: 10px 15px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            resize: none;
+            max-height: 80px;
+            font-size: 0.85rem;
+        }
+        .chat-input:focus {
+            outline: none;
+            border-color: #E8B13C;
+        }
+        .chat-attach-btn, .chat-send-btn, .chat-voice-btn {
+            background: none;
+            border: none;
+            color: #E8B13C;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-attach-btn:hover, .chat-send-btn:hover, .chat-voice-btn:hover {
+            background: rgba(232,177,60,0.2);
+            transform: scale(1.1);
+        }
+        .voice-recording {
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 1002;
+            border: 1px solid rgba(232,177,60,0.3);
+            display: none;
+        }
+        .voice-recording.active {
+            display: block;
+            animation: fadeSlideUp 0.3s ease-out;
+        }
+        .voice-recording i {
+            font-size: 50px;
+            color: #dc3545;
+            animation: blinkRed 0.5s ease-in-out infinite;
+        }
+        .media-preview {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            display: none;
+            position: relative;
+        }
+        .media-preview.active {
+            display: block;
+        }
+        .media-preview img, .media-preview video {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 10px;
+        }
+        .remove-media {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         @media (max-width: 768px) {
@@ -512,6 +1084,9 @@
             .cart-sidebar { width: 100%; right: -100%; }
             .products-grid { grid-template-columns: 1fr; }
             .search-bar input { width: 180px; }
+            .product-detail-grid { grid-template-columns: 1fr; }
+            .chat-window { width: 100%; height: 100%; bottom: 0; right: 0; border-radius: 0; }
+            .chat-float-icon { bottom: 20px; right: 20px; }
         }
     </style>
 </head>
@@ -530,9 +1105,38 @@
     </div>
 
     <div class="buyer-container">
-        <div class="hero-banner">
-            <h2><i class="fas fa-lightbulb"></i> Premium Quality LED Solutions</h2>
-            <p>Energy Efficient • Long Lasting • Best Prices in Pakistan • Free Delivery on orders over Rs. 2,000</p>
+        <!-- Hero Carousel -->
+        <div class="hero-carousel">
+            <div class="swiper heroSwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <h2><i class="fas fa-lightbulb"></i> Premium LED Solutions</h2>
+                        <p>Energy Efficient • Long Lasting • Best Prices in Pakistan</p>
+                    </div>
+                    <div class="swiper-slide">
+                        <h2><i class="fas fa-truck"></i> Free Delivery</h2>
+                        <p>On orders over Rs. 2,000</p>
+                    </div>
+                    <div class="swiper-slide">
+                        <h2><i class="fas fa-percent"></i> Special Discounts</h2>
+                        <p>Up to 30% off on bulk orders</p>
+                    </div>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        
+        <!-- Countdown Timer -->
+        <div class="countdown-timer">
+            <h3><i class="fas fa-clock"></i> Special Offer Ends In:</h3>
+            <div class="countdown-numbers">
+                <div class="countdown-block"><span id="days">00</span><span>Days</span></div>
+                <div class="countdown-block"><span id="hours">00</span><span>Hours</span></div>
+                <div class="countdown-block"><span id="minutes">00</span><span>Minutes</span></div>
+                <div class="countdown-block"><span id="seconds">00</span><span>Seconds</span></div>
+            </div>
         </div>
 
         <div class="tabs">
@@ -540,6 +1144,7 @@
             <button class="tab-btn" data-tab="orders"><i class="fas fa-truck"></i> My Orders</button>
             <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> My Profile</button>
             <button class="tab-btn" data-tab="contact"><i class="fas fa-headset"></i> Contact Support</button>
+            <button class="tab-btn" data-tab="chat"><i class="fas fa-comments"></i> Live Chat</button>
         </div>
 
         <!-- Shop Tab -->
@@ -599,6 +1204,40 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Live Chat Tab -->
+        <div id="chatTab" class="tab-content">
+            <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat Support</h2>
+            <div class="form-card" style="height: 500px; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+                <div class="chat-header" style="border-radius: 20px 20px 0 0;">
+                    <h3><i class="fas fa-headset"></i> Sohrab Industries Support Team</h3>
+                    <div><span class="status-badge status-active" style="font-size: 10px;">Online</span></div>
+                </div>
+                <div id="liveChatMessages" class="chat-messages" style="flex: 1; overflow-y: auto;">
+                    <div class="empty-state" style="text-align: center; padding: 50px;">
+                        <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 15px;"></i>
+                        <p>Start a conversation with our support team</p>
+                    </div>
+                </div>
+                <div id="liveChatTyping" class="typing-indicator" style="display: none; margin: 0;">
+                    <span>Sohrab Industries Support Team (SIST) is typing</span>
+                    <span></span><span></span><span></span>
+                </div>
+                <div class="chat-input-area">
+                    <div id="liveChatReplyPreview" class="reply-preview" style="display: none;">
+                        <span>Replying to: <span id="liveChatReplyText"></span></span>
+                        <button onclick="buyerChatSystem.cancelReply()" style="background: none; border: none; color: #dc3545; float: right; cursor: pointer;">×</button>
+                    </div>
+                    <div id="liveChatMediaPreview" class="media-preview"></div>
+                    <div class="chat-input-wrapper">
+                        <textarea id="liveChatInput" class="chat-input" placeholder="Type a message..." rows="1" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();buyerChatSystem.sendMessage();}"></textarea>
+                        <button class="chat-voice-btn" onclick="buyerChatSystem.startVoiceRecording()" title="Voice Message"><i class="fas fa-microphone"></i></button>
+                        <button class="chat-attach-btn" onclick="buyerChatSystem.showAttachMenu()" title="Attach"><i class="fas fa-paperclip"></i></button>
+                        <button class="chat-send-btn" onclick="buyerChatSystem.sendMessage()" title="Send"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="overlay" id="overlay" onclick="toggleCart()"></div>
@@ -623,6 +1262,21 @@
         </div>
     </div>
 
+    <!-- Product Detail Modal -->
+    <div id="productDetailModal" class="product-detail-modal">
+        <div class="product-detail-content">
+            <button class="product-detail-close" onclick="closeProductDetail()">&times;</button>
+            <div id="productDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- Voice Recording Modal -->
+    <div id="voiceRecordingModal" class="voice-recording">
+        <i class="fas fa-microphone-alt"></i>
+        <p style="margin-top: 15px;">Recording... Click stop when done</p>
+        <button onclick="buyerChatSystem.stopVoiceRecording()" class="btn-danger" style="margin-top: 15px; background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer;">Stop Recording</button>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         (function() {
@@ -634,6 +1288,43 @@
             let cart = [];
             let allProducts = [];
             let currentCategory = 'all';
+            
+            // Initialize Swiper Carousel
+            const heroSwiper = new Swiper('.heroSwiper', {
+                loop: true,
+                autoplay: { delay: 4000, disableOnInteraction: false },
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                pagination: { el: '.swiper-pagination', clickable: true }
+            });
+            
+            // Countdown Timer
+            function startCountdown(targetDate) {
+                function updateCountdown() {
+                    const now = new Date().getTime();
+                    const distance = targetDate - now;
+                    if (distance < 0) {
+                        document.getElementById('days').innerHTML = '00';
+                        document.getElementById('hours').innerHTML = '00';
+                        document.getElementById('minutes').innerHTML = '00';
+                        document.getElementById('seconds').innerHTML = '00';
+                        return;
+                    }
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    document.getElementById('days').innerHTML = days.toString().padStart(2, '0');
+                    document.getElementById('hours').innerHTML = hours.toString().padStart(2, '0');
+                    document.getElementById('minutes').innerHTML = minutes.toString().padStart(2, '0');
+                    document.getElementById('seconds').innerHTML = seconds.toString().padStart(2, '0');
+                }
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            }
+            // Set target date to 7 days from now
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + 7);
+            startCountdown(targetDate);
 
             function showNotification(message, isError, isInfo = false) {
                 const toast = document.createElement('div');
@@ -649,6 +1340,7 @@
                 document.getElementById(`${tabName}Tab`).classList.add('active');
                 document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active');
                 if(tabName === 'contact') loadContactMessages();
+                if(tabName === 'chat' && buyerChatSystem) buyerChatSystem.loadMessages();
             }
 
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -680,6 +1372,7 @@
                 loadCart();
                 await loadContactMessages();
                 setupRealtimeMessages();
+                if (buyerChatSystem) buyerChatSystem.init(supabaseClient, currentBuyerId);
             }
 
             async function loadProducts() {
@@ -689,12 +1382,21 @@
             
             function displayCategories() {
                 const categories = ['all', ...new Set(allProducts.map(p => p.category).filter(Boolean))];
+                const categoryIcons = { 'all': '✨', 'LED Bulbs': '💡', 'Energy Saving': '⚡', 'Decorative': '🎨', 'Street Light': '🏙️', 'Solar': '☀️' };
                 const container = document.getElementById('categoriesList');
-                container.innerHTML = categories.map(cat => `<button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')">${cat === 'all' ? '✨ All Products' : cat}</button>`).join('');
+                container.innerHTML = categories.map(cat => `<button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterByCategory('${cat}')"><i class="fas"></i> ${categoryIcons[cat] || '📦'} ${cat === 'all' ? 'All Products' : cat}</button>`).join('');
             }
             
             window.filterByCategory = function(category) { currentCategory = category; displayCategories(); displayProducts(); };
             window.searchProducts = function() { displayProducts(document.getElementById('searchInput').value.toLowerCase()); };
+            
+            function getRandomBadge() {
+                const badges = ['sale', 'new', 'featured'];
+                const random = Math.random();
+                if (random < 0.33) return '<span class="product-badge badge-sale">SALE</span>';
+                if (random < 0.66) return '<span class="product-badge badge-new">NEW</span>';
+                return '<span class="product-badge badge-featured">FEATURED</span>';
+            }
             
             function displayProducts(searchTerm = '') {
                 let filtered = currentCategory === 'all' ? allProducts : allProducts.filter(p => p.category === currentCategory);
@@ -703,18 +1405,87 @@
                 if (filtered.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i> No products found</div>'; return; }
                 container.innerHTML = filtered.map(p => `
                     <div class="product-card">
-                        <div class="product-image"><i class="fas fa-lightbulb"></i></div>
+                        ${getRandomBadge()}
+                        <div class="product-image" onclick="showProductDetail('${p.id}')">
+                            ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}">` : `<i class="fas fa-lightbulb" style="font-size: 4rem;"></i>`}
+                        </div>
                         <div class="product-info">
-                            <div class="product-name">${p.name}</div>
+                            <div class="product-name">${escapeHtml(p.name)}</div>
                             <div class="product-category">${p.category || 'General'}</div>
-                            <div class="product-wattage"><i class="fas fa-bolt"></i> ${p.wattage || 'Standard'}</div>
                             <div class="product-price">Rs. ${(p.price || 0).toLocaleString()}</div>
-                            <div class="product-stock ${p.stock_quantity > 0 ? 'in-stock' : 'out-of-stock'}">${p.stock_quantity > 0 ? `✓ In Stock (${p.stock_quantity})` : '✗ Out of Stock'}</div>
-                            <button class="add-to-cart" onclick="addToCart('${p.id}', '${p.name.replace(/'/g, "\\'")}', ${p.price})" ${p.stock_quantity === 0 ? 'disabled' : ''}><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                            <div class="product-actions">
+                                <button class="view-details" onclick="showProductDetail('${p.id}')"><i class="fas fa-eye"></i> View</button>
+                                <button class="add-to-cart" onclick="addToCart('${p.id}', '${escapeHtml(p.name).replace(/'/g, "\\'")}', ${p.price})" ${p.stock_quantity === 0 ? 'disabled' : ''}><i class="fas fa-cart-plus"></i> Add</button>
+                            </div>
                         </div>
                     </div>
                 `).join('');
             }
+            
+            window.showProductDetail = async function(productId) {
+                const product = allProducts.find(p => p.id === productId);
+                if (!product) return;
+                
+                const relatedProducts = allProducts.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+                
+                const modal = document.getElementById('productDetailModal');
+                const content = document.getElementById('productDetailContent');
+                
+                content.innerHTML = `
+                    <div class="product-detail-grid">
+                        <div class="product-gallery">
+                            <div class="product-gallery-main">
+                                ${product.image_url ? `<img src="${product.image_url}" alt="${product.name}" id="mainGalleryImage">` : `<i class="fas fa-lightbulb" style="font-size: 5rem; color: #E8B13C;"></i>`}
+                            </div>
+                            <div class="product-gallery-thumbs">
+                                ${product.image_url ? `<div class="gallery-thumb active" onclick="document.getElementById('mainGalleryImage').src='${product.image_url}'"><img src="${product.image_url}" alt="thumb"></div>` : ''}
+                                ${product.video_url ? `<div class="gallery-thumb" onclick="document.getElementById('mainGalleryImage').outerHTML='<video id=\"mainGalleryVideo\" src=\"${product.video_url}\" controls style=\"max-width:100%; max-height:300px; border-radius:10px;\"></video>'"><video src="${product.video_url}" style="width:100%; height:100%; object-fit:cover;"></video></div>` : ''}
+                            </div>
+                        </div>
+                        <div class="product-detail-info">
+                            <h2>${escapeHtml(product.name)}</h2>
+                            <div class="product-detail-price">Rs. ${(product.price || 0).toLocaleString()}</div>
+                            <div class="product-detail-stock ${product.stock_quantity > 0 ? 'in-stock' : 'out-of-stock'}">
+                                ${product.stock_quantity > 0 ? `✓ In Stock (${product.stock_quantity} available)` : '✗ Out of Stock'}
+                            </div>
+                            <div class="product-detail-description">
+                                <strong>Description:</strong><br>
+                                Premium quality ${product.name} from Sohrab Industries. Energy efficient and long-lasting LED solution.
+                                ${product.wattage ? `<br><strong>Wattage:</strong> ${product.wattage}` : ''}
+                                ${product.category ? `<br><strong>Category:</strong> ${product.category}` : ''}
+                            </div>
+                            <div class="product-detail-actions">
+                                <button class="btn-buy" onclick="addToCart('${product.id}', '${escapeHtml(product.name).replace(/'/g, "\\'")}', ${product.price}); closeProductDetail();"><i class="fas fa-shopping-cart"></i> Buy Now</button>
+                                <button class="btn-chat" onclick="closeProductDetail(); switchTab('chat');"><i class="fas fa-comments"></i> Chat with Support</button>
+                            </div>
+                        </div>
+                    </div>
+                    ${relatedProducts.length > 0 ? `
+                        <div class="related-products">
+                            <h3 style="color:#E8B13C; margin-bottom: 15px;">Related Products</h3>
+                            <div class="related-products-grid">
+                                ${relatedProducts.map(p => `
+                                    <div class="product-card" style="cursor: pointer;" onclick="showProductDetail('${p.id}')">
+                                        <div class="product-image" style="height: 120px;">
+                                            ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="fas fa-lightbulb"></i>`}
+                                        </div>
+                                        <div class="product-info" style="padding: 10px;">
+                                            <div class="product-name" style="font-size: 0.9rem;">${escapeHtml(p.name)}</div>
+                                            <div class="product-price" style="font-size: 1rem;">Rs. ${(p.price || 0).toLocaleString()}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+                
+                modal.classList.add('active');
+            };
+            
+            window.closeProductDetail = function() {
+                document.getElementById('productDetailModal').classList.remove('active');
+            };
             
             function loadCart() { const saved = localStorage.getItem(`cart_${currentBuyerId}`); if (saved) { cart = JSON.parse(saved); updateCartUI(); } }
             function saveCart() { localStorage.setItem(`cart_${currentBuyerId}`, JSON.stringify(cart)); updateCartUI(); }
@@ -736,7 +1507,7 @@
                 if (cart.length === 0) { container.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.5); padding:20px;">Your cart is empty</p>'; cartTotalSpan.innerHTML = '0'; return; }
                 container.innerHTML = cart.map(item => `
                     <div class="cart-item">
-                        <div class="cart-item-info"><div class="cart-item-name">${item.name}</div><div class="cart-item-price">Rs. ${item.price}</div></div>
+                        <div class="cart-item-info"><div class="cart-item-name">${escapeHtml(item.name)}</div><div class="cart-item-price">Rs. ${item.price}</div></div>
                         <div class="cart-item-quantity">
                             <button onclick="updateQuantity('${item.id}', -1)">-</button>
                             <span>${item.quantity}</span>
@@ -767,7 +1538,7 @@
             async function loadOrders() {
                 const { data } = await supabaseClient.from('orders').select('*').eq('user_id', currentBuyerId).eq('user_type', 'buyer').order('order_date', { ascending: false });
                 const tbody = document.getElementById('ordersList');
-                if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i> No orders yet</td></tr>'; return; }
+                if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i> No orders yet</td</tr>'; return; }
                 tbody.innerHTML = data.map(o => {
                     let products = '-';
                     try { const items = JSON.parse(o.notes || '[]'); products = items.map(i => i.name).join(', '); } catch(e) { products = o.notes || '-'; }
@@ -799,7 +1570,6 @@
                 }
             };
             
-            // ========== CHAT SYSTEM (Direct to Admin - No Email) ==========
             async function loadContactMessages() {
                 try {
                     const { data, error } = await supabaseClient
@@ -924,6 +1694,569 @@
             document.getElementById('logoutBtn').onclick = async function() { await supabaseClient.auth.signOut(); window.location.href = 'buyer-auth.html'; };
             checkAuth();
         })();
+        
+        // ========== BUYER CHAT SYSTEM ==========
+        const buyerChatSystem = {
+            supabaseClient: null,
+            currentBuyerId: null,
+            messages: [],
+            typingTimeout: null,
+            replyToMessage: null,
+            pendingMedia: null,
+            mediaRecorder: null,
+            audioChunks: [],
+            isRecording: false,
+            unreadCount: 0,
+            
+            init: function(client, buyerId) {
+                this.supabaseClient = client;
+                this.currentBuyerId = buyerId;
+                this.loadMessages();
+                this.setupEventListeners();
+                this.startRealtimeSubscriptions();
+                this.setupChatFloatIcon();
+            },
+            
+            setupChatFloatIcon: function() {
+                const floatIcon = document.createElement('div');
+                floatIcon.className = 'chat-float-icon';
+                floatIcon.id = 'chatFloatIcon';
+                floatIcon.innerHTML = '<i class="fas fa-comment-dots"></i>';
+                floatIcon.onclick = () => {
+                    switchTab('chat');
+                    this.unreadCount = 0;
+                    this.updateFloatIcon();
+                };
+                document.body.appendChild(floatIcon);
+            },
+            
+            updateFloatIcon: function() {
+                const icon = document.getElementById('chatFloatIcon');
+                if (icon) {
+                    if (this.unreadCount > 0) {
+                        icon.classList.add('has-unread');
+                    } else {
+                        icon.classList.remove('has-unread');
+                    }
+                }
+            },
+            
+            setupEventListeners: function() {
+                const chatInput = document.getElementById('liveChatInput');
+                if (chatInput) {
+                    chatInput.addEventListener('input', () => this.sendTypingIndicator());
+                }
+            },
+            
+            startRealtimeSubscriptions: function() {
+                this.supabaseClient.channel('buyer-chat-messages')
+                    .on('postgres_changes', { 
+                        event: 'INSERT', 
+                        schema: 'public', 
+                        table: 'chat_messages' 
+                    }, (payload) => {
+                        this.handleNewMessage(payload.new);
+                    })
+                    .on('postgres_changes', { 
+                        event: 'UPDATE', 
+                        schema: 'public', 
+                        table: 'chat_messages' 
+                    }, (payload) => {
+                        this.handleMessageUpdate(payload.new);
+                    })
+                    .on('postgres_changes', { 
+                        event: 'DELETE', 
+                        schema: 'public', 
+                        table: 'chat_messages' 
+                    }, (payload) => {
+                        this.handleMessageDelete(payload.old.id);
+                    })
+                    .subscribe();
+                
+                this.supabaseClient.channel('buyer-chat-typing')
+                    .on('postgres_changes', { 
+                        event: 'INSERT', 
+                        schema: 'public', 
+                        table: 'chat_typing' 
+                    }, (payload) => {
+                        this.handleTypingIndicator(payload.new);
+                    })
+                    .subscribe();
+            },
+            
+            handleNewMessage: function(message) {
+                if (message.sender_type === 'admin' && message.receiver_id === this.currentBuyerId) {
+                    this.messages.push(message);
+                    this.renderMessages();
+                    this.scrollToBottom();
+                    
+                    // Check if chat tab is active
+                    const chatTab = document.getElementById('chatTab');
+                    if (!chatTab.classList.contains('active')) {
+                        this.unreadCount++;
+                        this.updateFloatIcon();
+                    }
+                }
+            },
+            
+            handleMessageUpdate: function(message) {
+                const index = this.messages.findIndex(m => m.id === message.id);
+                if (index !== -1) {
+                    this.messages[index] = message;
+                    this.renderMessages();
+                }
+            },
+            
+            handleMessageDelete: function(messageId) {
+                const index = this.messages.findIndex(m => m.id === messageId);
+                if (index !== -1) {
+                    this.messages.splice(index, 1);
+                    this.renderMessages();
+                }
+            },
+            
+            handleTypingIndicator: function(data) {
+                if (data.sender_type === 'admin' && data.receiver_id === this.currentBuyerId) {
+                    const typingIndicator = document.getElementById('liveChatTyping');
+                    if (typingIndicator) {
+                        typingIndicator.style.display = 'flex';
+                        setTimeout(() => {
+                            typingIndicator.style.display = 'none';
+                        }, 2000);
+                    }
+                }
+            },
+            
+            sendTypingIndicator: async function() {
+                if (!this.currentBuyerId) return;
+                
+                clearTimeout(this.typingTimeout);
+                
+                await this.supabaseClient.from('chat_typing').insert([{
+                    sender_id: this.currentBuyerId,
+                    sender_type: 'buyer',
+                    receiver_id: 'admin',
+                    receiver_type: 'admin',
+                    timestamp: new Date().toISOString()
+                }]);
+                
+                this.typingTimeout = setTimeout(() => {}, 2000);
+            },
+            
+            loadMessages: async function() {
+                if (!this.currentBuyerId) return;
+                
+                const { data } = await this.supabaseClient
+                    .from('chat_messages')
+                    .select('*')
+                    .or(`and(sender_type.eq.buyer,sender_id.eq.${this.currentBuyerId},receiver_type.eq.admin),and(sender_type.eq.admin,receiver_id.eq.${this.currentBuyerId},receiver_type.eq.buyer)`)
+                    .order('created_at', { ascending: true });
+                
+                this.messages = data || [];
+                this.renderMessages();
+                this.scrollToBottom();
+                this.unreadCount = 0;
+                this.updateFloatIcon();
+            },
+            
+            sendMessage: async function() {
+                const input = document.getElementById('liveChatInput');
+                const text = input.value.trim();
+                
+                if (!text && !this.pendingMedia && !this.replyToMessage) return;
+                if (!this.currentBuyerId) return;
+                
+                let messageData = {
+                    sender_id: this.currentBuyerId,
+                    sender_type: 'buyer',
+                    receiver_id: 'admin',
+                    receiver_type: 'admin',
+                    text: text || null,
+                    read: false,
+                    created_at: new Date().toISOString()
+                };
+                
+                if (this.pendingMedia) {
+                    messageData.media_url = this.pendingMedia.url;
+                    messageData.media_type = this.pendingMedia.type;
+                }
+                
+                if (this.replyToMessage) {
+                    messageData.reply_to = this.replyToMessage.id;
+                }
+                
+                const { error } = await this.supabaseClient.from('chat_messages').insert([messageData]);
+                
+                if (error) {
+                    console.error('Error sending message:', error);
+                    showNotification('Failed to send message. Please try again.', true);
+                } else {
+                    input.value = '';
+                    this.pendingMedia = null;
+                    this.replyToMessage = null;
+                    document.getElementById('liveChatMediaPreview').classList.remove('active');
+                    document.getElementById('liveChatReplyPreview').style.display = 'none';
+                    this.scrollToBottom();
+                }
+            },
+            
+            startVoiceRecording: async function() {
+                if (this.isRecording) return;
+                
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.mediaRecorder = new MediaRecorder(stream);
+                    this.audioChunks = [];
+                    
+                    this.mediaRecorder.ondataavailable = (event) => {
+                        this.audioChunks.push(event.data);
+                    };
+                    
+                    this.mediaRecorder.onstop = async () => {
+                        const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            this.pendingMedia = {
+                                url: ev.target.result,
+                                type: 'audio'
+                            };
+                            const preview = document.getElementById('liveChatMediaPreview');
+                            preview.innerHTML = `
+                                <div class="voice-message">
+                                    <i class="fas fa-microphone-alt"></i>
+                                    <span>Voice message ready to send</span>
+                                    <audio src="${ev.target.result}" controls style="max-width: 180px;"></audio>
+                                </div>
+                                <button class="remove-media" onclick="buyerChatSystem.removeMedia()">×</button>
+                            `;
+                            preview.classList.add('active');
+                        };
+                        reader.readAsDataURL(audioBlob);
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+                    
+                    this.mediaRecorder.start();
+                    this.isRecording = true;
+                    document.getElementById('voiceRecordingModal').classList.add('active');
+                } catch (err) {
+                    console.error('Error accessing microphone:', err);
+                    showNotification('Could not access microphone. Please check permissions.', true);
+                }
+            },
+            
+            stopVoiceRecording: function() {
+                if (this.mediaRecorder && this.isRecording) {
+                    this.mediaRecorder.stop();
+                    this.isRecording = false;
+                    document.getElementById('voiceRecordingModal').classList.remove('active');
+                }
+            },
+            
+            deleteMessage: async function(messageId, deleteForEveryone = false) {
+                const result = await Swal.fire({
+                    title: 'Delete Message',
+                    text: deleteForEveryone ? 'Delete this message for everyone?' : 'Delete this message only for you?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Delete',
+                    cancelButtonText: 'Cancel',
+                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                    color: '#fff'
+                });
+                
+                if (result.isConfirmed) {
+                    if (deleteForEveryone) {
+                        await this.supabaseClient.from('chat_messages').delete().eq('id', messageId);
+                    } else {
+                        await this.supabaseClient.from('chat_messages').update({ 
+                            deleted_for_sender: true 
+                        }).eq('id', messageId);
+                    }
+                    showNotification('Message deleted!', false);
+                }
+            },
+            
+            editMessage: async function(messageId, oldText) {
+                const { value: newText } = await Swal.fire({
+                    title: 'Edit Message',
+                    input: 'textarea',
+                    inputValue: oldText,
+                    inputPlaceholder: 'Edit your message...',
+                    showCancelButton: true,
+                    confirmButtonColor: '#E8B13C',
+                    cancelButtonColor: '#dc3545',
+                    confirmButtonText: 'Save',
+                    cancelButtonText: 'Cancel',
+                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                    color: '#fff'
+                });
+                
+                if (newText && newText !== oldText) {
+                    await this.supabaseClient.from('chat_messages').update({ 
+                        text: newText,
+                        edited: true,
+                        edited_at: new Date().toISOString()
+                    }).eq('id', messageId);
+                    
+                    showNotification('Message edited!', false);
+                }
+            },
+            
+            replyToMessage: function(message) {
+                this.replyToMessage = message;
+                const replyPreview = document.getElementById('liveChatReplyPreview');
+                const replyText = document.getElementById('liveChatReplyText');
+                replyText.textContent = message.text?.substring(0, 50) || '[Media]';
+                replyPreview.style.display = 'block';
+                document.getElementById('liveChatInput').focus();
+            },
+            
+            cancelReply: function() {
+                this.replyToMessage = null;
+                document.getElementById('liveChatReplyPreview').style.display = 'none';
+            },
+            
+            showAttachMenu: function() {
+                Swal.fire({
+                    title: 'Attach Media',
+                    text: 'Choose what to share',
+                    icon: 'question',
+                    showCancelButton: true,
+                    showDenyButton: true,
+                    confirmButtonText: 'Image',
+                    denyButtonText: 'Video',
+                    cancelButtonText: 'Product',
+                    confirmButtonColor: '#E8B13C',
+                    denyButtonColor: '#17a2b8',
+                    cancelButtonColor: '#1e7e5e',
+                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                    color: '#fff'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.uploadMedia('image');
+                    } else if (result.isDenied) {
+                        this.uploadMedia('video');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        this.showProductSelector();
+                    }
+                });
+            },
+            
+            uploadMedia: function(type) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = type === 'image' ? 'image/*' : 'video/*';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            const result = ev.target.result;
+                            let detectedType = type;
+                            if (result.startsWith('data:image')) {
+                                detectedType = 'image';
+                            } else if (result.startsWith('data:video')) {
+                                detectedType = 'video';
+                            }
+                            this.pendingMedia = {
+                                url: result,
+                                type: detectedType
+                            };
+                            const preview = document.getElementById('liveChatMediaPreview');
+                            preview.innerHTML = `
+                                ${detectedType === 'image' ? `<img src="${result}" alt="Preview">` : `<video src="${result}" controls></video>`}
+                                <button class="remove-media" onclick="buyerChatSystem.removeMedia()">×</button>
+                            `;
+                            preview.classList.add('active');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            },
+            
+            removeMedia: function() {
+                this.pendingMedia = null;
+                document.getElementById('liveChatMediaPreview').classList.remove('active');
+                document.getElementById('liveChatMediaPreview').innerHTML = '';
+            },
+            
+            showProductSelector: async function() {
+                const { data: products } = await this.supabaseClient.from('products').select('*').eq('is_active', true);
+                
+                if (!products || products.length === 0) {
+                    showNotification('No products available to share.', true);
+                    return;
+                }
+                
+                const productOptions = products.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    price: p.price,
+                    category: p.category,
+                    image: p.image_url
+                }));
+                
+                const productList = productOptions.map(p => `
+                    <div class="product-selector-item" style="padding: 10px; cursor: pointer; border-bottom: 1px solid rgba(232,177,60,0.1); display: flex; gap: 10px;" onclick="buyerChatSystem.sendProductCard('${p.id}', '${escapeHtml(p.name).replace(/'/g, "\\'")}', ${p.price}, '${p.category || ''}', '${p.image || ''}')">
+                        ${p.image ? `<img src="${p.image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">` : '<div style="width: 50px; height: 50px; background: rgba(232,177,60,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-box"></i></div>'}
+                        <div><strong style="color: #E8B13C;">${escapeHtml(p.name)}</strong><br>Rs. ${p.price.toLocaleString()}</div>
+                    </div>
+                `).join('');
+                
+                Swal.fire({
+                    title: 'Select Product to Share',
+                    html: `<div style="max-height: 400px; overflow-y: auto;">${productList}</div>`,
+                    showConfirmButton: false,
+                    showCancelButton: true,
+                    cancelButtonText: 'Close',
+                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                    color: '#fff'
+                });
+            },
+            
+            sendProductCard: async function(id, name, price, category, imageUrl) {
+                if (!this.currentBuyerId) return;
+                
+                const productData = {
+                    id: id,
+                    name: name,
+                    price: price,
+                    category: category,
+                    image: imageUrl
+                };
+                
+                await this.supabaseClient.from('chat_messages').insert([{
+                    sender_id: this.currentBuyerId,
+                    sender_type: 'buyer',
+                    receiver_id: 'admin',
+                    receiver_type: 'admin',
+                    text: null,
+                    product_data: productData,
+                    read: false,
+                    created_at: new Date().toISOString()
+                }]);
+                
+                Swal.close();
+            },
+            
+            renderMessages: function() {
+                const container = document.getElementById('liveChatMessages');
+                if (!container) return;
+                
+                if (this.messages.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="text-align: center; padding: 50px;"><i class="fas fa-comments" style="font-size: 48px; margin-bottom: 15px;"></i><p>No messages yet. Start a conversation with our support team!</p></div>';
+                    return;
+                }
+                
+                container.innerHTML = this.messages.map(msg => {
+                    const isSent = msg.sender_type === 'buyer';
+                    const isDeleted = msg.deleted_for_sender && isSent;
+                    
+                    if (isDeleted) {
+                        return `
+                            <div class="message ${isSent ? 'sent' : 'received'}">
+                                <div class="message-bubble">
+                                    <div class="message-text" style="font-style: italic; opacity: 0.6;">Message deleted</div>
+                                    <div class="message-time">${new Date(msg.created_at).toLocaleTimeString()}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    let replyHtml = '';
+                    if (msg.reply_to) {
+                        const repliedMsg = this.messages.find(m => m.id === msg.reply_to);
+                        if (repliedMsg) {
+                            replyHtml = `
+                                <div class="reply-preview" style="margin-bottom: 5px; font-size: 0.75rem; opacity: 0.7;">
+                                    <i class="fas fa-reply"></i> ${escapeHtml(repliedMsg.text?.substring(0, 50) || '[Media]')}
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    let mediaHtml = '';
+                    if (msg.media_url) {
+                        if (msg.media_type === 'image' || (msg.media_url && msg.media_url.startsWith('data:image'))) {
+                            mediaHtml = `<img src="${msg.media_url}" class="message-media" onclick="window.open('${msg.media_url}', '_blank')" style="max-width: 200px; max-height: 200px; border-radius: 10px; cursor: pointer;">`;
+                        } else if (msg.media_type === 'video' || (msg.media_url && msg.media_url.startsWith('data:video'))) {
+                            mediaHtml = `<video src="${msg.media_url}" class="message-media" controls style="max-width: 200px; max-height: 200px; border-radius: 10px;"></video>`;
+                        } else if (msg.media_type === 'audio' || (msg.media_url && msg.media_url.startsWith('data:audio'))) {
+                            mediaHtml = `
+                                <div class="voice-message">
+                                    <audio src="${msg.media_url}" controls style="max-width: 180px;"></audio>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    let productHtml = '';
+                    if (msg.product_data) {
+                        const product = msg.product_data;
+                        productHtml = `
+                            <div class="product-card-message" onclick="buyerChatSystem.viewProductDetails('${product.id}')">
+                                ${product.image ? `<img src="${product.image}" alt="${product.name}">` : '<i class="fas fa-box" style="font-size: 40px;"></i>'}
+                                <div class="product-card-message-info">
+                                    <h4>${escapeHtml(product.name)}</h4>
+                                    <p>Rs. ${parseInt(product.price).toLocaleString()}</p>
+                                    <small>${product.category || ''}</small>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    let actionButtons = '';
+                    if (isSent) {
+                        actionButtons = `
+                            <div class="message-actions">
+                                <button class="message-action-btn" onclick="buyerChatSystem.editMessage('${msg.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="message-action-btn" onclick="buyerChatSystem.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button>
+                                <button class="message-action-btn" onclick="buyerChatSystem.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete for everyone</button>
+                            </div>
+                        `;
+                    } else {
+                        actionButtons = `
+                            <div class="message-actions">
+                                <button class="message-action-btn" onclick="buyerChatSystem.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button>
+                            </div>
+                        `;
+                    }
+                    
+                    return `
+                        <div class="message ${isSent ? 'sent' : 'received'}">
+                            <div class="message-bubble">
+                                ${replyHtml}
+                                <div class="message-text">${escapeHtml(msg.text || '')}</div>
+                                ${mediaHtml}
+                                ${productHtml}
+                                <div class="message-time">
+                                    ${new Date(msg.created_at).toLocaleTimeString()}
+                                    ${msg.edited ? '<span style="font-size: 0.65rem;">(edited)</span>' : ''}
+                                    ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color: #E8B13C;"></i>' : ''}
+                                </div>
+                                ${actionButtons}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                this.scrollToBottom();
+            },
+            
+            scrollToBottom: function() {
+                const container = document.getElementById('liveChatMessages');
+                if (container) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            },
+            
+            viewProductDetails: function(productId) {
+                showProductDetail(productId);
+            }
+        };
     </script>
 </body>
 </html>
