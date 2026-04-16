@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sohrab Industries | Premium LED Manufacturing</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Sohrab Industries | Premium LED & Spare Parts Manufacturer</title>
+    <!-- Local fallback for fonts to avoid MIME issues -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -102,7 +103,7 @@
         #userName { background: rgba(0,0,0,0.4); padding: 6px 16px; border-radius: 40px; font-size: 0.8rem; }
         .logout-btn { background: linear-gradient(145deg, #8b2c2c, #5e1a1a); border: none; padding: 6px 16px; border-radius: 40px; cursor: pointer; }
 
-        /* Premium Carousel with Canva-style Images */
+        /* Premium Carousel with Bulb Images (Base64 embedded to avoid external issues) */
         .carousel-container {
             position: relative;
             margin: 1.5rem 0 2rem;
@@ -132,8 +133,8 @@
             color: white;
             text-shadow: 0 2px 12px black;
         }
-        .carousel-caption h2 { font-size: 2.2rem; font-weight: 800; }
-        .carousel-caption p { font-size: 1rem; opacity: 0.9; }
+        .carousel-caption h2 { font-size: 2rem; font-weight: 800; }
+        .carousel-caption p { font-size: 1rem; }
         .carousel-btn {
             position: absolute;
             top: 50%;
@@ -205,7 +206,7 @@
         }
         .tab-content.active { display: block; }
 
-        /* Professional Product Grid */
+        /* Product Grid */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -217,6 +218,7 @@
             overflow: hidden;
             border: 1px solid var(--border-glow);
             transition: all 0.3s;
+            cursor: pointer;
         }
         .product-card:hover { transform: translateY(-5px); border-color: var(--primary); }
         .product-image {
@@ -225,17 +227,14 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(145deg, #0e2921, #0a1f1a);
-            cursor: pointer;
         }
-        .product-image i { font-size: 3rem; color: var(--primary); }
+        .product-image i { font-size: 3.5rem; color: var(--primary); }
         .product-info { padding: 16px; }
-        .product-name { font-weight: 700; font-size: 1.1rem; color: var(--primary); margin-bottom: 4px; }
-        .product-category { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; }
+        .product-name { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
         .product-price { font-size: 1.3rem; font-weight: 800; margin: 6px 0; }
         .product-stock { font-size: 0.7rem; margin-bottom: 8px; }
         .in-stock { color: var(--success); }
-        .out-stock { color: var(--danger); }
-        .bulk-badge { background: #e8b13c30; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; display: inline-block; margin-bottom: 8px; }
+        .bulk-badge { background: #e8b13c30; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; display: inline-block; }
         .product-actions button {
             width: 100%;
             background: linear-gradient(95deg, var(--primary), #daa520);
@@ -244,6 +243,7 @@
             padding: 10px;
             font-weight: 600;
             cursor: pointer;
+            margin-top: 10px;
         }
 
         /* Cart Sidebar */
@@ -282,13 +282,15 @@
         .message.sent { align-self: flex-end; }
         .message.received { align-self: flex-start; }
         .message-bubble { padding: 10px 14px; border-radius: 18px; word-break: break-word; }
-        .message.sent .message-bubble { background: var(--primary); color: #0a1f1a; border-bottom-right-radius: 4px; }
+        .message.sent .message-bubble { background: var(--primary); color: #0a1f1a; }
         .message.received .message-bubble { background: rgba(255,255,255,0.1); }
         .message-time { font-size: 0.6rem; opacity: 0.7; margin-top: 4px; }
-        .chat-input-wrapper { display: flex; gap: 10px; padding: 14px; background: #0b2921; border-top: 1px solid var(--border-glow); align-items: center; }
+        .chat-input-wrapper { display: flex; gap: 8px; padding: 14px; background: #0b2921; border-top: 1px solid var(--border-glow); align-items: center; flex-wrap: wrap; }
         .chat-input { flex: 1; background: rgba(255,255,255,0.1); border: none; border-radius: 30px; padding: 12px 18px; color: white; resize: none; }
-        .attach-btn, .chat-send-btn { background: none; border: none; color: var(--primary); font-size: 1.3rem; cursor: pointer; width: 44px; }
+        .attach-btn, .chat-send-btn, .voice-btn { background: none; border: none; color: var(--primary); font-size: 1.3rem; cursor: pointer; width: 44px; }
         .chat-send-btn { background: var(--primary); border-radius: 50%; color: #0a1f1a; }
+        .voice-btn.recording { color: var(--danger); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         /* Checkout Modal */
         .checkout-modal {
@@ -318,8 +320,6 @@
             margin: 12px 0;
             text-align: center;
         }
-        .bank-details p { margin: 5px 0; font-size: 0.9rem; }
-
         @media (max-width: 768px) {
             .cart-sidebar { width: 100%; right: -100%; }
             .chat-container { flex-direction: column; }
@@ -350,7 +350,7 @@
     </div>
 
     <div class="buyer-container">
-        <!-- Canva-style Image Carousel -->
+        <!-- Bulb-themed Carousel with embedded gradients -->
         <div class="carousel-container">
             <div class="carousel-slides" id="carouselSlides"></div>
             <button class="carousel-btn prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
@@ -388,6 +388,7 @@
                         <button class="attach-btn" id="attachImageBtn" title="Send Image"><i class="fas fa-image"></i></button>
                         <button class="attach-btn" id="attachVideoBtn" title="Send Video"><i class="fas fa-video"></i></button>
                         <button class="attach-btn" id="attachProductBtn" title="Share Product"><i class="fas fa-box-open"></i></button>
+                        <button class="voice-btn" id="voiceRecordBtn" title="Voice Message"><i class="fas fa-microphone"></i></button>
                         <button class="chat-send-btn" id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
@@ -402,27 +403,24 @@
         <div class="cart-footer"><div style="font-size:1.2rem; margin-bottom:12px;">Total: Rs. <span id="cartTotal">0</span></div><button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button></div>
     </div>
 
-    <!-- Professional Checkout Modal -->
     <div id="checkoutModal" class="checkout-modal">
         <div class="checkout-container">
             <div style="padding:20px; border-bottom:1px solid var(--border-glow);"><h2>Checkout</h2><button onclick="closeCheckout()" style="float:right; background:none; border:none; color:white; font-size:1.5rem;">&times;</button></div>
             <div style="padding:20px;">
                 <div id="checkoutSummary"></div>
-                <div class="form-group" style="margin:15px 0;"><label>Delivery Address *</label><textarea id="checkoutAddress" rows="2" style="width:100%; padding:10px; border-radius:12px; background:rgba(255,255,255,0.1); border:1px solid var(--border-glow); color:white;"></textarea></div>
-                <div class="form-group"><label>Payment Method</label><select id="paymentMethod" style="width:100%; padding:10px; border-radius:12px; background:rgba(255,255,255,0.1); color:white;">
+                <div style="margin:15px 0;"><label>Delivery Address *</label><textarea id="checkoutAddress" rows="2" style="width:100%; padding:10px; border-radius:12px; background:rgba(255,255,255,0.1); border:1px solid var(--border-glow); color:white;"></textarea></div>
+                <div><label>Payment Method</label><select id="paymentMethod" style="width:100%; padding:10px; border-radius:12px; background:rgba(255,255,255,0.1); color:white;">
                     <option value="Cash on Delivery">Cash on Delivery</option>
                     <option value="EasyPaisa">EasyPaisa</option>
                     <option value="JazzCash">JazzCash</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
                 </select></div>
                 <div id="bankDetails" style="display:none;">
                     <div class="bank-details">
                         <p><strong>🏦 Account Title:</strong> Sohrab Ullah</p>
-                        <p><strong>📞 Account Number / Mobile:</strong> 0317-3703413</p>
-                        <p><strong>🏛️ Bank:</strong> HBL / EasyPaisa / JazzCash</p>
-                        <p style="font-size:0.8rem; margin-top:8px;">Please send exact amount and upload screenshot below</p>
+                        <p><strong>📞 Account / Mobile Number:</strong> 0317-3703413</p>
+                        <p><strong>💰 Send exact amount and upload screenshot</strong></p>
                     </div>
-                    <div class="form-group"><label>Upload Payment Screenshot *</label><input type="file" id="paymentScreenshot" accept="image/*"></div>
+                    <div><label>Upload Payment Screenshot *</label><input type="file" id="paymentScreenshot" accept="image/*"></div>
                 </div>
                 <div style="font-size:1.2rem; font-weight:bold; margin:15px 0;">Total: Rs. <span id="checkoutTotal">0</span></div>
                 <button id="placeOrderBtn" class="checkout-btn" style="background:var(--primary); color:#0a1f1a;">Place Order</button>
@@ -439,46 +437,44 @@
             let currentUser = null;
             let cart = [];
             let allProducts = [];
+            let mediaRecorder = null;
+            let audioChunks = [];
 
             function showToast(msg, isErr=false) { const t = document.createElement('div'); t.className='toast-notification'; t.innerHTML= isErr ? `⚠️ ${msg}` : `✅ ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
 
-            // Canva-style Carousel with manufacturing images
-            const carouselImages = [
-                'https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?w=1200&h=400&fit=crop',
-                'https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=1200&h=400&fit=crop',
-                'https://images.unsplash.com/photo-1581092335871-4a4c6e6b5b8c?w=1200&h=400&fit=crop'
+            // Carousel with bulb-themed gradients
+            const carouselSlidesData = [
+                { bg: 'linear-gradient(135deg, #0a2f24, #1a4a3a)', title: 'Premium LED Bulbs', desc: 'Energy Efficient · 2 Year Warranty' },
+                { bg: 'linear-gradient(135deg, #2c2b1f, #5e4b2b)', title: 'Industrial Spare Parts', desc: 'Drivers, PCBs, Chips' },
+                { bg: 'linear-gradient(135deg, #1f3e2c, #0f281d)', title: 'Bulk & Sample Orders', desc: 'MOQ available for bulk' }
             ];
             let currentSlide = 0, autoInterval;
             function buildCarousel(){
                 const container = document.getElementById('carouselSlides');
                 const dotsDiv = document.getElementById('dotsContainer');
                 container.innerHTML = '';
-                const titles = ['Premium LED Manufacturing', 'Quality Spare Parts', 'Bulk & Export Orders'];
-                const subtitles = ['Energy Efficient Bulbs', 'Drivers, PCBs, Chips', 'MOQ Available'];
-                for(let i=0; i<carouselImages.length; i++){
+                carouselSlidesData.forEach((s,idx)=>{
                     const slide = document.createElement('div');
                     slide.className = 'carousel-slide';
-                    slide.style.backgroundImage = `url(${carouselImages[i]})`;
-                    slide.style.backgroundSize = 'cover';
-                    slide.innerHTML = `<div class="carousel-caption"><h2>${titles[i]}</h2><p>${subtitles[i]}</p></div>`;
+                    slide.style.background = s.bg;
+                    slide.innerHTML = `<div class="carousel-caption"><h2>${s.title}</h2><p>${s.desc}</p><i class="fas fa-lightbulb" style="font-size:3rem; margin-top:10px;"></i></div>`;
                     container.appendChild(slide);
                     const dot = document.createElement('div');
-                    dot.className = `dot ${i===0?'active':''}`;
-                    dot.addEventListener('click',()=>{ stopAuto(); goToSlide(i); startAuto(); });
+                    dot.className = `dot ${idx===0?'active':''}`;
+                    dot.addEventListener('click',()=>{ stopAuto(); goToSlide(idx); startAuto(); });
                     dotsDiv.appendChild(dot);
-                }
+                });
                 updateCarousel();
                 startAuto();
             }
             function updateCarousel(){ document.querySelector('.carousel-slides').style.transform = `translateX(-${currentSlide * 100}%)`; document.querySelectorAll('.dot').forEach((d,i)=>{ if(i===currentSlide) d.classList.add('active'); else d.classList.remove('active'); }); }
             function goToSlide(idx){ currentSlide = idx; updateCarousel(); }
-            function nextSlide(){ currentSlide = (currentSlide+1)%carouselImages.length; updateCarousel(); }
+            function nextSlide(){ currentSlide = (currentSlide+1)%carouselSlidesData.length; updateCarousel(); }
             function startAuto(){ autoInterval = setInterval(nextSlide, 5000); }
             function stopAuto(){ if(autoInterval) clearInterval(autoInterval); }
-            document.getElementById('prevBtn')?.addEventListener('click',()=>{ stopAuto(); goToSlide((currentSlide-1+carouselImages.length)%carouselImages.length); startAuto(); });
+            document.getElementById('prevBtn')?.addEventListener('click',()=>{ stopAuto(); goToSlide((currentSlide-1+carouselSlidesData.length)%carouselSlidesData.length); startAuto(); });
             document.getElementById('nextBtn')?.addEventListener('click',()=>{ stopAuto(); nextSlide(); startAuto(); });
 
-            // Auth
             async function checkAuth(){
                 const {data:{user}} = await supabase.auth.getUser();
                 if(!user){ window.location.href='buyer-auth.html'; return; }
@@ -497,13 +493,12 @@
                 if(data && data.length) allProducts = data;
                 else {
                     allProducts = [
-                        { id:'p1', name:'LED Bulb 12W Ultra', category:'Bulbs', price:180, stock:120, min_order_qty:1, bulk_only:false, sample_available:true, description:'Energy efficient, 2 year warranty' },
-                        { id:'p2', name:'LED Bulb 9W Slim', category:'Bulbs', price:150, stock:200, min_order_qty:1, bulk_only:false, sample_available:true },
-                        { id:'p3', name:'LED Driver 36W', category:'Spare Parts', price:350, stock:500, min_order_qty:50, bulk_only:true, sample_available:false },
-                        { id:'p4', name:'SMD PCB Board', category:'Spare Parts', price:120, stock:1000, min_order_qty:100, bulk_only:true, sample_available:false },
-                        { id:'p5', name:'Industrial Flood Light 100W', category:'Bulbs', price:1850, stock:45, min_order_qty:1, bulk_only:false, sample_available:true },
-                        { id:'p6', name:'LED Chip 5730 (100pcs)', category:'Spare Parts', price:850, stock:200, min_order_qty:10, bulk_only:true, sample_available:false },
-                        { id:'p7', name:'Bulk LED Bulb 12W (50 pcs)', category:'Bulbs', price:7500, stock:30, min_order_qty:50, bulk_only:true, sample_available:false }
+                        { id:'p1', name:'LED Bulb 12W Ultra', category:'Bulbs', price:180, stock:120, min_order_qty:1, bulk_only:false, sample_available:true, description:'Super bright, energy saving, 2 year warranty' },
+                        { id:'p2', name:'LED Bulb 9W Slim', category:'Bulbs', price:150, stock:200, min_order_qty:1, bulk_only:false, sample_available:true, description:'Slim design, high lumens' },
+                        { id:'p3', name:'LED Driver 36W', category:'Spare Parts', price:350, stock:500, min_order_qty:50, bulk_only:true, sample_available:false, description:'Constant current driver' },
+                        { id:'p4', name:'SMD PCB Board', category:'Spare Parts', price:120, stock:1000, min_order_qty:100, bulk_only:true, sample_available:false, description:'High quality PCB for LED assembly' },
+                        { id:'p5', name:'Industrial Flood Light 100W', category:'Bulbs', price:1850, stock:45, min_order_qty:1, bulk_only:false, sample_available:true, description:'Outdoor waterproof flood light' },
+                        { id:'p6', name:'LED Chip 5730 (100pcs)', category:'Spare Parts', price:850, stock:200, min_order_qty:10, bulk_only:true, sample_available:false, description:'SMD 5730 LED chips' }
                     ];
                 }
                 renderAllTabs();
@@ -523,50 +518,49 @@
                 const stockClass = p.stock > 0 ? 'in-stock' : 'out-stock';
                 const stockText = p.stock > 0 ? `✓ ${p.stock} in stock` : '✗ Out of stock';
                 const moqMsg = p.bulk_only ? `📦 MOQ: ${p.min_order_qty}` : (p.sample_available ? '🔬 Sample Available' : '');
-                return `<div class="product-card"><div class="product-image" onclick="viewProduct('${p.id}')"><i class="fas fa-lightbulb"></i></div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-category">${p.category}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><div class="product-stock ${stockClass}">${stockText}</div><div class="bulk-badge">${moqMsg}</div><div class="product-actions"><button onclick="addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price}, ${p.min_order_qty||1})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
+                return `<div class="product-card" onclick="viewProduct('${p.id}')"><div class="product-image"><i class="fas fa-lightbulb"></i></div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><div class="product-stock ${stockClass}">${stockText}</div><div class="bulk-badge">${moqMsg}</div><div class="product-actions"><button onclick="event.stopPropagation(); addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price}, ${p.min_order_qty||1})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
             }
-            window.viewProduct = (id)=>{ let p=allProducts.find(x=>x.id===id); if(p) Swal.fire({title:p.name,html:`<p><strong>Price:</strong> Rs.${p.price}</p><p><strong>Category:</strong> ${p.category}</p><p><strong>Stock:</strong> ${p.stock}</p><p><strong>Bulk Only:</strong> ${p.bulk_only?'Yes (MOQ '+p.min_order_qty+')':'No'}</p>`,background:'#1c3d33',color:'white',confirmButtonColor:'#E8B13C'}); };
+            window.viewProduct = (id)=>{ let p=allProducts.find(x=>x.id===id); if(p) Swal.fire({title:p.name,html:`<p><strong>Price:</strong> Rs.${p.price}</p><p><strong>Category:</strong> ${p.category}</p><p><strong>Stock:</strong> ${p.stock}</p><p><strong>Description:</strong> ${p.description || 'Premium quality product'}</p><p><strong>Bulk Only:</strong> ${p.bulk_only?'Yes (MOQ '+p.min_order_qty+')':'No'}</p>`,background:'#1c3d33',color:'white',confirmButtonColor:'#E8B13C'}); };
             window.addToCart = (id,name,price,moq=1)=>{ let item = cart.find(i=>i.id===id); if(item) item.quantity += moq; else cart.push({id,name,price,quantity:moq}); saveCart(); showToast(`${name} added to cart`); };
             function saveCart(){ localStorage.setItem(`cart_${currentUser.id}`,JSON.stringify(cart)); updateCartUI(); }
             function loadCart(){ const s = localStorage.getItem(`cart_${currentUser.id}`); if(s) cart = JSON.parse(s); updateCartUI(); }
-            function updateCartUI(){ const count = cart.reduce((s,i)=>s+i.quantity,0); document.getElementById('cartCount').innerHTML = count; const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0); document.getElementById('cartTotal').innerHTML = total.toLocaleString(); const container = document.getElementById('cartItemsList'); if(!container) return; if(cart.length===0){ container.innerHTML='<div class="empty-state" style="text-align:center; padding:40px;">Cart is empty</div>'; return; } container.innerHTML = cart.map(i=>`<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #e8b13c30;"><div><strong>${escapeHtml(i.name)}</strong><br>x${i.quantity}</div><div>Rs.${(i.price*i.quantity).toLocaleString()}</div><button onclick="removeCartItem('${i.id}')" style="background:#dc3545; border:none; border-radius:30px; padding:4px 12px; color:white;">Remove</button></div>`).join(''); }
+            function updateCartUI(){ const count = cart.reduce((s,i)=>s+i.quantity,0); document.getElementById('cartCount').innerHTML = count; const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0); document.getElementById('cartTotal').innerHTML = total.toLocaleString(); const container = document.getElementById('cartItemsList'); if(!container) return; if(cart.length===0){ container.innerHTML='<div style="text-align:center; padding:40px;">Cart is empty</div>'; return; } container.innerHTML = cart.map(i=>`<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #e8b13c30;"><div><strong>${escapeHtml(i.name)}</strong><br>x${i.quantity}</div><div>Rs.${(i.price*i.quantity).toLocaleString()}</div><button onclick="removeCartItem('${i.id}')" style="background:#dc3545; border:none; border-radius:30px; padding:4px 12px; color:white;">Remove</button></div>`).join(''); }
             window.removeCartItem = (id)=>{ cart = cart.filter(i=>i.id!==id); saveCart(); updateCartUI(); showToast('Item removed'); };
             window.toggleCart = ()=>{ document.getElementById('cartSidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); };
             
-            // Professional Checkout with Bank Details & Screenshot
-            window.openCheckout = () => { if(cart.length===0){ showToast('Cart is empty',true); return; } const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0); document.getElementById('checkoutSummary').innerHTML = cart.map(i=>`<div style="display:flex; justify-content:space-between; padding:6px 0;"><span>${i.name} x${i.quantity}</span><span>Rs.${(i.price*i.quantity).toLocaleString()}</span></div>`).join(''); document.getElementById('checkoutTotal').innerHTML = total.toLocaleString(); document.getElementById('checkoutModal').classList.add('active'); togglePaymentDetails(); };
+            // Checkout
+            window.openCheckout = () => { if(cart.length===0){ showToast('Cart empty',true); return; } const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0); document.getElementById('checkoutSummary').innerHTML = cart.map(i=>`<div style="display:flex; justify-content:space-between; padding:6px 0;"><span>${i.name} x${i.quantity}</span><span>Rs.${(i.price*i.quantity).toLocaleString()}</span></div>`).join(''); document.getElementById('checkoutTotal').innerHTML = total.toLocaleString(); document.getElementById('checkoutModal').classList.add('active'); togglePaymentDetails(); };
             window.closeCheckout = () => { document.getElementById('checkoutModal').classList.remove('active'); };
-            function togglePaymentDetails(){ const method = document.getElementById('paymentMethod').value; const showBank = (method === 'EasyPaisa' || method === 'JazzCash' || method === 'Bank Transfer'); document.getElementById('bankDetails').style.display = showBank ? 'block' : 'none'; }
+            function togglePaymentDetails(){ const method = document.getElementById('paymentMethod').value; document.getElementById('bankDetails').style.display = (method === 'EasyPaisa' || method === 'JazzCash') ? 'block' : 'none'; }
             document.getElementById('paymentMethod')?.addEventListener('change', togglePaymentDetails);
             document.getElementById('placeOrderBtn')?.addEventListener('click', async () => {
                 const address = document.getElementById('checkoutAddress').value;
-                if(!address){ showToast('Please enter delivery address',true); return; }
+                if(!address){ showToast('Enter delivery address',true); return; }
                 const method = document.getElementById('paymentMethod').value;
                 let screenshotUrl = null;
                 if(method !== 'Cash on Delivery'){
                     const file = document.getElementById('paymentScreenshot').files[0];
-                    if(!file){ showToast('Please upload payment screenshot',true); return; }
+                    if(!file){ showToast('Upload payment screenshot',true); return; }
                     const ext = file.name.split('.').pop();
-                    const filePath = `payment_screenshots/${currentUser.id}_${Date.now()}.${ext}`;
-                    const {error:upErr} = await supabase.storage.from('payments').upload(filePath, file);
-                    if(upErr){ showToast('Screenshot upload failed',true); return; }
-                    const {data:{publicUrl}} = supabase.storage.from('payments').getPublicUrl(filePath);
+                    const filePath = `payments/${currentUser.id}_${Date.now()}.${ext}`;
+                    const {error:upErr} = await supabase.storage.from('payment_screenshots').upload(filePath, file);
+                    if(upErr){ showToast('Upload failed',true); return; }
+                    const {data:{publicUrl}} = supabase.storage.from('payment_screenshots').getPublicUrl(filePath);
                     screenshotUrl = publicUrl;
                 }
                 const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0);
                 const {error} = await supabase.from('orders').insert([{ user_id:currentUser.id, user_type:'buyer', order_date:new Date().toISOString(), total_amount:total, status:'pending', payment_method:method, payment_status:method==='Cash on Delivery'?'pending':'awaiting_approval', delivery_address:address, payment_screenshot:screenshotUrl, notes:JSON.stringify({items:cart}) }]);
                 if(error){ showToast(error.message,true); return; }
-                for(let it of cart){ const {data:p} = await supabase.from('products').select('stock').eq('id',it.id); if(p && p[0]) await supabase.from('products').update({ stock: (p[0].stock||0)-it.quantity }).eq('id',it.id); }
-                cart = []; saveCart(); closeCheckout(); toggleCart(); showToast('Order placed successfully! We will confirm soon.');
+                cart = []; saveCart(); closeCheckout(); toggleCart(); showToast('Order placed! We will confirm soon.');
                 location.reload();
             });
             
-            // Chat System with persistent messages
+            // Chat with Voice Recording
             async function loadChatMessages(){
                 const {data} = await supabase.from('chat_messages').select('*').or(`and(sender_id.eq.${currentUser.id},sender_type.eq.buyer),and(receiver_id.eq.${currentUser.id},receiver_type.eq.buyer)`).order('created_at',{ascending:true});
                 const container = document.getElementById('chatMessagesArea');
                 if(!container) return;
-                if(!data || data.length===0){ container.innerHTML='<div class="empty-state" style="text-align:center; padding:40px;">💬 Send a message to Sohrab Support Team</div>'; return; }
+                if(!data || data.length===0){ container.innerHTML='<div style="text-align:center; padding:40px;">💬 Send a message to Sohrab Support Team</div>'; return; }
                 container.innerHTML = data.map(m=>{
                     const isSent = m.sender_id === currentUser.id;
                     let content = '';
@@ -576,28 +570,61 @@
                         const prod = allProducts.find(p=>p.id===m.product_id);
                         content += `<div style="background:#00000040; border-radius:12px; padding:6px; margin-top:5px;"><strong>📦 ${prod?.name}</strong><br>💰 Rs.${prod?.price}</div>`;
                     }
+                    if(m.voice_url) content += `<div><audio controls src="${m.voice_url}" style="max-width:200px; height:36px;"></audio></div>`;
                     return `<div class="message ${isSent ? 'sent' : 'received'}"><div class="message-bubble">${content}<div class="message-time">${new Date(m.created_at).toLocaleTimeString()}</div></div></div>`;
                 }).join('');
                 container.scrollTop = container.scrollHeight;
             }
-            async function sendChatMessage(text, mediaFile=null, productId=null){
-                let mediaUrl = null;
+            async function sendChatMessage(text, mediaFile=null, productId=null, voiceBlob=null){
+                let mediaUrl = null, voiceUrl = null;
                 if(mediaFile){
                     const ext = mediaFile.name.split('.').pop();
                     const filePath = `chat_media/${currentUser.id}_${Date.now()}.${ext}`;
                     const {error:upErr} = await supabase.storage.from('chat_attachments').upload(filePath, mediaFile);
                     if(!upErr) { const {data:{publicUrl}} = supabase.storage.from('chat_attachments').getPublicUrl(filePath); mediaUrl = publicUrl; }
                 }
-                await supabase.from('chat_messages').insert([{ sender_id:currentUser.id, sender_type:'buyer', receiver_id:'admin', receiver_type:'admin', text:text||null, media_url:mediaUrl, product_id:productId||null, created_at:new Date().toISOString() }]);
+                if(voiceBlob){
+                    const filePath = `voice_notes/${currentUser.id}_${Date.now()}.webm`;
+                    const {error:upErr} = await supabase.storage.from('voice_notes').upload(filePath, voiceBlob);
+                    if(!upErr) { const {data:{publicUrl}} = supabase.storage.from('voice_notes').getPublicUrl(filePath); voiceUrl = publicUrl; }
+                }
+                await supabase.from('chat_messages').insert([{ sender_id:currentUser.id, sender_type:'buyer', receiver_id:'admin', receiver_type:'admin', text:text||null, media_url:mediaUrl, product_id:productId||null, voice_url:voiceUrl, created_at:new Date().toISOString() }]);
                 loadChatMessages();
             }
+            // Voice Recording
+            const voiceBtn = document.getElementById('voiceRecordBtn');
+            let isRecording = false;
+            voiceBtn?.addEventListener('click', async () => {
+                if(isRecording){
+                    mediaRecorder?.stop();
+                    voiceBtn.classList.remove('recording');
+                    voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                    isRecording = false;
+                } else {
+                    try{
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
+                        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                        mediaRecorder.onstop = async () => {
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                            await sendChatMessage(null, null, null, audioBlob);
+                            stream.getTracks().forEach(track => track.stop());
+                        };
+                        mediaRecorder.start();
+                        isRecording = true;
+                        voiceBtn.classList.add('recording');
+                        voiceBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                        setTimeout(() => { if(isRecording) { mediaRecorder.stop(); voiceBtn.classList.remove('recording'); voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>'; isRecording = false; } }, 30000);
+                    } catch(e){ showToast('Microphone access denied', true); }
+                }
+            });
             function setupChatRealtime(){ supabase.channel('buyer-chat').on('postgres_changes',{ event:'INSERT', schema:'public', table:'chat_messages' },()=>loadChatMessages()).subscribe(); }
             document.getElementById('sendChatBtn')?.addEventListener('click',()=>{ let txt=document.getElementById('chatInput').value.trim(); if(txt) sendChatMessage(txt); document.getElementById('chatInput').value=''; });
             document.getElementById('attachImageBtn')?.addEventListener('click',()=>{ let input=document.createElement('input'); input.type='file'; input.accept='image/*'; input.onchange=e=>{ if(e.target.files[0]) sendChatMessage('📷 Image shared', e.target.files[0]); }; input.click(); });
             document.getElementById('attachVideoBtn')?.addEventListener('click',()=>{ let input=document.createElement('input'); input.type='file'; input.accept='video/*'; input.onchange=e=>{ if(e.target.files[0]) sendChatMessage('🎥 Video shared', e.target.files[0]); }; input.click(); });
             document.getElementById('attachProductBtn')?.addEventListener('click',async()=>{ const {value:pid}=await Swal.fire({ title:'Share Product', input:'select', inputOptions:allProducts.reduce((acc,p)=>(acc[p.id]=p.name,acc),{}), background:'#1c3d33', color:'white' }); if(pid) sendChatMessage(null, null, pid); });
             
-            // Tab switching
             document.querySelectorAll('.tab-btn').forEach(btn=>{
                 btn.addEventListener('click',()=>{
                     document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
