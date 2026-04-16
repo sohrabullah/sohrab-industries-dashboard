@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Sohrab Industries | Premium Buyer Dashboard - Shop LED Bulbs</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- SweetAlert2 for modern popups -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        /* Fallback fonts in case Google Fonts is blocked */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: linear-gradient(145deg, #0a1a15 0%, #0d281f 100%);
             min-height: 100vh;
             position: relative;
@@ -55,7 +52,7 @@
         
         .logo h1 {
             font-size: 1.6rem;
-            font-family: 'Playfair Display', serif;
+            font-family: 'Georgia', 'Times New Roman', serif;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -160,7 +157,7 @@
         }
         .hero-banner h2 {
             font-size: 2rem;
-            font-family: 'Playfair Display', serif;
+            font-family: 'Georgia', 'Times New Roman', serif;
             background: linear-gradient(135deg, #E8B13C, #ffd966);
             -webkit-background-clip: text;
             background-clip: text;
@@ -191,6 +188,7 @@
             align-items: center;
             gap: 8px;
             color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
         }
         .tab-btn:hover {
             background: rgba(232,177,60,0.2);
@@ -206,7 +204,7 @@
         .tab-btn.has-unread {
             background: linear-gradient(135deg, #dc3545, #c0392b);
             color: white;
-            animation: pulseRed 0.6s ease-in-out infinite;
+            animation: pulseRed 0.8s ease-in-out infinite;
         }
         @keyframes pulseRed {
             0%, 100% { opacity: 1; }
@@ -231,7 +229,7 @@
         
         .section-title {
             font-size: 1.5rem;
-            font-family: 'Playfair Display', serif;
+            font-family: 'Georgia', 'Times New Roman', serif;
             background: linear-gradient(135deg, #E8B13C, #ffd966);
             -webkit-background-clip: text;
             background-clip: text;
@@ -241,7 +239,7 @@
             padding-left: 18px;
         }
         
-        /* ========== PROFESSIONAL CHAT UI ========== */
+        /* Professional Chat UI */
         .chat-panel {
             display: flex;
             flex-direction: column;
@@ -305,6 +303,7 @@
             font-size: 0.8rem;
             color: #E8B13C;
             width: fit-content;
+            margin: 0 20px 10px 20px;
         }
         .typing-dot {
             width: 6px;
@@ -337,7 +336,7 @@
             border-radius: 40px;
             padding: 12px 18px;
             color: white;
-            font-family: 'Inter', sans-serif;
+            font-family: inherit;
             resize: none;
             font-size: 0.9rem;
         }
@@ -356,7 +355,7 @@
         .chat-send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(232,177,60,0.4); }
         .empty-chat { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); }
         
-        /* Products, Orders, Profile same as before (keep existing styles) */
+        /* Products Grid */
         .categories { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0; margin-bottom: 25px; }
         .category-btn { padding: 8px 24px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 40px; cursor: pointer; white-space: nowrap; transition: all 0.3s; color: rgba(255,255,255,0.8); }
         .category-btn.active, .category-btn:hover { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; transform: translateY(-2px); }
@@ -369,196 +368,450 @@
         .product-price { font-size: 1.5rem; font-weight: 800; color: #E8B13C; margin: 10px 0; }
         .add-to-cart { width: 100%; padding: 12px; background: linear-gradient(135deg, #E8B13C, #c99b2e); border: none; border-radius: 40px; cursor: pointer; font-weight: 700; transition: all 0.3s; }
         .add-to-cart:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(232,177,60,0.4); }
+        .add-to-cart:disabled { background: #555; cursor: not-allowed; }
+        
+        /* Cart Sidebar */
         .cart-sidebar { position: fixed; right: -450px; top: 0; width: 420px; height: 100%; background: linear-gradient(145deg, #1a3d33, #0f2a22); z-index: 1000; transition: right 0.3s ease; display: flex; flex-direction: column; border-left: 1px solid rgba(232,177,60,0.3); }
         .cart-sidebar.open { right: 0; }
+        .cart-header { padding: 20px; background: linear-gradient(135deg, #0a2f24, #1a4a3a); display: flex; justify-content: space-between; align-items: center; }
+        .cart-items { flex: 1; overflow-y: auto; padding: 20px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(232,177,60,0.15); }
+        .cart-footer { padding: 20px; border-top: 1px solid rgba(232,177,60,0.3); }
+        .cart-total { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: #E8B13C; }
+        .checkout-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #28a745, #1e7e5e); color: white; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 999; }
         .overlay.active { display: block; }
+        
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 1003; align-items: center; justify-content: center; }
         .modal-content { background: linear-gradient(145deg, #1a3d33, #0f2a22); padding: 35px; border-radius: 40px; max-width: 500px; width: 90%; border: 1px solid rgba(232,177,60,0.3); }
+        .modal-content textarea, .modal-content select { width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 16px; color: white; }
+        
+        /* Status Badges */
         .status-badge { padding: 5px 15px; border-radius: 30px; font-size: 12px; display: inline-block; font-weight: 700; }
         .status-pending { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
-        .status-processing { background: linear-gradient(135deg, #17a2b8, #0f7a8a); }
-        .status-shipped { background: linear-gradient(135deg, #004085, #002d5a); }
-        .status-delivered { background: linear-gradient(135deg, #1e7e5e, #155a44); }
-        .table-container { overflow-x: auto; border-radius: 20px; }
+        .status-processing { background: linear-gradient(135deg, #17a2b8, #0f7a8a); color: #fff; }
+        .status-shipped { background: linear-gradient(135deg, #004085, #002d5a); color: #fff; }
+        .status-delivered { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
+        
+        /* Table */
+        .table-container { overflow-x: auto; border-radius: 20px; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.15); }
-        th { background: linear-gradient(135deg, #0a2f24, #1a4a3a); color: #E8B13C; }
-        @media (max-width: 768px) { .cart-sidebar { width: 100%; right: -100%; } .products-grid { grid-template-columns: 1fr; } }
+        th { background: linear-gradient(135deg, #0a2f24, #1a4a3a); color: #E8B13C; font-weight: 700; }
+        td { color: rgba(255,255,255,0.9); }
+        .form-card { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 25px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { color: #E8B13C; font-weight: 600; display: block; margin-bottom: 8px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 12px; color: white; }
+        .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 10px 24px; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; }
+        .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); }
+        
+        @media (max-width: 768px) {
+            .buyer-header { flex-direction: column; text-align: center; }
+            .cart-sidebar { width: 100%; right: -100%; }
+            .products-grid { grid-template-columns: 1fr; }
+            .search-bar input { width: 180px; }
+            .message { max-width: 85%; }
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="buyer-header">
         <div class="logo"><h1 onclick="location.reload()"><i class="fas fa-lightbulb"></i> Sohrab Industries</h1></div>
-        <div class="search-bar"><input type="text" id="searchInput" placeholder="🔍 Search bulbs..." onkeypress="if(event.key==='Enter') searchProducts()"><button onclick="searchProducts()"><i class="fas fa-search"></i></button></div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search premium bulbs..." onkeypress="if(event.key==='Enter') searchProducts()">
+            <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+        </div>
         <div class="header-icons">
             <button onclick="toggleCart()"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></button>
             <span id="userName"><i class="fas fa-user-circle"></i> Loading...</span>
             <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
     </div>
+
     <div class="buyer-container">
-        <div class="hero-banner"><h2><i class="fas fa-lightbulb"></i> Premium Quality LED Solutions</h2><p>Energy Efficient • Long Lasting • Best Prices in Pakistan • Free Delivery on orders over Rs. 2,000</p></div>
+        <div class="hero-banner">
+            <h2><i class="fas fa-lightbulb"></i> Premium Quality LED Solutions</h2>
+            <p>Energy Efficient • Long Lasting • Best Prices in Pakistan • Free Delivery on orders over Rs. 2,000</p>
+        </div>
+
         <div class="tabs">
             <button class="tab-btn active" data-tab="shop"><i class="fas fa-store"></i> Shop</button>
             <button class="tab-btn" data-tab="orders"><i class="fas fa-truck"></i> My Orders</button>
             <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> My Profile</button>
             <button class="tab-btn" data-tab="livechat" id="chatTabBtn"><i class="fas fa-headset"></i> Live Chat</button>
         </div>
+
         <!-- Shop Tab -->
-        <div id="shopTab" class="tab-content active"><div class="categories" id="categoriesList"></div><div class="products-grid" id="productsGrid"></div></div>
+        <div id="shopTab" class="tab-content active">
+            <div class="categories" id="categoriesList"></div>
+            <div class="products-grid" id="productsGrid"></div>
+        </div>
+
         <!-- Orders Tab -->
-        <div id="ordersTab" class="tab-content"><h2 class="section-title"><i class="fas fa-truck"></i> My Order History</h2><div class="table-container"><table><thead><tr><th>Order ID</th><th>Products</th><th>Total Amount</th><th>Date</th><th>Status</th><th>Payment</th><th>Address</th></tr></thead><tbody id="ordersList"></tbody></table></div></div>
+        <div id="ordersTab" class="tab-content">
+            <h2 class="section-title"><i class="fas fa-truck"></i> My Order History</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Order ID</th><th>Products</th><th>Total Amount</th><th>Date</th><th>Status</th><th>Payment</th><th>Address</th></tr>
+                    </thead>
+                    <tbody id="ordersList"></tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Profile Tab -->
-        <div id="profileTab" class="tab-content"><h2 class="section-title"><i class="fas fa-user-edit"></i> My Profile</h2><div class="form-card"><div class="form-group"><label>Full Name</label><input type="text" id="profileName" readonly></div><div class="form-group"><label>Email</label><input type="email" id="profileEmail" readonly></div><div class="form-group"><label>Phone</label><input type="tel" id="profilePhone" readonly></div><div class="form-group"><label>Address</label><textarea id="profileAddress" rows="2" readonly></textarea></div><button class="btn-primary" onclick="editProfile()">Edit Profile</button></div></div>
+        <div id="profileTab" class="tab-content">
+            <h2 class="section-title"><i class="fas fa-user-edit"></i> My Profile</h2>
+            <div class="form-card">
+                <div class="form-group"><label>Full Name</label><input type="text" id="profileName" readonly></div>
+                <div class="form-group"><label>Email</label><input type="email" id="profileEmail" readonly></div>
+                <div class="form-group"><label>Phone</label><input type="tel" id="profilePhone" readonly></div>
+                <div class="form-group"><label>Address</label><textarea id="profileAddress" rows="2" readonly></textarea></div>
+                <button class="btn-primary" onclick="editProfile()"><i class="fas fa-edit"></i> Edit Profile</button>
+            </div>
+        </div>
+
         <!-- Live Chat Tab (Fully Functional) -->
-        <div id="livechatTab" class="tab-content"><h2 class="section-title"><i class="fas fa-comments"></i> Support Chat - Sohrab Industries</h2><div class="chat-panel"><div id="chatMessagesArea" class="chat-messages-area"><div class="empty-chat"><i class="fas fa-comment-dots" style="font-size: 48px; opacity: 0.5;"></i><p>Start a conversation with our support team. We're here to help!</p></div></div><div id="typingIndicatorArea" style="padding: 0 20px;"></div><div class="chat-input-area"><div class="chat-input-wrapper"><textarea id="chatInput" class="chat-input" placeholder="Type your message..." rows="1"></textarea><button class="chat-send-btn" onclick="buyerChat.sendMessage()"><i class="fas fa-paper-plane"></i></button></div></div></div></div>
+        <div id="livechatTab" class="tab-content">
+            <h2 class="section-title"><i class="fas fa-comments"></i> Support Chat - Sohrab Industries</h2>
+            <div class="chat-panel">
+                <div id="chatMessagesArea" class="chat-messages-area">
+                    <div class="empty-chat"><i class="fas fa-comment-dots" style="font-size: 48px; opacity: 0.5;"></i><p>Start a conversation with our support team. We're here to help!</p></div>
+                </div>
+                <div id="typingIndicatorArea"></div>
+                <div class="chat-input-area">
+                    <div class="chat-input-wrapper">
+                        <textarea id="chatInput" class="chat-input" placeholder="Type your message..." rows="1" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();buyerChat.sendMessage();}"></textarea>
+                        <button class="chat-send-btn" onclick="buyerChat.sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
     <div class="overlay" id="overlay" onclick="toggleCart()"></div>
-    <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>Your Cart</h3><button onclick="toggleCart()">&times;</button></div><div class="cart-items" id="cartItems"></div><div class="cart-footer"><div class="cart-total">Total: Rs. <span id="cartTotal">0</span></div><button class="checkout-btn" onclick="showCheckout()">Proceed to Checkout</button></div></div>
-    <div id="checkoutModal" class="modal"><div class="modal-content"><h2>Checkout</h2><textarea id="checkoutAddress" rows="3" placeholder="Delivery Address *"></textarea><select id="paymentMethod"><option>Cash on Delivery</option><option>EasyPaisa</option><option>JazzCash</option></select><div class="cart-total">Total: Rs. <span id="checkoutTotal">0</span></div><button id="placeOrderBtn" class="checkout-btn">Place Order</button><button onclick="closeCheckout()" style="margin-top:10px; width:100%; padding:12px; background:#6c757d; border:none; border-radius:40px;">Cancel</button></div></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> Your Cart</h3><button onclick="toggleCart()">&times;</button></div>
+        <div class="cart-items" id="cartItems"><p style="text-align:center;color:rgba(255,255,255,0.5); padding:20px;">Your cart is empty</p></div>
+        <div class="cart-footer"><div class="cart-total">Total: Rs. <span id="cartTotal">0</span></div><button class="checkout-btn" onclick="showCheckout()">Proceed to Checkout</button></div>
+    </div>
+
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-credit-card"></i> Checkout</h2>
+            <textarea id="checkoutAddress" rows="3" placeholder="Delivery Address *"></textarea>
+            <select id="paymentMethod">
+                <option value="Cash on Delivery">Cash on Delivery</option>
+                <option value="EasyPaisa">EasyPaisa</option>
+                <option value="JazzCash">JazzCash</option>
+            </select>
+            <div class="cart-total">Total: Rs. <span id="checkoutTotal">0</span></div>
+            <button id="placeOrderBtn" class="checkout-btn"><i class="fas fa-check"></i> Place Order</button>
+            <button onclick="closeCheckout()" style="margin-top:10px; width:100%; padding:12px; background:#6c757d; border:none; border-radius:40px; color:white; cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ======================= BUYER CHAT SYSTEM (FULLY INTEGRATED) =======================
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let currentBuyerId = null, currentBuyerName = '';
-        let cart = [], allProducts = [], currentCategory = 'all';
-        // Chat globals
-        let chatMessages = [], typingTimeout = null, isTyping = false;
-        
-        const buyerChat = {
-            adminId: '00000000-0000-0000-0000-000000000001', // matching admin side
-            subscription: null,
-            init() {
-                this.subscribeToMessages();
-                this.loadMessages();
-                document.getElementById('chatInput').addEventListener('input', () => this.sendTyping());
-                setInterval(() => this.markMessagesRead(), 2000);
-            },
-            async loadMessages() {
-                if (!currentBuyerId) return;
-                const { data, error } = await supabase
-                    .from('chat_messages')
-                    .select('*')
-                    .or(`and(sender_type.eq.buyer,receiver_id.eq.${this.adminId},receiver_type.eq.admin),and(sender_id.eq.${this.adminId},sender_type.eq.admin,receiver_id.eq.${currentBuyerId},receiver_type.eq.buyer)`)
-                    .order('created_at', { ascending: true });
-                if (!error && data) { chatMessages = data; this.renderMessages(); this.markMessagesRead(); }
-            },
-            subscribeToMessages() {
-                if (this.subscription) return;
-                this.subscription = supabase
-                    .channel('buyer-chat')
-                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => {
-                        if (payload.new.sender_type === 'admin') {
-                            chatMessages.push(payload.new);
-                            this.renderMessages();
-                            this.markMessagesRead();
-                            this.updateUnreadBadge(true);
-                        }
-                    })
-                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_typing', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => {
-                        if (payload.new.sender_type === 'admin') this.showTypingIndicator();
-                    })
-                    .subscribe();
-            },
-            async sendMessage() {
-                const input = document.getElementById('chatInput');
-                const text = input.value.trim();
-                if (!text) return;
-                const newMsg = {
-                    id: crypto.randomUUID(),
-                    sender_id: currentBuyerId,
-                    sender_type: 'buyer',
-                    receiver_id: this.adminId,
-                    receiver_type: 'admin',
-                    text: text,
-                    read: false,
-                    created_at: new Date().toISOString()
-                };
-                const { error } = await supabase.from('chat_messages').insert([newMsg]);
-                if (!error) {
-                    chatMessages.push(newMsg);
-                    this.renderMessages();
-                    input.value = '';
+        // Wait for DOM and Supabase to load
+        (function() {
+            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+            
+            let supabaseClient = null;
+            let currentBuyerId = null;
+            let cart = [];
+            let allProducts = [];
+            let currentCategory = 'all';
+            let chatMessages = [];
+            let typingTimeout = null;
+            
+            // Initialize Supabase safely
+            if (typeof supabase !== 'undefined') {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } else {
+                console.error('Supabase not loaded');
+                return;
+            }
+            
+            // ========== BUYER CHAT SYSTEM ==========
+            const buyerChat = {
+                adminId: '00000000-0000-0000-0000-000000000001',
+                subscription: null,
+                
+                init() {
+                    if (!currentBuyerId) return;
+                    this.subscribeToMessages();
+                    this.loadMessages();
+                    const chatInput = document.getElementById('chatInput');
+                    if (chatInput) {
+                        chatInput.addEventListener('input', () => this.sendTyping());
+                    }
+                    setInterval(() => this.markMessagesRead(), 3000);
+                },
+                
+                async loadMessages() {
+                    if (!currentBuyerId) return;
+                    const { data, error } = await supabaseClient
+                        .from('chat_messages')
+                        .select('*')
+                        .or(`and(sender_type.eq.buyer,receiver_id.eq.${this.adminId},receiver_type.eq.admin),and(sender_id.eq.${this.adminId},sender_type.eq.admin,receiver_id.eq.${currentBuyerId},receiver_type.eq.buyer)`)
+                        .order('created_at', { ascending: true });
+                    if (!error && data) {
+                        chatMessages = data;
+                        this.renderMessages();
+                        this.markMessagesRead();
+                    }
+                },
+                
+                subscribeToMessages() {
+                    if (this.subscription) return;
+                    this.subscription = supabaseClient
+                        .channel('buyer-chat-channel')
+                        .on('postgres_changes', { 
+                            event: 'INSERT', 
+                            schema: 'public', 
+                            table: 'chat_messages',
+                            filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer`
+                        }, (payload) => {
+                            if (payload.new.sender_type === 'admin') {
+                                chatMessages.push(payload.new);
+                                this.renderMessages();
+                                this.markMessagesRead();
+                                this.updateUnreadBadge(true);
+                            }
+                        })
+                        .on('postgres_changes', { 
+                            event: 'INSERT', 
+                            schema: 'public', 
+                            table: 'chat_typing',
+                            filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer`
+                        }, (payload) => {
+                            if (payload.new.sender_type === 'admin') this.showTypingIndicator();
+                        })
+                        .subscribe();
+                },
+                
+                async sendMessage() {
+                    const input = document.getElementById('chatInput');
+                    const text = input.value.trim();
+                    if (!text) return;
+                    
+                    const newMsg = {
+                        id: crypto.randomUUID(),
+                        sender_id: currentBuyerId,
+                        sender_type: 'buyer',
+                        receiver_id: this.adminId,
+                        receiver_type: 'admin',
+                        text: text,
+                        read: false,
+                        created_at: new Date().toISOString()
+                    };
+                    
+                    const { error } = await supabaseClient.from('chat_messages').insert([newMsg]);
+                    if (!error) {
+                        chatMessages.push(newMsg);
+                        this.renderMessages();
+                        input.value = '';
+                        this.scrollToBottom();
+                    } else {
+                        Swal.fire({ title: 'Error', text: 'Failed to send message', icon: 'error', background: '#1a3d33', color: '#fff' });
+                    }
+                },
+                
+                async sendTyping() {
+                    if (!currentBuyerId) return;
+                    clearTimeout(typingTimeout);
+                    await supabaseClient.from('chat_typing').insert([{ 
+                        sender_id: currentBuyerId, 
+                        sender_type: 'buyer', 
+                        receiver_id: this.adminId, 
+                        receiver_type: 'admin', 
+                        timestamp: new Date().toISOString() 
+                    }]);
+                    typingTimeout = setTimeout(() => {}, 2000);
+                },
+                
+                showTypingIndicator() {
+                    const container = document.getElementById('typingIndicatorArea');
+                    if (!container) return;
+                    container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+                    setTimeout(() => { if (container) container.innerHTML = ''; }, 3000);
+                },
+                
+                async markMessagesRead() {
+                    if (!currentBuyerId) return;
+                    await supabaseClient.from('chat_messages').update({ read: true }).eq('receiver_id', currentBuyerId).eq('receiver_type', 'buyer').eq('read', false);
+                    this.updateUnreadBadge(false);
+                },
+                
+                updateUnreadBadge(hasNew) {
+                    const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]');
+                    const livechatTab = document.getElementById('livechatTab');
+                    if (hasNew && !livechatTab.classList.contains('active')) {
+                        chatTab.classList.add('has-unread');
+                    } else if (livechatTab.classList.contains('active')) {
+                        chatTab.classList.remove('has-unread');
+                    }
+                },
+                
+                renderMessages() {
+                    const container = document.getElementById('chatMessagesArea');
+                    if (!container) return;
+                    if (chatMessages.length === 0) {
+                        container.innerHTML = '<div class="empty-chat"><i class="fas fa-comment-dots" style="font-size: 48px;"></i><p>No messages yet. Ask us anything about products, orders, or support!</p></div>';
+                        return;
+                    }
+                    container.innerHTML = chatMessages.map(msg => {
+                        const isSent = msg.sender_type === 'buyer';
+                        return `<div class="message ${isSent ? 'sent' : 'received'}">
+                                    <div class="message-bubble">
+                                        <div class="message-text">${escapeHtml(msg.text || '')}</div>
+                                        <div class="message-time">${new Date(msg.created_at).toLocaleTimeString()} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#E8B13C;"></i>' : ''}</div>
+                                    </div>
+                                </div>`;
+                    }).join('');
                     this.scrollToBottom();
-                } else { Swal.fire({ title: 'Error', text: 'Failed to send message', icon: 'error', background: '#1a3d33', color: '#fff' }); }
-            },
-            async sendTyping() {
-                if (!currentBuyerId) return;
-                clearTimeout(typingTimeout);
-                await supabase.from('chat_typing').insert([{ sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', timestamp: new Date().toISOString() }]);
-                typingTimeout = setTimeout(() => {}, 2000);
-            },
-            showTypingIndicator() {
-                const container = document.getElementById('typingIndicatorArea');
-                if (!container) return;
-                container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
-                setTimeout(() => { if (container) container.innerHTML = ''; }, 2500);
-            },
-            async markMessagesRead() {
-                if (!currentBuyerId) return;
-                await supabase.from('chat_messages').update({ read: true }).eq('receiver_id', currentBuyerId).eq('receiver_type', 'buyer').eq('read', false);
-                this.updateUnreadBadge(false);
-            },
-            updateUnreadBadge(hasNew) {
-                const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]');
-                if (hasNew && !document.getElementById('livechatTab').classList.contains('active')) chatTab.classList.add('has-unread');
-                else if (document.getElementById('livechatTab').classList.contains('active')) chatTab.classList.remove('has-unread');
-            },
-            renderMessages() {
-                const container = document.getElementById('chatMessagesArea');
-                if (!container) return;
-                if (chatMessages.length === 0) { container.innerHTML = '<div class="empty-chat"><i class="fas fa-comment-dots" style="font-size: 48px;"></i><p>No messages yet. Ask us anything about products, orders, or support!</p></div>'; return; }
-                container.innerHTML = chatMessages.map(msg => {
-                    const isSent = msg.sender_type === 'buyer';
-                    return `<div class="message ${isSent ? 'sent' : 'received'}"><div class="message-bubble"><div class="message-text">${escapeHtml(msg.text || '')}</div><div class="message-time">${new Date(msg.created_at).toLocaleTimeString()} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#E8B13C;"></i>' : ''}</div></div></div>`;
-                }).join('');
-                this.scrollToBottom();
-            },
-            scrollToBottom() { const area = document.getElementById('chatMessagesArea'); if (area) area.scrollTop = area.scrollHeight; }
-        };
-        
-        function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-        
-        // ========== EXISTING BUYER LOGIC (PRESERVED & ENHANCED) ==========
-        async function checkAuth() {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (error || !user) { window.location.href = 'buyer-auth.html'; return; }
-            currentBuyerId = user.id;
-            document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
-            await ensureBuyerExists(user);
-            await loadProducts(); await loadOrders(); await loadProfile(); loadCart();
-            buyerChat.init();
-            setupTabListeners();
-        }
-        async function ensureBuyerExists(user) {
-            const { data: existing } = await supabase.from('buyers').select('*').eq('id', user.id);
-            if (existing && existing.length) return existing[0];
-            const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
-            await supabase.from('buyers').insert([{ id: user.id, email: user.email, full_name: fullName, phone: '', address: '', total_orders: 0, total_spent: 0, created_at: new Date().toISOString() }]);
-        }
-        async function loadProducts() { const { data } = await supabase.from('products').select('*').eq('is_active', true); if (data) { allProducts = data; displayCategories(); displayProducts(); } }
-        function displayCategories() { const cats = ['all', ...new Set(allProducts.map(p=>p.category).filter(Boolean))]; document.getElementById('categoriesList').innerHTML = cats.map(c=>`<button class="category-btn ${currentCategory===c?'active':''}" onclick="filterByCategory('${c}')">${c==='all'?'✨ All Products':c}</button>`).join(''); }
-        window.filterByCategory = function(c) { currentCategory=c; displayCategories(); displayProducts(); };
-        window.searchProducts = function() { displayProducts(document.getElementById('searchInput').value.toLowerCase()); };
-        function displayProducts(search='') { let filtered = currentCategory==='all'?allProducts:allProducts.filter(p=>p.category===currentCategory); if(search) filtered=filtered.filter(p=>p.name.toLowerCase().includes(search)); const container=document.getElementById('productsGrid'); if(!filtered.length){ container.innerHTML='<div class="empty-state">No products</div>'; return; } container.innerHTML=filtered.map(p=>`<div class="product-card"><div class="product-image"><i class="fas fa-lightbulb"></i></div><div class="product-info"><div class="product-name">${p.name}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><div class="product-stock">${p.stock_quantity>0?`In Stock (${p.stock_quantity})`:'Out of Stock'}</div><button class="add-to-cart" onclick="addToCart('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${p.stock_quantity===0?'disabled':''}>Add to Cart</button></div></div>`).join(''); }
-        function loadCart() { const saved = localStorage.getItem(`cart_${currentBuyerId}`); if(saved) cart=JSON.parse(saved); updateCartUI(); }
-        function saveCart() { localStorage.setItem(`cart_${currentBuyerId}`,JSON.stringify(cart)); updateCartUI(); }
-        window.addToCart = function(id,name,price){ let item=cart.find(i=>i.id===id); if(item) item.quantity++; else cart.push({id,name,price,quantity:1}); saveCart(); Swal.fire({title:'Added!',text:`${name} added to cart`,icon:'success',timer:1000,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); };
-        function updateCartUI() { const count=cart.reduce((s,i)=>s+i.quantity,0); document.getElementById('cartCount').innerHTML=count; const total=cart.reduce((s,i)=>s+(i.price*i.quantity),0); document.getElementById('cartTotal').innerHTML=total.toLocaleString(); const container=document.getElementById('cartItems'); if(!cart.length){ container.innerHTML='<p style="text-align:center;padding:20px;">Cart empty</p>'; return; } container.innerHTML=cart.map(i=>`<div class="cart-item"><div>${i.name} x${i.quantity}</div><div>Rs.${i.price*i.quantity}</div><button onclick="removeFromCart('${i.id}')" style="background:#dc3545;color:white;border:none;border-radius:20px;padding:5px 10px;">Remove</button></div>`).join(''); }
-        window.removeFromCart = function(id){ cart=cart.filter(i=>i.id!==id); saveCart(); };
-        window.toggleCart = function(){ document.getElementById('cartSidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); };
-        window.showCheckout = function(){ if(!cart.length){ Swal.fire({title:'Empty Cart',text:'Add items first',icon:'warning',background:'#1a3d33',color:'#fff'}); return; } const total=cart.reduce((s,i)=>s+(i.price*i.quantity),0); document.getElementById('checkoutTotal').innerHTML=total.toLocaleString(); document.getElementById('checkoutModal').style.display='flex'; };
-        window.closeCheckout = function(){ document.getElementById('checkoutModal').style.display='none'; };
-        document.getElementById('placeOrderBtn').onclick=async function(){ const address=document.getElementById('checkoutAddress').value.trim(); if(!address){ Swal.fire({title:'Address Required',text:'Please enter delivery address',icon:'error',background:'#1a3d33',color:'#fff'}); return; } const total=cart.reduce((s,i)=>s+(i.price*i.quantity),0); const {error}=await supabase.from('orders').insert([{ id:crypto.randomUUID(), user_id:currentBuyerId, user_type:'buyer', order_date:new Date().toISOString().split('T')[0], total_amount:total, status:'pending', payment_method:document.getElementById('paymentMethod').value, payment_status:'pending', delivery_address:address, notes:JSON.stringify(cart.map(i=>({id:i.id,name:i.name,quantity:i.quantity}))) }]); if(error){ Swal.fire({title:'Error',text:error.message,icon:'error',background:'#1a3d33',color:'#fff'}); return; } for(let item of cart){ const {data:p}=await supabase.from('products').select('stock_quantity').eq('id',item.id); if(p&&p[0]) await supabase.from('products').update({stock_quantity:(p[0].stock_quantity||0)-item.quantity}).eq('id',item.id); } cart=[]; saveCart(); closeCheckout(); toggleCart(); await loadOrders(); await loadProducts(); await loadProfile(); Swal.fire({title:'Order Placed!',text:'Your order has been submitted successfully',icon:'success',background:'#1a3d33',color:'#fff'}); };
-        async function loadOrders() { const {data}=await supabase.from('orders').select('*').eq('user_id',currentBuyerId).eq('user_type','buyer').order('order_date',{ascending:false}); const tbody=document.getElementById('ordersList'); if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="7" class="empty-state">No orders</td></tr>'; return; } tbody.innerHTML=data.map(o=>{ let items='-'; try{ const parsed=JSON.parse(o.notes||'[]'); items=parsed.map(i=>i.name).join(', '); }catch(e){ items=o.notes||'-'; } return `<tr><td>${o.id.slice(0,8)}</td><td>${items}</td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td>${o.delivery_address||'-'}</td></tr>`; }).join(''); }
-        async function loadProfile() { const {data}=await supabase.from('buyers').select('*').eq('id',currentBuyerId); if(data&&data[0]){ const b=data[0]; document.getElementById('profileName').value=b.full_name||''; document.getElementById('profileEmail').value=b.email||''; document.getElementById('profilePhone').value=b.phone||''; document.getElementById('profileAddress').value=b.address||''; } }
-        window.editProfile = async function(){ const {value:form}=await Swal.fire({title:'Edit Profile',html:`<input id="name" class="swal2-input" placeholder="Full Name" value="${document.getElementById('profileName').value}"><input id="phone" class="swal2-input" placeholder="Phone" value="${document.getElementById('profilePhone').value}"><textarea id="addr" class="swal2-textarea" placeholder="Address">${document.getElementById('profileAddress').value}</textarea>`,focusConfirm:false,background:'#1a3d33',color:'#fff',confirmButtonColor:'#E8B13C',preConfirm:()=>({name:document.getElementById('name').value,phone:document.getElementById('phone').value,address:document.getElementById('addr').value})}); if(form){ await supabase.from('buyers').update({full_name:form.name,phone:form.phone,address:form.address}).eq('id',currentBuyerId); loadProfile(); Swal.fire({title:'Updated',text:'Profile updated',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); } };
-        function setupTabListeners() { document.querySelectorAll('.tab-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ const tab=btn.getAttribute('data-tab'); document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById(`${tab}Tab`).classList.add('active'); btn.classList.add('active'); if(tab==='livechat'){ buyerChat.markMessagesRead(); document.querySelector('.tab-btn[data-tab="livechat"]').classList.remove('has-unread'); buyerChat.renderMessages(); } }); }); }
-        document.getElementById('logoutBtn').onclick=async()=>{ await supabase.auth.signOut(); window.location.href='buyer-auth.html'; };
-        checkAuth();
+                },
+                
+                scrollToBottom() {
+                    const area = document.getElementById('chatMessagesArea');
+                    if (area) area.scrollTop = area.scrollHeight;
+                }
+            };
+            
+            function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+            
+            // ========== EXISTING BUYER LOGIC ==========
+            async function checkAuth() {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                if (error || !user) { window.location.href = 'buyer-auth.html'; return; }
+                currentBuyerId = user.id;
+                document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
+                await ensureBuyerExists(user);
+                await loadProducts();
+                await loadOrders();
+                await loadProfile();
+                loadCart();
+                buyerChat.init();
+                setupTabListeners();
+            }
+            
+            async function ensureBuyerExists(user) {
+                const { data: existing } = await supabaseClient.from('buyers').select('*').eq('id', user.id);
+                if (existing && existing.length) return existing[0];
+                const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
+                await supabaseClient.from('buyers').insert([{ id: user.id, email: user.email, full_name: fullName, phone: '', address: '', total_orders: 0, total_spent: 0, created_at: new Date().toISOString() }]);
+            }
+            
+            async function loadProducts() {
+                const { data } = await supabaseClient.from('products').select('*').eq('is_active', true);
+                if (data) { allProducts = data; displayCategories(); displayProducts(); }
+            }
+            
+            function displayCategories() {
+                const cats = ['all', ...new Set(allProducts.map(p=>p.category).filter(Boolean))];
+                document.getElementById('categoriesList').innerHTML = cats.map(c=>`<button class="category-btn ${currentCategory===c?'active':''}" onclick="filterByCategory('${c}')">${c==='all'?'✨ All Products':c}</button>`).join('');
+            }
+            
+            window.filterByCategory = function(c) { currentCategory=c; displayCategories(); displayProducts(); };
+            window.searchProducts = function() { displayProducts(document.getElementById('searchInput').value.toLowerCase()); };
+            
+            function displayProducts(search='') {
+                let filtered = currentCategory==='all' ? allProducts : allProducts.filter(p=>p.category===currentCategory);
+                if(search) filtered = filtered.filter(p=>p.name.toLowerCase().includes(search));
+                const container = document.getElementById('productsGrid');
+                if(!filtered.length){ container.innerHTML='<div class="empty-state">No products found</div>'; return; }
+                container.innerHTML = filtered.map(p=>`<div class="product-card"><div class="product-image"><i class="fas fa-lightbulb"></i></div><div class="product-info"><div class="product-name">${p.name}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><div class="product-stock" style="color:${p.stock_quantity>0?'#1e7e5e':'#dc3545'}">${p.stock_quantity>0?`In Stock (${p.stock_quantity})`:'Out of Stock'}</div><button class="add-to-cart" onclick="addToCart('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${p.stock_quantity===0?'disabled':''}>Add to Cart</button></div></div>`).join('');
+            }
+            
+            function loadCart() { const saved = localStorage.getItem(`cart_${currentBuyerId}`); if(saved) cart=JSON.parse(saved); updateCartUI(); }
+            function saveCart() { localStorage.setItem(`cart_${currentBuyerId}`,JSON.stringify(cart)); updateCartUI(); }
+            
+            window.addToCart = function(id,name,price){ let item=cart.find(i=>i.id===id); if(item) item.quantity++; else cart.push({id,name,price,quantity:1}); saveCart(); Swal.fire({title:'Added!',text:`${name} added to cart`,icon:'success',timer:1000,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); };
+            
+            function updateCartUI() { 
+                const count=cart.reduce((s,i)=>s+i.quantity,0); 
+                document.getElementById('cartCount').innerHTML=count; 
+                const total=cart.reduce((s,i)=>s+(i.price*i.quantity),0); 
+                document.getElementById('cartTotal').innerHTML=total.toLocaleString(); 
+                const container=document.getElementById('cartItems'); 
+                if(!cart.length){ container.innerHTML='<p style="text-align:center;padding:20px;">Cart empty</p>'; return; } 
+                container.innerHTML=cart.map(i=>`<div class="cart-item"><div>${i.name} x${i.quantity}</div><div>Rs.${(i.price*i.quantity).toLocaleString()}</div><button onclick="removeFromCart('${i.id}')" style="background:#dc3545;color:white;border:none;border-radius:20px;padding:5px 10px;cursor:pointer;">Remove</button></div>`).join(''); 
+            }
+            
+            window.removeFromCart = function(id){ cart=cart.filter(i=>i.id!==id); saveCart(); };
+            window.toggleCart = function(){ document.getElementById('cartSidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); };
+            window.showCheckout = function(){ if(!cart.length){ Swal.fire({title:'Empty Cart',text:'Add items first',icon:'warning',background:'#1a3d33',color:'#fff'}); return; } const total=cart.reduce((s,i)=>s+(i.price*i.quantity),0); document.getElementById('checkoutTotal').innerHTML=total.toLocaleString(); document.getElementById('checkoutModal').style.display='flex'; };
+            window.closeCheckout = function(){ document.getElementById('checkoutModal').style.display='none'; };
+            
+            document.getElementById('placeOrderBtn').onclick = async function(){
+                const address = document.getElementById('checkoutAddress').value.trim();
+                if(!address){ Swal.fire({title:'Address Required',text:'Please enter delivery address',icon:'error',background:'#1a3d33',color:'#fff'}); return; }
+                const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0);
+                const { error } = await supabaseClient.from('orders').insert([{ 
+                    id: crypto.randomUUID(), user_id: currentBuyerId, user_type: 'buyer', 
+                    order_date: new Date().toISOString().split('T')[0], total_amount: total, 
+                    status: 'pending', payment_method: document.getElementById('paymentMethod').value, 
+                    payment_status: 'pending', delivery_address: address, 
+                    notes: JSON.stringify(cart.map(i=>({id:i.id,name:i.name,quantity:i.quantity}))) 
+                }]);
+                if(error){ Swal.fire({title:'Error',text:error.message,icon:'error',background:'#1a3d33',color:'#fff'}); return; }
+                for(let item of cart){
+                    const {data:p}=await supabaseClient.from('products').select('stock_quantity').eq('id',item.id);
+                    if(p&&p[0]) await supabaseClient.from('products').update({stock_quantity:(p[0].stock_quantity||0)-item.quantity}).eq('id',item.id);
+                }
+                cart=[]; saveCart(); closeCheckout(); toggleCart();
+                await loadOrders(); await loadProducts(); await loadProfile();
+                Swal.fire({title:'Order Placed!',text:'Your order has been submitted successfully',icon:'success',background:'#1a3d33',color:'#fff'});
+            };
+            
+            async function loadOrders() {
+                const {data}=await supabaseClient.from('orders').select('*').eq('user_id',currentBuyerId).eq('user_type','buyer').order('order_date',{ascending:false});
+                const tbody=document.getElementById('ordersList');
+                if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="7" class="empty-state">No orders found</td></tr>'; return; }
+                tbody.innerHTML=data.map(o=>{ let items='-'; try{ const parsed=JSON.parse(o.notes||'[]'); items=parsed.map(i=>i.name).join(', '); }catch(e){ items=o.notes||'-'; } return `<tr><td>${o.id.slice(0,8)}</td><td>${items}</td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td>${o.delivery_address||'-'}</td></tr>`; }).join('');
+            }
+            
+            async function loadProfile() {
+                const {data}=await supabaseClient.from('buyers').select('*').eq('id',currentBuyerId);
+                if(data&&data[0]){ const b=data[0]; document.getElementById('profileName').value=b.full_name||''; document.getElementById('profileEmail').value=b.email||''; document.getElementById('profilePhone').value=b.phone||''; document.getElementById('profileAddress').value=b.address||''; }
+            }
+            
+            window.editProfile = async function(){
+                const {value:form}=await Swal.fire({
+                    title:'Edit Profile', html:`<input id="name" class="swal2-input" placeholder="Full Name" value="${document.getElementById('profileName').value}"><input id="phone" class="swal2-input" placeholder="Phone" value="${document.getElementById('profilePhone').value}"><textarea id="addr" class="swal2-textarea" placeholder="Address">${document.getElementById('profileAddress').value}</textarea>`,
+                    focusConfirm:false, background:'#1a3d33', color:'#fff', confirmButtonColor:'#E8B13C',
+                    preConfirm:()=>({name:document.getElementById('name').value,phone:document.getElementById('phone').value,address:document.getElementById('addr').value})
+                });
+                if(form){ await supabaseClient.from('buyers').update({full_name:form.name,phone:form.phone,address:form.address}).eq('id',currentBuyerId); loadProfile(); Swal.fire({title:'Updated',text:'Profile updated',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); }
+            };
+            
+            function setupTabListeners() {
+                document.querySelectorAll('.tab-btn').forEach(btn=>{
+                    btn.addEventListener('click',()=>{
+                        const tab=btn.getAttribute('data-tab');
+                        document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+                        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+                        document.getElementById(`${tab}Tab`).classList.add('active');
+                        btn.classList.add('active');
+                        if(tab==='livechat'){
+                            buyerChat.markMessagesRead();
+                            document.querySelector('.tab-btn[data-tab="livechat"]').classList.remove('has-unread');
+                            buyerChat.renderMessages();
+                        }
+                    });
+                });
+            }
+            
+            document.getElementById('logoutBtn').onclick = async()=>{ await supabaseClient.auth.signOut(); window.location.href='buyer-auth.html'; };
+            checkAuth();
+        })();
     </script>
 </body>
 </html>
