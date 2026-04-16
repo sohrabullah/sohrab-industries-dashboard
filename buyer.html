@@ -293,7 +293,7 @@
         }
         
         .message {
-            max-width: 70%;
+            max-width: 75%;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -324,7 +324,7 @@
             margin-bottom: 4px;
             color: #ffd966;
         }
-        .message-text { font-size: 0.9rem; line-height: 1.4; }
+        .message-text { font-size: 0.9rem; line-height: 1.4; white-space: pre-wrap; }
         
         .message-time {
             font-size: 0.6rem;
@@ -345,29 +345,60 @@
             border-left: 3px solid #E8B13C;
         }
         
+        /* Message Actions - Three Dots Menu */
+        .message-actions-trigger {
+            position: absolute;
+            right: -30px;
+            top: 5px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: #E8B13C;
+            font-size: 12px;
+        }
+        .message:hover .message-actions-trigger { opacity: 1; }
+        .message.sent .message-actions-trigger { right: -30px; left: auto; }
+        .message.received .message-actions-trigger { left: -30px; right: auto; }
+        
         .message-actions-menu {
             position: absolute;
             background: #1a3d33;
             border-radius: 12px;
             padding: 8px;
             display: none;
-            gap: 8px;
+            gap: 5px;
             z-index: 100;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             border: 1px solid rgba(232,177,60,0.3);
+            flex-direction: column;
+            min-width: 130px;
         }
         .message-actions-menu.show { display: flex; }
+        .message.sent .message-actions-menu { right: 0; top: 100%; margin-top: 5px; }
+        .message.received .message-actions-menu { left: 0; top: 100%; margin-top: 5px; }
         .message-action-btn {
             background: none;
             border: none;
             color: #E8B13C;
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .message-action-btn:hover { background: rgba(232,177,60,0.2); }
+        .message-action-btn.danger { color: #dc3545; }
         
         .chat-media {
             max-width: 200px;
@@ -441,6 +472,7 @@
             display: flex;
             gap: 8px;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
         .chat-tool-btn {
             background: rgba(255,255,255,0.08);
@@ -465,9 +497,10 @@
             color: white;
             resize: none;
             font-size: 0.9rem;
+            font-family: inherit;
         }
         .chat-input:focus { outline: none; border-color: #E8B13C; }
-        .chat-send-btn {
+        .emoji-btn, .chat-send-btn {
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             border: none;
             width: 44px;
@@ -476,7 +509,36 @@
             cursor: pointer;
             color: #0a1f1a;
             font-size: 1.2rem;
+            transition: all 0.2s;
         }
+        .emoji-btn:hover, .chat-send-btn:hover { transform: scale(1.05); }
+        
+        /* Emoji Picker */
+        .emoji-picker {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            background: #1a3d33;
+            border-radius: 20px;
+            padding: 15px;
+            display: none;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            z-index: 1001;
+            border: 1px solid rgba(232,177,60,0.3);
+            max-width: 350px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .emoji-picker.active { display: grid; }
+        .emoji-item {
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .emoji-item:hover { transform: scale(1.2); background: rgba(232,177,60,0.2); border-radius: 8px; }
         
         .voice-recording-overlay {
             position: fixed;
@@ -674,6 +736,7 @@
             .cart-sidebar { width: 100%; right: -100%; }
             .message { max-width: 85%; }
             .products-grid { grid-template-columns: 1fr; }
+            .message-actions-trigger { opacity: 1; }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -753,9 +816,11 @@
                         <button class="chat-tool-btn" onclick="window.buyerChat.showProductSelector()"><i class="fas fa-box"></i> Product</button>
                     </div>
                     <div class="chat-input-wrapper">
-                        <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();window.buyerChat.sendMessage();}"></textarea>
+                        <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
+                        <button class="emoji-btn" onclick="window.buyerChat.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
                         <button class="chat-send-btn" onclick="window.buyerChat.sendMessage()"><i class="fas fa-paper-plane"></i></button>
                     </div>
+                    <div id="emojiPicker" class="emoji-picker"></div>
                     <div id="mediaPreview" class="media-preview"></div>
                 </div>
             </div>
@@ -817,6 +882,9 @@
             let recordingStartTime = null;
             let recordingTimerInterval = null;
             let currentReplyingTo = null;
+            let currentOpenMenu = null;
+            
+            const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
             
             const categoryIcons = {
                 'LED Bulbs': 'fa-lightbulb',
@@ -834,8 +902,43 @@
                     if (!currentBuyerId) return;
                     this.subscribeToMessages();
                     this.loadMessages();
+                    this.setupEmojiPicker();
                     document.getElementById('chatInput').addEventListener('input', () => this.sendTyping());
+                    document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            this.sendMessage();
+                        }
+                    });
                     setInterval(() => this.markMessagesRead(), 3000);
+                    document.addEventListener('click', (e) => {
+                        if (!e.target.closest('.emoji-picker') && !e.target.closest('.emoji-btn')) {
+                            document.getElementById('emojiPicker').classList.remove('active');
+                        }
+                        if (!e.target.closest('.message-actions-menu') && !e.target.closest('.message-actions-trigger')) {
+                            if (currentOpenMenu) {
+                                document.getElementById(currentOpenMenu)?.classList.remove('show');
+                                currentOpenMenu = null;
+                            }
+                        }
+                    });
+                },
+                
+                setupEmojiPicker() {
+                    const picker = document.getElementById('emojiPicker');
+                    picker.innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="window.buyerChat.addEmoji('${emoji}')">${emoji}</div>`).join('');
+                },
+                
+                toggleEmojiPicker() {
+                    const picker = document.getElementById('emojiPicker');
+                    picker.classList.toggle('active');
+                },
+                
+                addEmoji(emoji) {
+                    const input = document.getElementById('chatInput');
+                    input.value += emoji;
+                    input.focus();
+                    document.getElementById('emojiPicker').classList.remove('active');
                 },
                 
                 async loadMessages() {
@@ -916,6 +1019,18 @@
                     }
                 },
                 
+                toggleMessageActions(messageId) {
+                    const menuId = `menu-${messageId.replace(/-/g, '')}`;
+                    const menu = document.getElementById(menuId);
+                    if (currentOpenMenu && currentOpenMenu !== menuId) {
+                        document.getElementById(currentOpenMenu)?.classList.remove('show');
+                    }
+                    if (menu) {
+                        menu.classList.toggle('show');
+                        currentOpenMenu = menu.classList.contains('show') ? menuId : null;
+                    }
+                },
+                
                 async editMessage(messageId, oldText) {
                     const { value: newText } = await Swal.fire({
                         title: 'Edit Message',
@@ -929,6 +1044,7 @@
                         await supabaseClient.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId);
                         Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
                     }
+                    this.closeMenu();
                 },
                 
                 async deleteMessage(messageId, forEveryone = false) {
@@ -949,6 +1065,7 @@
                         }
                         Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
                     }
+                    this.closeMenu();
                 },
                 
                 replyToMessage(message) {
@@ -956,6 +1073,7 @@
                     document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50);
                     document.getElementById('replyBar').classList.add('active');
                     document.getElementById('chatInput').focus();
+                    this.closeMenu();
                 },
                 
                 cancelReply() {
@@ -972,13 +1090,21 @@
                         confirmButtonText: 'Forward',
                         background: '#1a3d33', color: '#fff'
                     });
-                    const forwardText = userInput ? `[Forwarded] ${message.text}\n\nNote: ${userInput}` : `[Forwarded] ${message.text}`;
+                    const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`;
                     await supabaseClient.from('chat_messages').insert([{
                         id: crypto.randomUUID(), sender_id: currentBuyerId, sender_type: 'buyer',
                         receiver_id: this.adminId, receiver_type: 'admin', text: forwardText,
                         read: false, created_at: new Date().toISOString()
                     }]);
                     Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
+                    this.closeMenu();
+                },
+                
+                closeMenu() {
+                    if (currentOpenMenu) {
+                        document.getElementById(currentOpenMenu)?.classList.remove('show');
+                        currentOpenMenu = null;
+                    }
                 },
                 
                 clearPendingMedia() {
@@ -1150,8 +1276,11 @@
                             productHtml = `<div class="product-card-message"><i class="fas fa-lightbulb"></i><div><h4>${escapeHtml(p.name)}</h4><p>Rs. ${parseInt(p.price).toLocaleString()}</p></div></div>`;
                         }
                         const editedMark = msg.edited ? ' <span style="font-size:0.6rem;">(edited)</span>' : '';
-                        const msgId = msg.id.replace(/-/g, '');
-                        return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msgId}" style="position:relative;">
+                        const msgShortId = msg.id.replace(/-/g, '');
+                        return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msgShortId}" style="position:relative;">
+                                    <div class="message-actions-trigger" onclick="window.buyerChat.toggleMessageActions('${msg.id}')">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </div>
                                     <div class="message-bubble">
                                         <div class="sender-name">${senderName}</div>
                                         ${replyHtml}
@@ -1159,13 +1288,13 @@
                                         ${mediaHtml}${productHtml}
                                         <div class="message-time">${new Date(msg.created_at).toLocaleTimeString()} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#E8B13C;"></i>' : ''}</div>
                                     </div>
-                                    ${isSent ? `<div class="message-actions-menu" id="menu-${msgId}" style="position:absolute; right:0; top:100%; margin-top:5px;">
+                                    <div class="message-actions-menu" id="menu-${msgShortId}">
                                         <button class="message-action-btn" onclick="window.buyerChat.editMessage('${msg.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="message-action-btn" onclick="window.buyerChat.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete me</button>
-                                        <button class="message-action-btn" onclick="window.buyerChat.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete all</button>
+                                        <button class="message-action-btn" onclick="window.buyerChat.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button>
+                                        <button class="message-action-btn danger" onclick="window.buyerChat.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete for all</button>
                                         <button class="message-action-btn" onclick="window.buyerChat.forwardMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-share"></i> Forward</button>
                                         <button class="message-action-btn" onclick="window.buyerChat.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button>
-                                    </div>` : ''}
+                                    </div>
                                 </div>`;
                     }).join('');
                     this.scrollToBottom();
@@ -1250,15 +1379,7 @@
                     } catch(e) {
                         productsText = o.notes ? o.notes.substring(0, 40) : '-';
                     }
-                    return `<tr>
-                        <td><strong>${o.id.slice(0,10)}</strong></td>
-                        <td><small>${productsText}</small></td>
-                        <td>Rs.${o.total_amount.toLocaleString()}</td>
-                        <td>${new Date(o.order_date).toLocaleDateString()}</td>
-                        <td><span class="status-badge status-${o.status}">${o.status}</span></td>
-                        <td>${o.payment_status}</td>
-                        <td><small>${(o.delivery_address || '-').substring(0,30)}</small></td>
-                    </tr>`;
+                    return `<tr><td><strong>${o.id.slice(0,10)}</strong></td><td><small>${productsText}</small></td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td><small>${(o.delivery_address || '-').substring(0,30)}</small></td></tr>`;
                 }).join('');
             }
             
