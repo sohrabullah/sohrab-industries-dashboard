@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sohrab Industries | Premium Buyer Dashboard - Shop LED Bulbs</title>
+    <title>Sohrab Industries | Premium LED Store - Shop Quality Bulbs</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -281,6 +281,12 @@
             justify-content: center;
             font-size: 4rem;
             color: #E8B13C;
+            cursor: pointer;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .product-info { padding: 20px; }
         .product-name { font-size: 1.2rem; font-weight: 700; color: #E8B13C; margin-bottom: 5px; }
@@ -616,6 +622,7 @@
                 <option value="Cash on Delivery">Cash on Delivery</option>
                 <option value="EasyPaisa">EasyPaisa</option>
                 <option value="JazzCash">JazzCash</option>
+                <option value="Bank Transfer">Bank Transfer</option>
             </select>
             <div class="cart-total">Total: Rs. <span id="checkoutTotal">0</span></div>
             <button id="placeOrderBtn" class="checkout-btn"><i class="fas fa-check"></i> Place Order</button>
@@ -684,7 +691,22 @@
 
             async function loadProducts() {
                 const { data, error } = await supabaseClient.from('products').select('*').eq('is_active', true);
-                if (!error && data) { allProducts = data; displayCategories(); displayProducts(); }
+                if (!error && data && data.length) { 
+                    allProducts = data; 
+                } else {
+                    // Fallback demo products if none exist in Supabase
+                    allProducts = [
+                        { id: '1', name: 'Premium LED Bulb 9W', category: 'LED Bulbs', wattage: '9W', price: 150, stock_quantity: 100, image_url: null },
+                        { id: '2', name: 'Super Bright LED 12W', category: 'LED Bulbs', wattage: '12W', price: 250, stock_quantity: 75, image_url: null },
+                        { id: '3', name: 'Energy Saver 15W', category: 'Energy Saving', wattage: '15W', price: 350, stock_quantity: 50, image_url: null },
+                        { id: '4', name: 'Decorative Filament Bulb', category: 'Decorative', wattage: '6W', price: 450, stock_quantity: 30, image_url: null },
+                        { id: '5', name: 'Solar LED Street Light', category: 'Solar', wattage: '30W', price: 2500, stock_quantity: 20, image_url: null },
+                        { id: '6', name: 'LED Panel Light 18W', category: 'LED Bulbs', wattage: '18W', price: 550, stock_quantity: 40, image_url: null }
+                    ];
+                    showNotification('Using demo products. Add products in Supabase admin.', false, true);
+                }
+                displayCategories();
+                displayProducts();
             }
             
             function displayCategories() {
@@ -703,7 +725,9 @@
                 if (filtered.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i> No products found</div>'; return; }
                 container.innerHTML = filtered.map(p => `
                     <div class="product-card">
-                        <div class="product-image"><i class="fas fa-lightbulb"></i></div>
+                        <div class="product-image" onclick="showProductDetail('${p.id}')">
+                            ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}">` : `<i class="fas fa-lightbulb"></i>`}
+                        </div>
                         <div class="product-info">
                             <div class="product-name">${p.name}</div>
                             <div class="product-category">${p.category || 'General'}</div>
@@ -715,6 +739,29 @@
                     </div>
                 `).join('');
             }
+
+            window.showProductDetail = function(productId) {
+                const product = allProducts.find(p => p.id === productId);
+                if (!product) return;
+                Swal.fire({
+                    title: product.name,
+                    html: `<div style="text-align:center">
+                        ${product.image_url ? `<img src="${product.image_url}" style="max-width:100%; border-radius:10px; margin-bottom:15px;">` : '<i class="fas fa-lightbulb" style="font-size:4rem; color:#E8B13C;"></i>'}
+                        <p><strong>Price:</strong> Rs. ${product.price.toLocaleString()}</p>
+                        <p><strong>Category:</strong> ${product.category}</p>
+                        <p><strong>Wattage:</strong> ${product.wattage}</p>
+                        <p><strong>Stock:</strong> ${product.stock_quantity > 0 ? product.stock_quantity + ' available' : 'Out of stock'}</p>
+                        <p>Premium quality LED product from Sohrab Industries.</p>
+                    </div>`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Add to Cart',
+                    cancelButtonText: 'Close',
+                    confirmButtonColor: '#E8B13C',
+                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                    color: '#fff',
+                    preConfirm: () => addToCart(product.id, product.name, product.price)
+                });
+            };
             
             function loadCart() { const saved = localStorage.getItem(`cart_${currentBuyerId}`); if (saved) { cart = JSON.parse(saved); updateCartUI(); } }
             function saveCart() { localStorage.setItem(`cart_${currentBuyerId}`, JSON.stringify(cart)); updateCartUI(); }
@@ -747,6 +794,7 @@
                 `).join('');
                 const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 cartTotalSpan.innerHTML = total.toLocaleString();
+                document.getElementById('checkoutTotal').innerHTML = total.toLocaleString();
             }
             
             window.updateQuantity = function(id, change) {
@@ -767,163 +815,10 @@
             async function loadOrders() {
                 const { data } = await supabaseClient.from('orders').select('*').eq('user_id', currentBuyerId).eq('user_type', 'buyer').order('order_date', { ascending: false });
                 const tbody = document.getElementById('ordersList');
-                if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i> No orders yet</td></tr>'; return; }
+                if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i> No orders yet</td</tr>'; return; }
                 tbody.innerHTML = data.map(o => {
                     let products = '-';
                     try { const items = JSON.parse(o.notes || '[]'); products = items.map(i => i.name).join(', '); } catch(e) { products = o.notes || '-'; }
-                    return `<tr><td><strong>${o.id?.slice(0, 8)}...</strong></td><td>${products}</td><td>Rs. ${(o.total_amount || 0).toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td><span class="status-badge">${o.payment_status}</span></td><td>${o.delivery_address || '-'}</td></tr>`;
-                }).join('');
-            }
-            
-            async function loadProfile() {
-                const { data } = await supabaseClient.from('buyers').select('*').eq('id', currentBuyerId);
-                if (data && data[0]) {
-                    const b = data[0];
-                    document.getElementById('profileName').value = b.full_name || '';
-                    document.getElementById('profileEmail').value = b.email || '';
-                    document.getElementById('profilePhone').value = b.phone || '';
-                    document.getElementById('profileAddress').value = b.address || '';
-                    document.getElementById('profileTotalOrders').value = b.total_orders || 0;
-                    document.getElementById('profileTotalSpent').value = `Rs. ${(b.total_spent || 0).toLocaleString()}`;
-                    document.getElementById('profileMemberSince').value = b.created_at ? new Date(b.created_at).toLocaleDateString() : new Date().toLocaleDateString();
-                }
-            }
-            
-            window.editProfileField = async function(inputId, dbField) {
-                const input = document.getElementById(inputId);
-                const newValue = prompt(`Enter new ${dbField.replace('_', ' ')}:`, input.value);
-                if (newValue && newValue !== input.value) {
-                    const { error } = await supabaseClient.from('buyers').update({ [dbField]: newValue }).eq('id', currentBuyerId);
-                    if (error) showNotification(error.message, true);
-                    else { showNotification(`${dbField} updated!`, false); await loadProfile(); }
-                }
-            };
-            
-            // ========== CHAT SYSTEM (Direct to Admin - No Email) ==========
-            async function loadContactMessages() {
-                try {
-                    const { data, error } = await supabaseClient
-                        .from('contact_messages')
-                        .select('*')
-                        .eq('buyer_id', currentBuyerId)
-                        .order('created_at', { ascending: false });
-                    
-                    const container = document.getElementById('contactMessagesList');
-                    if (error || !data || data.length === 0) {
-                        container.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i> No messages yet. Send a message to Sohrab Industries support.</div>';
-                        return;
-                    }
-                    
-                    container.innerHTML = data.map(msg => `
-                        <div class="contact-message-card">
-                            <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
-                                <strong style="color:#E8B13C;">${escapeHtml(msg.subject || 'General Inquiry')}</strong>
-                                <small>${new Date(msg.created_at).toLocaleString()}</small>
-                            </div>
-                            <p style="margin:8px 0; color:#ddd;"><strong>You:</strong> ${escapeHtml(msg.message)}</p>
-                            ${msg.reply ? `
-                                <div class="admin-reply">
-                                    <strong style="color:#E8B13C;"><i class="fas fa-reply"></i> Sohrab Industries Support:</strong>
-                                    <p style="margin-top:5px;">${escapeHtml(msg.reply)}</p>
-                                    <small>${msg.updated_at ? new Date(msg.updated_at).toLocaleString() : ''}</small>
-                                </div>
-                            ` : '<div style="margin-top:8px;"><span class="status-badge" style="background:#b8860b;">Awaiting Reply</span></div>'}
-                        </div>
-                    `).join('');
-                } catch(e) {
-                    console.error('Error loading messages:', e);
-                    document.getElementById('contactMessagesList').innerHTML = '<div class="empty-state">Unable to load messages. Please try again.</div>';
-                }
-            }
-            
-            function escapeHtml(str) {
-                if (!str) return '';
-                return str.replace(/[&<>]/g, function(m) {
-                    if (m === '&') return '&amp;';
-                    if (m === '<') return '&lt;';
-                    if (m === '>') return '&gt;';
-                    return m;
-                });
-            }
-            
-            document.getElementById('sendContactBtn')?.addEventListener('click', async () => {
-                const subject = document.getElementById('contactSubject').value.trim();
-                const message = document.getElementById('contactMessage').value.trim();
-                if(!message) { showNotification('Please write a message', true); return; }
-                
-                const newMessage = {
-                    id: crypto.randomUUID(),
-                    buyer_id: currentBuyerId,
-                    subject: subject || 'General Support Inquiry',
-                    message: message,
-                    status: 'pending',
-                    sender_type: 'buyer',
-                    receiver_type: 'admin',
-                    created_at: new Date().toISOString(),
-                    reply: null
-                };
-                
-                const { error } = await supabaseClient.from('contact_messages').insert([newMessage]);
-                if(error) { 
-                    showNotification('Error sending message: ' + error.message, true); 
-                    return; 
-                }
-                showNotification('Message sent to Sohrab Industries support team!', false);
-                document.getElementById('contactSubject').value = '';
-                document.getElementById('contactMessage').value = '';
-                await loadContactMessages();
-            });
-            
-            function setupRealtimeMessages() {
-                supabaseClient.channel('public:contact_messages')
-                    .on('postgres_changes', { 
-                        event: '*', 
-                        schema: 'public', 
-                        table: 'contact_messages',
-                        filter: `buyer_id=eq.${currentBuyerId}`
-                    }, payload => {
-                        if (document.getElementById('contactTab')?.classList.contains('active')) {
-                            loadContactMessages();
-                        }
-                    })
-                    .subscribe();
-            }
-            
-            document.getElementById('placeOrderBtn').onclick = async function() {
-                const address = document.getElementById('checkoutAddress').value;
-                const paymentMethod = document.getElementById('paymentMethod').value;
-                if (!address) { showNotification('Please enter delivery address', true); return; }
-                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const btn = this; btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Placing Order...';
-                
-                const { error } = await supabaseClient.from('orders').insert([{
-                    user_id: currentBuyerId, user_type: 'buyer', order_date: new Date().toISOString().split('T')[0],
-                    total_amount: total, status: 'pending', payment_method: paymentMethod,
-                    payment_status: paymentMethod === 'Cash on Delivery' ? 'pending' : 'paid',
-                    delivery_address: address, notes: JSON.stringify(cart)
-                }]);
-                
-                if (error) { showNotification(error.message, true); btn.disabled = false; btn.innerHTML = 'Place Order'; return; }
-                
-                for (const item of cart) {
-                    const { data: p } = await supabaseClient.from('products').select('stock_quantity').eq('id', item.id);
-                    if (p && p[0]) await supabaseClient.from('products').update({ stock_quantity: (p[0].stock_quantity || 0) - item.quantity }).eq('id', item.id);
-                }
-                
-                const { data: buyerData } = await supabaseClient.from('buyers').select('total_orders, total_spent').eq('id', currentBuyerId);
-                if (buyerData && buyerData[0]) {
-                    await supabaseClient.from('buyers').update({ total_orders: (buyerData[0].total_orders || 0) + 1, total_spent: (buyerData[0].total_spent || 0) + total }).eq('id', currentBuyerId);
-                }
-                
-                showNotification('Order placed successfully!', false);
-                cart = []; saveCart(); closeCheckout(); toggleCart();
-                await loadProducts(); await loadOrders(); await loadProfile();
-                btn.disabled = false; btn.innerHTML = 'Place Order';
-            };
-            
-            document.getElementById('logoutBtn').onclick = async function() { await supabaseClient.auth.signOut(); window.location.href = 'buyer-auth.html'; };
-            checkAuth();
-        })();
-    </script>
-</body>
-</html>
+                    return `<tr>
+                        <td><strong>${o.id?.slice(0, 8)}...</strong></td>
+                        <td>${products}</td>
