@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sohrab Industries | Premium LED Store</title>
+    <title>Sohrab Industries | Premium LED Store - Pakistan's #1 Lighting Solution</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -15,12 +15,14 @@
             --primary-dark: #c99b2e;
             --secondary: #1a4a3a;
             --dark: #0a2f24;
+            --dark-bg: #0a1a15;
             --card-bg: rgba(20,45,38,0.95);
             --border-glow: rgba(232,177,60,0.3);
             --text-white: #ffffff;
             --text-muted: rgba(255,255,255,0.7);
             --success: #1e7e5e;
             --danger: #dc3545;
+            --info: #17a2b8;
         }
         
         body {
@@ -28,6 +30,19 @@
             background: linear-gradient(145deg, #0a1a15 0%, #0d281f 50%, #0a1a15 100%);
             min-height: 100vh;
             color: var(--text-white);
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 20% 30%, rgba(232,177,60,0.08) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 70%, rgba(30,78,62,0.12) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
         
         ::-webkit-scrollbar { width: 8px; }
@@ -39,6 +54,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
+        @keyframes blinkRed {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Premium Header - Admin Theme Colors */
         .buyer-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             padding: 1rem 5%;
@@ -135,6 +156,7 @@
             cursor: pointer;
         }
         
+        /* Hero Section with YouTube Embed - RESTORED */
         .hero-section {
             position: relative;
             height: 55vh;
@@ -143,15 +165,15 @@
             margin-bottom: 2rem;
             border-radius: 28px;
         }
-        .hero-image {
+        .hero-iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            border: 0;
             z-index: 0;
-            background: linear-gradient(135deg, var(--dark), var(--secondary));
+            pointer-events: none;
         }
         .hero-overlay {
             position: absolute;
@@ -201,6 +223,7 @@
             z-index: 2;
         }
         
+        /* Features Bar */
         .features-bar {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -215,7 +238,9 @@
         .feature-item { text-align: center; }
         .feature-item i { font-size: 1.5rem; color: var(--primary); margin-bottom: 5px; }
         .feature-item h4 { font-size: 0.8rem; color: var(--primary); }
+        .feature-item p { font-size: 0.65rem; color: var(--text-muted); }
         
+        /* Categories */
         .categories-section { margin-bottom: 2rem; }
         .section-header { margin-bottom: 1rem; }
         .section-header h2 {
@@ -246,6 +271,7 @@
         .category-card i { font-size: 1.5rem; color: var(--primary); }
         .category-card h3 { font-size: 0.7rem; margin-top: 5px; }
         
+        /* Tabs - FIXED */
         .tabs {
             display: flex;
             gap: 6px;
@@ -295,6 +321,7 @@
             padding-left: 10px;
         }
         
+        /* Products Grid */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
@@ -342,7 +369,8 @@
         .product-price { font-size: 1rem; font-weight: 800; color: var(--primary); margin: 5px 0; }
         .product-stock { font-size: 0.65rem; margin-bottom: 6px; }
         .in-stock { color: var(--success); }
-        .product-actions { display: flex; gap: 6px; margin-top: 8px; }
+        .out-of-stock { color: var(--danger); }
+        .product-actions { display: flex; gap: 6px; }
         .product-actions button {
             flex: 1;
             padding: 5px;
@@ -355,6 +383,7 @@
         .add-to-cart { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #0a1f1a; }
         .wishlist-btn { background: rgba(255,255,255,0.1); color: white; }
         
+        /* Cart Sidebar */
         .cart-sidebar {
             position: fixed;
             right: -350px;
@@ -421,6 +450,7 @@
         }
         .overlay.active { display: block; }
         
+        /* Checkout Modal */
         .checkout-modal {
             display: none;
             position: fixed;
@@ -472,6 +502,7 @@
             font-size: 0.8rem;
         }
         
+        /* Table */
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 6px; text-align: left; border-bottom: 1px solid var(--border-glow); font-size: 0.7rem; }
@@ -501,6 +532,7 @@
         
         .empty-state { text-align: center; padding: 30px; color: var(--text-muted); }
         
+        /* Chat System */
         .chat-container {
             display: flex;
             height: 450px;
@@ -571,7 +603,7 @@
             color: white;
             border-bottom-left-radius: 3px;
         }
-        .message-text { font-size: 0.75rem; }
+        .message-text { font-size: 0.75rem; word-break: break-word; }
         .message-time { font-size: 0.5rem; opacity: 0.6; margin-top: 2px; }
         .chat-input-area { padding: 8px; border-top: 1px solid var(--border-glow); }
         .chat-input-wrapper { display: flex; gap: 5px; align-items: flex-end; }
@@ -619,8 +651,9 @@
     </div>
 
     <div class="buyer-container">
+        <!-- Hero Section with YouTube Embed - FULLY RESTORED -->
         <div class="hero-section">
-            <div class="hero-image"></div>
+            <iframe class="hero-iframe" src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1>Premium LED Lighting Solutions</h1>
@@ -801,14 +834,17 @@
         // Products
         async function loadProducts() {
             const { data } = await supabase.from('products').select('*').eq('is_active', true);
-            allProducts = data || [];
-            if (allProducts.length === 0) {
+            if (data && data.length > 0) {
+                allProducts = data;
+            } else {
+                // Only use demo data if no products in database
                 allProducts = [
-                    { id: '1', name: 'Premium LED Bulb 9W', category: 'LED Bulbs', price: 150, stock_quantity: 100 },
-                    { id: '2', name: 'Super Bright LED 12W', category: 'LED Bulbs', price: 250, stock_quantity: 75 },
-                    { id: '3', name: 'Energy Saver 15W', category: 'Energy Saving', price: 350, stock_quantity: 50 },
-                    { id: '4', name: 'Decorative Filament Bulb', category: 'Decorative', price: 450, stock_quantity: 30 },
-                    { id: '5', name: 'Solar LED Street Light', category: 'Solar', price: 2500, stock_quantity: 20 }
+                    { id: '1', name: 'Premium LED Bulb 9W', category: 'LED Bulbs', price: 150, stock_quantity: 100, image_url: null },
+                    { id: '2', name: 'Super Bright LED 12W', category: 'LED Bulbs', price: 250, stock_quantity: 75, image_url: null },
+                    { id: '3', name: 'Energy Saver 15W', category: 'Energy Saving', price: 350, stock_quantity: 50, image_url: null },
+                    { id: '4', name: 'Decorative Filament Bulb', category: 'Decorative', price: 450, stock_quantity: 30, image_url: null },
+                    { id: '5', name: 'Solar LED Street Light', category: 'Solar', price: 2500, stock_quantity: 20, image_url: null },
+                    { id: '6', name: 'LED Panel Light 18W', category: 'LED Bulbs', price: 550, stock_quantity: 40, image_url: null }
                 ];
             }
             displayCategories();
@@ -923,7 +959,7 @@
         window.editProfileField = async function(id,field) { let input=document.getElementById(id), newVal=prompt(`Enter new ${field}:`,input.value); if(newVal && newVal!==input.value) { let {error}=await supabase.from('buyers').update({[field]:newVal}).eq('id',currentBuyerId); if(error) showNotification(error.message,true); else { showNotification(`${field} updated!`); await loadProfile(); } } };
         document.getElementById('logoutBtn') && document.getElementById('logoutBtn').addEventListener('click',async()=>{ await supabase.auth.signOut(); window.location.href='buyer-auth.html'; });
         
-        // Chat System
+        // Chat System - FIXED
         async function loadChatMessages() {
             const { data } = await supabase.from('chat_messages').select('*').or(`sender_type.eq.buyer,sender_id.eq.${currentBuyerId},sender_type.eq.admin,receiver_id.eq.${currentBuyerId}`).order('created_at',{ascending:true});
             chatMessages = data || [];
