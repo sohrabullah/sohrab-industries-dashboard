@@ -10,7 +10,6 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* Admin Theme Colors - Exact Match */
         :root {
             --primary: #E8B13C;
             --primary-dark: #c99b2e;
@@ -157,23 +156,24 @@
             cursor: pointer;
         }
         
-        /* Hero Section */
+        /* Hero Section with YouTube Embed */
         .hero-section {
             position: relative;
-            height: 50vh;
-            min-height: 350px;
+            height: 55vh;
+            min-height: 400px;
             overflow: hidden;
             margin-bottom: 2rem;
             border-radius: 28px;
         }
-        .hero-video {
+        .hero-iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            border: 0;
             z-index: 0;
+            pointer-events: none;
         }
         .hero-overlay {
             position: absolute;
@@ -532,7 +532,7 @@
         
         .empty-state { text-align: center; padding: 30px; color: var(--text-muted); }
         
-        /* Chat System - WhatsApp Style */
+        /* Chat System */
         .chat-container {
             display: flex;
             height: 450px;
@@ -748,9 +748,7 @@
 
     <div class="buyer-container">
         <div class="hero-section">
-            <video class="hero-video" autoplay muted loop playsinline>
-                <source src="https://cdn.pixabay.com/video/2022/03/20/113374-690190525_large.mp4" type="video/mp4">
-            </video>
+            <iframe class="hero-iframe" src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <h1>Premium LED Lighting Solutions</h1>
@@ -785,8 +783,9 @@
         <div id="ordersTab" class="tab-content">
             <h2 class="section-title">My Order History</h2>
             <div class="table-container">
-                <table><thead><tr><th>Order ID</th><th>Products</th><th>Total</th><th>Date</th><th>Status</th><th>Payment</th><th>Address</th></tr></thead>
-                <tbody id="ordersList"></tbody></table>
+                <tr><thead><tr><th>Order ID</th><th>Products</th><th>Total</th><th>Date</th><th>Status</th><th>Payment</th><th>Address</th></tr></thead>
+                <tbody id="ordersList"></tbody>
+            </table>
             </div>
         </div>
 
@@ -893,23 +892,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase Config
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        let supabase = null;
+        // Initialize Supabase - fix redeclaration issue
+        if (typeof window.supabaseClient === 'undefined') {
+            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+            window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        const supabase = window.supabaseClient;
+        
         let currentBuyerId = null;
         let cart = [], wishlist = [], allProducts = [];
         let chatMessages = [], replyToMsg = null, currentMedia = null, mediaRecorder = null, audioChunks = [], isRecording = false;
-        
-        function initSupabase() {
-            if (typeof supabase !== 'undefined' && supabase.createClient) {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            } else if (window.supabaseClient) {
-                supabase = window.supabaseClient;
-            } else {
-                console.error('Supabase not available');
-            }
-        }
         
         function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
         
@@ -935,8 +928,6 @@
         
         // Auth
         async function checkAuth() {
-            initSupabase();
-            if (!supabase) { setTimeout(checkAuth, 500); return; }
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) { window.location.href = 'buyer-auth.html'; return; }
             currentBuyerId = user.id;
@@ -1073,7 +1064,6 @@
         
         // Full Featured Chat System
         async function loadChatMessages() {
-            if (!supabase) return;
             const { data } = await supabase.from('chat_messages').select('*').or(`sender_type.eq.buyer,sender_id.eq.${currentBuyerId},sender_type.eq.admin,receiver_id.eq.${currentBuyerId}`).order('created_at',{ascending:true});
             chatMessages = data || [];
             renderChatMessages();
@@ -1204,10 +1194,9 @@
         window.closeProductSelector = function() { document.getElementById('productSelectorModal').classList.remove('active'); };
         
         function setupChatRealtime() {
-            if(!supabase) return;
             supabase.channel('buyer-chat-realtime').on('postgres_changes',{ event:'*', schema:'public', table:'chat_messages', filter:`receiver_id=eq.${currentBuyerId}` }, () => loadChatMessages()).subscribe();
             supabase.channel('buyer-typing').on('postgres_changes',{ event:'INSERT', schema:'public', table:'chat_typing', filter:`receiver_id=eq.${currentBuyerId}` }, p => { if(p.new.sender_type==='admin') { document.getElementById('chatTypingIndicator').style.display='flex'; setTimeout(()=>document.getElementById('chatTypingIndicator').style.display='none',2000); } }).subscribe();
-            document.getElementById('chatInput').addEventListener('input', async() => { if(supabase) await supabase.from('chat_typing').insert([{ sender_id:currentBuyerId, sender_type:'buyer', receiver_id:'admin', receiver_type:'admin', timestamp:new Date().toISOString() }]); });
+            document.getElementById('chatInput').addEventListener('input', async() => { await supabase.from('chat_typing').insert([{ sender_id:currentBuyerId, sender_type:'buyer', receiver_id:'admin', receiver_type:'admin', timestamp:new Date().toISOString() }]); });
         }
         
         checkAuth();
