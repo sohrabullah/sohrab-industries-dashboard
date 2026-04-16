@@ -17,7 +17,6 @@
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
         
-        /* Header */
         .buyer-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -137,7 +136,6 @@
             color: transparent;
         }
         
-        /* Tabs */
         .tabs {
             display: flex;
             gap: 12px;
@@ -203,7 +201,6 @@
             padding-left: 18px;
         }
         
-        /* Categories - Improved */
         .categories-wrapper {
             margin-bottom: 25px;
             overflow-x: auto;
@@ -236,7 +233,6 @@
             transform: translateY(-2px);
         }
         
-        /* Products Grid */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -276,7 +272,6 @@
         }
         .add-to-cart:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(232,177,60,0.4); }
         
-        /* Chat UI - WhatsApp Style */
         .chat-panel {
             display: flex;
             flex-direction: column;
@@ -297,7 +292,6 @@
             background-size: 40px 40px;
         }
         
-        /* Message Styles */
         .message {
             max-width: 70%;
             display: flex;
@@ -342,7 +336,6 @@
         }
         .message.sent .message-time { justify-content: flex-end; }
         
-        /* Reply Preview */
         .reply-preview {
             background: rgba(232,177,60,0.15);
             padding: 6px 10px;
@@ -352,7 +345,6 @@
             border-left: 3px solid #E8B13C;
         }
         
-        /* Message Actions Menu */
         .message-actions-menu {
             position: absolute;
             background: #1a3d33;
@@ -377,7 +369,6 @@
         }
         .message-action-btn:hover { background: rgba(232,177,60,0.2); }
         
-        /* Media in Chat */
         .chat-media {
             max-width: 200px;
             max-height: 200px;
@@ -405,7 +396,6 @@
         }
         .product-card-message:hover { background: rgba(232,177,60,0.2); }
         
-        /* Typing Indicator */
         .typing-indicator {
             background: rgba(232,177,60,0.1);
             border-radius: 18px;
@@ -433,7 +423,6 @@
             30% { transform: translateY(-5px); opacity: 1; }
         }
         
-        /* Chat Input Area */
         .chat-input-area {
             padding: 16px 20px;
             background: rgba(0,0,0,0.4);
@@ -489,7 +478,6 @@
             font-size: 1.2rem;
         }
         
-        /* Voice Recording - WhatsApp Style */
         .voice-recording-overlay {
             position: fixed;
             bottom: 0;
@@ -559,7 +547,6 @@
             margin-top: 10px;
         }
         
-        /* Media Preview */
         .media-preview {
             margin-top: 10px;
             padding: 10px;
@@ -582,7 +569,6 @@
             cursor: pointer;
         }
         
-        /* Product Selector Modal */
         .product-selector-modal {
             position: fixed;
             top: 50%;
@@ -615,7 +601,6 @@
         }
         .product-selector-item:hover { background: rgba(232,177,60,0.1); }
         
-        /* Orders Table - Attractive */
         .orders-table-wrapper {
             overflow-x: auto;
             border-radius: 20px;
@@ -652,7 +637,6 @@
         .status-shipped { background: linear-gradient(135deg, #004085, #002d5a); color: #fff; }
         .status-delivered { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
         
-        /* Cart Sidebar */
         .cart-sidebar {
             position: fixed;
             right: -450px;
@@ -798,7 +782,6 @@
         </div>
     </div>
 
-    <!-- WhatsApp Style Voice Recording Overlay -->
     <div id="voiceRecordingOverlay" class="voice-recording-overlay">
         <div class="recording-wave">
             <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
@@ -835,7 +818,6 @@
             let recordingTimerInterval = null;
             let currentReplyingTo = null;
             
-            // Category icons mapping
             const categoryIcons = {
                 'LED Bulbs': 'fa-lightbulb',
                 'Energy Saving': 'fa-leaf',
@@ -1098,7 +1080,7 @@
                     list.innerHTML = products.map(p => `
                         <div class="product-selector-item" onclick="window.buyerChat.sendProductCard(${JSON.stringify(p).replace(/"/g, '&quot;')})">
                             <div style="width:50px;height:50px;background:rgba(232,177,60,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-lightbulb"></i></div>
-                            <div><h4 style="color:#E8B13C;">${p.name}</h4><p>Rs. ${p.price.toLocaleString()}</p><small>${p.category || ''}</small></div>
+                            <div><h4 style="color:#E8B13C;">${escapeHtml(p.name)}</h4><p>Rs. ${p.price.toLocaleString()}</p><small>${p.category || ''}</small></div>
                         </div>
                     `).join('');
                     document.getElementById('productSelectorModal').classList.add('active');
@@ -1107,7 +1089,7 @@
                 sendProductCard(product) {
                     pendingMedia = { productData: { id: product.id, name: product.name, price: product.price, category: product.category } };
                     const preview = document.getElementById('mediaPreview');
-                    preview.innerHTML = `<div class="product-card-message"><i class="fas fa-box" style="font-size:40px;"></i><div><h4>${product.name}</h4><p>Rs. ${product.price.toLocaleString()}</p><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div></div>`;
+                    preview.innerHTML = `<div class="product-card-message"><i class="fas fa-box" style="font-size:40px;"></i><div><h4>${escapeHtml(product.name)}</h4><p>Rs. ${product.price.toLocaleString()}</p><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div></div>`;
                     preview.classList.add('active');
                     this.closeProductSelector();
                 },
@@ -1154,7 +1136,7 @@
                         let replyHtml = '';
                         if (msg.reply_to) {
                             const repliedMsg = chatMessages.find(m => m.id === msg.reply_to);
-                            if (repliedMsg) replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${(repliedMsg.text || '[Media]').substring(0, 50)}</div>`;
+                            if (repliedMsg) replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${escapeHtml((repliedMsg.text || '[Media]').substring(0, 50))}</div>`;
                         }
                         let mediaHtml = '';
                         if (msg.media_url) {
@@ -1165,10 +1147,11 @@
                         let productHtml = '';
                         if (msg.product_data) {
                             const p = msg.product_data;
-                            productHtml = `<div class="product-card-message"><i class="fas fa-lightbulb"></i><div><h4>${p.name}</h4><p>Rs. ${parseInt(p.price).toLocaleString()}</p></div></div>`;
+                            productHtml = `<div class="product-card-message"><i class="fas fa-lightbulb"></i><div><h4>${escapeHtml(p.name)}</h4><p>Rs. ${parseInt(p.price).toLocaleString()}</p></div></div>`;
                         }
                         const editedMark = msg.edited ? ' <span style="font-size:0.6rem;">(edited)</span>' : '';
-                        return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msg.id}">
+                        const msgId = msg.id.replace(/-/g, '');
+                        return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msgId}" style="position:relative;">
                                     <div class="message-bubble">
                                         <div class="sender-name">${senderName}</div>
                                         ${replyHtml}
@@ -1176,9 +1159,9 @@
                                         ${mediaHtml}${productHtml}
                                         <div class="message-time">${new Date(msg.created_at).toLocaleTimeString()} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#E8B13C;"></i>' : ''}</div>
                                     </div>
-                                    ${isSent ? `<div class="message-actions-menu" style="position:absolute; right:0; top:100%; margin-top:5px;">
+                                    ${isSent ? `<div class="message-actions-menu" id="menu-${msgId}" style="position:absolute; right:0; top:100%; margin-top:5px;">
                                         <button class="message-action-btn" onclick="window.buyerChat.editMessage('${msg.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="message-action-btn" onclick="window.buyerChat.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button>
+                                        <button class="message-action-btn" onclick="window.buyerChat.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete me</button>
                                         <button class="message-action-btn" onclick="window.buyerChat.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete all</button>
                                         <button class="message-action-btn" onclick="window.buyerChat.forwardMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-share"></i> Forward</button>
                                         <button class="message-action-btn" onclick="window.buyerChat.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button>
@@ -1196,7 +1179,6 @@
             
             function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
             
-            // Shop Functions
             async function checkAuth() {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) { window.location.href = 'buyer-auth.html'; return; }
@@ -1229,13 +1211,13 @@
                 if(search) filtered = filtered.filter(p=>p.name.toLowerCase().includes(search));
                 const container = document.getElementById('productsGrid');
                 if(!filtered.length){ container.innerHTML='<div class="empty-state">No products found</div>'; return; }
-                container.innerHTML = filtered.map(p=>`<div class="product-card"><div class="product-image"><i class="fas fa-lightbulb"></i></div><div class="product-info"><div class="product-name">${p.name}</div><div class="product-category">${p.category || 'General'}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><button class="add-to-cart" onclick="window.addToCart('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})">Add to Cart</button></div></div>`).join('');
+                container.innerHTML = filtered.map(p=>`<div class="product-card"><div class="product-image"><i class="fas fa-lightbulb"></i></div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-category">${p.category || 'General'}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><button class="add-to-cart" onclick="window.addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price})">Add to Cart</button></div></div>`).join('');
             }
             
             window.addToCart = function(id,name,price){ let item=cart.find(i=>i.id===id); if(item) item.quantity++; else cart.push({id,name,price,quantity:1}); saveCart(); Swal.fire({title:'Added!',text:`${name} added`,icon:'success',timer:1000,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); };
             function loadCart() { const saved = localStorage.getItem(`cart_${currentBuyerId}`); if(saved) cart=JSON.parse(saved); updateCartUI(); }
             function saveCart() { localStorage.setItem(`cart_${currentBuyerId}`,JSON.stringify(cart)); updateCartUI(); }
-            function updateCartUI() { document.getElementById('cartCount').innerHTML=cart.reduce((s,i)=>s+i.quantity,0); document.getElementById('cartTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString(); document.getElementById('cartItems').innerHTML=cart.length?cart.map(i=>`<div class="cart-item"><div>${i.name} x${i.quantity}</div><div>Rs.${(i.price*i.quantity).toLocaleString()}</div><button onclick="window.removeFromCart('${i.id}')" style="background:#dc3545;color:white;border:none;border-radius:20px;padding:5px 10px;">Remove</button></div>`).join(''):'<p style="text-align:center;padding:20px;">Cart empty</p>'; }
+            function updateCartUI() { document.getElementById('cartCount').innerHTML=cart.reduce((s,i)=>s+i.quantity,0); document.getElementById('cartTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString(); document.getElementById('cartItems').innerHTML=cart.length?cart.map(i=>`<div class="cart-item"><div>${escapeHtml(i.name)} x${i.quantity}</div><div>Rs.${(i.price*i.quantity).toLocaleString()}</div><button onclick="window.removeFromCart('${i.id}')" style="background:#dc3545;color:white;border:none;border-radius:20px;padding:5px 10px;cursor:pointer;">Remove</button></div>`).join(''):'<p style="text-align:center;padding:20px;">Cart empty</p>'; }
             window.removeFromCart = function(id){ cart=cart.filter(i=>i.id!==id); saveCart(); };
             window.toggleCart = function(){ document.getElementById('cartSidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); };
             window.showCheckout = function(){ if(!cart.length){ Swal.fire({title:'Empty Cart',icon:'warning',background:'#1a3d33',color:'#fff'}); return; } document.getElementById('checkoutTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString(); document.getElementById('checkoutModal').style.display='flex'; };
@@ -1254,8 +1236,30 @@
             async function loadOrders() {
                 const {data}=await supabaseClient.from('orders').select('*').eq('user_id',currentBuyerId).eq('user_type','buyer').order('order_date',{ascending:false});
                 const tbody=document.getElementById('ordersList');
-                if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="7" class="empty-state">No orders</td></tr>'; return; }
-                tbody.innerHTML=data.map(o=>`<tr><td><strong>${o.id.slice(0,10)}</strong></td><td><small>${o.notes ? JSON.parse(o.notes||'[]').map(i=>i.name).join(', ').substring(0,40) : '-'}</small></td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td><small>${o.delivery_address?.substring(0,30)||'-'}</small></td></tr>`).join('');
+                if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="7" class="empty-state">No orders found</td></tr>'; return; }
+                tbody.innerHTML=data.map(o => {
+                    let productsText = '-';
+                    try {
+                        const parsed = JSON.parse(o.notes || '[]');
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            productsText = parsed.map(i => i.name).join(', ');
+                            if (productsText.length > 40) productsText = productsText.substring(0, 40) + '...';
+                        } else if (typeof o.notes === 'string' && o.notes) {
+                            productsText = o.notes.substring(0, 40);
+                        }
+                    } catch(e) {
+                        productsText = o.notes ? o.notes.substring(0, 40) : '-';
+                    }
+                    return `<tr>
+                        <td><strong>${o.id.slice(0,10)}</strong></td>
+                        <td><small>${productsText}</small></td>
+                        <td>Rs.${o.total_amount.toLocaleString()}</td>
+                        <td>${new Date(o.order_date).toLocaleDateString()}</td>
+                        <td><span class="status-badge status-${o.status}">${o.status}</span></td>
+                        <td>${o.payment_status}</td>
+                        <td><small>${(o.delivery_address || '-').substring(0,30)}</small></td>
+                    </tr>`;
+                }).join('');
             }
             
             async function loadProfile() {
@@ -1264,7 +1268,7 @@
             }
             
             window.editProfile = async function(){
-                const {value:form}=await Swal.fire({title:'Edit Profile', html:`<input id="name" class="swal2-input" placeholder="Full Name" value="${document.getElementById('profileName').value}"><input id="phone" class="swal2-input" placeholder="Phone" value="${document.getElementById('profilePhone').value}"><textarea id="addr" class="swal2-textarea" placeholder="Address">${document.getElementById('profileAddress').value}</textarea>`, background:'#1a3d33', color:'#fff', confirmButtonColor:'#E8B13C', preConfirm:()=>({name:document.getElementById('name').value,phone:document.getElementById('phone').value,address:document.getElementById('addr').value})});
+                const {value:form}=await Swal.fire({title:'Edit Profile', html:`<input id="name" class="swal2-input" placeholder="Full Name" value="${escapeHtml(document.getElementById('profileName').value)}"><input id="phone" class="swal2-input" placeholder="Phone" value="${escapeHtml(document.getElementById('profilePhone').value)}"><textarea id="addr" class="swal2-textarea" placeholder="Address">${escapeHtml(document.getElementById('profileAddress').value)}</textarea>`, background:'#1a3d33', color:'#fff', confirmButtonColor:'#E8B13C', preConfirm:()=>({name:document.getElementById('name').value,phone:document.getElementById('phone').value,address:document.getElementById('addr').value})});
                 if(form){ await supabaseClient.from('buyers').update({full_name:form.name,phone:form.phone,address:form.address}).eq('id',currentBuyerId); loadProfile(); Swal.fire({title:'Updated!',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); }
             };
             
