@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sohrab Industries | Premium LED & Spare Parts Manufacturer</title>
-    <!-- Local fallback for fonts to avoid MIME issues -->
+    <title>Sohrab Industries | Premium LED Manufacturer - Pakistan's #1 Lighting Solution</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -22,6 +21,8 @@
             --text-muted: rgba(255, 255, 255, 0.7);
             --success: #1e7e5e;
             --danger: #dc3545;
+            --whatsapp-teal: #075E54;
+            --whatsapp-light: #25D366;
         }
 
         body {
@@ -32,12 +33,17 @@
         }
 
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #1a2a24; }
+        ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
         @keyframes fadeSlideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         /* Header */
@@ -66,6 +72,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            cursor: pointer;
         }
 
         .search-bar {
@@ -103,7 +110,7 @@
         #userName { background: rgba(0,0,0,0.4); padding: 6px 16px; border-radius: 40px; font-size: 0.8rem; }
         .logout-btn { background: linear-gradient(145deg, #8b2c2c, #5e1a1a); border: none; padding: 6px 16px; border-radius: 40px; cursor: pointer; }
 
-        /* Premium Carousel with Bulb Images (Base64 embedded to avoid external issues) */
+        /* Carousel */
         .carousel-container {
             position: relative;
             margin: 1.5rem 0 2rem;
@@ -134,7 +141,6 @@
             text-shadow: 0 2px 12px black;
         }
         .carousel-caption h2 { font-size: 2rem; font-weight: 800; }
-        .carousel-caption p { font-size: 1rem; }
         .carousel-btn {
             position: absolute;
             top: 50%;
@@ -147,7 +153,6 @@
             cursor: pointer;
             border-radius: 50px;
             z-index: 3;
-            font-size: 1.2rem;
         }
         .carousel-btn:hover { background: var(--primary); color: #0a1f1a; }
         .carousel-btn.prev { left: 15px; }
@@ -192,6 +197,7 @@
             font-weight: 600;
             color: var(--text-muted);
             cursor: pointer;
+            transition: 0.2s;
         }
         .tab-btn.active { background: var(--primary); color: #0a1f1a; }
         .tab-content {
@@ -263,7 +269,7 @@
         .cart-footer { padding: 16px; border-top: 1px solid var(--border-glow); }
         .checkout-btn { background: var(--success); width: 100%; padding: 12px; border: none; border-radius: 40px; font-weight: bold; cursor: pointer; }
 
-        /* Chat System */
+        /* Chat System - WhatsApp Style */
         .chat-container {
             display: flex;
             height: 550px;
@@ -272,25 +278,123 @@
             overflow: hidden;
             border: 1px solid var(--border-glow);
         }
-        .chat-user-list { width: 280px; background: #0c261f; border-right: 1px solid var(--border-glow); }
-        .chat-user-item { display: flex; align-items: center; padding: 16px; cursor: pointer; border-left: 3px solid transparent; }
-        .chat-user-item.active { background: rgba(232,177,60,0.2); border-left-color: var(--primary); }
-        .chat-user-avatar { width: 48px; height: 48px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 14px; }
-        .chat-area { flex: 1; display: flex; flex-direction: column; background: rgba(10, 35, 28, 0.7); }
-        .chat-messages-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .message { max-width: 75%; display: flex; flex-direction: column; }
+        .chat-sidebar {
+            width: 300px;
+            background: #0c261f;
+            border-right: 1px solid var(--border-glow);
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-glow);
+            background: var(--whatsapp-teal);
+        }
+        .chat-contacts {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .chat-contact {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: 0.2s;
+        }
+        .chat-contact:hover { background: rgba(232,177,60,0.1); }
+        .chat-contact.active { background: rgba(232,177,60,0.2); border-left: 3px solid var(--primary); }
+        .contact-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 14px;
+        }
+        .contact-info { flex: 1; }
+        .contact-name { font-weight: 600; }
+        .contact-last-msg { font-size: 0.7rem; color: var(--text-muted); }
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(10, 35, 28, 0.7);
+        }
+        .chat-header {
+            padding: 16px;
+            background: var(--whatsapp-teal);
+            border-bottom: 1px solid var(--border-glow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .message {
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
         .message.sent { align-self: flex-end; }
         .message.received { align-self: flex-start; }
-        .message-bubble { padding: 10px 14px; border-radius: 18px; word-break: break-word; }
-        .message.sent .message-bubble { background: var(--primary); color: #0a1f1a; }
-        .message.received .message-bubble { background: rgba(255,255,255,0.1); }
+        .message-bubble {
+            padding: 10px 14px;
+            border-radius: 18px;
+            word-break: break-word;
+        }
+        .message.sent .message-bubble {
+            background: var(--primary);
+            color: #0a1f1a;
+            border-bottom-right-radius: 4px;
+        }
+        .message.received .message-bubble {
+            background: rgba(255,255,255,0.1);
+        }
         .message-time { font-size: 0.6rem; opacity: 0.7; margin-top: 4px; }
-        .chat-input-wrapper { display: flex; gap: 8px; padding: 14px; background: #0b2921; border-top: 1px solid var(--border-glow); align-items: center; flex-wrap: wrap; }
-        .chat-input { flex: 1; background: rgba(255,255,255,0.1); border: none; border-radius: 30px; padding: 12px 18px; color: white; resize: none; }
-        .attach-btn, .chat-send-btn, .voice-btn { background: none; border: none; color: var(--primary); font-size: 1.3rem; cursor: pointer; width: 44px; }
-        .chat-send-btn { background: var(--primary); border-radius: 50%; color: #0a1f1a; }
-        .voice-btn.recording { color: var(--danger); animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .chat-input-area {
+            padding: 14px;
+            background: #0b2921;
+            border-top: 1px solid var(--border-glow);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .chat-input {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 30px;
+            padding: 12px 18px;
+            color: white;
+            resize: none;
+        }
+        .chat-action-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        .chat-action-btn:hover { background: rgba(232,177,60,0.2); }
+        .send-btn {
+            background: var(--primary);
+            color: #0a1f1a;
+        }
+        .recording { animation: pulse 1s infinite; color: var(--danger); }
 
         /* Checkout Modal */
         .checkout-modal {
@@ -322,8 +426,8 @@
         }
         @media (max-width: 768px) {
             .cart-sidebar { width: 100%; right: -100%; }
+            .chat-sidebar { display: none; }
             .chat-container { flex-direction: column; }
-            .chat-user-list { width: 100%; max-height: 120px; }
             .carousel-slide { height: 250px; }
         }
         .toast-notification {
@@ -340,7 +444,7 @@
 </head>
 <body>
     <div class="buyer-header">
-        <div class="logo"><h1><i class="fas fa-industry"></i> Sohrab Industries</h1></div>
+        <div class="logo"><h1 onclick="location.reload()"><i class="fas fa-industry"></i> Sohrab Industries</h1></div>
         <div class="search-bar"><input type="text" id="searchInput" placeholder="Search products..."><button onclick="searchProducts()"><i class="fas fa-search"></i></button></div>
         <div class="header-icons">
             <button onclick="toggleCart()"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></button>
@@ -350,7 +454,7 @@
     </div>
 
     <div class="buyer-container">
-        <!-- Bulb-themed Carousel with embedded gradients -->
+        <!-- Carousel -->
         <div class="carousel-container">
             <div class="carousel-slides" id="carouselSlides"></div>
             <button class="carousel-btn prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
@@ -375,21 +479,32 @@
         <div id="chatTab" class="tab-content">
             <h2 style="margin-bottom:16px"><i class="fab fa-whatsapp"></i> Sohrab Industries Support (SIST)</h2>
             <div class="chat-container">
-                <div class="chat-user-list">
-                    <div class="chat-user-item active" id="adminChatBtn">
-                        <div class="chat-user-avatar"><i class="fas fa-headset"></i></div>
-                        <div><strong>Sohrab Support Team</strong><br><span style="font-size:11px">Online</span></div>
+                <div class="chat-sidebar">
+                    <div class="chat-sidebar-header"><h3><i class="fas fa-comments"></i> Chats</h3></div>
+                    <div class="chat-contacts" id="chatContacts">
+                        <div class="chat-contact active" data-contact-id="admin" data-contact-name="Sohrab Support Team">
+                            <div class="contact-avatar"><i class="fas fa-headset"></i></div>
+                            <div class="contact-info">
+                                <div class="contact-name">Sohrab Support Team</div>
+                                <div class="contact-last-msg">Online • Support</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="chat-area">
-                    <div class="chat-messages-area" id="chatMessagesArea"></div>
-                    <div class="chat-input-wrapper">
+                <div class="chat-main">
+                    <div class="chat-header" id="chatHeader">
+                        <div class="contact-avatar" style="width:40px;height:40px;"><i class="fas fa-headset"></i></div>
+                        <div><h3>Sohrab Support Team</h3><p style="font-size:12px;">Online • Usually replies in minutes</p></div>
+                    </div>
+                    <div class="chat-messages" id="chatMessagesArea">
+                        <div style="text-align:center; padding:40px;">💬 Send a message to Sohrab Support Team</div>
+                    </div>
+                    <div class="chat-input-area">
                         <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
-                        <button class="attach-btn" id="attachImageBtn" title="Send Image"><i class="fas fa-image"></i></button>
-                        <button class="attach-btn" id="attachVideoBtn" title="Send Video"><i class="fas fa-video"></i></button>
-                        <button class="attach-btn" id="attachProductBtn" title="Share Product"><i class="fas fa-box-open"></i></button>
-                        <button class="voice-btn" id="voiceRecordBtn" title="Voice Message"><i class="fas fa-microphone"></i></button>
-                        <button class="chat-send-btn" id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
+                        <button class="chat-action-btn" id="attachImageBtn" title="Send Image"><i class="fas fa-image"></i></button>
+                        <button class="chat-action-btn" id="attachProductBtn" title="Share Product"><i class="fas fa-box-open"></i></button>
+                        <button class="chat-action-btn" id="voiceRecordBtn" title="Voice Message"><i class="fas fa-microphone"></i></button>
+                        <button class="chat-action-btn send-btn" id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
@@ -440,10 +555,16 @@
             let mediaRecorder = null;
             let audioChunks = [];
 
-            function showToast(msg, isErr=false) { const t = document.createElement('div'); t.className='toast-notification'; t.innerHTML= isErr ? `⚠️ ${msg}` : `✅ ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
+            function showToast(msg, isErr=false) { 
+                const t = document.createElement('div'); 
+                t.className='toast-notification'; 
+                t.innerHTML= isErr ? `⚠️ ${msg}` : `✅ ${msg}`; 
+                document.body.appendChild(t); 
+                setTimeout(()=>t.remove(),3000); 
+            }
 
-            // Carousel with bulb-themed gradients
-            const carouselSlidesData = [
+            // Carousel
+            const carouselSlides = [
                 { bg: 'linear-gradient(135deg, #0a2f24, #1a4a3a)', title: 'Premium LED Bulbs', desc: 'Energy Efficient · 2 Year Warranty' },
                 { bg: 'linear-gradient(135deg, #2c2b1f, #5e4b2b)', title: 'Industrial Spare Parts', desc: 'Drivers, PCBs, Chips' },
                 { bg: 'linear-gradient(135deg, #1f3e2c, #0f281d)', title: 'Bulk & Sample Orders', desc: 'MOQ available for bulk' }
@@ -453,7 +574,7 @@
                 const container = document.getElementById('carouselSlides');
                 const dotsDiv = document.getElementById('dotsContainer');
                 container.innerHTML = '';
-                carouselSlidesData.forEach((s,idx)=>{
+                carouselSlides.forEach((s,idx)=>{
                     const slide = document.createElement('div');
                     slide.className = 'carousel-slide';
                     slide.style.background = s.bg;
@@ -469,12 +590,13 @@
             }
             function updateCarousel(){ document.querySelector('.carousel-slides').style.transform = `translateX(-${currentSlide * 100}%)`; document.querySelectorAll('.dot').forEach((d,i)=>{ if(i===currentSlide) d.classList.add('active'); else d.classList.remove('active'); }); }
             function goToSlide(idx){ currentSlide = idx; updateCarousel(); }
-            function nextSlide(){ currentSlide = (currentSlide+1)%carouselSlidesData.length; updateCarousel(); }
+            function nextSlide(){ currentSlide = (currentSlide+1)%carouselSlides.length; updateCarousel(); }
             function startAuto(){ autoInterval = setInterval(nextSlide, 5000); }
             function stopAuto(){ if(autoInterval) clearInterval(autoInterval); }
-            document.getElementById('prevBtn')?.addEventListener('click',()=>{ stopAuto(); goToSlide((currentSlide-1+carouselSlidesData.length)%carouselSlidesData.length); startAuto(); });
+            document.getElementById('prevBtn')?.addEventListener('click',()=>{ stopAuto(); goToSlide((currentSlide-1+carouselSlides.length)%carouselSlides.length); startAuto(); });
             document.getElementById('nextBtn')?.addEventListener('click',()=>{ stopAuto(); nextSlide(); startAuto(); });
 
+            // Auth
             async function checkAuth(){
                 const {data:{user}} = await supabase.auth.getUser();
                 if(!user){ window.location.href='buyer-auth.html'; return; }
@@ -483,10 +605,13 @@
                 await ensureBuyer();
                 await loadProducts();
                 loadCart();
-                setupChatRealtime();
                 loadChatMessages();
+                setupChatRealtime();
             }
-            async function ensureBuyer(){ const {data:ex}=await supabase.from('buyers').select('id').eq('id',currentUser.id); if(!ex||ex.length===0) await supabase.from('buyers').insert([{ id:currentUser.id, email:currentUser.email, full_name:currentUser.email.split('@')[0] }]); }
+            async function ensureBuyer(){ 
+                const {data:ex}=await supabase.from('buyers').select('id').eq('id',currentUser.id); 
+                if(!ex||ex.length===0) await supabase.from('buyers').insert([{ id:currentUser.id, email:currentUser.email, full_name:currentUser.email.split('@')[0] }]); 
+            }
             
             async function loadProducts(){
                 const {data} = await supabase.from('products').select('*').eq('is_active',true);
@@ -495,10 +620,10 @@
                     allProducts = [
                         { id:'p1', name:'LED Bulb 12W Ultra', category:'Bulbs', price:180, stock:120, min_order_qty:1, bulk_only:false, sample_available:true, description:'Super bright, energy saving, 2 year warranty' },
                         { id:'p2', name:'LED Bulb 9W Slim', category:'Bulbs', price:150, stock:200, min_order_qty:1, bulk_only:false, sample_available:true, description:'Slim design, high lumens' },
-                        { id:'p3', name:'LED Driver 36W', category:'Spare Parts', price:350, stock:500, min_order_qty:50, bulk_only:true, sample_available:false, description:'Constant current driver' },
+                        { id:'p3', name:'LED Driver 36W', category:'Spare Parts', price:350, stock:500, min_order_qty:50, bulk_only:true, sample_available:false, description:'Constant current driver for LED panels' },
                         { id:'p4', name:'SMD PCB Board', category:'Spare Parts', price:120, stock:1000, min_order_qty:100, bulk_only:true, sample_available:false, description:'High quality PCB for LED assembly' },
                         { id:'p5', name:'Industrial Flood Light 100W', category:'Bulbs', price:1850, stock:45, min_order_qty:1, bulk_only:false, sample_available:true, description:'Outdoor waterproof flood light' },
-                        { id:'p6', name:'LED Chip 5730 (100pcs)', category:'Spare Parts', price:850, stock:200, min_order_qty:10, bulk_only:true, sample_available:false, description:'SMD 5730 LED chips' }
+                        { id:'p6', name:'LED Chip 5730 (100pcs)', category:'Spare Parts', price:850, stock:200, min_order_qty:10, bulk_only:true, sample_available:false, description:'SMD 5730 LED chips for repairs' }
                     ];
                 }
                 renderAllTabs();
@@ -520,18 +645,50 @@
                 const moqMsg = p.bulk_only ? `📦 MOQ: ${p.min_order_qty}` : (p.sample_available ? '🔬 Sample Available' : '');
                 return `<div class="product-card" onclick="viewProduct('${p.id}')"><div class="product-image"><i class="fas fa-lightbulb"></i></div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><div class="product-stock ${stockClass}">${stockText}</div><div class="bulk-badge">${moqMsg}</div><div class="product-actions"><button onclick="event.stopPropagation(); addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price}, ${p.min_order_qty||1})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
             }
-            window.viewProduct = (id)=>{ let p=allProducts.find(x=>x.id===id); if(p) Swal.fire({title:p.name,html:`<p><strong>Price:</strong> Rs.${p.price}</p><p><strong>Category:</strong> ${p.category}</p><p><strong>Stock:</strong> ${p.stock}</p><p><strong>Description:</strong> ${p.description || 'Premium quality product'}</p><p><strong>Bulk Only:</strong> ${p.bulk_only?'Yes (MOQ '+p.min_order_qty+')':'No'}</p>`,background:'#1c3d33',color:'white',confirmButtonColor:'#E8B13C'}); };
-            window.addToCart = (id,name,price,moq=1)=>{ let item = cart.find(i=>i.id===id); if(item) item.quantity += moq; else cart.push({id,name,price,quantity:moq}); saveCart(); showToast(`${name} added to cart`); };
+            window.viewProduct = (id)=>{ 
+                let p=allProducts.find(x=>x.id===id); 
+                if(p) Swal.fire({
+                    title:p.name,
+                    html:`<p><strong>Price:</strong> Rs.${p.price}</p><p><strong>Category:</strong> ${p.category}</p><p><strong>Stock:</strong> ${p.stock}</p><p><strong>Description:</strong> ${p.description || 'Premium quality product from Sohrab Industries'}</p><p><strong>Bulk Only:</strong> ${p.bulk_only?'Yes (MOQ '+p.min_order_qty+')':'No'}</p>`,
+                    background:'#1c3d33',color:'white',confirmButtonColor:'#E8B13C'
+                }); 
+            };
+            window.addToCart = (id,name,price,moq=1)=>{ 
+                let item = cart.find(i=>i.id===id); 
+                if(item) item.quantity += moq; 
+                else cart.push({id,name,price,quantity:moq}); 
+                saveCart(); 
+                showToast(`${name} added to cart`); 
+            };
             function saveCart(){ localStorage.setItem(`cart_${currentUser.id}`,JSON.stringify(cart)); updateCartUI(); }
             function loadCart(){ const s = localStorage.getItem(`cart_${currentUser.id}`); if(s) cart = JSON.parse(s); updateCartUI(); }
-            function updateCartUI(){ const count = cart.reduce((s,i)=>s+i.quantity,0); document.getElementById('cartCount').innerHTML = count; const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0); document.getElementById('cartTotal').innerHTML = total.toLocaleString(); const container = document.getElementById('cartItemsList'); if(!container) return; if(cart.length===0){ container.innerHTML='<div style="text-align:center; padding:40px;">Cart is empty</div>'; return; } container.innerHTML = cart.map(i=>`<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #e8b13c30;"><div><strong>${escapeHtml(i.name)}</strong><br>x${i.quantity}</div><div>Rs.${(i.price*i.quantity).toLocaleString()}</div><button onclick="removeCartItem('${i.id}')" style="background:#dc3545; border:none; border-radius:30px; padding:4px 12px; color:white;">Remove</button></div>`).join(''); }
+            function updateCartUI(){ 
+                const count = cart.reduce((s,i)=>s+i.quantity,0); 
+                document.getElementById('cartCount').innerHTML = count; 
+                const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0); 
+                document.getElementById('cartTotal').innerHTML = total.toLocaleString(); 
+                const container = document.getElementById('cartItemsList'); 
+                if(!container) return; 
+                if(cart.length===0){ container.innerHTML='<div style="text-align:center; padding:40px;">Cart is empty</div>'; return; } 
+                container.innerHTML = cart.map(i=>`<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #e8b13c30;"><div><strong>${escapeHtml(i.name)}</strong><br>x${i.quantity}</div><div>Rs.${(i.price*i.quantity).toLocaleString()}</div><button onclick="removeCartItem('${i.id}')" style="background:#dc3545; border:none; border-radius:30px; padding:4px 12px; color:white;">Remove</button></div>`).join(''); 
+            }
             window.removeCartItem = (id)=>{ cart = cart.filter(i=>i.id!==id); saveCart(); updateCartUI(); showToast('Item removed'); };
             window.toggleCart = ()=>{ document.getElementById('cartSidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); };
             
             // Checkout
-            window.openCheckout = () => { if(cart.length===0){ showToast('Cart empty',true); return; } const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0); document.getElementById('checkoutSummary').innerHTML = cart.map(i=>`<div style="display:flex; justify-content:space-between; padding:6px 0;"><span>${i.name} x${i.quantity}</span><span>Rs.${(i.price*i.quantity).toLocaleString()}</span></div>`).join(''); document.getElementById('checkoutTotal').innerHTML = total.toLocaleString(); document.getElementById('checkoutModal').classList.add('active'); togglePaymentDetails(); };
+            window.openCheckout = () => { 
+                if(cart.length===0){ showToast('Cart empty',true); return; } 
+                const total = cart.reduce((s,i)=>s+(i.price*i.quantity),0); 
+                document.getElementById('checkoutSummary').innerHTML = cart.map(i=>`<div style="display:flex; justify-content:space-between; padding:6px 0;"><span>${i.name} x${i.quantity}</span><span>Rs.${(i.price*i.quantity).toLocaleString()}</span></div>`).join(''); 
+                document.getElementById('checkoutTotal').innerHTML = total.toLocaleString(); 
+                document.getElementById('checkoutModal').classList.add('active'); 
+                togglePaymentDetails(); 
+            };
             window.closeCheckout = () => { document.getElementById('checkoutModal').classList.remove('active'); };
-            function togglePaymentDetails(){ const method = document.getElementById('paymentMethod').value; document.getElementById('bankDetails').style.display = (method === 'EasyPaisa' || method === 'JazzCash') ? 'block' : 'none'; }
+            function togglePaymentDetails(){ 
+                const method = document.getElementById('paymentMethod').value; 
+                document.getElementById('bankDetails').style.display = (method === 'EasyPaisa' || method === 'JazzCash') ? 'block' : 'none'; 
+            }
             document.getElementById('paymentMethod')?.addEventListener('change', togglePaymentDetails);
             document.getElementById('placeOrderBtn')?.addEventListener('click', async () => {
                 const address = document.getElementById('checkoutAddress').value;
@@ -555,42 +712,90 @@
                 location.reload();
             });
             
-            // Chat with Voice Recording
+            // CHAT SYSTEM - Integrated with Admin Panel (using contact_messages table)
             async function loadChatMessages(){
-                const {data} = await supabase.from('chat_messages').select('*').or(`and(sender_id.eq.${currentUser.id},sender_type.eq.buyer),and(receiver_id.eq.${currentUser.id},receiver_type.eq.buyer)`).order('created_at',{ascending:true});
+                const {data, error} = await supabase
+                    .from('contact_messages')
+                    .select('*')
+                    .eq('buyer_id', currentUser.id)
+                    .order('created_at', {ascending: true});
+                
+                if(error) { console.error('Error loading messages:', error); return; }
+                
                 const container = document.getElementById('chatMessagesArea');
                 if(!container) return;
-                if(!data || data.length===0){ container.innerHTML='<div style="text-align:center; padding:40px;">💬 Send a message to Sohrab Support Team</div>'; return; }
-                container.innerHTML = data.map(m=>{
-                    const isSent = m.sender_id === currentUser.id;
+                
+                if(!data || data.length === 0){
+                    container.innerHTML = '<div style="text-align:center; padding:40px;">💬 Send a message to Sohrab Support Team</div>';
+                    return;
+                }
+                
+                container.innerHTML = data.map(msg => {
+                    const isSent = msg.sender_type === 'buyer';
                     let content = '';
-                    if(m.text) content += `<div>${escapeHtml(m.text)}</div>`;
-                    if(m.media_url) content += `<div><a href="${m.media_url}" target="_blank" style="color:var(--primary);"><i class="fas fa-download"></i> View Media</a></div>`;
-                    if(m.product_id){
-                        const prod = allProducts.find(p=>p.id===m.product_id);
-                        content += `<div style="background:#00000040; border-radius:12px; padding:6px; margin-top:5px;"><strong>📦 ${prod?.name}</strong><br>💰 Rs.${prod?.price}</div>`;
+                    if(msg.message) content += `<div>${escapeHtml(msg.message)}</div>`;
+                    if(msg.media_url) content += `<div><a href="${msg.media_url}" target="_blank" style="color:var(--primary);"><i class="fas fa-download"></i> View Attachment</a></div>`;
+                    if(msg.product_id){
+                        const prod = allProducts.find(p => p.id === msg.product_id);
+                        content += `<div style="background:#00000040; border-radius:12px; padding:8px; margin-top:5px;"><strong>📦 Product Shared: ${prod?.name || 'Product'}</strong><br>💰 Rs.${prod?.price || 0}</div>`;
                     }
-                    if(m.voice_url) content += `<div><audio controls src="${m.voice_url}" style="max-width:200px; height:36px;"></audio></div>`;
-                    return `<div class="message ${isSent ? 'sent' : 'received'}"><div class="message-bubble">${content}<div class="message-time">${new Date(m.created_at).toLocaleTimeString()}</div></div></div>`;
+                    if(msg.voice_url) content += `<div><audio controls src="${msg.voice_url}" style="max-width:180px; height:36px;"></audio></div>`;
+                    
+                    return `<div class="message ${isSent ? 'sent' : 'received'}">
+                        <div class="message-bubble">
+                            ${content}
+                            <div class="message-time">${new Date(msg.created_at).toLocaleTimeString()}</div>
+                        </div>
+                    </div>`;
                 }).join('');
                 container.scrollTop = container.scrollHeight;
             }
-            async function sendChatMessage(text, mediaFile=null, productId=null, voiceBlob=null){
+            
+            async function sendMessage(text, mediaFile=null, productId=null, voiceBlob=null){
                 let mediaUrl = null, voiceUrl = null;
+                
                 if(mediaFile){
                     const ext = mediaFile.name.split('.').pop();
                     const filePath = `chat_media/${currentUser.id}_${Date.now()}.${ext}`;
                     const {error:upErr} = await supabase.storage.from('chat_attachments').upload(filePath, mediaFile);
-                    if(!upErr) { const {data:{publicUrl}} = supabase.storage.from('chat_attachments').getPublicUrl(filePath); mediaUrl = publicUrl; }
+                    if(!upErr) { 
+                        const {data:{publicUrl}} = supabase.storage.from('chat_attachments').getPublicUrl(filePath); 
+                        mediaUrl = publicUrl; 
+                    }
                 }
+                
                 if(voiceBlob){
                     const filePath = `voice_notes/${currentUser.id}_${Date.now()}.webm`;
                     const {error:upErr} = await supabase.storage.from('voice_notes').upload(filePath, voiceBlob);
-                    if(!upErr) { const {data:{publicUrl}} = supabase.storage.from('voice_notes').getPublicUrl(filePath); voiceUrl = publicUrl; }
+                    if(!upErr) { 
+                        const {data:{publicUrl}} = supabase.storage.from('voice_notes').getPublicUrl(filePath); 
+                        voiceUrl = publicUrl; 
+                    }
                 }
-                await supabase.from('chat_messages').insert([{ sender_id:currentUser.id, sender_type:'buyer', receiver_id:'admin', receiver_type:'admin', text:text||null, media_url:mediaUrl, product_id:productId||null, voice_url:voiceUrl, created_at:new Date().toISOString() }]);
+                
+                const newMessage = {
+                    id: crypto.randomUUID(),
+                    buyer_id: currentUser.id,
+                    user_type: 'buyer',
+                    sender_type: 'buyer',
+                    receiver_type: 'admin',
+                    message: text || null,
+                    media_url: mediaUrl,
+                    product_id: productId || null,
+                    voice_url: voiceUrl,
+                    created_at: new Date().toISOString(),
+                    is_admin_read: false,
+                    status: 'sent'
+                };
+                
+                const {error} = await supabase.from('contact_messages').insert([newMessage]);
+                if(error) { showToast('Error sending message: ' + error.message, true); return; }
+                
+                if(chatInput) chatInput.value = '';
                 loadChatMessages();
+                showToast('Message sent to Support Team', false);
             }
+            
             // Voice Recording
             const voiceBtn = document.getElementById('voiceRecordBtn');
             let isRecording = false;
@@ -608,35 +813,93 @@
                         mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                         mediaRecorder.onstop = async () => {
                             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                            await sendChatMessage(null, null, null, audioBlob);
+                            await sendMessage(null, null, null, audioBlob);
                             stream.getTracks().forEach(track => track.stop());
                         };
                         mediaRecorder.start();
                         isRecording = true;
                         voiceBtn.classList.add('recording');
                         voiceBtn.innerHTML = '<i class="fas fa-stop"></i>';
-                        setTimeout(() => { if(isRecording) { mediaRecorder.stop(); voiceBtn.classList.remove('recording'); voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>'; isRecording = false; } }, 30000);
+                        setTimeout(() => { 
+                            if(isRecording) { 
+                                mediaRecorder.stop(); 
+                                voiceBtn.classList.remove('recording'); 
+                                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>'; 
+                                isRecording = false; 
+                            } 
+                        }, 30000);
                     } catch(e){ showToast('Microphone access denied', true); }
                 }
             });
-            function setupChatRealtime(){ supabase.channel('buyer-chat').on('postgres_changes',{ event:'INSERT', schema:'public', table:'chat_messages' },()=>loadChatMessages()).subscribe(); }
-            document.getElementById('sendChatBtn')?.addEventListener('click',()=>{ let txt=document.getElementById('chatInput').value.trim(); if(txt) sendChatMessage(txt); document.getElementById('chatInput').value=''; });
-            document.getElementById('attachImageBtn')?.addEventListener('click',()=>{ let input=document.createElement('input'); input.type='file'; input.accept='image/*'; input.onchange=e=>{ if(e.target.files[0]) sendChatMessage('📷 Image shared', e.target.files[0]); }; input.click(); });
-            document.getElementById('attachVideoBtn')?.addEventListener('click',()=>{ let input=document.createElement('input'); input.type='file'; input.accept='video/*'; input.onchange=e=>{ if(e.target.files[0]) sendChatMessage('🎥 Video shared', e.target.files[0]); }; input.click(); });
-            document.getElementById('attachProductBtn')?.addEventListener('click',async()=>{ const {value:pid}=await Swal.fire({ title:'Share Product', input:'select', inputOptions:allProducts.reduce((acc,p)=>(acc[p.id]=p.name,acc),{}), background:'#1c3d33', color:'white' }); if(pid) sendChatMessage(null, null, pid); });
             
-            document.querySelectorAll('.tab-btn').forEach(btn=>{
-                btn.addEventListener('click',()=>{
-                    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-                    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+            function setupChatRealtime(){
+                supabase.channel('buyer-chat-realtime')
+                    .on('postgres_changes', {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'contact_messages',
+                        filter: `buyer_id=eq.${currentUser?.id}`
+                    }, () => loadChatMessages())
+                    .subscribe();
+            }
+            
+            const chatInput = document.getElementById('chatInput');
+            document.getElementById('sendChatBtn')?.addEventListener('click', () => {
+                let txt = chatInput?.value.trim();
+                if(txt) sendMessage(txt);
+            });
+            chatInput?.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter' && !e.shiftKey){
+                    e.preventDefault();
+                    let txt = chatInput.value.trim();
+                    if(txt) sendMessage(txt);
+                }
+            });
+            document.getElementById('attachImageBtn')?.addEventListener('click', () => {
+                let input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = e => { if(e.target.files[0]) sendMessage('📷 Image shared', e.target.files[0]); };
+                input.click();
+            });
+            document.getElementById('attachProductBtn')?.addEventListener('click', async () => {
+                const {value:pid} = await Swal.fire({
+                    title: 'Share a Product',
+                    input: 'select',
+                    inputOptions: allProducts.reduce((acc,p) => (acc[p.id] = p.name, acc), {}),
+                    background: '#1c3d33',
+                    color: 'white'
+                });
+                if(pid) sendMessage(null, null, pid);
+            });
+            
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     document.getElementById(btn.dataset.tab + 'Tab').classList.add('active');
                     if(btn.dataset.tab === 'chat') loadChatMessages();
                 });
             });
-            window.searchProducts = () => { const term = document.getElementById('searchInput').value.toLowerCase(); const filtered = allProducts.filter(p=>p.name.toLowerCase().includes(term)); document.getElementById('allProductsGrid').innerHTML = filtered.map(p=>productCard(p)).join(''); };
-            function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
-            document.getElementById('logoutBtn')?.addEventListener('click',async()=>{ await supabase.auth.signOut(); window.location.href='buyer-auth.html'; });
+            
+            window.searchProducts = () => {
+                const term = document.getElementById('searchInput').value.toLowerCase();
+                const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
+                document.getElementById('allProductsGrid').innerHTML = filtered.map(p => productCard(p)).join('');
+            };
+            
+            function escapeHtml(str){ 
+                if(!str) return ''; 
+                return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); 
+            }
+            
+            document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+                await supabase.auth.signOut();
+                window.location.href = 'buyer-auth.html';
+            });
+            
             buildCarousel();
             checkAuth();
         })();
