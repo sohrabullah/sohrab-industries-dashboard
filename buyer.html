@@ -385,6 +385,13 @@
             margin: 12px 0;
             text-align: center;
         }
+        .empty-products {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 24px;
+        }
+        .empty-products i { font-size: 4rem; color: var(--primary); margin-bottom: 16px; }
         @media (max-width: 768px) {
             .cart-sidebar { width: 100%; right: -100%; }
             .chat-sidebar { display: none; }
@@ -567,41 +574,48 @@
             }
             
             async function loadProducts(){
-                const {data} = await supabase.from('products').select('*').eq('is_active',true);
-                if(data && data.length) allProducts = data;
-                else {
-                    allProducts = [
-                        { id:'p1', name:'LED Bulb 12W Ultra', category:'Bulbs', price:180, stock:120, min_order_qty:1, bulk_only:false, sample_available:true, description:'Super bright, energy saving, 2 year warranty' },
-                        { id:'p2', name:'LED Bulb 9W Slim', category:'Bulbs', price:150, stock:200, min_order_qty:1, bulk_only:false, sample_available:true, description:'Slim design, high lumens' },
-                        { id:'p3', name:'LED Driver 36W', category:'Spare Parts', price:350, stock:500, min_order_qty:50, bulk_only:true, sample_available:false, description:'Constant current driver' },
-                        { id:'p4', name:'SMD PCB Board', category:'Spare Parts', price:120, stock:1000, min_order_qty:100, bulk_only:true, sample_available:false, description:'High quality PCB' },
-                        { id:'p5', name:'Industrial Flood Light 100W', category:'Bulbs', price:1850, stock:45, min_order_qty:1, bulk_only:false, sample_available:true, description:'Outdoor waterproof flood light' },
-                        { id:'p6', name:'LED Chip 5730 (100pcs)', category:'Spare Parts', price:850, stock:200, min_order_qty:10, bulk_only:true, sample_available:false, description:'SMD 5730 LED chips' }
-                    ];
-                }
+                const {data, error} = await supabase.from('products').select('*').eq('is_active',true);
+                if(error) { console.error('Error loading products:', error); }
+                allProducts = data || [];
                 renderAllTabs();
             }
+            
+            function renderEmptyState(containerId, message) {
+                const container = document.getElementById(containerId);
+                if(container) {
+                    container.innerHTML = `<div class="empty-products"><i class="fas fa-box-open"></i><h3>${message}</h3><p>Products will appear here once added by admin.</p></div>`;
+                }
+            }
+            
             function renderAllTabs(){
                 const bulbs = allProducts.filter(p=>p.category==='Bulbs');
                 const spare = allProducts.filter(p=>p.category==='Spare Parts');
                 const bulkItems = allProducts.filter(p=>p.bulk_only===true);
                 const sampleItems = allProducts.filter(p=>p.sample_available===true);
-                document.getElementById('allProductsGrid').innerHTML = allProducts.map(p=>productCard(p)).join('');
-                document.getElementById('bulbsGrid').innerHTML = bulbs.map(p=>productCard(p)).join('');
-                document.getElementById('spareGrid').innerHTML = spare.map(p=>productCard(p)).join('');
-                document.getElementById('bulkGrid').innerHTML = bulkItems.map(p=>productCard(p)).join('');
-                document.getElementById('sampleGrid').innerHTML = sampleItems.map(p=>productCard(p)).join('');
+                
+                document.getElementById('allProductsGrid').innerHTML = allProducts.length ? allProducts.map(p=>productCard(p)).join('') : '<div class="empty-products"><i class="fas fa-box-open"></i><h3>No Products Yet</h3><p>Products will appear here once added by admin.</p></div>';
+                document.getElementById('bulbsGrid').innerHTML = bulbs.length ? bulbs.map(p=>productCard(p)).join('') : '<div class="empty-products"><i class="fas fa-lightbulb"></i><h3>No Bulbs Yet</h3><p>Bulb products will appear here once added.</p></div>';
+                document.getElementById('spareGrid').innerHTML = spare.length ? spare.map(p=>productCard(p)).join('') : '<div class="empty-products"><i class="fas fa-microchip"></i><h3>No Spare Parts Yet</h3><p>Spare parts will appear here once added.</p></div>';
+                document.getElementById('bulkGrid').innerHTML = bulkItems.length ? bulkItems.map(p=>productCard(p)).join('') : '<div class="empty-products"><i class="fas fa-boxes"></i><h3>No Bulk Items Yet</h3><p>Bulk items will appear here once added.</p></div>';
+                document.getElementById('sampleGrid').innerHTML = sampleItems.length ? sampleItems.map(p=>productCard(p)).join('') : '<div class="empty-products"><i class="fas fa-flask"></i><h3>No Sample Items Yet</h3><p>Sample products will appear here once added.</p></div>';
             }
+            
             function productCard(p){
-                const stockClass = p.stock > 0 ? 'in-stock' : 'out-stock';
-                const stockText = p.stock > 0 ? `✓ ${p.stock} in stock` : '✗ Out of stock';
+                const stockClass = (p.stock || 0) > 0 ? 'in-stock' : 'out-stock';
+                const stockText = (p.stock || 0) > 0 ? `✓ ${p.stock} in stock` : '✗ Out of stock';
                 const moqMsg = p.bulk_only ? `📦 MOQ: ${p.min_order_qty}` : (p.sample_available ? '🔬 Sample Available' : '');
-                return `<div class="product-card" onclick="viewProduct('${p.id}')"><div class="product-image"><i class="fas fa-lightbulb"></i></div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><div class="product-stock ${stockClass}">${stockText}</div><div class="bulk-badge">${moqMsg}</div><div class="product-actions"><button onclick="event.stopPropagation(); addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price}, ${p.min_order_qty||1})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
+                return `<div class="product-card" onclick="viewProduct('${p.id}')"><div class="product-image">${p.images && p.images[0] ? `<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;">` : `<i class="fas fa-lightbulb"></i>`}</div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><div class="product-stock ${stockClass}">${stockText}</div><div class="bulk-badge">${moqMsg}</div><div class="product-actions"><button onclick="event.stopPropagation(); addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price}, ${p.min_order_qty||1})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
             }
+            
             window.viewProduct = (id)=>{ 
                 let p=allProducts.find(x=>x.id===id); 
-                if(p) Swal.fire({title:p.name,html:`<p><strong>Price:</strong> Rs.${p.price}</p><p><strong>Category:</strong> ${p.category}</p><p><strong>Stock:</strong> ${p.stock}</p><p><strong>Description:</strong> ${p.description}</p>`,background:'#1c3d33',color:'white',confirmButtonColor:'#E8B13C'}); 
+                if(p) Swal.fire({
+                    title:p.name,
+                    html:`<p><strong>Price:</strong> Rs.${p.price}</p><p><strong>Category:</strong> ${p.category}</p><p><strong>Stock:</strong> ${p.stock || 0}</p><p><strong>Description:</strong> ${p.description || 'Premium quality product from Sohrab Industries'}</p><p><strong>Company:</strong> Sohrab Industries</p>`,
+                    background:'#1c3d33',color:'white',confirmButtonColor:'#E8B13C'
+                }); 
             };
+            
             window.addToCart = (id,name,price,moq=1)=>{ 
                 let item = cart.find(i=>i.id===id); 
                 if(item) item.quantity += moq; 
@@ -609,6 +623,7 @@
                 saveCart(); 
                 showToast(`${name} added to cart`); 
             };
+            
             function saveCart(){ localStorage.setItem(`cart_${currentUser.id}`,JSON.stringify(cart)); updateCartUI(); }
             function loadCart(){ const s = localStorage.getItem(`cart_${currentUser.id}`); if(s) cart = JSON.parse(s); updateCartUI(); }
             function updateCartUI(){ 
@@ -660,7 +675,7 @@
                 setTimeout(()=>location.reload(), 2000);
             });
             
-            // CHAT SYSTEM - Working perfectly
+            // Chat System
             async function loadChatMessages(){
                 const {data, error} = await supabase
                     .from('contact_messages')
@@ -808,6 +823,10 @@
                 input.click();
             });
             document.getElementById('attachProductBtn')?.addEventListener('click', async () => {
+                if(allProducts.length === 0){
+                    showToast('No products available to share', true);
+                    return;
+                }
                 const {value:pid} = await Swal.fire({
                     title: 'Share a Product',
                     input: 'select',
@@ -831,7 +850,7 @@
             window.searchProducts = () => {
                 const term = document.getElementById('searchInput').value.toLowerCase();
                 const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
-                document.getElementById('allProductsGrid').innerHTML = filtered.map(p => productCard(p)).join('');
+                document.getElementById('allProductsGrid').innerHTML = filtered.length ? filtered.map(p => productCard(p)).join('') : '<div class="empty-products"><i class="fas fa-search"></i><h3>No matching products</h3></div>';
             };
             
             function escapeHtml(str){ 
