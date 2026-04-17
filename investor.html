@@ -2,22 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Sohrab Industries | Premium Investor Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body { 
             font-family: 'Inter', sans-serif; 
             background: linear-gradient(145deg, #0a1a15 0%, #0d281f 50%, #0a1a15 100%);
             min-height: 100vh;
-            position: relative;
             overflow-x: hidden;
         }
-        
         body::before {
             content: '';
             position: fixed;
@@ -25,302 +22,198 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(232,177,60,0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(30,78,62,0.15) 0%, transparent 50%);
+            background-image: radial-gradient(circle at 20% 80%, rgba(232,177,60,0.08) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 20%, rgba(30,78,62,0.15) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
-        
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
-        
         .header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
-            padding: 1rem 5%;
+            padding: 0.8rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             border-bottom: 2px solid rgba(232,177,60,0.5);
         }
-        
         .header h1 { 
-            font-size: 1.8rem; 
+            font-size: 1.6rem; 
             font-family: 'Playfair Display', serif;
             display: flex; 
             align-items: center; 
-            gap: 12px;
+            gap: 10px;
             background: linear-gradient(135deg, #fff, #E8B13C);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        .header h1 i { color: #E8B13C; }
-        
         .user-info { 
             display: flex; 
             align-items: center; 
-            gap: 20px;
+            gap: 15px;
             background: rgba(0,0,0,0.3);
-            padding: 8px 25px;
+            padding: 5px 20px;
             border-radius: 50px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(232,177,60,0.3);
         }
         .logout-btn {
             background: linear-gradient(135deg, #dc3545, #a71d2a);
             color: white;
-            padding: 8px 24px;
+            padding: 6px 20px;
             border: none;
             border-radius: 40px;
             cursor: pointer;
             font-weight: 700;
             transition: all 0.3s;
         }
-        .logout-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(220,53,69,0.4); }
-        
-        .container { max-width: 1400px; margin: 2rem auto; padding: 0 5%; position: relative; z-index: 2; }
-        
+        .container { max-width: 1400px; margin: 1.5rem auto; padding: 0 4%; position: relative; z-index: 2; }
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.8rem;
         }
         .stat-card {
             background: linear-gradient(145deg, rgba(20,45,38,0.95), rgba(15,35,28,0.95));
             backdrop-filter: blur(10px);
-            padding: 1.5rem;
+            padding: 1.2rem;
             border-radius: 28px;
             text-align: center;
             border: 1px solid rgba(232,177,60,0.3);
-            transition: all 0.4s;
+            transition: all 0.3s;
             cursor: pointer;
         }
-        .stat-card:hover { transform: translateY(-8px); border-color: #E8B13C; box-shadow: 0 20px 40px rgba(232,177,60,0.2); }
-        .stat-card h3 { color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
+        .stat-card h3 { color: rgba(255,255,255,0.7); font-size: 0.8rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
         .stat-number { 
-            font-size: 2rem; 
+            font-size: 1.6rem; 
             font-weight: 800; 
             background: linear-gradient(135deg, #E8B13C, #ffd966);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        
         .tabs {
             display: flex;
-            gap: 12px;
-            margin-bottom: 1.8rem;
+            gap: 8px;
+            margin-bottom: 1.5rem;
             background: rgba(0,0,0,0.3);
             backdrop-filter: blur(10px);
-            padding: 8px 20px;
-            border-radius: 80px;
+            padding: 6px 16px;
+            border-radius: 60px;
             flex-wrap: wrap;
+            justify-content: center;
         }
         .tab-btn {
-            padding: 10px 28px;
+            padding: 8px 20px;
             background: transparent;
             border: none;
-            cursor: pointer;
-            border-radius: 50px;
+            border-radius: 40px;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            cursor: pointer;
         }
-        .tab-btn:hover { background: rgba(232,177,60,0.2); color: #E8B13C; }
         .tab-btn.active { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
-        .tab-btn.has-unread { background: linear-gradient(135deg, #dc3545, #c0392b); color: white; animation: pulseRed 0.8s ease-in-out infinite; }
-        @keyframes pulseRed { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        
         .tab-content {
             display: none;
             background: rgba(20,45,38,0.92);
             backdrop-filter: blur(12px);
             border-radius: 28px;
-            padding: 1.8rem;
+            padding: 1.5rem;
             border: 1px solid rgba(232,177,60,0.2);
-            animation: fadeSlideUp 0.4s ease-out;
+            animation: fadeSlideUp 0.3s ease-out;
         }
         .tab-content.active { display: block; }
-        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .section-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-family: 'Playfair Display', serif;
             background: linear-gradient(135deg, #E8B13C, #ffd966);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             margin-bottom: 20px;
-            border-left: 5px solid #E8B13C;
-            padding-left: 18px;
+            border-left: 4px solid #E8B13C;
+            padding-left: 15px;
         }
-        
-        .table-container { overflow-x: auto; margin-top: 15px; border-radius: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.15); }
+        .table-container { overflow-x: auto; border-radius: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.15); font-size: 0.85rem; }
         th { background: linear-gradient(135deg, #0a2f24, #1a4a3a); color: #E8B13C; font-weight: 700; }
-        tr:hover td { background: rgba(232,177,60,0.08); }
-        td { color: rgba(255,255,255,0.9); }
-        
-        .status-badge { padding: 4px 12px; border-radius: 30px; font-size: 11px; display: inline-block; font-weight: 700; }
-        .status-active, .status-approved { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
-        .status-pending { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
-        .status-rejected { background: linear-gradient(135deg, #dc3545, #a71d2a); color: #fff; }
-        
+        td { color: rgba(255,255,255,0.9); word-break: break-word; }
+        .status-badge { padding: 3px 10px; border-radius: 30px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .status-active, .status-approved { background: #1e7e5e; color: white; }
+        .status-pending { background: #d4a017; color: white; }
         .btn-primary {
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             color: #0a1f1a;
-            padding: 10px 24px;
+            padding: 8px 20px;
             border: none;
             border-radius: 40px;
             cursor: pointer;
             font-weight: 700;
-            transition: all 0.3s;
+            transition: 0.2s;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(232,177,60,0.4); }
-        
         .form-card {
             background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
-            padding: 25px;
-            border-radius: 28px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(232,177,60,0.2);
+            padding: 20px;
+            border-radius: 24px;
+            margin-bottom: 20px;
         }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #E8B13C; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #E8B13C; font-size: 0.85rem; }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 12px;
+            padding: 10px 12px;
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(232,177,60,0.3);
             border-radius: 16px;
             color: white;
+            font-size: 0.9rem;
         }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #E8B13C; background: rgba(255,255,255,0.12); }
-        
-        /* Animated Payment Options */
         .payment-options {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
             margin: 20px 0;
         }
         .payment-card {
             background: linear-gradient(145deg, rgba(20,45,38,0.95), rgba(15,35,28,0.95));
             border-radius: 20px;
-            padding: 20px;
+            padding: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
             border: 2px solid rgba(232,177,60,0.3);
-            position: relative;
-            overflow: hidden;
         }
-        @keyframes easypaisaGlow {
-            0%, 100% { box-shadow: 0 0 5px #00a859; border-color: #00a859; background: linear-gradient(145deg, rgba(0,168,89,0.15), rgba(0,168,89,0.05)); }
-            50% { box-shadow: 0 0 20px #00a859; border-color: #00a859; background: linear-gradient(145deg, rgba(0,168,89,0.25), rgba(0,168,89,0.1)); }
-        }
-        @keyframes jazzcashGlow {
-            0%, 100% { box-shadow: 0 0 5px #e31e24; border-color: #e31e24; background: linear-gradient(145deg, rgba(227,30,36,0.15), rgba(227,30,36,0.05)); }
-            50% { box-shadow: 0 0 20px #e31e24; border-color: #e31e24; background: linear-gradient(145deg, rgba(227,30,36,0.25), rgba(227,30,36,0.1)); }
-        }
-        @keyframes bankGlow {
-            0%, 100% { box-shadow: 0 0 5px #2196F3; border-color: #2196F3; background: linear-gradient(145deg, rgba(33,150,243,0.15), rgba(33,150,243,0.05)); }
-            50% { box-shadow: 0 0 20px #2196F3; border-color: #2196F3; background: linear-gradient(145deg, rgba(33,150,243,0.25), rgba(33,150,243,0.1)); }
-        }
-        .payment-card.easypaisa { animation: easypaisaGlow 2s ease-in-out infinite; }
-        .payment-card.jazzcash { animation: jazzcashGlow 2s ease-in-out infinite; }
-        .payment-card.bank { animation: bankGlow 2s ease-in-out infinite; }
-        .payment-card.selected {
-            border: 2px solid #E8B13C;
-            background: linear-gradient(145deg, rgba(232,177,60,0.25), rgba(232,177,60,0.1));
-            transform: scale(1.02);
-        }
-        .payment-card-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        .payment-card-header i { font-size: 2rem; }
+        .payment-card.selected { border: 2px solid #E8B13C; background: rgba(232,177,60,0.2); transform: scale(1.01); }
+        .payment-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .payment-card-header i { font-size: 1.8rem; }
         .payment-card.easypaisa .payment-card-header i { color: #00a859; }
         .payment-card.jazzcash .payment-card-header i { color: #e31e24; }
         .payment-card.bank .payment-card-header i { color: #2196F3; }
-        .payment-card-header h3 { font-size: 1.3rem; margin: 0; }
-        .payment-card.easypaisa .payment-card-header h3 { color: #00a859; }
-        .payment-card.jazzcash .payment-card-header h3 { color: #e31e24; }
-        .payment-card.bank .payment-card-header h3 { color: #2196F3; }
-        .payment-details { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-top: 10px; }
-        .payment-details p { margin: 5px 0; word-break: break-all; }
-        .payment-details strong { color: #E8B13C; }
-        
-        .screenshot-preview {
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 12px;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .screenshot-preview.active { display: flex; }
-        .screenshot-preview img {
-            max-width: 100px;
-            max-height: 100px;
+        .payment-details p { font-size: 0.75rem; margin: 4px 0; word-break: break-all; }
+        .approval-screenshot {
+            max-width: 55px;
+            max-height: 55px;
             border-radius: 8px;
+            cursor: pointer;
+            transition: 0.1s;
             object-fit: cover;
         }
-        .remove-screenshot {
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .approval-screenshot {
-            max-width: 60px;
-            max-height: 60px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .approval-screenshot:hover { transform: scale(1.1); }
-        
-        .edit-icon {
-            cursor: pointer;
-            color: #E8B13C;
-            background: rgba(0,0,0,0.3);
-            padding: 8px;
-            border-radius: 50%;
-            margin-left: 10px;
-            transition: all 0.3s;
-        }
-        .edit-icon:hover { background: #E8B13C; color: #0a1f1a; }
-        .profile-field { display: flex; align-items: center; gap: 10px; }
-        
-        .empty-state { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
-        .info-text { margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.5); }
-        
-        /* Modal Styles - Professional Popup */
         .modal {
             display: none;
             position: fixed;
@@ -333,244 +226,82 @@
             backdrop-filter: blur(12px);
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease;
         }
         .modal.active { display: flex; }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
         .modal-content {
             background: linear-gradient(145deg, #1a3d33, #0f2a22);
             margin: 0 auto;
-            padding: 30px;
+            padding: 25px;
             width: 90%;
-            max-width: 550px;
+            max-width: 520px;
             max-height: 85vh;
             overflow-y: auto;
             border-radius: 32px;
             border: 1px solid rgba(232,177,60,0.3);
-            animation: slideIn 0.3s ease;
             position: relative;
-        }
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .modal-content h2 {
-            color: #E8B13C;
-            margin-bottom: 20px;
-            font-size: 1.6rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 2px solid rgba(232,177,60,0.3);
-            padding-bottom: 15px;
-        }
-        .modal-content h2 i {
-            font-size: 1.8rem;
         }
         .close {
             position: absolute;
-            top: 20px;
-            right: 25px;
-            font-size: 32px;
-            font-weight: bold;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
             cursor: pointer;
-            color: rgba(255,255,255,0.6);
-            transition: all 0.3s;
-            z-index: 10;
+            color: rgba(255,255,255,0.7);
         }
-        .close:hover {
-            color: #E8B13C;
-            transform: rotate(90deg);
+        .close:hover { color: #E8B13C; }
+        .screenshot-preview {
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            gap: 10px;
         }
-        
-        /* Chat Styles */
+        .screenshot-preview.active { display: flex; flex-wrap: wrap; }
+        .screenshot-preview img { max-width: 80px; max-height: 80px; border-radius: 8px; }
+        .remove-screenshot {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
         .chat-panel {
             display: flex;
             flex-direction: column;
-            height: 70vh;
-            min-height: 550px;
+            height: 65vh;
+            min-height: 480px;
             background: rgba(0,0,0,0.3);
             border-radius: 24px;
             overflow: hidden;
-            width: 100%;
         }
         .chat-messages-area {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 35px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            width: 100%;
-            background: rgba(10, 31, 26, 0.4);
-        }
-        
-        .message {
-            max-width: 85%;
-            width: auto;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            margin-bottom: 6px;
-        }
-        .message.sent { align-self: flex-end; margin-left: auto; margin-right: 4px; }
-        .message.received { align-self: flex-start; margin-right: auto; margin-left: 4px; }
-        
-        .message-bubble {
-            padding: 8px 12px;
-            border-radius: 18px;
-            position: relative;
-            word-wrap: break-word;
-        }
-        .message.sent .message-bubble { background: #dcf8c5; color: #111; border-bottom-right-radius: 4px; }
-        .message.received .message-bubble { background: rgba(255,255,255,0.12); color: white; border-bottom-left-radius: 4px; }
-        
-        .sender-name { font-size: 0.7rem; font-weight: bold; margin-bottom: 4px; color: #E8B13C; }
-        .message.sent .sender-name { color: #0a5e3a; }
-        .message-text { font-size: 0.9rem; line-height: 1.4; white-space: pre-wrap; }
-        
-        .message-time {
-            font-size: 0.6rem;
-            opacity: 0.7;
-            margin-top: 4px;
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .message.sent .message-time { justify-content: flex-end; color: #555; }
-        .message.received .message-time { color: #ccc; }
-        
-        .reply-preview {
-            background: rgba(232,177,60,0.15);
-            padding: 5px 8px;
-            border-radius: 10px;
-            margin-bottom: 5px;
-            font-size: 0.7rem;
-            border-left: 3px solid #E8B13C;
-        }
-        
-        .message-actions-trigger {
-            position: absolute;
-            right: -30px;
-            top: 6px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 50%;
-            width: 26px;
-            height: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0.7;
-            color: #E8B13C;
-            font-size: 12px;
-            z-index: 10;
-        }
-        .message:hover .message-actions-trigger { opacity: 1; }
-        .message.sent .message-actions-trigger { right: -30px; left: auto; }
-        .message.received .message-actions-trigger { left: -30px; right: auto; }
-        
-        .message-actions-menu {
-            position: absolute;
-            background: #1a3d33;
-            border-radius: 12px;
-            padding: 6px;
-            display: none;
-            gap: 4px;
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border: 1px solid rgba(232,177,60,0.3);
-            flex-direction: column;
-            min-width: 130px;
-        }
-        .message-actions-menu.show { display: flex; }
-        .message.sent .message-actions-menu { right: 0; top: 100%; margin-top: 5px; }
-        .message.received .message-actions-menu { left: 0; top: 100%; margin-top: 5px; }
-        .message-action-btn {
-            background: none;
-            border: none;
-            color: #E8B13C;
-            padding: 6px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            text-align: left;
-            display: flex;
-            align-items: center;
             gap: 8px;
         }
-        .message-action-btn:hover { background: rgba(232,177,60,0.2); }
-        .message-action-btn.danger { color: #dc3545; }
-        
-        .chat-media { max-width: 180px; max-height: 180px; border-radius: 12px; margin: 4px 0; cursor: pointer; }
-        .voice-message-preview { display: flex; align-items: center; gap: 8px; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 30px; min-width: 180px; }
-        
-        .typing-indicator {
-            background: rgba(232,177,60,0.1);
-            border-radius: 18px;
-            padding: 6px 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.75rem;
-            color: #E8B13C;
-            width: fit-content;
-            margin: 0 12px 8px 12px;
-        }
-        .typing-dot { width: 5px; height: 5px; background: #E8B13C; border-radius: 50%; display: inline-block; animation: typingAnim 1.4s infinite; }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typingAnim { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
-        
-        .online-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.7rem;
-            background: rgba(0,0,0,0.4);
-            padding: 4px 12px;
-            border-radius: 20px;
-            width: fit-content;
-            margin-bottom: 8px;
-        }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 4px #2ecc71; animation: pulseGreen 1.5s infinite; }
-        @keyframes pulseGreen { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
+        .message { max-width: 85%; display: flex; flex-direction: column; position: relative; margin-bottom: 4px; }
+        .message.sent { align-self: flex-end; }
+        .message.received { align-self: flex-start; }
+        .message-bubble { padding: 8px 12px; border-radius: 18px; word-break: break-word; }
+        .message.sent .message-bubble { background: #dcf8c5; color: #111; border-bottom-right-radius: 4px; }
+        .message.received .message-bubble { background: rgba(255,255,255,0.12); color: white; border-bottom-left-radius: 4px; }
+        .sender-name { font-size: 0.7rem; font-weight: bold; margin-bottom: 3px; color: #E8B13C; }
+        .chat-media { max-width: 160px; max-height: 160px; border-radius: 12px; margin: 4px 0; cursor: pointer; }
         .chat-input-area {
-            padding: 12px 16px;
+            padding: 10px;
             background: rgba(0,0,0,0.4);
             border-top: 1px solid rgba(232,177,60,0.2);
         }
-        .reply-bar {
-            background: rgba(232,177,60,0.1);
-            padding: 6px 10px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            display: none;
-            font-size: 0.75rem;
-        }
-        .reply-bar.active { display: flex; justify-content: space-between; align-items: center; }
-        .chat-toolbar {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-        }
-        .chat-tool-btn {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(232,177,60,0.3);
-            border-radius: 30px;
-            padding: 5px 10px;
-            color: #E8B13C;
-            cursor: pointer;
-            font-size: 0.7rem;
-        }
         .chat-input-wrapper {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
         .chat-input {
@@ -578,886 +309,248 @@
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(232,177,60,0.4);
             border-radius: 40px;
-            padding: 10px 16px;
+            padding: 10px 14px;
             color: white;
             resize: none;
             font-size: 0.85rem;
-            font-family: inherit;
         }
-        .chat-input:focus { outline: none; border-color: #E8B13C; }
-        .emoji-btn, .chat-send-btn {
+        .chat-send-btn {
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             border: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            color: #0a1f1a;
-            font-size: 1.1rem;
         }
-        
-        .disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-        .permission-warning {
-            background: linear-gradient(135deg, #dc3545, #c0392b);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            text-align: center;
-            font-size: 0.85rem;
-            display: none;
-        }
-        .permission-warning.show { display: block; }
-        
-        .emoji-picker {
-            position: absolute;
-            bottom: 80px;
-            right: 20px;
-            background: #1a3d33;
-            border-radius: 20px;
-            padding: 12px;
-            display: none;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 6px;
-            z-index: 1001;
-            max-width: 320px;
-            max-height: 280px;
-            overflow-y: auto;
-            border: 1px solid rgba(232,177,60,0.3);
-        }
-        .emoji-picker.active { display: grid; }
-        .emoji-item { font-size: 1.3rem; cursor: pointer; padding: 4px; text-align: center; }
-        .emoji-item:hover { transform: scale(1.1); background: rgba(232,177,60,0.2); border-radius: 6px; }
-        
-        .gif-picker-modal {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 320px;
-            max-height: 400px;
-            background: #1a3d33;
-            border-radius: 20px;
-            z-index: 1001;
-            display: none;
-            flex-direction: column;
-            border: 1px solid rgba(232,177,60,0.3);
-            overflow: hidden;
-        }
-        .gif-picker-modal.active { display: flex; }
-        .gif-search-header {
-            padding: 10px;
-            background: #0a2f24;
-            display: flex;
-            gap: 8px;
-        }
-        .gif-search-header input {
-            flex: 1;
-            padding: 8px;
-            border-radius: 20px;
-            border: none;
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-        .gif-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            padding: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .gif-item { width: 100%; border-radius: 10px; cursor: pointer; transition: transform 0.2s; }
-        .gif-item:hover { transform: scale(1.05); }
-        
-        .drag-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            color: #E8B13C;
-            pointer-events: none;
-        }
-        .drag-overlay.active { display: flex; }
-        
-        .media-preview {
-            margin-top: 8px;
-            padding: 8px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 12px;
-            display: none;
-            position: relative;
-        }
-        .media-preview.active { display: block; }
-        .remove-media {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .voice-recording-overlay {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(145deg, #1a3d33, #0f2a22);
-            padding: 20px;
-            text-align: center;
-            z-index: 1002;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            border-top: 1px solid rgba(232,177,60,0.3);
-        }
-        .voice-recording-overlay.active { transform: translateY(0); }
-        .recording-wave { display: flex; justify-content: center; align-items: center; gap: 5px; height: 50px; }
-        .wave-bar { width: 3px; height: 15px; background: #dc3545; border-radius: 2px; animation: wave 0.5s ease-in-out infinite alternate; }
-        .wave-bar:nth-child(1) { animation-delay: 0s; height: 25px; }
-        .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 35px; }
-        .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 45px; }
-        .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 35px; }
-        .wave-bar:nth-child(5) { animation-delay: 0.4s; height: 25px; }
-        @keyframes wave { from { height: 15px; } to { height: 50px; } }
-        .recording-controls { display: flex; justify-content: center; gap: 20px; margin-top: 12px; }
-        .recording-stop-btn, .recording-cancel-btn { width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; font-size: 20px; }
-        .recording-stop-btn { background: #dc3545; color: white; }
-        .recording-cancel-btn { background: #6c757d; color: white; }
-        .recording-timer { font-size: 1rem; color: white; margin-top: 8px; }
-        
-        @media (max-width: 768px) {
-            .header { flex-direction: column; }
-            .tabs { justify-content: center; }
-            .tab-btn { padding: 8px 16px; font-size: 12px; }
-            .stats { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-            .message { max-width: 90%; }
-            .message-actions-trigger { opacity: 1; }
+        @media (max-width: 680px) {
+            .header { flex-direction: column; text-align: center; }
+            .stats { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .tab-btn { padding: 5px 12px; font-size: 0.75rem; }
+            .modal-content { padding: 18px; }
             .payment-options { grid-template-columns: 1fr; }
-            .screenshot-preview.active { flex-direction: column; align-items: flex-start; }
-            .modal-content { width: 95%; padding: 20px; }
-            .modal-content h2 { font-size: 1.3rem; }
+            .message { max-width: 92%; }
+            .section-title { font-size: 1.2rem; }
         }
+        .empty-state { text-align: center; padding: 30px; color: rgba(255,255,255,0.5); }
+        .online-status { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.4); padding: 3px 12px; border-radius: 20px; width: fit-content; margin-bottom: 8px; font-size: 0.7rem; }
+        .status-dot { width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; }
+        .typing-indicator { background: rgba(232,177,60,0.1); border-radius: 18px; padding: 4px 10px; display: inline-flex; gap: 4px; font-size: 0.7rem; }
+        .disabled { opacity: 0.5; pointer-events: none; }
+        .profile-field { display: flex; align-items: center; gap: 8px; }
+        .edit-icon { cursor: pointer; color: #E8B13C; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 50%; transition: 0.2s; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1><i class="fas fa-gem"></i> Sohrab Industries</h1>
-        <div class="user-info">
-            <span id="userName"><i class="fas fa-user-astronaut"></i> Loading...</span>
-            <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-        </div>
+<div class="header">
+    <h1><i class="fas fa-gem"></i> Sohrab Industries</h1>
+    <div class="user-info"><span id="userName"><i class="fas fa-user-astronaut"></i> Loading...</span><button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+</div>
+<div class="container">
+    <div class="stats">
+        <div class="stat-card" data-tab="investments"><h3><i class="fas fa-chart-line"></i> Total Investment</h3><div class="stat-number" id="totalInvestment">Rs. 0</div></div>
+        <div class="stat-card" data-tab="profits"><h3><i class="fas fa-coins"></i> Total Profit</h3><div class="stat-number" id="totalProfit">Rs. 0</div></div>
+        <div class="stat-card" data-tab="withdrawals"><h3><i class="fas fa-wallet"></i> Balance</h3><div class="stat-number" id="availableBalance">Rs. 0</div></div>
+        <div class="stat-card" data-tab="investments"><h3><i class="fas fa-chart-simple"></i> Active</h3><div class="stat-number" id="activeInvestments">0</div></div>
     </div>
-
-    <div class="container">
-        <div class="stats">
-            <div class="stat-card" data-tab="investments"><h3><i class="fas fa-chart-line"></i> Total Investment</h3><div class="stat-number" id="totalInvestment">Rs. 0</div></div>
-            <div class="stat-card" data-tab="profits"><h3><i class="fas fa-coins"></i> Total Profit Earned</h3><div class="stat-number" id="totalProfit">Rs. 0</div></div>
-            <div class="stat-card" data-tab="withdrawals"><h3><i class="fas fa-wallet"></i> Available Balance</h3><div class="stat-number" id="availableBalance">Rs. 0</div></div>
-            <div class="stat-card" data-tab="investments"><h3><i class="fas fa-chart-simple"></i> Active Investments</h3><div class="stat-number" id="activeInvestments">0</div></div>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="investments"><i class="fas fa-chart-line"></i> My Investments</button>
-            <button class="tab-btn" data-tab="investmentRequests"><i class="fas fa-clock"></i> Investment Requests</button>
-            <button class="tab-btn" data-tab="profits"><i class="fas fa-coins"></i> Profit History</button>
-            <button class="tab-btn" data-tab="withdrawals"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
-            <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> My Profile</button>
-            <button class="tab-btn" data-tab="livechat" id="chatTabBtn"><i class="fas fa-headset"></i> Live Chat</button>
-        </div>
-
-        <div id="investmentsTab" class="tab-content active">
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments</h2>
-                <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + New Investment Request</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr></thead>
-                    <tbody id="investmentsList"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="investmentRequestsTab" class="tab-content">
-            <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr></thead>
-                    <tbody id="investmentRequestsList"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="profitsTab" class="tab-content">
-            <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead>
-                    <tbody id="profitsList"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="withdrawalsTab" class="tab-content">
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
-                <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Title</th><th>Account Details</th><th>Status</th><th>Processed Date</th><th>Approval Screenshot</th></tr></thead>
-                    <tbody id="withdrawalsList"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="profileTab" class="tab-content">
-            <h2 class="section-title"><i class="fas fa-user-edit"></i> Your Profile Information</h2>
-            <div class="form-card">
-                <div class="form-row">
-                    <div class="form-group"><label>Full Name</label><div class="profile-field"><input type="text" id="profileName" readonly><i class="fas fa-pencil-alt edit-icon" onclick="editField('profileName', 'full_name')"></i></div></div>
-                    <div class="form-group"><label>Email Address</label><input type="email" id="profileEmail" readonly></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Phone Number</label><div class="profile-field"><input type="tel" id="profilePhone" readonly><i class="fas fa-pencil-alt edit-icon" onclick="editField('profilePhone', 'phone')"></i></div></div>
-                    <div class="form-group"><label>City</label><div class="profile-field"><input type="text" id="profileCity" readonly><i class="fas fa-pencil-alt edit-icon" onclick="editField('profileCity', 'city')"></i></div></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>💰 Total Investment</label><input type="text" id="profileTotalInvestment" readonly></div>
-                    <div class="form-group"><label>📈 Total Profit Earned</label><input type="text" id="profileTotalProfit" readonly></div>
-                    <div class="form-group"><label>💵 Available Balance</label><input type="text" id="profileBalance" readonly></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Live Chat Tab -->
-        <div id="livechatTab" class="tab-content">
-            <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Sohrab Industries Support</h2>
-            <div id="permissionWarning" class="permission-warning"></div>
-            <div class="chat-panel">
-                <div id="chatMessagesArea" class="chat-messages-area"><div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div></div>
-                <div id="typingIndicatorArea"></div>
-                <div class="chat-input-area">
-                    <div id="replyBar" class="reply-bar"><span><i class="fas fa-reply"></i> Replying to: <span id="replyingToText"></span></span><button onclick="window.investorChat.cancelReply()" style="background:none; border:none; color:#dc3545; cursor:pointer;">×</button></div>
-                    <div class="chat-toolbar">
-                        <button class="chat-tool-btn" onclick="window.investorChat.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
-                        <button class="chat-tool-btn" onclick="window.investorChat.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
-                        <button class="chat-tool-btn" onclick="window.investorChat.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
-                        <button class="chat-tool-btn" onclick="window.investorChat.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
-                    </div>
-                    <div class="chat-input-wrapper">
-                        <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
-                        <button class="emoji-btn" onclick="window.investorChat.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
-                        <button class="chat-send-btn" onclick="window.investorChat.sendMessage()"><i class="fas fa-paper-plane"></i></button>
-                    </div>
-                    <div id="emojiPicker" class="emoji-picker"></div>
-                    <div id="mediaPreview" class="media-preview"></div>
-                </div>
-            </div>
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="investments"><i class="fas fa-chart-line"></i> Investments</button>
+        <button class="tab-btn" data-tab="investmentRequests"><i class="fas fa-clock"></i> Requests</button>
+        <button class="tab-btn" data-tab="profits"><i class="fas fa-coins"></i> Profits</button>
+        <button class="tab-btn" data-tab="withdrawals"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
+        <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Profile</button>
+        <button class="tab-btn" data-tab="livechat"><i class="fas fa-headset"></i> Live Chat</button>
     </div>
-
-    <!-- Investment Modal - Professional Popup -->
-    <div id="investmentModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('investmentModal')">&times;</span>
-            <h2><i class="fas fa-plus-circle"></i> New Investment Request</h2>
-            
-            <div class="payment-options">
-                <div class="payment-card easypaisa" onclick="selectPaymentMethod('easypaisa')" id="card-easypaisa">
-                    <div class="payment-card-header">
-                        <i class="fas fa-mobile-alt"></i>
-                        <h3>EasyPaisa</h3>
-                    </div>
-                    <div class="payment-details">
-                        <p><strong>Account:</strong> 0317-3703413</p>
-                        <p><strong>Title:</strong> Sohrab Ullah</p>
-                    </div>
-                </div>
-                
-                <div class="payment-card jazzcash" onclick="selectPaymentMethod('jazzcash')" id="card-jazzcash">
-                    <div class="payment-card-header">
-                        <i class="fas fa-mobile-alt"></i>
-                        <h3>JazzCash</h3>
-                    </div>
-                    <div class="payment-details">
-                        <p><strong>Account:</strong> 0317-3703413</p>
-                        <p><strong>Title:</strong> Sohrab Ullah</p>
-                    </div>
-                </div>
-                
-                <div class="payment-card bank" onclick="selectPaymentMethod('bank')" id="card-bank">
-                    <div class="payment-card-header">
-                        <i class="fas fa-university"></i>
-                        <h3>HBL Bank</h3>
-                    </div>
-                    <div class="payment-details">
-                        <p><strong>Account:</strong> 00587902117403</p>
-                        <p><strong>IBAN:</strong> PK76HABB0000587902117403</p>
-                        <p><strong>Title:</strong> Sohrab Ullah</p>
-                    </div>
-                </div>
-            </div>
-            
-            <input type="hidden" id="selectedPaymentMethod" value="">
-            
-            <div class="form-group">
-                <label>Investment Amount (Rs.)</label>
-                <input type="number" id="investmentAmount" placeholder="Enter amount (Min Rs. 1000)">
-            </div>
-            
-            <div class="form-group">
-                <label>Transaction ID</label>
-                <input type="text" id="investmentTransactionId" placeholder="Enter transaction ID">
-            </div>
-            
-            <div class="form-group">
-                <label>Payment Screenshot (Optional)</label>
-                <input type="file" id="investmentScreenshot" accept="image/*" onchange="previewInvestmentScreenshot(this)">
-                <div id="investmentScreenshotPreview" class="screenshot-preview"></div>
-            </div>
-            
-            <div class="form-group">
-                <label>Notes</label>
-                <textarea id="investmentNotes" rows="2" placeholder="Additional notes..."></textarea>
-            </div>
-            
-            <button id="submitInvestmentBtn" class="btn-primary" style="width:100%; margin-top:10px;">Submit Request</button>
-        </div>
-    </div>
+    <div id="investmentsTab" class="tab-content active"><div style="display:flex; justify-content:space-between; flex-wrap:wrap; margin-bottom:20px;"><h2 class="section-title"><i class="fas fa-check-circle"></i> Approved Investments</h2><button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> New Investment</button></div><div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Tx ID</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr></thead><tbody id="investmentsList"></tbody></table></div></div>
+    <div id="investmentRequestsTab" class="tab-content"><h2 class="section-title"><i class="fas fa-clock"></i> Pending Requests</h2><div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Tx ID</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div></div>
+    <div id="profitsTab" class="tab-content"><h2 class="section-title"><i class="fas fa-gift"></i> Profit History</h2><div class="table-container"><table><thead><tr><th>Month</th><th>Amount</th><th>%</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody></table></div></div>
+    <div id="withdrawalsTab" class="tab-content"><div style="display:flex; justify-content:space-between; flex-wrap:wrap; margin-bottom:20px;"><h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawals</h2><button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> Request Withdrawal</button></div><div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Account</th><th>Details</th><th>Status</th><th>Processed</th><th>Approval SS</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div></div>
+    <div id="profileTab" class="tab-content"><h2 class="section-title"><i class="fas fa-user-edit"></i> Profile</h2><div class="form-card"><div class="form-row"><div class="form-group"><label>Full Name</label><div class="profile-field"><input type="text" id="profileName" readonly><i class="fas fa-pencil-alt edit-icon" onclick="editField('profileName','full_name')"></i></div></div><div class="form-group"><label>Email</label><input type="email" id="profileEmail" readonly></div></div><div class="form-row"><div class="form-group"><label>Phone</label><div class="profile-field"><input type="tel" id="profilePhone" readonly><i class="fas fa-pencil-alt edit-icon" onclick="editField('profilePhone','phone')"></i></div></div><div class="form-group"><label>City</label><div class="profile-field"><input type="text" id="profileCity" readonly><i class="fas fa-pencil-alt edit-icon" onclick="editField('profileCity','city')"></i></div></div></div><div class="form-row"><div class="form-group"><label>💰 Total Investment</label><input type="text" id="profileTotalInvestment" readonly></div><div class="form-group"><label>📈 Total Profit</label><input type="text" id="profileTotalProfit" readonly></div><div class="form-group"><label>💵 Balance</label><input type="text" id="profileBalance" readonly></div></div></div></div>
+    <div id="livechatTab" class="tab-content"><h2 class="section-title"><i class="fas fa-comments"></i> Live Support</h2><div class="chat-panel"><div id="chatMessagesArea" class="chat-messages-area"><div class="empty-state"><i class="fas fa-headset" style="font-size:40px;"></i><p>Chat with Sohrab Industries</p></div></div><div id="typingIndicatorArea"></div><div class="chat-input-area"><div class="chat-input-wrapper"><textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea><button class="chat-send-btn" onclick="window.sendChatMessage()"><i class="fas fa-paper-plane"></i></button></div></div></div></div>
+</div>
+<div id="investmentModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('investmentModal')">&times;</span><h2><i class="fas fa-plus-circle"></i> New Investment Request</h2><div class="payment-options"><div class="payment-card easypaisa" onclick="selectPaymentMethod('easypaisa')" id="card-easypaisa"><div class="payment-card-header"><i class="fas fa-mobile-alt"></i><h3>EasyPaisa</h3></div><div class="payment-details"><p><strong>Account:</strong> 0317-3703413</p><p><strong>Title:</strong> Sohrab Ullah</p></div></div><div class="payment-card jazzcash" onclick="selectPaymentMethod('jazzcash')" id="card-jazzcash"><div class="payment-card-header"><i class="fas fa-mobile-alt"></i><h3>JazzCash</h3></div><div class="payment-details"><p><strong>Account:</strong> 0317-3703413</p><p><strong>Title:</strong> Sohrab Ullah</p></div></div><div class="payment-card bank" onclick="selectPaymentMethod('bank')" id="card-bank"><div class="payment-card-header"><i class="fas fa-university"></i><h3>HBL Bank</h3></div><div class="payment-details"><p><strong>Account:</strong> 00587902117403</p><p><strong>Title:</strong> Sohrab Ullah</p></div></div></div><input type="hidden" id="selectedPaymentMethod"><div class="form-group"><label>Amount (Rs.)</label><input type="number" id="investmentAmount" placeholder="Min Rs. 1000"></div><div class="form-group"><label>Transaction ID</label><input type="text" id="investmentTransactionId" placeholder="Enter transaction ID"></div><div class="form-group"><label>Screenshot (Optional)</label><input type="file" id="investmentScreenshot" accept="image/*" onchange="previewInvestmentScreenshot(this)"><div id="investmentScreenshotPreview" class="screenshot-preview"></div></div><div class="form-group"><label>Notes</label><textarea id="investmentNotes" rows="2"></textarea></div><button id="submitInvestmentBtn" class="btn-primary" style="width:100%;">Submit Request</button></div></div>
+<div id="withdrawalModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('withdrawalModal')">&times;</span><h2><i class="fas fa-money-bill-wave"></i> Withdrawal Request</h2><div class="form-group"><label>Amount (Rs.)</label><input type="number" id="withdrawAmount" placeholder="Min Rs. 1000"></div><div class="form-group"><label>Method</label><select id="withdrawMethod"><option>EasyPaisa</option><option>JazzCash</option><option>Bank Transfer</option></select></div><div class="form-group"><label>Account Title</label><input type="text" id="accountTitle" placeholder="Full name"></div><div class="form-group"><label>Account Details</label><input type="text" id="accountDetails" placeholder="Mobile / IBAN"></div><button id="submitWithdrawalBtn" class="btn-primary" style="width:100%;">Submit</button></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let currentInvestorId = null;
+    let currentInvestmentScreenshotBase64 = null;
     
-    <!-- Withdrawal Modal - Professional Popup -->
-    <div id="withdrawalModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('withdrawalModal')">&times;</span>
-            <h2><i class="fas fa-money-bill-wave"></i> Withdrawal Request</h2>
-            
-            <div class="form-group">
-                <label>Amount (Rs.)</label>
-                <input type="number" id="withdrawAmount" placeholder="Enter amount (Min Rs. 1000)">
-            </div>
-            
-            <div class="form-group">
-                <label>Payment Method</label>
-                <select id="withdrawMethod">
-                    <option value="EasyPaisa">EasyPaisa</option>
-                    <option value="JazzCash">JazzCash</option>
-                    <option value="Bank Transfer">Bank Transfer (HBL)</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Account Title</label>
-                <input type="text" id="accountTitle" placeholder="Enter account holder name">
-            </div>
-            
-            <div class="form-group">
-                <label>Account Details</label>
-                <input type="text" id="accountDetails" placeholder="Account number / Mobile number">
-            </div>
-            
-            <button id="submitWithdrawalBtn" class="btn-primary" style="width:100%; margin-top:10px;">Submit Request</button>
-        </div>
-    </div>
-
-    <!-- GIF Picker Modal -->
-    <div id="gifPickerModal" class="gif-picker-modal">
-        <div class="gif-search-header">
-            <input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="window.investorChat.searchGIFs(this.value)">
-            <button onclick="window.investorChat.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px;">&times;</button>
-        </div>
-        <div id="gifGrid" class="gif-grid"><div style="padding:20px;text-align:center;">Loading GIFs...</div></div>
-    </div>
-
-    <div id="dragOverlay" class="drag-overlay"><i class="fas fa-cloud-upload-alt" style="font-size: 3rem;"></i><p>Drop image/video/GIF here to send</p></div>
-    <div id="voiceRecordingOverlay" class="voice-recording-overlay">
-        <div class="recording-wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
-        <div class="recording-timer" id="recordingTimer">0:00</div>
-        <div class="recording-controls"><button class="recording-cancel-btn" onclick="window.investorChat.cancelVoiceRecording()"><i class="fas fa-times"></i></button><button class="recording-stop-btn" onclick="window.investorChat.stopVoiceRecording()"><i class="fas fa-stop"></i></button></div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        (function() {
-            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            let currentInvestorId = null;
-            let chatMessages = [];
-            let typingTimeout = null;
-            let pendingMedia = null;
-            let mediaRecorder = null;
-            let audioChunks = [];
-            let recordingStartTime = null;
-            let recordingTimerInterval = null;
-            let currentReplyingTo = null;
-            let currentOpenMenu = null;
-            let userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
-            let currentInvestmentScreenshot = null;
-            
-            const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
-            
-            const fallbackGIFs = [
-                'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif',
-                'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif',
-                'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif'
-            ];
-            
-            async function fetchGIFs(search = '') { return fallbackGIFs.map(url => ({ url })); }
-            
-            function selectPaymentMethod(method) {
-                document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
-                document.getElementById(`card-${method}`).classList.add('selected');
-                document.getElementById('selectedPaymentMethod').value = method;
-            }
-            
-            function previewInvestmentScreenshot(input) {
-                const previewDiv = document.getElementById('investmentScreenshotPreview');
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        currentInvestmentScreenshot = e.target.result;
-                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`;
-                        previewDiv.classList.add('active');
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-            
-            function clearInvestmentScreenshot() {
-                currentInvestmentScreenshot = null;
-                document.getElementById('investmentScreenshot').value = '';
-                const previewDiv = document.getElementById('investmentScreenshotPreview');
-                previewDiv.innerHTML = '';
-                previewDiv.classList.remove('active');
-            }
-            
-            window.clearInvestmentScreenshot = clearInvestmentScreenshot;
-            window.selectPaymentMethod = selectPaymentMethod;
-            window.previewInvestmentScreenshot = previewInvestmentScreenshot;
-            
-            async function checkUserPermissions() {
-                if (!currentInvestorId) return userPermissions;
-                try {
-                    const { data, error } = await supabase.from('investors').select('chat_enabled, voice_enabled, video_enabled').eq('id', currentInvestorId).single();
-                    if (error || !data) { userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true }; }
-                    else { userPermissions = { chatEnabled: data.chat_enabled !== false, voiceEnabled: data.voice_enabled !== false, videoEnabled: data.video_enabled !== false }; }
-                    updateUIForPermissions();
-                    return userPermissions;
-                } catch (err) { console.error('Error checking permissions:', err); userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true }; return userPermissions; }
-            }
-            
-            function updateUIForPermissions() {
-                const warningDiv = document.getElementById('permissionWarning');
-                const chatInput = document.getElementById('chatInput');
-                const sendBtn = document.querySelector('.chat-send-btn');
-                const emojiBtn = document.querySelector('.emoji-btn');
-                const chatToolbar = document.querySelectorAll('.chat-tool-btn');
-                if (!userPermissions.chatEnabled) {
-                    warningDiv.innerHTML = '<i class="fas fa-ban"></i> ⚠️ Chat has been disabled by admin. You cannot send messages.';
-                    warningDiv.classList.add('show');
-                    if (chatInput) { chatInput.disabled = true; chatInput.classList.add('disabled'); }
-                    if (sendBtn) { sendBtn.disabled = true; sendBtn.classList.add('disabled'); }
-                    if (emojiBtn) { emojiBtn.disabled = true; emojiBtn.classList.add('disabled'); }
-                    chatToolbar.forEach(btn => { btn.disabled = true; btn.classList.add('disabled'); });
-                } else {
-                    warningDiv.classList.remove('show');
-                    if (chatInput) { chatInput.disabled = false; chatInput.classList.remove('disabled'); }
-                    if (sendBtn) { sendBtn.disabled = false; sendBtn.classList.remove('disabled'); }
-                    if (emojiBtn) { emojiBtn.disabled = false; emojiBtn.classList.remove('disabled'); }
-                    chatToolbar.forEach(btn => {
-                        const btnText = btn.innerText.toLowerCase();
-                        if (!userPermissions.voiceEnabled && btnText.includes('voice')) { btn.disabled = true; btn.classList.add('disabled'); }
-                        else if (!userPermissions.videoEnabled && (btnText.includes('image') || btnText.includes('video') || btnText.includes('gif'))) { btn.disabled = true; btn.classList.add('disabled'); }
-                        else { btn.disabled = false; btn.classList.remove('disabled'); }
-                    });
-                }
-            }
-            
-            function closeModal(modalId) {
-                document.getElementById(modalId).classList.remove('active');
-                document.getElementById(modalId).style.display = 'none';
-            }
-            
-            window.closeModal = closeModal;
-            
-            window.investorChat = {
-                adminId: '00000000-0000-0000-0000-000000000001',
-                subscription: null,
-                init() {
-                    if (!currentInvestorId) return;
-                    this.subscribeToMessages();
-                    this.loadMessages();
-                    this.setupEmojiPicker();
-                    this.setupDragAndDrop();
-                    this.showOnlineStatus();
-                    document.getElementById('chatInput').addEventListener('input', () => this.sendTyping());
-                    document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); } });
-                    setInterval(() => this.markMessagesRead(), 3000);
-                    document.addEventListener('click', (e) => {
-                        if (!e.target.closest('.emoji-picker') && !e.target.closest('.emoji-btn')) document.getElementById('emojiPicker').classList.remove('active');
-                        if (!e.target.closest('.message-actions-menu') && !e.target.closest('.message-actions-trigger')) {
-                            if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; }
-                        }
-                    });
-                    setInterval(() => checkUserPermissions(), 5000);
-                },
-                async openGifPicker() {
-                    await checkUserPermissions();
-                    if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
-                    if (!userPermissions.videoEnabled) { Swal.fire({ title: 'Media Disabled', text: 'Media/GIF sharing has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
-                    const modal = document.getElementById('gifPickerModal');
-                    modal.classList.toggle('active');
-                    if (modal.classList.contains('active')) {
-                        document.getElementById('gifGrid').innerHTML = '<div style="padding:20px;text-align:center;">Loading GIFs...</div>';
-                        const gifs = await fetchGIFs('trending');
-                        this.renderGIFs(gifs);
-                    }
-                },
-                async searchGIFs(query) { const gifs = await fetchGIFs(query); this.renderGIFs(gifs); },
-                renderGIFs(gifs) {
-                    const grid = document.getElementById('gifGrid');
-                    if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found</div>'; return; }
-                    grid.innerHTML = gifs.map(g => `<img src="${g.url}" class="gif-item" onclick="window.investorChat.sendGIF('${g.url}')">`).join('');
-                },
-                sendGIF(url) {
-                    if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
-                    pendingMedia = { url: url, type: 'image' };
-                    const preview = document.getElementById('mediaPreview');
-                    preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`;
-                    preview.classList.add('active');
-                    this.closeGifPicker();
-                },
-                closeGifPicker() { document.getElementById('gifPickerModal').classList.remove('active'); },
-                showOnlineStatus() {
-                    const statusDiv = document.createElement('div');
-                    statusDiv.className = 'online-status';
-                    statusDiv.innerHTML = '<span class="status-dot"></span><span>Support Online</span>';
-                    const container = document.getElementById('chatMessagesArea');
-                    if (container && !container.querySelector('.online-status')) container.insertBefore(statusDiv, container.firstChild);
-                },
-                setupDragAndDrop() {
-                    const dropZone = document.getElementById('chatMessagesArea');
-                    const overlay = document.getElementById('dragOverlay');
-                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); });
-                    ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active'), false); });
-                    ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false); });
-                    dropZone.addEventListener('drop', async (e) => {
-                        const files = e.dataTransfer.files;
-                        if (files.length > 0 && userPermissions.chatEnabled && userPermissions.videoEnabled) {
-                            const file = files[0];
-                            if (file.type.startsWith('image/')) this.handleMediaUpload(file, 'image');
-                            else if (file.type.startsWith('video/')) this.handleMediaUpload(file, 'video');
-                        }
-                    });
-                },
-                setupEmojiPicker() { document.getElementById('emojiPicker').innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="window.investorChat.addEmoji('${emoji}')">${emoji}</div>`).join(''); },
-                toggleEmojiPicker() { if (userPermissions.chatEnabled) document.getElementById('emojiPicker').classList.toggle('active'); },
-                addEmoji(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.focus(); document.getElementById('emojiPicker').classList.remove('active'); },
-                async loadMessages() {
-                    if (!currentInvestorId) return;
-                    const { data, error } = await supabase.from('chat_messages').select('*').or(`and(sender_type.eq.investor,receiver_id.eq.${this.adminId},receiver_type.eq.admin),and(sender_id.eq.${this.adminId},sender_type.eq.admin,receiver_id.eq.${currentInvestorId},receiver_type.eq.investor)`).order('created_at', { ascending: true });
-                    if (!error && data) { chatMessages = data; this.renderMessages(); this.markMessagesRead(); }
-                },
-                subscribeToMessages() {
-                    if (this.subscription) return;
-                    this.subscription = supabase.channel('investor-chat')
-                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentInvestorId},receiver_type=eq.investor` }, (payload) => { chatMessages.push(payload.new); this.renderMessages(); this.markMessagesRead(); this.updateUnreadBadge(true); })
-                        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_messages' }, (payload) => { const idx = chatMessages.findIndex(m => m.id === payload.new.id); if (idx !== -1) chatMessages[idx] = payload.new; this.renderMessages(); })
-                        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, (payload) => { chatMessages = chatMessages.filter(m => m.id !== payload.old.id); this.renderMessages(); })
-                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_typing', filter: `receiver_id=eq.${currentInvestorId},receiver_type=eq.investor` }, (payload) => { if (payload.new.sender_type === 'admin') this.showTypingIndicator(); })
-                        .subscribe();
-                },
-                async sendMessage() {
-                    await checkUserPermissions();
-                    if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
-                    const input = document.getElementById('chatInput');
-                    const text = input.value.trim();
-                    if (!text && !pendingMedia && !currentReplyingTo) return;
-                    if (pendingMedia && pendingMedia.type === 'audio' && !userPermissions.voiceEnabled) { Swal.fire({ title: 'Voice Disabled', text: 'Voice messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); this.clearPendingMedia(); return; }
-                    if (pendingMedia && (pendingMedia.type === 'image' || pendingMedia.type === 'video') && !userPermissions.videoEnabled) { Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); this.clearPendingMedia(); return; }
-                    let messageData = { id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: text || null, read: false, created_at: new Date().toISOString() };
-                    if (pendingMedia) { messageData.media_url = pendingMedia.url; messageData.media_type = pendingMedia.type; }
-                    if (currentReplyingTo) { messageData.reply_to = currentReplyingTo.id; }
-                    const { error } = await supabase.from('chat_messages').insert([messageData]);
-                    if (!error) { chatMessages.push(messageData); this.renderMessages(); input.value = ''; this.clearPendingMedia(); this.cancelReply(); this.scrollToBottom(); }
-                    else Swal.fire({ title: 'Error', text: 'Failed to send', icon: 'error', background: '#1a3d33', color: '#fff' });
-                },
-                toggleMessageActions(messageId) { const menuId = `menu-${messageId.replace(/-/g, '')}`; const menu = document.getElementById(menuId); if (currentOpenMenu && currentOpenMenu !== menuId) document.getElementById(currentOpenMenu)?.classList.remove('show'); if (menu) { menu.classList.toggle('show'); currentOpenMenu = menu.classList.contains('show') ? menuId : null; } },
-                async editMessage(messageId, oldText) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); if (newText && newText !== oldText) { await supabase.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
-                async deleteMessage(messageId, forEveryone = false) { const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); if (result.isConfirmed) { if (forEveryone) await supabase.from('chat_messages').delete().eq('id', messageId); else await supabase.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
-                replyToMessage(message) { currentReplyingTo = message; document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50); document.getElementById('replyBar').classList.add('active'); document.getElementById('chatInput').focus(); this.closeMenu(); },
-                cancelReply() { currentReplyingTo = null; document.getElementById('replyBar').classList.remove('active'); },
-                async forwardMessage(message) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; await supabase.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); this.closeMenu(); },
-                closeMenu() { if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; } },
-                clearPendingMedia() { pendingMedia = null; const preview = document.getElementById('mediaPreview'); preview.classList.remove('active'); preview.innerHTML = ''; },
-                showAttachMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } if (!userPermissions.videoEnabled) { Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'image'); input.click(); },
-                showVideoMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } if (!userPermissions.videoEnabled) { Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'video'); input.click(); },
-                handleMediaUpload(file, type) { if (!file) return; const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: type }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`; preview.classList.add('active'); }; reader.readAsDataURL(file); },
-                showVoiceRecorder: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } if (!userPermissions.voiceEnabled) { Swal.fire({ title: 'Voice Disabled', text: 'Voice messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } document.getElementById('voiceRecordingOverlay').classList.add('active'); recordingStartTime = Date.now(); this.startRecordingTimer(); navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { mediaRecorder = new MediaRecorder(stream); audioChunks = []; mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); mediaRecorder.onstop = () => { const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: 'audio' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button></div>`; preview.classList.add('active'); }; reader.readAsDataURL(audioBlob); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); }).catch(() => { Swal.fire({ title: 'Error', text: 'Microphone access denied', icon: 'error', background: '#1a3d33', color: '#fff' }); this.cancelVoiceRecording(); }); },
-                startRecordingTimer() { if (recordingTimerInterval) clearInterval(recordingTimerInterval); recordingTimerInterval = setInterval(() => { const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000); const minutes = Math.floor(elapsed / 60); const seconds = elapsed % 60; document.getElementById('recordingTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`; }, 1000); },
-                stopVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); } },
-                cancelVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.onstop = () => {}; mediaRecorder.stop(); } document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); },
-                sendTyping() { clearTimeout(typingTimeout); supabase.from('chat_typing').insert([{ sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', timestamp: new Date().toISOString() }]); typingTimeout = setTimeout(() => {}, 2000); },
-                showTypingIndicator() { const container = document.getElementById('typingIndicatorArea'); container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>'; setTimeout(() => { container.innerHTML = ''; }, 3000); },
-                async markMessagesRead() { await supabase.from('chat_messages').update({ read: true }).eq('receiver_id', currentInvestorId).eq('receiver_type', 'investor').eq('read', false); this.updateUnreadBadge(false); },
-                updateUnreadBadge(hasNew) { const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]'); const livechatTab = document.getElementById('livechatTab'); if (hasNew && !livechatTab.classList.contains('active')) chatTab.classList.add('has-unread'); else if (livechatTab.classList.contains('active')) chatTab.classList.remove('has-unread'); },
-                renderMessages() {
-                    const container = document.getElementById('chatMessagesArea');
-                    if (!container) return;
-                    let statusHtml = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div>';
-                    if (chatMessages.length === 0) { container.innerHTML = statusHtml + '<div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div>'; return; }
-                    let messagesHtml = chatMessages.map(msg => {
-                        if (msg.deleted_for_sender && msg.sender_type === 'investor') return `<div class="message sent"><div class="message-bubble"><div class="message-text" style="font-style:italic; opacity:0.6;">Message deleted</div><div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>`;
-                        const isSent = msg.sender_type === 'investor';
-                        const senderName = isSent ? 'You' : '🛡️ Sohrab Industries Support';
-                        let replyHtml = ''; if (msg.reply_to) { const repliedMsg = chatMessages.find(m => m.id === msg.reply_to); if (repliedMsg) replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${escapeHtml((repliedMsg.text || '[Media]').substring(0, 50))}</div>`; }
-                        let mediaHtml = ''; if (msg.media_url) { if (msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank')">`; else if (msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`; else if (msg.media_type === 'audio') mediaHtml = `<div class="voice-message-preview"><audio src="${msg.media_url}" controls></audio></div>`; }
-                        const editedMark = msg.edited ? ' <span style="font-size:0.6rem;">(edited)</span>' : '';
-                        const msgShortId = msg.id.replace(/-/g, '');
-                        const timeStr = new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-                        return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msgShortId}" style="position:relative;"><div class="message-actions-trigger" onclick="window.investorChat.toggleMessageActions('${msg.id}')"><i class="fas fa-ellipsis-v"></i></div><div class="message-bubble"><div class="sender-name">${senderName}</div>${replyHtml}<div class="message-text">${escapeHtml(msg.text || '')}${editedMark}</div>${mediaHtml}<div class="message-time">${timeStr} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#25D366;"></i>' : ''}</div></div><div class="message-actions-menu" id="menu-${msgShortId}"><button class="message-action-btn" onclick="window.investorChat.editMessage('${msg.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button><button class="message-action-btn" onclick="window.investorChat.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button><button class="message-action-btn danger" onclick="window.investorChat.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete for all</button><button class="message-action-btn" onclick="window.investorChat.forwardMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-share"></i> Forward</button><button class="message-action-btn" onclick="window.investorChat.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button></div></div>`;
-                    }).join('');
-                    container.innerHTML = statusHtml + messagesHtml;
-                    this.scrollToBottom();
-                },
-                scrollToBottom() { const area = document.getElementById('chatMessagesArea'); if (area) area.scrollTop = area.scrollHeight; }
-            };
-            
-            function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-            
-            function showToast(message, isError) { Swal.fire({ title: isError ? 'Error' : 'Success', text: message, icon: isError ? 'error' : 'success', background: '#1a3d33', color: '#fff', timer: 3000, showConfirmButton: false }); }
-            
-            async function computeAvailableBalance() {
-                const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-                const totalInvested = investments?.reduce((s,i)=> s + (i.amount || 0),0) || 0;
-                const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
-                const totalPaidProfit = profits?.reduce((s,p)=> s + (p.amount || 0),0) || 0;
-                const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
-                const totalWithdrawn = withdrawals?.reduce((s,w)=> s + (w.amount || 0),0) || 0;
-                return { available: totalInvested + totalPaidProfit - totalWithdrawn, totalInvested, totalPaidProfit };
-            }
-            
-            async function loadStatsAndBalance() {
-                const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
-                document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-                document.getElementById('totalProfit').innerHTML = `Rs. ${totalPaidProfit.toLocaleString()}`;
-                document.getElementById('availableBalance').innerHTML = `Rs. ${available.toLocaleString()}`;
-                const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
-                document.getElementById('activeInvestments').innerHTML = activeInv?.length || 0;
-                await supabase.from('investors').update({ available_balance: available }).eq('id', currentInvestorId);
-            }
-            
-            async function loadInvestments() {
-                const tbody = document.getElementById('investmentsList');
-                if (!tbody) return;
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments yet</td></tr>'; return; }
-                tbody.innerHTML = data.map(inv => `<tr>
-                    <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
-                    <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
-                    <td>${inv.payment_method||'-'}</td>
-                    <td>${inv.transaction_id||'-'}</td>
-                    <td><span class="status-badge status-active">Approved</span></td>
-                    <td>${inv.notes||'-'}</td>
-                    <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td>
-                </tr>`).join('');
-            }
-            
-            async function loadInvestmentRequests() {
-                const tbody = document.getElementById('investmentRequestsList');
-                if (!tbody) return;
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
-                tbody.innerHTML = data.map(inv => `<tr>
-                    <td>${new Date(inv.created_at).toLocaleDateString()}</td>
-                    <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
-                    <td>${inv.payment_method||'-'}</td>
-                    <td>${inv.transaction_id||'-'}</td>
-                    <td><span class="status-badge status-pending">Pending</span></td>
-                    <td>${inv.notes||'-'}</td>
-                    <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td>
-                </tr>`).join('');
-            }
-            
-            async function loadProfits() {
-                const tbody = document.getElementById('profitsList');
-                if (!tbody) return;
-                const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; return; }
-                tbody.innerHTML = data.map(p => `<tr>
-                    <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
-                    <td>Rs. ${(p.amount||0).toLocaleString()}</td>
-                    <td>${p.profit_percentage||10}%</td>
-                    <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td>
-                    <td>${p.paid_date?new Date(p.paid_date).toLocaleDateString():'-'}</td>
-                </tr>`).join('');
-            }
-            
-            async function loadWithdrawals() {
-                const tbody = document.getElementById('withdrawalsList');
-                if (!tbody) return;
-                const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</td></tr>'; return; }
-                tbody.innerHTML = data.map(w => `<tr>
-                    <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                    <td>Rs. ${(w.amount||0).toLocaleString()}</td>
-                    <td>${w.payment_method||'-'}</td>
-                    <td>${w.account_title||'-'}</td>
-                    <td>${w.account_details||'-'}</td>
-                    <td><span class="status-badge ${w.status==='approved'?'status-active':(w.status==='rejected'?'status-rejected':'status-pending')}">${w.status==='pending'?'Pending':(w.status==='approved'?'Approved':'Rejected')}</span></td>
-                    <td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</td>
-                    <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="window.open('${w.approval_screenshot}','_blank')">` : '-'}</td>
-                </tr>`).join('');
-            }
-            
-            async function loadProfile() {
-                const { data } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
-                if(data && data[0]){
-                    const i = data[0];
-                    document.getElementById('profileName').value = i.full_name || '';
-                    document.getElementById('profileEmail').value = i.email || '';
-                    document.getElementById('profilePhone').value = i.phone || '';
-                    document.getElementById('profileCity').value = i.city || '';
-                    const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
-                    document.getElementById('profileTotalInvestment').value = `Rs. ${totalInvested.toLocaleString()}`;
-                    document.getElementById('profileTotalProfit').value = `Rs. ${totalPaidProfit.toLocaleString()}`;
-                    document.getElementById('profileBalance').value = `Rs. ${available.toLocaleString()}`;
-                }
-            }
-            
-            window.editField = async function(inputId, dbField) {
-                const input = document.getElementById(inputId);
-                const newValue = prompt(`Enter new ${dbField.replace('_',' ')}:`, input.value);
-                if(newValue && newValue !== input.value){
-                    const { error } = await supabase.from('investors').update({ [dbField]: newValue }).eq('id', currentInvestorId);
-                    if(error) showToast(error.message, true);
-                    else { showToast(`${dbField} updated!`, false); await loadProfile(); }
-                }
-            };
-            
-            function switchTab(tabName) {
-                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                const tabDiv = document.getElementById(`${tabName}Tab`); if(tabDiv) tabDiv.classList.add('active');
-                const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`); if(btn) btn.classList.add('active');
-                if(tabName === 'livechat') { window.investorChat.markMessagesRead(); window.investorChat.renderMessages(); checkUserPermissions(); }
-            }
-            
-            // Open modals with proper display
-            document.getElementById('openInvestmentModalBtn').onclick = () => {
-                // Reset form
-                document.getElementById('selectedPaymentMethod').value = '';
-                document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
-                currentInvestmentScreenshot = null;
-                document.getElementById('investmentScreenshot').value = '';
-                document.getElementById('investmentScreenshotPreview').innerHTML = '';
-                document.getElementById('investmentScreenshotPreview').classList.remove('active');
-                document.getElementById('investmentAmount').value = '';
-                document.getElementById('investmentTransactionId').value = '';
-                document.getElementById('investmentNotes').value = '';
-                // Show modal
-                const modal = document.getElementById('investmentModal');
-                modal.style.display = 'flex';
-                modal.classList.add('active');
-            };
-            
-            document.getElementById('openWithdrawalModalBtn').onclick = () => {
-                // Reset form
-                document.getElementById('withdrawAmount').value = '';
-                document.getElementById('accountTitle').value = '';
-                document.getElementById('accountDetails').value = '';
-                // Show modal
-                const modal = document.getElementById('withdrawalModal');
-                modal.style.display = 'flex';
-                modal.classList.add('active');
-            };
-            
-            document.getElementById('submitInvestmentBtn').onclick = async () => {
-                const amount = document.getElementById('investmentAmount').value;
-                const paymentMethod = document.getElementById('selectedPaymentMethod').value;
-                const transactionId = document.getElementById('investmentTransactionId').value;
-                const notes = document.getElementById('investmentNotes').value;
-                if(!amount || !paymentMethod || !transactionId) { showToast('Amount, Payment Method and Transaction ID required', true); return; }
-                if(parseFloat(amount) < 1000) { showToast('Minimum investment Rs. 1,000', true); return; }
-                const { error } = await supabase.from('investments').insert([{ 
-                    investor_id: currentInvestorId, 
-                    amount: parseFloat(amount), 
-                    investment_date: new Date().toISOString().split('T')[0], 
-                    payment_method: paymentMethod, 
-                    transaction_id: transactionId, 
-                    status: 'pending', 
-                    notes: notes || `Payment via ${paymentMethod}`,
-                    screenshot: currentInvestmentScreenshot
-                }]);
-                if(error) showToast(error.message, true);
-                else { 
-                    showToast('Investment request submitted!', false); 
-                    closeModal('investmentModal'); 
-                    await loadInvestmentRequests(); 
-                }
-            };
-            
-            document.getElementById('submitWithdrawalBtn').onclick = async () => {
-                const amount = document.getElementById('withdrawAmount').value;
-                const method = document.getElementById('withdrawMethod').value;
-                const accountTitle = document.getElementById('accountTitle').value;
-                const accountDetails = document.getElementById('accountDetails').value;
-                if(!amount || !accountTitle || !accountDetails) { showToast('All fields required', true); return; }
-                if(parseFloat(amount) < 1000) { showToast('Minimum withdrawal Rs. 1,000', true); return; }
-                const { available } = await computeAvailableBalance();
-                if(parseFloat(amount) > available) { showToast(`Insufficient balance! Available: Rs. ${available.toLocaleString()}`, true); return; }
-                const { error } = await supabase.from('withdrawals').insert([{ 
-                    investor_id: currentInvestorId, 
-                    amount: parseFloat(amount), 
-                    request_date: new Date().toISOString().split('T')[0], 
-                    payment_method: method, 
-                    account_title: accountTitle,
-                    account_details: accountDetails, 
-                    status: 'pending' 
-                }]);
-                if(error) showToast(error.message, true);
-                else { 
-                    showToast('Withdrawal request submitted!', false); 
-                    closeModal('withdrawalModal'); 
-                    await loadWithdrawals(); 
-                    await loadStatsAndBalance(); 
-                    await loadProfile(); 
-                }
-            };
-            
-            document.getElementById('logoutBtn').onclick = async () => { await supabase.auth.signOut(); window.location.href='investor-auth.html'; };
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
-            document.querySelectorAll('.stat-card').forEach(card => card.addEventListener('click', () => switchTab(card.getAttribute('data-tab'))));
-            
-            async function checkAuth(){
-                const { data: { user } } = await supabase.auth.getUser();
-                if(!user) { window.location.href='investor-auth.html'; return; }
-                currentInvestorId = user.id;
-                document.getElementById('userName').innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
-                const { data: existing } = await supabase.from('investors').select('id').eq('id', currentInvestorId);
-                if(!existing?.length) {
-                    await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', total_investment: 0, total_profit: 0, available_balance: 0, created_at: new Date().toISOString(), chat_enabled: true, voice_enabled: true, video_enabled: true }]);
-                }
-                await loadInvestments(); await loadInvestmentRequests(); await loadProfits(); await loadWithdrawals(); await loadProfile(); await loadStatsAndBalance();
-                await checkUserPermissions();
-                window.investorChat.init();
-            }
-            checkAuth();
-        })();
-    </script>
+    async function computeBalance() {
+        if(!currentInvestorId) return { available:0, totalInvested:0, totalProfit:0 };
+        const { data: inv } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+        const totalInvested = inv?.reduce((a,b)=>a+(b.amount||0),0) || 0;
+        const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
+        const totalPaidProfit = profits?.reduce((a,b)=>a+(b.amount||0),0) || 0;
+        const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
+        const totalWithdrawn = withdrawals?.reduce((a,b)=>a+(b.amount||0),0) || 0;
+        return { available: totalInvested + totalPaidProfit - totalWithdrawn, totalInvested, totalPaidProfit };
+    }
+    
+    async function loadStats() {
+        const { available, totalInvested, totalPaidProfit } = await computeBalance();
+        document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
+        document.getElementById('totalProfit').innerHTML = `Rs. ${totalPaidProfit.toLocaleString()}`;
+        document.getElementById('availableBalance').innerHTML = `Rs. ${available.toLocaleString()}`;
+        const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
+        document.getElementById('activeInvestments').innerHTML = activeInv?.length || 0;
+        await supabase.from('investors').update({ available_balance: available }).eq('id', currentInvestorId);
+    }
+    
+    async function loadInvestments() {
+        const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
+        const tbody = document.getElementById('investmentsList');
+        if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments</td></tr>'; return; }
+        tbody.innerHTML = data.map(i=>`<tr><td>${new Date(i.investment_date).toLocaleDateString()}</td><td>Rs. ${(i.amount||0).toLocaleString()}</td><td>${i.payment_method||'-'}</td><td>${i.transaction_id||'-'}</td><td><span class="status-badge status-active">Approved</span></td><td>${i.notes||'-'}</td><td>${i.screenshot ? `<img src="${i.screenshot}" class="approval-screenshot" onclick="window.open('${i.screenshot}','_blank','noopener,noreferrer')">` : '-'}</td></tr>`).join('');
+    }
+    async function loadInvestmentRequests() {
+        const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
+        const tbody = document.getElementById('investmentRequestsList');
+        if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
+        tbody.innerHTML = data.map(i=>`<tr><td>${new Date(i.created_at).toLocaleDateString()}</td><td>Rs. ${(i.amount||0).toLocaleString()}</td><td>${i.payment_method||'-'}</td><td>${i.transaction_id||'-'}</td><td><span class="status-badge status-pending">Pending</span></td><td>${i.notes||'-'}</td><td>${i.screenshot ? `<img src="${i.screenshot}" class="approval-screenshot" onclick="window.open('${i.screenshot}','_blank','noopener,noreferrer')">` : '-'}</td></tr>`).join('');
+    }
+    async function loadProfits() {
+        const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
+        const tbody = document.getElementById('profitsList');
+        if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits</td></tr>'; return; }
+        tbody.innerHTML = data.map(p=>`<tr><td>${new Date(p.month).toLocaleDateString(undefined,{month:'long',year:'numeric'})}</td><td>Rs. ${(p.amount||0).toLocaleString()}</td><td>${p.profit_percentage||10}%</td><td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td><td>${p.paid_date?new Date(p.paid_date).toLocaleDateString():'-'}</td></tr>`).join('');
+    }
+    async function loadWithdrawals() {
+        const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
+        const tbody = document.getElementById('withdrawalsList');
+        if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawals</td></tr>'; return; }
+        tbody.innerHTML = data.map(w=>`<tr><td>${new Date(w.request_date).toLocaleDateString()}</td><td>Rs. ${(w.amount||0).toLocaleString()}</td><td>${w.payment_method||'-'}</td><td>${w.account_title||'-'}</td><td>${w.account_details||'-'}</td><td><span class="status-badge ${w.status==='approved'?'status-active':(w.status==='rejected'?'status-rejected':'status-pending')}">${w.status}</span></td><td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</td><td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="window.open('${w.approval_screenshot}','_blank','noopener,noreferrer')">` : '-'}</td></tr>`).join('');
+    }
+    async function loadProfile() {
+        const { data } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
+        if(data?.[0]){
+            const i = data[0];
+            document.getElementById('profileName').value = i.full_name || '';
+            document.getElementById('profileEmail').value = i.email || '';
+            document.getElementById('profilePhone').value = i.phone || '';
+            document.getElementById('profileCity').value = i.city || '';
+            const { totalInvested, totalPaidProfit, available } = await computeBalance();
+            document.getElementById('profileTotalInvestment').value = `Rs. ${totalInvested.toLocaleString()}`;
+            document.getElementById('profileTotalProfit').value = `Rs. ${totalPaidProfit.toLocaleString()}`;
+            document.getElementById('profileBalance').value = `Rs. ${available.toLocaleString()}`;
+        }
+    }
+    window.editField = async function(inputId, dbField) {
+        const input = document.getElementById(inputId);
+        const newVal = prompt(`Update ${dbField}:`, input.value);
+        if(newVal && newVal !== input.value){
+            const { error } = await supabase.from('investors').update({ [dbField]: newVal }).eq('id', currentInvestorId);
+            if(!error) { loadProfile(); Swal.fire({title:'Updated',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); }
+            else Swal.fire('Error',error.message,'error');
+        }
+    };
+    function selectPaymentMethod(method){ document.querySelectorAll('.payment-card').forEach(c=>c.classList.remove('selected')); document.getElementById(`card-${method}`).classList.add('selected'); document.getElementById('selectedPaymentMethod').value = method; }
+    function previewInvestmentScreenshot(input){ const preview=document.getElementById('investmentScreenshotPreview'); if(input.files && input.files[0]){ const reader=new FileReader(); reader.onload=e=>{ currentInvestmentScreenshotBase64=e.target.result; preview.innerHTML=`<img src="${e.target.result}"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`; preview.classList.add('active'); }; reader.readAsDataURL(input.files[0]); } }
+    function clearInvestmentScreenshot(){ currentInvestmentScreenshotBase64=null; document.getElementById('investmentScreenshot').value=''; document.getElementById('investmentScreenshotPreview').innerHTML=''; document.getElementById('investmentScreenshotPreview').classList.remove('active'); }
+    window.clearInvestmentScreenshot = clearInvestmentScreenshot;
+    function closeModal(id){ const m=document.getElementById(id); m.classList.remove('active'); m.style.display='none'; }
+    window.closeModal = closeModal;
+    function switchTab(tabName){
+        document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        document.getElementById(`${tabName}Tab`)?.classList.add('active');
+        document.querySelector(`.tab-btn[data-tab="${tabName}"]`)?.classList.add('active');
+        if(tabName === 'livechat') loadChatMessages();
+    }
+    // FIXED: New Investment Request form submit - proper amount validation and insertion
+    document.getElementById('submitInvestmentBtn').onclick = async () => {
+        const amount = document.getElementById('investmentAmount').value;
+        const paymentMethod = document.getElementById('selectedPaymentMethod').value;
+        const transactionId = document.getElementById('investmentTransactionId').value.trim();
+        const notes = document.getElementById('investmentNotes').value;
+        if(!amount || !paymentMethod || !transactionId){ Swal.fire('Missing','Amount, Payment Method & Transaction ID required','warning'); return; }
+        if(parseFloat(amount) < 1000){ Swal.fire('Min amount','Rs. 1,000 required','warning'); return; }
+        const { error } = await supabase.from('investments').insert([{ 
+            investor_id: currentInvestorId, amount: parseFloat(amount), investment_date: new Date().toISOString().split('T')[0], 
+            payment_method: paymentMethod, transaction_id: transactionId, status: 'pending', 
+            notes: notes || `Payment via ${paymentMethod}`, screenshot: currentInvestmentScreenshotBase64 || null,
+            created_at: new Date().toISOString()
+        }]);
+        if(error) Swal.fire('Error',error.message,'error');
+        else { Swal.fire('Submitted!','Investment request sent','success'); closeModal('investmentModal'); await loadInvestmentRequests(); clearInvestmentScreenshot(); document.getElementById('investmentAmount').value=''; document.getElementById('investmentTransactionId').value=''; document.getElementById('investmentNotes').value=''; document.querySelectorAll('.payment-card').forEach(c=>c.classList.remove('selected')); document.getElementById('selectedPaymentMethod').value=''; }
+    };
+    document.getElementById('submitWithdrawalBtn').onclick = async () => {
+        const amount = document.getElementById('withdrawAmount').value;
+        const method = document.getElementById('withdrawMethod').value;
+        const accTitle = document.getElementById('accountTitle').value.trim();
+        const accDetails = document.getElementById('accountDetails').value.trim();
+        if(!amount || !accTitle || !accDetails){ Swal.fire('Required','All fields required','warning'); return; }
+        if(parseFloat(amount) < 1000){ Swal.fire('Min amount','Rs. 1,000','warning'); return; }
+        const { available } = await computeBalance();
+        if(parseFloat(amount) > available){ Swal.fire('Insufficient balance',`Available: Rs. ${available.toLocaleString()}`,'error'); return; }
+        const { error } = await supabase.from('withdrawals').insert([{ investor_id: currentInvestorId, amount: parseFloat(amount), request_date: new Date().toISOString().split('T')[0], payment_method: method, account_title: accTitle, account_details: accDetails, status: 'pending' }]);
+        if(error) Swal.fire('Error',error.message,'error');
+        else { Swal.fire('Request sent','Withdrawal request submitted','success'); closeModal('withdrawalModal'); await loadWithdrawals(); await loadStats(); await loadProfile(); document.getElementById('withdrawAmount').value=''; document.getElementById('accountTitle').value=''; document.getElementById('accountDetails').value=''; }
+    };
+    document.getElementById('logoutBtn').onclick = async () => { await supabase.auth.signOut(); window.location.href='investor-auth.html'; };
+    document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.getAttribute('data-tab'))));
+    document.querySelectorAll('.stat-card').forEach(card=>card.addEventListener('click',()=>switchTab(card.getAttribute('data-tab'))));
+    
+    // Chat functions (simple real-time)
+    let chatMessages = [];
+    async function loadChatMessages(){
+        if(!currentInvestorId) return;
+        const { data } = await supabase.from('chat_messages').select('*').or(`and(sender_type.eq.investor,receiver_id.eq.00000000-0000-0000-0000-000000000001,receiver_type.eq.admin),and(sender_id.eq.00000000-0000-0000-0000-000000000001,sender_type.eq.admin,receiver_id.eq.${currentInvestorId},receiver_type.eq.investor)`).order('created_at',{ascending:true});
+        if(data) { chatMessages = data; renderChat(); }
+    }
+    function renderChat(){
+        const container = document.getElementById('chatMessagesArea');
+        if(!container) return;
+        if(chatMessages.length===0){ container.innerHTML='<div class="empty-state"><i class="fas fa-headset"></i><p>Start chatting with support</p></div>'; return; }
+        let html = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div>';
+        chatMessages.forEach(msg=>{
+            const isSent = msg.sender_type === 'investor';
+            const sender = isSent ? 'You' : 'Support';
+            let mediaHtml = '';
+            if(msg.media_url && msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank','noopener,noreferrer')">`;
+            if(msg.media_url && msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`;
+            html += `<div class="message ${isSent ? 'sent' : 'received'}"><div class="message-bubble"><div class="sender-name">${sender}</div><div class="message-text">${escapeHtml(msg.text||'')}</div>${mediaHtml}<div class="message-time">${new Date(msg.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div></div>`;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    }
+    window.sendChatMessage = async () => {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if(!text) return;
+        const newMsg = { id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: '00000000-0000-0000-0000-000000000001', receiver_type: 'admin', text: text, read: false, created_at: new Date().toISOString() };
+        const { error } = await supabase.from('chat_messages').insert([newMsg]);
+        if(!error){ chatMessages.push(newMsg); renderChat(); input.value=''; }
+        else Swal.fire('Error','Cannot send','error');
+    };
+    function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+    // Realtime subscription for chat
+    let chatSub;
+    function subscribeChat(){
+        if(chatSub) return;
+        chatSub = supabase.channel('investor-chat-realtime')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentInvestorId},receiver_type=eq.investor` }, (payload) => { chatMessages.push(payload.new); renderChat(); })
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `sender_id=eq.${currentInvestorId}` }, (payload) => { if(!chatMessages.find(m=>m.id===payload.new.id)){ chatMessages.push(payload.new); renderChat(); } })
+            .subscribe();
+    }
+    async function checkAuth(){
+        const { data: { user } } = await supabase.auth.getUser();
+        if(!user){ window.location.href='investor-auth.html'; return; }
+        currentInvestorId = user.id;
+        document.getElementById('userName').innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
+        const { data: existing } = await supabase.from('investors').select('id').eq('id', currentInvestorId);
+        if(!existing?.length) await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', chat_enabled: true, voice_enabled: true, video_enabled: true }]);
+        await loadInvestments(); await loadInvestmentRequests(); await loadProfits(); await loadWithdrawals(); await loadProfile(); await loadStats();
+        subscribeChat(); await loadChatMessages();
+        // Fix for mobile: Screenshots open in new tab correctly using window.open with proper target
+    }
+    checkAuth();
+    window.selectPaymentMethod = selectPaymentMethod;
+    window.previewInvestmentScreenshot = previewInvestmentScreenshot;
+    // attach open modals with proper reset
+    document.getElementById('openInvestmentModalBtn').onclick = () => { clearInvestmentScreenshot(); document.getElementById('selectedPaymentMethod').value=''; document.querySelectorAll('.payment-card').forEach(c=>c.classList.remove('selected')); document.getElementById('investmentAmount').value=''; document.getElementById('investmentTransactionId').value=''; document.getElementById('investmentNotes').value=''; const modal=document.getElementById('investmentModal'); modal.style.display='flex'; modal.classList.add('active'); };
+    document.getElementById('openWithdrawalModalBtn').onclick = () => { document.getElementById('withdrawAmount').value=''; document.getElementById('accountTitle').value=''; document.getElementById('accountDetails').value=''; const modal=document.getElementById('withdrawalModal'); modal.style.display='flex'; modal.classList.add('active'); };
+</script>
 </body>
 </html>
