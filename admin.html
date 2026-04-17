@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sohrab Industries | Admin Dashboard - Complete Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sohrab Industries | Premium Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -17,7 +17,6 @@
             overflow-x: hidden;
         }
         
-        /* Animated Background */
         body::before {
             content: '';
             position: fixed;
@@ -32,13 +31,21 @@
             z-index: 0;
         }
         
-        @keyframes glowPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
-        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
-        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideInModal { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes blinkRed { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        @keyframes typingDots { 0%, 20% { opacity: 0.2; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-5px); } 80%, 100% { opacity: 0.2; transform: translateY(0); } }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes blinkRed {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        @keyframes typingDots {
+            0%, 20% { opacity: 0.2; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+            80%, 100% { opacity: 0.2; transform: translateY(0); }
+        }
         
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
@@ -46,7 +53,7 @@
         
         .admin-container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
         
-        /* Premium Header */
+        /* Header */
         .admin-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             padding: 1.2rem 2rem;
@@ -59,18 +66,6 @@
             margin-bottom: 25px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.3);
             border: 1px solid rgba(232,177,60,0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        .admin-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(232,177,60,0.1), transparent);
-            animation: shimmer 3s infinite;
         }
         .admin-header h1 { 
             font-size: 1.6rem; 
@@ -82,20 +77,18 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            position: relative;
-            z-index: 1;
         }
-        .admin-header h1 i { color: #E8B13C; background: none; -webkit-background-clip: unset; }
+        .admin-header h1 i { color: #E8B13C; background: none; }
         .admin-header > div { display: flex; align-items: center; gap: 20px; background: rgba(0,0,0,0.3); padding: 6px 20px; border-radius: 50px; backdrop-filter: blur(10px); border: 1px solid rgba(232,177,60,0.3); }
         .logout-btn { background: linear-gradient(135deg, #dc3545, #a71d2a); color: white; padding: 8px 24px; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; transition: all 0.3s; }
         .logout-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(220,53,69,0.4); }
         
         /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
         .stat-card { 
             background: linear-gradient(145deg, rgba(20,45,38,0.95), rgba(15,35,28,0.95));
             backdrop-filter: blur(10px);
-            padding: 1.2rem; 
+            padding: 1rem; 
             border-radius: 24px; 
             text-align: center; 
             cursor: pointer; 
@@ -103,8 +96,8 @@
             border: 1px solid rgba(232,177,60,0.3);
         }
         .stat-card:hover { transform: translateY(-8px); border-color: #E8B13C; box-shadow: 0 20px 40px rgba(232,177,60,0.25); }
-        .stat-card h3 { color: rgba(255,255,255,0.7); font-size: 0.75rem; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 2px; }
-        .stat-number { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #E8B13C, #ffd966); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .stat-card h3 { color: rgba(255,255,255,0.7); font-size: 0.7rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-number { font-size: 1.4rem; font-weight: 800; background: linear-gradient(135deg, #E8B13C, #ffd966); -webkit-background-clip: text; background-clip: text; color: transparent; }
         
         /* Tabs */
         .nav-tabs { 
@@ -161,7 +154,7 @@
         
         /* Forms & Tables */
         .form-card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 24px; margin-bottom: 25px; border: 1px solid rgba(232,177,60,0.2); }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #E8B13C; font-size: 0.8rem; }
         .form-group input, .form-group select, .form-group textarea { 
@@ -180,23 +173,34 @@
         .status-badge { padding: 4px 12px; border-radius: 30px; font-size: 11px; display: inline-block; font-weight: 700; }
         .status-active, .status-approved, .status-delivered { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
         .status-pending { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
-        .status-processing { background: linear-gradient(135deg, #17a2b8, #0f7a8a); color: #fff; }
         
         .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 8px 20px; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; transition: all 0.3s; font-size: 0.8rem; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(232,177,60,0.4); }
         .btn-success { background: linear-gradient(135deg, #1e7e5e, #155a44); color: white; padding: 5px 12px; border: none; border-radius: 30px; cursor: pointer; }
         .btn-danger { background: linear-gradient(135deg, #dc3545, #a71d2a); color: white; padding: 5px 12px; border: none; border-radius: 30px; cursor: pointer; }
         .btn-warning { background: linear-gradient(135deg, #ffc107, #e0a800); color: #333; padding: 5px 12px; border: none; border-radius: 30px; cursor: pointer; }
-        .btn-info { background: linear-gradient(135deg, #17a2b8, #0f7a8a); color: white; padding: 5px 12px; border: none; border-radius: 30px; cursor: pointer; }
         .action-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
         
-        .search-box { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .search-box input { flex: 1; padding: 10px 16px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 50px; color: white; }
         .empty-state { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
         
-        /* ========== CHAT SYSTEM STYLES ========== */
-        .chat-container { display: flex; height: calc(100vh - 280px); min-height: 550px; background: rgba(0,0,0,0.2); border-radius: 24px; overflow: hidden; border: 1px solid rgba(232,177,60,0.2); }
-        .chat-user-list { width: 320px; background: linear-gradient(145deg, rgba(10,35,28,0.95), rgba(5,25,18,0.95)); border-right: 1px solid rgba(232,177,60,0.2); display: flex; flex-direction: column; overflow: hidden; }
+        /* ========== LIVE CHAT SYSTEM STYLES - WHATSAPP STYLE ========== */
+        .chat-container {
+            display: flex;
+            height: calc(100vh - 280px);
+            min-height: 550px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(232,177,60,0.2);
+        }
+        .chat-user-list {
+            width: 320px;
+            background: linear-gradient(145deg, rgba(10,35,28,0.95), rgba(5,25,18,0.95));
+            border-right: 1px solid rgba(232,177,60,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
         .chat-user-list-header { padding: 18px; border-bottom: 1px solid rgba(232,177,60,0.2); background: rgba(0,0,0,0.2); }
         .chat-user-list-header h3 { color: #E8B13C; margin: 0 0 10px 0; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
         .chat-user-search { width: 100%; padding: 10px 15px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 25px; color: white; }
@@ -236,10 +240,12 @@
         .reply-preview { background: rgba(232,177,60,0.1); padding: 8px; border-radius: 10px; margin-bottom: 6px; font-size: 0.75rem; border-left: 3px solid #E8B13C; }
         
         .chat-media { max-width: 200px; max-height: 200px; border-radius: 10px; margin: 5px 0; cursor: pointer; }
-        .product-card-message { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 8px; margin-top: 5px; display: flex; gap: 10px; cursor: pointer; }
-        .product-card-message:hover { background: rgba(0,0,0,0.5); }
+        .product-card-message { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 8px; margin-top: 5px; display: flex; gap: 10px; cursor: pointer; transition: all 0.3s; }
+        .product-card-message:hover { background: rgba(0,0,0,0.5); transform: translateX(-5px); }
         .product-card-message img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
-        .voice-message { display: flex; align-items: center; gap: 10px; }
+        .product-card-message-info { flex: 1; }
+        .product-card-message-info h4 { margin: 0 0 5px 0; font-size: 0.85rem; color: #E8B13C; }
+        .product-card-message-info p { margin: 0; font-size: 0.75rem; color: rgba(255,255,255,0.7); }
         
         .typing-indicator { padding: 8px 15px; background: rgba(255,255,255,0.05); border-radius: 20px; display: inline-flex; gap: 5px; align-items: center; font-size: 0.75rem; color: rgba(255,255,255,0.6); width: fit-content; margin: 0 20px 10px 20px; display: none; }
         .typing-indicator span { width: 6px; height: 6px; background: #E8B13C; border-radius: 50%; display: inline-block; animation: typingDots 1.4s infinite; }
@@ -261,7 +267,7 @@
         .remove-media { position: absolute; top: -8px; right: -8px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
         .product-selector-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(145deg, #1a3d33, #0f2a22); border-radius: 20px; width: 90%; max-width: 500px; max-height: 80%; overflow-y: auto; z-index: 1002; display: none; border: 1px solid rgba(232,177,60,0.3); }
-        .product-selector-modal.active { display: block; animation: slideInModal 0.3s ease-out; }
+        .product-selector-modal.active { display: block; animation: fadeSlideUp 0.3s ease-out; }
         .product-selector-header { padding: 15px; background: linear-gradient(135deg, #0a2f24, #1a4a3a); display: flex; justify-content: space-between; align-items: center; }
         .product-selector-item { padding: 12px; border-bottom: 1px solid rgba(232,177,60,0.1); display: flex; gap: 12px; cursor: pointer; transition: all 0.3s; }
         .product-selector-item:hover { background: rgba(232,177,60,0.1); }
@@ -280,7 +286,7 @@
 <body>
     <div class="admin-container">
         <div class="admin-header">
-            <h1><i class="fas fa-shield-alt"></i> Sohrab Industries - Complete Admin Control</h1>
+            <h1><i class="fas fa-shield-alt"></i> Sohrab Industries - Admin Control Panel</h1>
             <div><span id="adminEmail"><i class="fas fa-user-shield"></i> admin@sohrab.com</span> <button onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
         </div>
 
@@ -385,13 +391,13 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Status</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
         <!-- Withdrawals Section -->
         <div id="withdrawalsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
         </div>
 
         <!-- Products Section -->
@@ -436,7 +442,7 @@
                         </div>
                     </div>
                     <div id="chatMessagesArea" class="chat-messages-area">
-                        <div class="empty-state"><i class="fas fa-comments" style="font-size: 48px;"></i><p>Select a user to start chatting</p></div>
+                        <div class="empty-state"><i class="fas fa-comments" style="font-size:48px;"></i><p>Select a user to start chatting</p></div>
                     </div>
                     <div id="typingIndicator" class="typing-indicator">Sohrab Industries Support is typing<span></span><span></span><span></span></div>
                     <div class="chat-input-area">
@@ -468,16 +474,28 @@
         let allInvestors = [], allBuyers = [], allProducts = [], allOrders = [];
         
         // Helper Functions
-        function showToast(msg, isError) { Swal.fire({ icon: isError ? 'error' : 'success', title: isError ? 'Error!' : 'Success!', text: msg, background: '#1a3d33', color: '#fff', confirmButtonColor: '#E8B13C', timer: 2000, showConfirmButton: false }); }
-        async function confirmAction(msg, title) { const result = await Swal.fire({ title: title, text: msg, icon: 'question', showCancelButton: true, confirmButtonColor: '#E8B13C', cancelButtonColor: '#dc3545', confirmButtonText: 'Yes', background: '#1a3d33', color: '#fff' }); return result.isConfirmed; }
+        function showToast(msg, isError) { 
+            Swal.fire({ icon: isError ? 'error' : 'success', title: isError ? 'Error!' : 'Success!', text: msg, background: '#1a3d33', color: '#fff', confirmButtonColor: '#E8B13C', timer: 2000, showConfirmButton: false }); 
+        }
+        async function confirmAction(msg, title) { 
+            const result = await Swal.fire({ title: title, text: msg, icon: 'question', showCancelButton: true, confirmButtonColor: '#E8B13C', cancelButtonColor: '#dc3545', confirmButtonText: 'Yes', background: '#1a3d33', color: '#fff' }); 
+            return result.isConfirmed; 
+        }
         
         window.showSection = function(section) {
             document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.getElementById(`${section}Section`).classList.add('active');
             const btns = document.querySelectorAll('.nav-tab');
-            for(let btn of btns) { if(btn.innerText.toLowerCase().includes(section.toLowerCase())) { btn.classList.add('active'); break; } }
-            if(section === 'livechat' && window.chatSystem) { setTimeout(() => { chatSystem.loadUsers(); chatSystem.updateUnreadIndicator(); }, 100); }
+            for(let btn of btns) { 
+                if(btn.innerText.toLowerCase().includes(section.toLowerCase())) { 
+                    btn.classList.add('active'); 
+                    break; 
+                } 
+            }
+            if(section === 'livechat' && window.chatSystem) { 
+                setTimeout(() => { chatSystem.loadUsers(); chatSystem.updateUnreadIndicator(); }, 100); 
+            }
         };
         
         async function loadStats() {
@@ -824,7 +842,7 @@
                 const { data: products } = await supabase.from('products').select('*').eq('is_active',true);
                 if(!products || products.length===0) { showToast('No products available', true); return; }
                 const modal = document.getElementById('productSelectorModal'); const list = document.getElementById('productSelectorList');
-                list.innerHTML = products.map(p => `<div class="product-selector-item" onclick="chatSystem.sendProductCard('${p.id}', '${p.name}', '${p.price}', '${p.category||''}', '${p.image_url||''}')"><div><i class="fas fa-box" style="font-size:30px;"></i></div><div><h4 style="color:#E8B13C;">${this.escapeHtml(p.name)}</h4><p>Rs.${parseInt(p.price).toLocaleString()}</p><small>${p.category||''}</small></div></div>`).join('');
+                list.innerHTML = products.map(p => `<div class="product-selector-item" onclick="chatSystem.sendProductCard('${p.id}', '${p.name}', '${p.price}', '${p.category||''}', '${p.image_url||''}')"><div style="width:50px;height:50px;background:rgba(232,177,60,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-box"></i></div><div><h4 style="color:#E8B13C;">${this.escapeHtml(p.name)}</h4><p>Rs.${parseInt(p.price).toLocaleString()}</p><small>${p.category||''}</small></div></div>`).join('');
                 modal.classList.add('active');
             },
             
@@ -860,7 +878,7 @@
                     let mediaHtml = '';
                     if(msg.media_url) { if(msg.media_type==='image'||msg.media_url.startsWith('data:image')) mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank')">`; else if(msg.media_type==='video'||msg.media_url.startsWith('data:video')) mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`; else if(msg.media_type==='audio') mediaHtml = `<div class="voice-message"><audio src="${msg.media_url}" controls style="max-width:200px;"></audio></div>`; }
                     let productHtml = '';
-                    if(msg.product_data) { const p = msg.product_data; productHtml = `<div class="product-card-message" onclick="Swal.fire({title:'${p.name}',text:'Price: Rs.${parseInt(p.price).toLocaleString()}',icon:'info',background:'#1a3d33',color:'#fff'})"><i class="fas fa-box" style="font-size:30px;"></i><div><h4>${this.escapeHtml(p.name)}</h4><p>Rs.${parseInt(p.price).toLocaleString()}</p></div></div>`; }
+                    if(msg.product_data) { const p = msg.product_data; productHtml = `<div class="product-card-message" onclick="Swal.fire({title:'${p.name}',text:'Price: Rs.${parseInt(p.price).toLocaleString()}',icon:'info',background:'#1a3d33',color:'#fff'})"><div style="width:40px;height:40px;background:rgba(232,177,60,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-box"></i></div><div class="product-card-message-info"><h4>${this.escapeHtml(p.name)}</h4><p>Rs.${parseInt(p.price).toLocaleString()}</p></div></div>`; }
                     const actionButtons = isSent ? `<div class="message-actions"><button class="message-action-btn" onclick="chatSystem.editMessage('${msg.id}', '${(msg.text||'').replace(/'/g,"\\'")}')"><i class="fas fa-edit"></i> Edit</button><button class="message-action-btn" onclick="chatSystem.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button><button class="message-action-btn" onclick="chatSystem.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete for all</button></div>` : `<div class="message-actions"><button class="message-action-btn" onclick="chatSystem.replyToMessage(${JSON.stringify(msg).replace(/"/g,'&quot;')})"><i class="fas fa-reply"></i> Reply</button></div>`;
                     return `<div class="message ${isSent?'sent':'received'}"><div class="message-bubble">${replyHtml}<div class="message-text">${this.escapeHtml(msg.text||'')}</div>${mediaHtml}${productHtml}<div class="message-time">${new Date(msg.created_at).toLocaleTimeString()} ${msg.edited?'<span style="font-size:0.65rem;">(edited)</span>':''} ${msg.read && isSent ? '<i class="fas fa-check-double" style="color:#E8B13C;"></i>' : ''}</div>${actionButtons}</div></div>`;
                 }).join('');
