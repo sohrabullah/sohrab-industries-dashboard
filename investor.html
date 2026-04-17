@@ -216,7 +216,7 @@
         /* Animated Payment Options */
         .payment-options {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             margin: 20px 0;
         }
@@ -229,27 +229,22 @@
             border: 2px solid rgba(232,177,60,0.3);
             position: relative;
             overflow: hidden;
-            animation: glowPulse 2s ease-in-out infinite;
         }
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 5px rgba(232,177,60,0.3); border-color: rgba(232,177,60,0.3); }
-            50% { box-shadow: 0 0 20px rgba(232,177,60,0.6); border-color: #E8B13C; }
-        }
-        .payment-card.easypaisa { animation: easypaisaGlow 2s ease-in-out infinite; }
         @keyframes easypaisaGlow {
             0%, 100% { box-shadow: 0 0 5px #00a859; border-color: #00a859; background: linear-gradient(145deg, rgba(0,168,89,0.15), rgba(0,168,89,0.05)); }
-            50% { box-shadow: 0 0 25px #00a859; border-color: #00a859; background: linear-gradient(145deg, rgba(0,168,89,0.25), rgba(0,168,89,0.1)); }
+            50% { box-shadow: 0 0 20px #00a859; border-color: #00a859; background: linear-gradient(145deg, rgba(0,168,89,0.25), rgba(0,168,89,0.1)); }
         }
-        .payment-card.jazzcash { animation: jazzcashGlow 2s ease-in-out infinite; }
         @keyframes jazzcashGlow {
             0%, 100% { box-shadow: 0 0 5px #e31e24; border-color: #e31e24; background: linear-gradient(145deg, rgba(227,30,36,0.15), rgba(227,30,36,0.05)); }
-            50% { box-shadow: 0 0 25px #e31e24; border-color: #e31e24; background: linear-gradient(145deg, rgba(227,30,36,0.25), rgba(227,30,36,0.1)); }
+            50% { box-shadow: 0 0 20px #e31e24; border-color: #e31e24; background: linear-gradient(145deg, rgba(227,30,36,0.25), rgba(227,30,36,0.1)); }
         }
-        .payment-card.bank { animation: bankGlow 2s ease-in-out infinite; }
         @keyframes bankGlow {
             0%, 100% { box-shadow: 0 0 5px #2196F3; border-color: #2196F3; background: linear-gradient(145deg, rgba(33,150,243,0.15), rgba(33,150,243,0.05)); }
-            50% { box-shadow: 0 0 25px #2196F3; border-color: #2196F3; background: linear-gradient(145deg, rgba(33,150,243,0.25), rgba(33,150,243,0.1)); }
+            50% { box-shadow: 0 0 20px #2196F3; border-color: #2196F3; background: linear-gradient(145deg, rgba(33,150,243,0.25), rgba(33,150,243,0.1)); }
         }
+        .payment-card.easypaisa { animation: easypaisaGlow 2s ease-in-out infinite; }
+        .payment-card.jazzcash { animation: jazzcashGlow 2s ease-in-out infinite; }
+        .payment-card.bank { animation: bankGlow 2s ease-in-out infinite; }
         .payment-card.selected {
             border: 2px solid #E8B13C;
             background: linear-gradient(145deg, rgba(232,177,60,0.25), rgba(232,177,60,0.1));
@@ -261,42 +256,29 @@
             gap: 15px;
             margin-bottom: 15px;
         }
-        .payment-card-header i {
-            font-size: 2rem;
-        }
+        .payment-card-header i { font-size: 2rem; }
         .payment-card.easypaisa .payment-card-header i { color: #00a859; }
         .payment-card.jazzcash .payment-card-header i { color: #e31e24; }
         .payment-card.bank .payment-card-header i { color: #2196F3; }
-        .payment-card-header h3 {
-            font-size: 1.3rem;
-            margin: 0;
-        }
+        .payment-card-header h3 { font-size: 1.3rem; margin: 0; }
         .payment-card.easypaisa .payment-card-header h3 { color: #00a859; }
         .payment-card.jazzcash .payment-card-header h3 { color: #e31e24; }
         .payment-card.bank .payment-card-header h3 { color: #2196F3; }
-        .payment-details {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.8);
-            margin-top: 10px;
-        }
-        .payment-details p {
-            margin: 5px 0;
-            word-break: break-all;
-        }
-        .payment-details strong {
-            color: #E8B13C;
-        }
+        .payment-details { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-top: 10px; }
+        .payment-details p { margin: 5px 0; word-break: break-all; }
+        .payment-details strong { color: #E8B13C; }
         
         .screenshot-preview {
             margin-top: 10px;
             padding: 10px;
             background: rgba(0,0,0,0.3);
             border-radius: 12px;
-            display: flex;
+            display: none;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
         }
+        .screenshot-preview.active { display: flex; }
         .screenshot-preview img {
             max-width: 100px;
             max-height: 100px;
@@ -315,12 +297,13 @@
         }
         
         .approval-screenshot {
-            max-width: 80px;
-            max-height: 80px;
+            max-width: 60px;
+            max-height: 60px;
             border-radius: 8px;
             cursor: pointer;
-            margin-top: 5px;
+            transition: transform 0.2s;
         }
+        .approval-screenshot:hover { transform: scale(1.1); }
         
         .edit-icon {
             cursor: pointer;
@@ -697,6 +680,7 @@
             .message { max-width: 90%; }
             .message-actions-trigger { opacity: 1; }
             .payment-options { grid-template-columns: 1fr; }
+            .screenshot-preview.active { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
@@ -875,7 +859,7 @@
             <div class="form-group">
                 <label>Payment Screenshot (Optional)</label>
                 <input type="file" id="investmentScreenshot" accept="image/*" onchange="previewInvestmentScreenshot(this)">
-                <div id="investmentScreenshotPreview" class="screenshot-preview" style="display:none;"></div>
+                <div id="investmentScreenshotPreview" class="screenshot-preview"></div>
             </div>
             
             <div class="form-group">
@@ -979,7 +963,7 @@
                     reader.onload = function(e) {
                         currentInvestmentScreenshot = e.target.result;
                         previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`;
-                        previewDiv.style.display = 'flex';
+                        previewDiv.classList.add('active');
                     };
                     reader.readAsDataURL(input.files[0]);
                 }
@@ -988,8 +972,9 @@
             function clearInvestmentScreenshot() {
                 currentInvestmentScreenshot = null;
                 document.getElementById('investmentScreenshot').value = '';
-                document.getElementById('investmentScreenshotPreview').style.display = 'none';
-                document.getElementById('investmentScreenshotPreview').innerHTML = '';
+                const previewDiv = document.getElementById('investmentScreenshotPreview');
+                previewDiv.innerHTML = '';
+                previewDiv.classList.remove('active');
             }
             
             window.clearInvestmentScreenshot = clearInvestmentScreenshot;
@@ -1253,7 +1238,7 @@
                 if (!tbody) return;
                 const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
                 if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</td></tr>'; return; }
-                tbody.innerHTML = data.map(w => `<tr>
+                tbody.innerHTML = data.map(w => `<td>
                     <td>${new Date(w.request_date).toLocaleDateString()}</td>
                     <td>Rs. ${(w.amount||0).toLocaleString()}</td>
                     <td>${w.payment_method||'-'}</td>
@@ -1303,10 +1288,19 @@
                 document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
                 currentInvestmentScreenshot = null;
                 document.getElementById('investmentScreenshot').value = '';
-                document.getElementById('investmentScreenshotPreview').style.display = 'none';
+                document.getElementById('investmentScreenshotPreview').innerHTML = '';
+                document.getElementById('investmentScreenshotPreview').classList.remove('active');
+                document.getElementById('investmentAmount').value = '';
+                document.getElementById('investmentTransactionId').value = '';
+                document.getElementById('investmentNotes').value = '';
                 document.getElementById('investmentModal').style.display = 'block';
             };
-            document.getElementById('openWithdrawalModalBtn').onclick = () => document.getElementById('withdrawalModal').style.display = 'block';
+            document.getElementById('openWithdrawalModalBtn').onclick = () => {
+                document.getElementById('withdrawAmount').value = '';
+                document.getElementById('accountTitle').value = '';
+                document.getElementById('accountDetails').value = '';
+                document.getElementById('withdrawalModal').style.display = 'block';
+            };
             
             document.getElementById('submitInvestmentBtn').onclick = async () => {
                 const amount = document.getElementById('investmentAmount').value;
@@ -1334,7 +1328,8 @@
                     document.getElementById('investmentNotes').value='';
                     document.getElementById('selectedPaymentMethod').value='';
                     currentInvestmentScreenshot = null;
-                    document.getElementById('investmentScreenshotPreview').style.display = 'none';
+                    document.getElementById('investmentScreenshotPreview').innerHTML = '';
+                    document.getElementById('investmentScreenshotPreview').classList.remove('active');
                     await loadInvestmentRequests(); 
                 }
             };
