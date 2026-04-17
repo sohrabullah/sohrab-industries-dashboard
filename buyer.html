@@ -119,6 +119,33 @@
             padding: 0 5%;
         }
         
+        /* Full Width Video Container */
+        .video-hero-container {
+            width: 100%;
+            margin-bottom: 2rem;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(232,177,60,0.3);
+            background: #000;
+        }
+        .responsive-video {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        .responsive-video iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            pointer-events: none; /* Allows clicking through if needed, but keeps video visible */
+        }
+        
         .hero-banner {
             background: linear-gradient(135deg, rgba(232,177,60,0.15), rgba(30,78,62,0.3));
             backdrop-filter: blur(10px);
@@ -233,10 +260,14 @@
             transform: translateY(-2px);
         }
         
+        /* PRODUCT GRID: 2 per row, max 3 rows visible */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 25px;
+            max-height: calc(3 * (280px + 25px)); /* Approx height for 3 rows */
+            overflow-y: auto;
+            padding-right: 5px;
         }
         .product-card {
             background: rgba(255,255,255,0.05);
@@ -272,6 +303,7 @@
         }
         .add-to-cart:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(232,177,60,0.4); }
         
+        /* LIVE CHAT FULL WIDTH LEFT ALIGNED - WHATSAPP STYLE */
         .chat-panel {
             display: flex;
             flex-direction: column;
@@ -280,6 +312,7 @@
             background: rgba(0,0,0,0.3);
             border-radius: 24px;
             overflow: hidden;
+            width: 100%;
         }
         .chat-messages-area {
             flex: 1;
@@ -287,19 +320,28 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
             background-image: radial-gradient(circle at 25% 40%, rgba(232,177,60,0.03) 2%, transparent 2.5%);
             background-size: 40px 40px;
+            width: 100%;
         }
         
+        /* WhatsApp style clear separation */
         .message {
             max-width: 75%;
             display: flex;
             flex-direction: column;
             position: relative;
+            margin-bottom: 8px;
         }
-        .message.sent { align-self: flex-end; }
-        .message.received { align-self: flex-start; }
+        .message.sent { 
+            align-self: flex-end; 
+            margin-left: auto;
+        }
+        .message.received { 
+            align-self: flex-start; 
+            margin-right: auto;
+        }
         
         .message-bubble {
             padding: 10px 14px;
@@ -345,27 +387,28 @@
             border-left: 3px solid #E8B13C;
         }
         
-        /* Message Actions - Three Dots Menu */
+        /* THREE DOTS - Clearly visible, no clipping/overflow */
         .message-actions-trigger {
             position: absolute;
-            right: -30px;
-            top: 5px;
-            background: rgba(0,0,0,0.5);
+            right: -32px;
+            top: 8px;
+            background: rgba(0,0,0,0.6);
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            opacity: 0;
+            opacity: 0.7;
             transition: opacity 0.2s;
             color: #E8B13C;
-            font-size: 12px;
+            font-size: 14px;
+            z-index: 10;
         }
         .message:hover .message-actions-trigger { opacity: 1; }
-        .message.sent .message-actions-trigger { right: -30px; left: auto; }
-        .message.received .message-actions-trigger { left: -30px; right: auto; }
+        .message.sent .message-actions-trigger { right: -32px; left: auto; }
+        .message.received .message-actions-trigger { left: -32px; right: auto; }
         
         .message-actions-menu {
             position: absolute;
@@ -378,7 +421,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             border: 1px solid rgba(232,177,60,0.3);
             flex-direction: column;
-            min-width: 130px;
+            min-width: 140px;
         }
         .message-actions-menu.show { display: flex; }
         .message.sent .message-actions-menu { right: 0; top: 100%; margin-top: 5px; }
@@ -663,6 +706,22 @@
         }
         .product-selector-item:hover { background: rgba(232,177,60,0.1); }
         
+        /* Profile Tab - Direct Editing Inputs */
+        .form-card input, .form-card textarea {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(232,177,60,0.4);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .form-card input:focus, .form-card textarea:focus {
+            outline: none;
+            border-color: #E8B13C;
+            background: rgba(255,255,255,0.2);
+        }
+        
         .orders-table-wrapper {
             overflow-x: auto;
             border-radius: 20px;
@@ -686,7 +745,6 @@
             border-bottom: 1px solid rgba(232,177,60,0.1);
             color: rgba(255,255,255,0.9);
         }
-        .orders-table tr:hover td { background: rgba(232,177,60,0.05); }
         .status-badge {
             padding: 5px 12px;
             border-radius: 30px;
@@ -724,19 +782,17 @@
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 1003; align-items: center; justify-content: center; }
         .modal-content { background: linear-gradient(145deg, #1a3d33, #0f2a22); padding: 35px; border-radius: 40px; max-width: 500px; width: 90%; }
-        .form-card { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 25px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { color: #E8B13C; font-weight: 600; display: block; margin-bottom: 8px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 12px; color: white; }
-        .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 10px 24px; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; }
+        .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 10px 24px; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; margin-top: 15px; }
         .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); }
         
         @media (max-width: 768px) {
             .buyer-header { flex-direction: column; }
             .cart-sidebar { width: 100%; right: -100%; }
             .message { max-width: 85%; }
-            .products-grid { grid-template-columns: 1fr; }
+            .products-grid { grid-template-columns: 1fr; max-height: none; }
             .message-actions-trigger { opacity: 1; }
+            .message.sent .message-actions-trigger { right: -28px; }
+            .message.received .message-actions-trigger { left: -28px; }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -757,6 +813,16 @@
     </div>
 
     <div class="buyer-container">
+        <!-- TOP VIDEO SECTION: Full width responsive, autoplay muted loop -->
+        <div class="video-hero-container">
+            <div class="responsive-video">
+                <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&enablejsapi=1" 
+                        allow="autoplay; encrypted-media" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
         <div class="hero-banner">
             <h2><i class="fas fa-lightbulb"></i> Premium Quality LED Solutions</h2>
             <p>Energy Efficient • Long Lasting • Best Prices in Pakistan • Free Delivery on orders over Rs. 2,000</p>
@@ -789,11 +855,11 @@
         <div id="profileTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-user-edit"></i> My Profile</h2>
             <div class="form-card">
-                <div class="form-group"><label>Full Name</label><input type="text" id="profileName" readonly></div>
-                <div class="form-group"><label>Email</label><input type="email" id="profileEmail" readonly></div>
-                <div class="form-group"><label>Phone</label><input type="tel" id="profilePhone" readonly></div>
-                <div class="form-group"><label>Address</label><textarea id="profileAddress" rows="2" readonly></textarea></div>
-                <button class="btn-primary" onclick="window.editProfile()"><i class="fas fa-edit"></i> Edit Profile</button>
+                <div class="form-group"><label>Full Name</label><input type="text" id="profileName" placeholder="Full Name"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="profileEmail" readonly disabled style="opacity:0.7; cursor:not-allowed;"></div>
+                <div class="form-group"><label>Phone</label><input type="tel" id="profilePhone" placeholder="Phone Number"></div>
+                <div class="form-group"><label>Address</label><textarea id="profileAddress" rows="2" placeholder="Your Delivery Address"></textarea></div>
+                <button class="btn-primary" onclick="window.saveProfile()"><i class="fas fa-save"></i> Save Profile</button>
             </div>
         </div>
 
@@ -1388,9 +1454,13 @@
                 if(data&&data[0]){ const b=data[0]; document.getElementById('profileName').value=b.full_name||''; document.getElementById('profileEmail').value=b.email||''; document.getElementById('profilePhone').value=b.phone||''; document.getElementById('profileAddress').value=b.address||''; }
             }
             
-            window.editProfile = async function(){
-                const {value:form}=await Swal.fire({title:'Edit Profile', html:`<input id="name" class="swal2-input" placeholder="Full Name" value="${escapeHtml(document.getElementById('profileName').value)}"><input id="phone" class="swal2-input" placeholder="Phone" value="${escapeHtml(document.getElementById('profilePhone').value)}"><textarea id="addr" class="swal2-textarea" placeholder="Address">${escapeHtml(document.getElementById('profileAddress').value)}</textarea>`, background:'#1a3d33', color:'#fff', confirmButtonColor:'#E8B13C', preConfirm:()=>({name:document.getElementById('name').value,phone:document.getElementById('phone').value,address:document.getElementById('addr').value})});
-                if(form){ await supabaseClient.from('buyers').update({full_name:form.name,phone:form.phone,address:form.address}).eq('id',currentBuyerId); loadProfile(); Swal.fire({title:'Updated!',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); }
+            window.saveProfile = async function(){
+                const full_name = document.getElementById('profileName').value;
+                const phone = document.getElementById('profilePhone').value;
+                const address = document.getElementById('profileAddress').value;
+                await supabaseClient.from('buyers').update({full_name, phone, address}).eq('id',currentBuyerId);
+                loadProfile();
+                Swal.fire({title:'Profile Updated!',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'});
             };
             
             function setupTabListeners() {
