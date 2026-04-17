@@ -114,7 +114,6 @@
             font-weight: 700;
         }
         
-        /* FULL WIDTH BUYER CONTAINER */
         .buyer-container {
             max-width: 100%;
             margin: 0;
@@ -271,7 +270,7 @@
             gap: 20px;
             overflow-y: auto;
             padding-right: 4px;
-            max-height: calc(3 * (300px + 20px));
+            max-height: calc(3 * (320px + 20px));
         }
         @media (min-width: 768px) {
             .products-grid {
@@ -313,18 +312,30 @@
         .product-name { font-size: 1rem; font-weight: 700; color: #E8B13C; margin-bottom: 4px; }
         .product-category { font-size: 0.65rem; color: rgba(255,255,255,0.5); text-transform: uppercase; }
         .product-price { font-size: 1.2rem; font-weight: 800; color: #E8B13C; margin: 6px 0; }
-        .add-to-cart {
-            width: 100%;
-            padding: 10px;
-            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+        .product-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .add-to-cart, .buy-now {
+            flex: 1;
+            padding: 8px;
             border: none;
             border-radius: 40px;
             cursor: pointer;
             font-weight: 700;
             transition: all 0.3s;
-            margin-top: 8px;
+            font-size: 0.8rem;
         }
-        .add-to-cart:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(232,177,60,0.4); }
+        .add-to-cart {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+        }
+        .buy-now {
+            background: linear-gradient(135deg, #28a745, #1e7e5e);
+            color: white;
+        }
+        .add-to-cart:hover, .buy-now:hover { transform: translateY(-2px); }
         
         /* Product Detail Popup Modal */
         .product-modal {
@@ -404,16 +415,68 @@
         .product-detail-price { font-size: 1.8rem; font-weight: 800; color: #E8B13C; margin: 10px 0; }
         .product-detail-desc { color: rgba(255,255,255,0.8); line-height: 1.5; margin: 12px 0; }
         .product-detail-stock { color: #28a745; font-weight: 600; margin: 8px 0; }
-        .modal-add-to-cart {
-            width: 100%;
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .modal-add-to-cart, .modal-buy-now {
+            flex: 1;
             padding: 14px;
-            background: linear-gradient(135deg, #E8B13C, #c99b2e);
             border: none;
             border-radius: 40px;
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 16px;
+        }
+        .modal-add-to-cart { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
+        .modal-buy-now { background: linear-gradient(135deg, #28a745, #1e7e5e); color: white; }
+        
+        /* Cart Item with Quantity Controls */
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(232,177,60,0.15);
+        }
+        .cart-item-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+        }
+        .cart-item-details {
+            flex: 1;
+        }
+        .cart-item-name { font-weight: 600; color: #E8B13C; margin-bottom: 4px; }
+        .cart-item-price { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .qty-btn {
+            background: rgba(232,177,60,0.2);
+            border: 1px solid rgba(232,177,60,0.4);
+            color: #E8B13C;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .cart-item-qty { color: white; min-width: 30px; text-align: center; }
+        .cart-item-remove {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-top: 8px;
         }
         
         /* LIVE CHAT FULL WIDTH */
@@ -777,7 +840,7 @@
             background: linear-gradient(145deg, #1a3d33, #0f2a22);
             border-radius: 20px;
             width: 90%;
-            max-width: 450px;
+            max-width: 500px;
             max-height: 70%;
             overflow-y: auto;
             z-index: 1002;
@@ -788,6 +851,13 @@
         .product-selector-header { padding: 12px; background: linear-gradient(135deg, #0a2f24, #1a4a3a); display: flex; justify-content: space-between; align-items: center; }
         .product-selector-item { padding: 12px; border-bottom: 1px solid rgba(232,177,60,0.1); display: flex; gap: 12px; cursor: pointer; }
         .product-selector-item:hover { background: rgba(232,177,60,0.1); }
+        .product-selector-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+        }
         
         .form-card input, .form-card textarea {
             background: rgba(255,255,255,0.12);
@@ -808,15 +878,12 @@
         .orders-table td { padding: 8px; border-bottom: 1px solid rgba(232,177,60,0.1); color: rgba(255,255,255,0.9); }
         .status-badge { padding: 3px 10px; border-radius: 30px; font-size: 10px; font-weight: 700; display: inline-block; }
         .status-pending { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
-        .status-processing { background: linear-gradient(135deg, #17a2b8, #0f7a8a); color: #fff; }
-        .status-shipped { background: linear-gradient(135deg, #004085, #002d5a); color: #fff; }
-        .status-delivered { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
         
         .cart-sidebar {
             position: fixed;
             right: -450px;
             top: 0;
-            width: 380px;
+            width: 400px;
             height: 100%;
             background: linear-gradient(145deg, #1a3d33, #0f2a22);
             z-index: 1000;
@@ -828,7 +895,6 @@
         .cart-sidebar.open { right: 0; }
         .cart-header { padding: 16px; background: linear-gradient(135deg, #0a2f24, #1a4a3a); display: flex; justify-content: space-between; }
         .cart-items { flex: 1; overflow-y: auto; padding: 16px; }
-        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(232,177,60,0.15); font-size: 0.85rem; }
         .cart-footer { padding: 16px; border-top: 1px solid rgba(232,177,60,0.3); }
         .cart-total { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; color: #E8B13C; }
         .checkout-btn { width: 100%; padding: 10px; background: linear-gradient(135deg, #28a745, #1e7e5e); color: white; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; }
@@ -846,8 +912,6 @@
             .message { max-width: 90%; }
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: none; }
             .message-actions-trigger { opacity: 1; }
-            .message.sent .message-actions-trigger { right: -28px; }
-            .message.received .message-actions-trigger { left: -28px; }
             .tabs { gap: 6px; padding: 5px 10px; }
             .tab-btn { padding: 6px 14px; font-size: 0.8rem; }
             .hero-banner h2 { font-size: 1.2rem; }
@@ -979,7 +1043,7 @@
     </div>
 
     <div id="productSelectorModal" class="product-selector-modal">
-        <div class="product-selector-header"><h3 style="color:#E8B13C;">Select Product</h3><button onclick="window.buyerChat.closeProductSelector()" style="background:none; border:none; color:#E8B13C; font-size:24px;">&times;</button></div>
+        <div class="product-selector-header"><h3 style="color:#E8B13C;">Select Product to Share</h3><button onclick="window.buyerChat.closeProductSelector()" style="background:none; border:none; color:#E8B13C; font-size:24px;">&times;</button></div>
         <div id="productSelectorList"></div>
     </div>
     
@@ -1010,28 +1074,18 @@
             
             const categoryIcons = { 'LED Bulbs': 'fa-lightbulb', 'Energy Saving': 'fa-leaf', 'Decorative': 'fa-star', 'Street Light': 'fa-road', 'Solar': 'fa-sun' };
             
-            // GIF API using Tenor (more reliable free API)
+            // Fallback GIFs that always work
+            const fallbackGIFs = [
+                'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif',
+                'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif',
+                'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif',
+                'https://media.giphy.com/media/xT9IgzoKnwFNmISR8/giphy.gif',
+                'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif'
+            ];
+            
             async function fetchGIFs(search = '') {
-                try {
-                    const query = search || 'funny';
-                    const url = `https://api.tenor.com/v1/search?q=${encodeURIComponent(query)}&key=AIzaSyC1Vg6R8zA0cLx3n8ZqXpYrT7k9mN2wQ4&limit=20`;
-                    const res = await fetch(url);
-                    const data = await res.json();
-                    if (data.results && data.results.length) {
-                        return data.results.map(g => ({ url: g.media[0].gif.url }));
-                    }
-                    // Fallback to some default GIFs
-                    return [
-                        { url: 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif' },
-                        { url: 'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif' },
-                        { url: 'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif' }
-                    ];
-                } catch(e) {
-                    return [
-                        { url: 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif' },
-                        { url: 'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif' }
-                    ];
-                }
+                // Return fallback GIFs always for reliability
+                return fallbackGIFs.map(url => ({ url }));
             }
             
             window.buyerChat = {
@@ -1162,11 +1216,32 @@
                 startRecordingTimer() { if (recordingTimerInterval) clearInterval(recordingTimerInterval); recordingTimerInterval = setInterval(() => { const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000); const minutes = Math.floor(elapsed / 60); const seconds = elapsed % 60; document.getElementById('recordingTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`; }, 1000); },
                 stopVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); } },
                 cancelVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.onstop = () => {}; mediaRecorder.stop(); } document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); },
-                async showProductSelector() { const { data: products } = await supabaseClient.from('products').select('*').eq('is_active', true); if (!products || products.length === 0) { Swal.fire({ title: 'No Products', icon: 'info', background: '#1a3d33', color: '#fff' }); return; } const list = document.getElementById('productSelectorList'); list.innerHTML = products.map(p => `<div class="product-selector-item" onclick="window.buyerChat.sendProductCard(${JSON.stringify(p).replace(/"/g, '&quot;')})"><div style="width:40px;height:40px;background:rgba(232,177,60,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-lightbulb"></i></div><div><h4 style="color:#E8B13C;">${escapeHtml(p.name)}</h4><p>Rs. ${p.price.toLocaleString()}</p><small>${p.category || ''}</small></div></div>`).join(''); document.getElementById('productSelectorModal').classList.add('active'); },
-                sendProductCard(product) { pendingMedia = { productData: { id: product.id, name: product.name, price: product.price, category: product.category } }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="product-card-message"><i class="fas fa-box" style="font-size:30px;"></i><div><h4>${escapeHtml(product.name)}</h4><p>Rs. ${product.price.toLocaleString()}</p><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div></div>`; preview.classList.add('active'); this.closeProductSelector(); },
+                
+                async showProductSelector() { 
+                    const { data: products } = await supabaseClient.from('products').select('*').eq('is_active', true); 
+                    if (!products || products.length === 0) { Swal.fire({ title: 'No Products', icon: 'info', background: '#1a3d33', color: '#fff' }); return; } 
+                    const list = document.getElementById('productSelectorList'); 
+                    list.innerHTML = products.map(p => {
+                        const productImage = p.image_url || (p.images ? (Array.isArray(p.images) ? p.images[0] : (JSON.parse(p.images || '[]')[0])) : null);
+                        return `<div class="product-selector-item" onclick="window.buyerChat.sendProductCard(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+                            ${productImage ? `<img src="${productImage}" class="product-selector-img">` : `<div style="width:50px;height:50px;background:rgba(232,177,60,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-lightbulb"></i></div>`}
+                            <div><h4 style="color:#E8B13C;">${escapeHtml(p.name)}</h4><p>Rs. ${p.price.toLocaleString()}</p><small>${p.category || ''}</small></div>
+                        </div>`;
+                    }).join(''); 
+                    document.getElementById('productSelectorModal').classList.add('active'); 
+                },
+                
+                sendProductCard(product) { 
+                    pendingMedia = { productData: { id: product.id, name: product.name, price: product.price, category: product.category, image: product.image_url } }; 
+                    const preview = document.getElementById('mediaPreview'); 
+                    preview.innerHTML = `<div class="product-card-message"><i class="fas fa-box" style="font-size:30px;"></i><div><h4>${escapeHtml(product.name)}</h4><p>Rs. ${product.price.toLocaleString()}</p><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div></div>`; 
+                    preview.classList.add('active'); 
+                    this.closeProductSelector(); 
+                },
+                
                 closeProductSelector() { document.getElementById('productSelectorModal').classList.remove('active'); },
                 sendTyping() { clearTimeout(typingTimeout); supabaseClient.from('chat_typing').insert([{ sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', timestamp: new Date().toISOString() }]); typingTimeout = setTimeout(() => {}, 2000); },
-                showTypingIndicator() { const container = document.getElementById('typingIndicatorArea'); container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>'; setTimeout(() => { container.innerHTML = ''; }, 3000); },
+                showTypingIndicator() { const container = document.getElementById('typingIndicatorArea'); container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot</span><span class="typing-dot"></span></div>'; setTimeout(() => { container.innerHTML = ''; }, 3000); },
                 async markMessagesRead() { await supabaseClient.from('chat_messages').update({ read: true }).eq('receiver_id', currentBuyerId).eq('receiver_type', 'buyer').eq('read', false); this.updateUnreadBadge(false); },
                 updateUnreadBadge(hasNew) { const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]'); const livechatTab = document.getElementById('livechatTab'); if (hasNew && !livechatTab.classList.contains('active')) chatTab.classList.add('has-unread'); else if (livechatTab.classList.contains('active')) chatTab.classList.remove('has-unread'); },
                 
@@ -1195,6 +1270,26 @@
             
             function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
             
+            // Cart quantity functions
+            window.updateCartQuantity = function(id, delta) {
+                const item = cart.find(i => i.id === id);
+                if (item) {
+                    const newQty = item.quantity + delta;
+                    if (newQty <= 0) {
+                        cart = cart.filter(i => i.id !== id);
+                    } else {
+                        item.quantity = newQty;
+                    }
+                    saveCart();
+                }
+            };
+            
+            window.buyNow = function(product) {
+                cart = [{ id: product.id, name: product.name, price: product.price, quantity: 1, image: product.image_url }];
+                saveCart();
+                window.showCheckout();
+            };
+            
             window.showProductDetail = async function(productId) {
                 const product = allProducts.find(p => p.id === productId);
                 if (!product) return;
@@ -1215,12 +1310,27 @@
                     <div class="product-detail-category"><i class="fas fa-tag"></i> ${product.category || 'General'}</div>
                     <div class="product-detail-stock"><i class="fas fa-boxes"></i> ${product.stock > 0 ? `In Stock (${product.stock})` : 'Out of Stock'}</div>
                     <div class="product-detail-desc">${escapeHtml(product.description || 'No description available.')}</div>
-                    <button class="modal-add-to-cart" onclick="window.addToCartFromModal('${product.id}', '${escapeHtml(product.name).replace(/'/g, "\\'")}', ${product.price}); window.closeProductModal();"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    <div class="modal-buttons">
+                        <button class="modal-add-to-cart" onclick="window.addToCartFromModal('${product.id}', '${escapeHtml(product.name).replace(/'/g, "\\'")}', ${product.price}); window.closeProductModal();"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                        <button class="modal-buy-now" onclick="window.buyNowFromModal('${product.id}', '${escapeHtml(product.name).replace(/'/g, "\\'")}', ${product.price}); window.closeProductModal();"><i class="fas fa-bolt"></i> Buy Now</button>
+                    </div>
                 `;
                 modal.classList.add('active');
             };
             
-            window.addToCartFromModal = function(id, name, price) { let item = cart.find(i => i.id === id); if (item) item.quantity++; else cart.push({ id, name, price, quantity: 1 }); saveCart(); Swal.fire({ title: 'Added!', text: `${name} added to cart`, icon: 'success', timer: 1000, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); };
+            window.buyNowFromModal = function(id, name, price) {
+                cart = [{ id, name, price, quantity: 1 }];
+                saveCart();
+                window.showCheckout();
+            };
+            
+            window.addToCartFromModal = function(id, name, price) { 
+                let item = cart.find(i => i.id === id); 
+                if (item) item.quantity++; 
+                else cart.push({ id, name, price, quantity: 1 }); 
+                saveCart(); 
+                Swal.fire({ title: 'Added!', text: `${name} added to cart`, icon: 'success', timer: 1000, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); 
+            };
             window.closeProductModal = function() { document.getElementById('productDetailModal').classList.remove('active'); };
             
             async function checkAuth() {
@@ -1254,14 +1364,59 @@
                 if(!filtered.length){ container.innerHTML='<div class="empty-state">No products found</div>'; return; }
                 container.innerHTML = filtered.map(p => {
                     const productImage = p.image_url || (p.images ? (Array.isArray(p.images) ? p.images[0] : (JSON.parse(p.images || '[]')[0])) : null);
-                    return `<div class="product-card"><div class="product-image" onclick="window.showProductDetail('${p.id}')">${productImage ? `<img src="${productImage}" alt="${escapeHtml(p.name)}">` : `<i class="fas fa-lightbulb"></i>`}</div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-category">${p.category || 'General'}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><button class="add-to-cart" onclick="event.stopPropagation(); window.addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price})">Add to Cart</button></div></div>`;
+                    return `<div class="product-card"><div class="product-image" onclick="window.showProductDetail('${p.id}')">${productImage ? `<img src="${productImage}" alt="${escapeHtml(p.name)}">` : `<i class="fas fa-lightbulb"></i>`}</div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-category">${p.category || 'General'}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><div class="product-buttons"><button class="add-to-cart" onclick="event.stopPropagation(); window.addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price})"><i class="fas fa-cart-plus"></i> Cart</button><button class="buy-now" onclick="event.stopPropagation(); window.buyNowProduct('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price})"><i class="fas fa-bolt"></i> Buy Now</button></div></div></div>`;
                 }).join('');
             }
             
+            window.buyNowProduct = function(id, name, price) {
+                cart = [{ id, name, price, quantity: 1 }];
+                saveCart();
+                window.showCheckout();
+            };
+            
             window.addToCart = function(id,name,price){ let item=cart.find(i=>i.id===id); if(item) item.quantity++; else cart.push({id,name,price,quantity:1}); saveCart(); Swal.fire({title:'Added!',text:`${name} added`,icon:'success',timer:1000,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); };
+            
             function loadCart() { const saved = localStorage.getItem(`cart_${currentBuyerId}`); if(saved) cart=JSON.parse(saved); updateCartUI(); }
             function saveCart() { localStorage.setItem(`cart_${currentBuyerId}`,JSON.stringify(cart)); updateCartUI(); }
-            function updateCartUI() { document.getElementById('cartCount').innerHTML=cart.reduce((s,i)=>s+i.quantity,0); document.getElementById('cartTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString(); document.getElementById('cartItems').innerHTML=cart.length?cart.map(i=>`<div class="cart-item"><div>${escapeHtml(i.name)} x${i.quantity}</div><div>Rs.${(i.price*i.quantity).toLocaleString()}</div><button onclick="window.removeFromCart('${i.id}')" style="background:#dc3545;color:white;border:none;border-radius:20px;padding:5px 10px;cursor:pointer;">Remove</button></div>`).join(''):'<p style="text-align:center;padding:20px;">Cart empty</p>'; }
+            
+            function updateCartUI() { 
+                document.getElementById('cartCount').innerHTML=cart.reduce((s,i)=>s+i.quantity,0); 
+                document.getElementById('cartTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString(); 
+                document.getElementById('cartTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString();
+                const container = document.getElementById('cartItems');
+                if(!cart.length){ container.innerHTML='<p style="text-align:center;padding:20px;">Cart empty</p>'; return; }
+                container.innerHTML = cart.map(i => {
+                    const product = allProducts.find(p => p.id === i.id);
+                    const imgUrl = product?.image_url || null;
+                    return `<div class="cart-item">
+                        ${imgUrl ? `<img src="${imgUrl}" class="cart-item-img">` : `<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;background:rgba(232,177,60,0.2);"><i class="fas fa-lightbulb"></i></div>`}
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${escapeHtml(i.name)}</div>
+                            <div class="cart-item-price">Rs. ${(i.price||0).toLocaleString()}</div>
+                            <div class="cart-item-quantity">
+                                <button class="qty-btn" onclick="window.updateCartQuantity('${i.id}', -1)">-</button>
+                                <span class="cart-item-qty">${i.quantity}</span>
+                                <button class="qty-btn" onclick="window.updateCartQuantity('${i.id}', 1)">+</button>
+                                <button class="cart-item-remove" onclick="window.removeFromCart('${i.id}')">Remove</button>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            
+            window.updateCartQuantity = function(id, delta) {
+                const item = cart.find(i => i.id === id);
+                if (item) {
+                    const newQty = item.quantity + delta;
+                    if (newQty <= 0) {
+                        cart = cart.filter(i => i.id !== id);
+                    } else {
+                        item.quantity = newQty;
+                    }
+                    saveCart();
+                }
+            };
+            
             window.removeFromCart = function(id){ cart=cart.filter(i=>i.id!==id); saveCart(); };
             window.toggleCart = function(){ document.getElementById('cartSidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); };
             window.showCheckout = function(){ if(!cart.length){ Swal.fire({title:'Empty Cart',icon:'warning',background:'#1a3d33',color:'#fff'}); return; } document.getElementById('checkoutTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString(); document.getElementById('checkoutModal').style.display='flex'; };
@@ -1280,8 +1435,8 @@
             async function loadOrders() {
                 const {data}=await supabaseClient.from('orders').select('*').eq('user_id',currentBuyerId).eq('user_type','buyer').order('order_date',{ascending:false});
                 const tbody=document.getElementById('ordersList');
-                if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="7" class="empty-state">No orders found</td></tr>'; return; }
-                tbody.innerHTML=data.map(o => { let productsText = '-'; try { const parsed = JSON.parse(o.notes || '[]'); if (Array.isArray(parsed) && parsed.length) productsText = parsed.map(i => i.name).join(', ').substring(0,40); } catch(e) { productsText = o.notes ? o.notes.substring(0,40) : '-'; } return `<tr><td><strong>${o.id.slice(0,10)}</strong></td><td><small>${productsText}</small></td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td><small>${(o.delivery_address || '-').substring(0,30)}</small></td></tr>`; }).join('');
+                if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="7" class="empty-state">No orders found</td></td>'; return; }
+                tbody.innerHTML=data.map(o => { let productsText = '-'; try { const parsed = JSON.parse(o.notes || '[]'); if (Array.isArray(parsed) && parsed.length) productsText = parsed.map(i => i.name).join(', ').substring(0,40); } catch(e) { productsText = o.notes ? o.notes.substring(0,40) : '-'; } return `<tr><td><strong>${o.id.slice(0,10)}</strong></td><td><small>${productsText}</small></td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td><small>${(o.delivery_address || '-').substring(0,30)}</small></td>`; }).join('');
             }
             
             async function loadProfile() { 
