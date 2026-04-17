@@ -265,7 +265,7 @@
         }
         
         .chat-user-list {
-            width: 420px;
+            width: 450px;
             background: linear-gradient(145deg, rgba(10,35,28,0.95), rgba(5,25,18,0.95));
             border-right: 1px solid rgba(232,177,60,0.2);
             display: flex;
@@ -292,6 +292,7 @@
             transition: all 0.3s;
             border-left: 3px solid transparent;
             position: relative;
+            border-bottom: 1px solid rgba(232,177,60,0.1);
         }
         
         .chat-user-item:hover { background: rgba(232,177,60,0.1); }
@@ -658,7 +659,7 @@
         input:checked + .toggle-slider { background-color: #1e7e5e; }
         input:checked + .toggle-slider:before { transform: translateX(26px); }
         
-        /* User Permission Status Badge */
+        /* Permission Badge */
         .perm-badge {
             font-size: 0.6rem;
             padding: 2px 6px;
@@ -674,7 +675,7 @@
             .nav-tabs { justify-content: center; }
             .nav-tab { padding: 8px 16px; font-size: 12px; }
             .chat-container { flex-direction: column; height: auto; }
-            .chat-user-list { width: 100%; max-height: 350px; }
+            .chat-user-list { width: 100%; max-height: 400px; }
             .message { max-width: 85%; }
             .user-controls { flex-wrap: wrap; }
             .individual-controls-group { flex-wrap: wrap; }
@@ -717,7 +718,7 @@
             <h2 class="section-title"><i class="fas fa-chart-pie"></i> Dashboard Overview</h2>
             <div class="table-container">
                 <h3 style="color:#E8B13C; margin-bottom:15px;">Recent Activities <i class="fas fa-history"></i></h3>
-                <tr><thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead><tbody id="recentActivities"></tbody></table>
+                <table><thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead><tbody id="recentActivities"></tbody></table>
             </div>
         </div>
 
@@ -752,13 +753,13 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"></table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -791,7 +792,7 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
         <!-- Withdrawals Section -->
@@ -824,7 +825,7 @@
                 <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
                 <div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="🔍 Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div>
             </div>
-            <div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
         </div>
 
         <!-- Live Chat Section - Full Control Center -->
@@ -846,10 +847,12 @@
                 <!-- Left Side - User List -->
                 <div class="chat-user-list">
                     <div class="chat-user-list-header">
-                        <h3><i class="fas fa-users"></i> Conversations <span style="font-size:0.7rem;">(Click controls to manage user permissions)</span></h3>
+                        <h3><i class="fas fa-users"></i> Conversations <span style="font-size:0.7rem;">(Click controls to manage permissions)</span></h3>
                         <input type="text" id="chatUserSearch" class="chat-user-search" placeholder="Search users..." onkeyup="adminChatSystem.filterUsers()">
                     </div>
-                    <div class="chat-users-scroll" id="chatUsersList"></div>
+                    <div class="chat-users-scroll" id="chatUsersList">
+                        <div class="empty-state" style="padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading users...</div>
+                    </div>
                 </div>
                 
                 <!-- Right Side - Chat Area -->
@@ -962,10 +965,15 @@
             if (targetSection) targetSection.classList.add('active');
             const btns = document.querySelectorAll('.nav-tab');
             for(let btn of btns) { if(btn.innerText.toLowerCase().includes(section.toLowerCase())) { btn.classList.add('active'); break; } }
-            if (section === 'livechat' && window.adminChatSystem) { setTimeout(() => { window.adminChatSystem.loadUsers(); window.adminChatSystem.updateUnreadIndicator(); }, 100); }
+            if (section === 'livechat' && window.adminChatSystem) { 
+                setTimeout(() => { 
+                    window.adminChatSystem.loadUsers(); 
+                    window.adminChatSystem.updateUnreadIndicator(); 
+                }, 100); 
+            }
         };
 
-        // Business Functions - Simplified for brevity (same as before)
+        // Business Functions
         async function loadStats() {
             if(!supabaseClient) return;
             const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
@@ -998,15 +1006,19 @@
             const investorsList = document.getElementById('investorsList');
             if(investorsList) {
                 investorsList.innerHTML = allInvestors.map(i=>`<tr>
-                    <td><strong>${i.full_name}</strong>${i.chat_enabled === false ? ' <span class="perm-badge perm-disabled">Chat OFF</span>' : ''}${i.voice_enabled === false ? ' <span class="perm-badge perm-disabled">Voice OFF</span>' : ''}${i.video_enabled === false ? ' <span class="perm-badge perm-disabled">Video OFF</span>' : ''}</td>
+                    <td><strong>${i.full_name}</strong>${i.chat_enabled === false ? ' <span class="perm-badge perm-disabled">Chat OFF</span>' : ' <span class="perm-badge perm-enabled">Chat ON</span>'}${i.voice_enabled === false ? ' <span class="perm-badge perm-disabled">Voice OFF</span>' : ' <span class="perm-badge perm-enabled">Voice ON</span>'}${i.video_enabled === false ? ' <span class="perm-badge perm-disabled">Video OFF</span>' : ' <span class="perm-badge perm-enabled">Video ON</span>'}</td>
                     <td>${i.email}</td>
                     <td>${i.phone||'-'}</td>
                     <td>${i.city||'-'}</td>
                     <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
                     <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                     <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                    <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td>
-                </tr>`).join('');
+                    <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
+
+
+
+
+                                        </tr>`).join('');
             }
         }
 
@@ -1017,7 +1029,7 @@
             const buyersList = document.getElementById('buyersList');
             if(buyersList) {
                 buyersList.innerHTML = allBuyers.map(b=>`<tr>
-                    <td><strong>${b.full_name}</strong>${b.chat_enabled === false ? ' <span class="perm-badge perm-disabled">Chat OFF</span>' : ''}${b.voice_enabled === false ? ' <span class="perm-badge perm-disabled">Voice OFF</span>' : ''}${b.video_enabled === false ? ' <span class="perm-badge perm-disabled">Video OFF</span>' : ''}</td>
+                    <td><strong>${b.full_name}</strong>${b.chat_enabled === false ? ' <span class="perm-badge perm-disabled">Chat OFF</span>' : ' <span class="perm-badge perm-enabled">Chat ON</span>'}${b.voice_enabled === false ? ' <span class="perm-badge perm-disabled">Voice OFF</span>' : ' <span class="perm-badge perm-enabled">Voice ON</span>'}${b.video_enabled === false ? ' <span class="perm-badge perm-disabled">Video OFF</span>' : ' <span class="perm-badge perm-enabled">Video ON</span>'}</td>
                     <td>${b.email}</td>
                     <td>${b.phone||'-'}</td>
                     <td>${b.address||'-'}</td>
@@ -1163,8 +1175,11 @@
             }]);
             if(error){ showNotification(error.message, true, 'Database Error'); return; }
             showNotification('Investor added successfully!', false, 'Added');
-            document.getElementById('newInvestorName').value = ''; document.getElementById('newInvestorEmail').value = ''; document.getElementById('newInvestorInvestment').value = '0';
-            await loadInvestors(); await loadStats();
+            document.getElementById('newInvestorName').value = ''; 
+            document.getElementById('newInvestorEmail').value = ''; 
+            document.getElementById('newInvestorInvestment').value = '0';
+            await loadInvestors(); 
+            await loadStats();
             if (window.adminChatSystem) window.adminChatSystem.loadUsers();
         };
 
@@ -1181,8 +1196,11 @@
             }]);
             if(error){ showNotification(error.message, true, 'Error'); return; }
             showNotification('Buyer added successfully!', false, 'Added');
-            document.getElementById('newBuyerName').value = ''; document.getElementById('newBuyerEmail').value = ''; document.getElementById('newBuyerAddress').value = '';
-            await loadBuyers(); await loadStats();
+            document.getElementById('newBuyerName').value = ''; 
+            document.getElementById('newBuyerEmail').value = ''; 
+            document.getElementById('newBuyerAddress').value = '';
+            await loadBuyers(); 
+            await loadStats();
             if (window.adminChatSystem) window.adminChatSystem.loadUsers();
         };
 
@@ -1193,13 +1211,18 @@
             const price = parseFloat(document.getElementById('newProductPrice').value);
             const stock = parseInt(document.getElementById('newProductStock').value) || 0;
             if(!name || !category || !price){ showNotification('Name, category and price required', true, 'Missing Fields'); return; }
-            const { error } = await supabaseClient.from('products').insert([{ id: crypto.randomUUID(), name, category, wattage, price, stock_quantity: stock, is_active: true, created_at: new Date().toISOString() }]);
+            const { error } = await supabaseClient.from('products').insert([{ 
+                id: crypto.randomUUID(), name, category, wattage, price, 
+                stock_quantity: stock, is_active: true, created_at: new Date().toISOString() 
+            }]);
             if(error){ showNotification(error.message, true, 'Error'); return; }
             showNotification('Product added successfully!', false, 'Added');
             document.getElementById('newProductName').value = '';
             document.getElementById('newProductPrice').value = '';
             document.getElementById('newProductStock').value = '0';
-            await loadProducts(); await loadStats();
+            document.getElementById('newProductWattage').value = '';
+            await loadProducts(); 
+            await loadStats();
         };
 
         window.deleteInvestor = async function(id){ 
@@ -1209,7 +1232,8 @@
                 await supabaseClient.from('withdrawals').delete().eq('investor_id',id); 
                 await supabaseClient.from('investors').delete().eq('id',id); 
                 showNotification('Investor deleted', false, 'Deleted'); 
-                await loadInvestors(); await loadStats();
+                await loadInvestors(); 
+                await loadStats();
                 if (window.adminChatSystem) window.adminChatSystem.loadUsers();
             } 
         };
@@ -1218,7 +1242,8 @@
             if(await confirmAction('Delete this buyer?', 'Delete Buyer')){ 
                 await supabaseClient.from('buyers').delete().eq('id',id); 
                 showNotification('Buyer deleted', false, 'Deleted'); 
-                await loadBuyers(); await loadStats();
+                await loadBuyers(); 
+                await loadStats();
                 if (window.adminChatSystem) window.adminChatSystem.loadUsers();
             } 
         };
@@ -1227,7 +1252,8 @@
             if(await confirmAction('Delete this product?', 'Delete Product')){ 
                 await supabaseClient.from('products').update({is_active:false}).eq('id',id); 
                 showNotification('Product deleted', false, 'Deleted'); 
-                await loadProducts(); await loadStats();
+                await loadProducts(); 
+                await loadStats();
             } 
         };
         
@@ -1235,21 +1261,27 @@
             if(!await confirmAction(`Approve investment of Rs. ${amount.toLocaleString()}?`, 'Approve Investment')) return; 
             await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
             showNotification('Investment approved!', false, 'Approved'); 
-            await loadInvestmentRequests(); await loadInvestmentHistory(); await loadInvestors(); await loadStats(); 
+            await loadInvestmentRequests(); 
+            await loadInvestmentHistory(); 
+            await loadInvestors(); 
+            await loadStats(); 
         };
         
         window.rejectInvestment = async function(id){ 
             if(!await confirmAction('Reject this investment request?', 'Reject Investment')) return; 
             await supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id); 
             showNotification('Investment rejected', false, 'Rejected'); 
-            await loadInvestmentRequests(); await loadStats(); 
+            await loadInvestmentRequests(); 
+            await loadStats(); 
         };
         
         window.approveWithdrawal = async function(id, amount, investorId){ 
             if(!await confirmAction(`Approve withdrawal of Rs. ${amount.toLocaleString()}?`, 'Approve Withdrawal')) return; 
             await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
             showNotification('Withdrawal approved!', false, 'Approved'); 
-            await loadWithdrawals(); await loadInvestors(); await loadStats(); 
+            await loadWithdrawals(); 
+            await loadInvestors(); 
+            await loadStats(); 
         };
         
         window.rejectWithdrawal = async function(id){ 
@@ -1262,7 +1294,9 @@
         window.deleteInvestment = async function(id){ 
             if(await confirmAction('Delete this investment record?', 'Delete Investment')){ 
                 await supabaseClient.from('investments').delete().eq('id',id); 
-                await loadInvestmentHistory(); await loadInvestors(); await loadStats(); 
+                await loadInvestmentHistory(); 
+                await loadInvestors(); 
+                await loadStats(); 
                 showNotification('Investment deleted', false, 'Deleted'); 
             } 
         };
@@ -1270,7 +1304,9 @@
         window.deleteProfit = async function(id){ 
             if(await confirmAction('Delete this profit record?', 'Delete Profit')){ 
                 await supabaseClient.from('profits').delete().eq('id',id); 
-                await loadProfitHistory(); await loadInvestors(); await loadStats(); 
+                await loadProfitHistory(); 
+                await loadInvestors(); 
+                await loadStats(); 
                 showNotification('Profit deleted', false, 'Deleted'); 
             } 
         };
@@ -1279,7 +1315,8 @@
             if(await confirmAction('Delete this withdrawal request?', 'Delete Withdrawal')) {
                 await supabaseClient.from('withdrawals').delete().eq('id', id);
                 showNotification('Withdrawal deleted', false, 'Deleted');
-                await loadWithdrawals(); await loadStats();
+                await loadWithdrawals(); 
+                await loadStats();
             }
         };
 
@@ -1299,7 +1336,8 @@
             if(await confirmAction('Delete this order?', 'Delete Order')) { 
                 await supabaseClient.from('orders').delete().eq('id', id); 
                 showNotification('Order deleted!', false, 'Deleted'); 
-                await loadOrders(); await loadStats(); 
+                await loadOrders(); 
+                await loadStats(); 
             } 
         };
         
@@ -1309,11 +1347,19 @@
             const { value: formData } = await Swal.fire({
                 title: 'Edit Order',
                 html: `<input id="editAmount" class="swal2-input" placeholder="Amount" value="${order.total_amount}"><input id="editAddress" class="swal2-input" placeholder="Address" value="${order.delivery_address || ''}">`,
-                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff', confirmButtonColor: '#E8B13C',
-                preConfirm: () => ({ amount: parseFloat(document.getElementById('editAmount').value), address: document.getElementById('editAddress').value })
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', 
+                color: '#fff', 
+                confirmButtonColor: '#E8B13C',
+                preConfirm: () => ({ 
+                    amount: parseFloat(document.getElementById('editAmount').value), 
+                    address: document.getElementById('editAddress').value 
+                })
             });
             if (formData) {
-                await supabaseClient.from('orders').update({ total_amount: formData.amount, delivery_address: formData.address }).eq('id', id);
+                await supabaseClient.from('orders').update({ 
+                    total_amount: formData.amount, 
+                    delivery_address: formData.address 
+                }).eq('id', id);
                 showNotification('Order updated!', false, 'Updated');
                 await loadOrders();
             }
@@ -1324,12 +1370,24 @@
             if(!product) return;
             const { value: formData } = await Swal.fire({
                 title: 'Edit Product',
-                html: `<input id="editName" class="swal2-input" placeholder="Name" value="${product.name}"><input id="editPrice" class="swal2-input" placeholder="Price" value="${product.price}"><input id="editStock" class="swal2-input" placeholder="Stock" value="${product.stock_quantity}">`,
-                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff', confirmButtonColor: '#E8B13C',
-                preConfirm: () => ({ name: document.getElementById('editName').value, price: parseFloat(document.getElementById('editPrice').value), stock: parseInt(document.getElementById('editStock').value) || 0 })
+                html: `<input id="editName" class="swal2-input" placeholder="Name" value="${product.name}">
+                       <input id="editPrice" class="swal2-input" placeholder="Price" value="${product.price}">
+                       <input id="editStock" class="swal2-input" placeholder="Stock" value="${product.stock_quantity}">`,
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', 
+                color: '#fff', 
+                confirmButtonColor: '#E8B13C',
+                preConfirm: () => ({ 
+                    name: document.getElementById('editName').value, 
+                    price: parseFloat(document.getElementById('editPrice').value), 
+                    stock: parseInt(document.getElementById('editStock').value) || 0 
+                })
             });
             if (formData) {
-                await supabaseClient.from('products').update({ name: formData.name, price: formData.price, stock_quantity: formData.stock }).eq('id', id);
+                await supabaseClient.from('products').update({ 
+                    name: formData.name, 
+                    price: formData.price, 
+                    stock_quantity: formData.stock 
+                }).eq('id', id);
                 showNotification('Product updated!', false, 'Updated');
                 await loadProducts();
             }
@@ -1355,30 +1413,69 @@
         };
 
         window.addInvestment = async function() { 
-            const investorId = document.getElementById('investorSelect').value, amount = parseFloat(document.getElementById('invAmount').value), date = document.getElementById('invDate').value, paymentMethod = document.getElementById('invPaymentMethod').value, transactionId = document.getElementById('invTransactionId').value; 
-            if(!investorId || !amount || !date){ showNotification('Please fill all required fields', true, 'Missing Fields'); return; } 
-            const { error } = await supabaseClient.from('investments').insert([{ investor_id: investorId, amount, investment_date: date, payment_method: paymentMethod, transaction_id: transactionId, status: 'active' }]); 
-            if(error){ showNotification(error.message, true, 'Error'); return; } 
+            const investorId = document.getElementById('investorSelect').value;
+            const amount = parseFloat(document.getElementById('invAmount').value);
+            const date = document.getElementById('invDate').value;
+            const paymentMethod = document.getElementById('invPaymentMethod').value;
+            const transactionId = document.getElementById('invTransactionId').value; 
+            if(!investorId || !amount || !date){ 
+                showNotification('Please fill all required fields', true, 'Missing Fields'); 
+                return; 
+            } 
+            const { error } = await supabaseClient.from('investments').insert([{ 
+                investor_id: investorId, 
+                amount, 
+                investment_date: date, 
+                payment_method: paymentMethod, 
+                transaction_id: transactionId, 
+                status: 'active' 
+            }]); 
+            if(error){ 
+                showNotification(error.message, true, 'Error'); 
+                return; 
+            } 
             showNotification('Investment added successfully!', false, 'Added'); 
             document.getElementById('invAmount').value = ''; 
-            await loadInvestmentHistory(); await loadInvestors(); await loadStats(); 
+            await loadInvestmentHistory(); 
+            await loadInvestors(); 
+            await loadStats(); 
         };
 
         window.addProfit = async function() { 
-            const investorId = document.getElementById('profitInvestorSelect').value, amount = parseFloat(document.getElementById('profitAmount').value), month = document.getElementById('profitMonth').value, percentage = parseFloat(document.getElementById('profitPercentage').value) || 10; 
-            if(!investorId || !amount || !month){ showNotification('Please fill all fields', true, 'Missing Fields'); return; } 
-            const { error } = await supabaseClient.from('profits').insert([{ investor_id: investorId, amount, month: month + '-01', profit_percentage: percentage, paid: true, paid_date: new Date().toISOString().split('T')[0] }]); 
-            if(error){ showNotification(error.message, true, 'Error'); return; } 
+            const investorId = document.getElementById('profitInvestorSelect').value;
+            const amount = parseFloat(document.getElementById('profitAmount').value);
+            const month = document.getElementById('profitMonth').value;
+            const percentage = parseFloat(document.getElementById('profitPercentage').value) || 10; 
+            if(!investorId || !amount || !month){ 
+                showNotification('Please fill all fields', true, 'Missing Fields'); 
+                return; 
+            } 
+            const { error } = await supabaseClient.from('profits').insert([{ 
+                investor_id: investorId, 
+                amount, 
+                month: month + '-01', 
+                profit_percentage: percentage, 
+                paid: true, 
+                paid_date: new Date().toISOString().split('T')[0] 
+            }]); 
+            if(error){ 
+                showNotification(error.message, true, 'Error'); 
+                return; 
+            } 
             showNotification('Profit added successfully!', false, 'Added'); 
             document.getElementById('profitAmount').value = ''; 
-            await loadProfitHistory(); await loadInvestors(); await loadStats(); 
+            await loadProfitHistory(); 
+            await loadInvestors(); 
+            await loadStats(); 
         };
         
         window.searchInvestors = function() { 
             const term = document.getElementById('investorSearch').value.toLowerCase(); 
             const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
             const investorsList = document.getElementById('investorsList');
-            if(investorsList) investorsList.innerHTML = filtered.map(i=>`<tr>...</td>`).join('');
+            if(investorsList) {
+                investorsList.innerHTML = filtered.map(i=>`<tr>...</tr>`).join('');
+            }
         };
         
         window.resetInvestorSearch = function() { 
@@ -1390,7 +1487,9 @@
             const term = document.getElementById('buyerSearch').value.toLowerCase(); 
             const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
             const buyersList = document.getElementById('buyersList');
-            if(buyersList) buyersList.innerHTML = filtered.map(b=>`<tr>...</td>`).join('');
+            if(buyersList) {
+                buyersList.innerHTML = filtered.map(b=>`<tr>...</tr>`).join('');
+            }
         };
         
         window.resetBuyerSearch = function() { 
@@ -1403,8 +1502,11 @@
             const filtered = allWithdrawals.filter(w => w.investors?.full_name?.toLowerCase().includes(term) || w.investors?.email?.toLowerCase().includes(term));
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
-            if (filtered.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state">No withdrawal requests found</td></tr>'; return; }
-            withdrawalsList.innerHTML = filtered.map(w => `<tr>...</td>`).join('');
+            if (filtered.length === 0) { 
+                withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state">No withdrawal requests found</td></tr>'; 
+                return; 
+            }
+            withdrawalsList.innerHTML = filtered.map(w => `<tr>...</tr>`).join('');
         };
         
         window.resetWithdrawalSearch = function() { 
@@ -1417,8 +1519,11 @@
             const filtered = allOrders.filter(o => o.id?.toLowerCase().includes(term) || (o.customer_name || o.user_type)?.toLowerCase().includes(term));
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
-            if (filtered.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; return; }
-            ordersList.innerHTML = filtered.map(o => `<tr>...</td>`).join('');
+            if (filtered.length === 0) { 
+                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; 
+                return; 
+            }
+            ordersList.innerHTML = filtered.map(o => `<tr>...</tr>`).join('');
         };
         
         window.resetOrderSearch = function() { 
@@ -1429,7 +1534,9 @@
         window.searchProducts = function() { 
             const term = document.getElementById('productSearch').value.toLowerCase(); 
             const rows = document.querySelectorAll('#productsList tr'); 
-            rows.forEach(row=>{ row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; }); 
+            rows.forEach(row=>{ 
+                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; 
+            }); 
         };
         
         window.handleLogout = async function(){ 
@@ -1453,9 +1560,16 @@
         
         async function checkAuth() {
             const { data: { user }, error } = await supabaseClient.auth.getUser();
-            if (error || !user) { window.location.href = 'admin-auth.html'; return null; }
+            if (error || !user) { 
+                window.location.href = 'admin-auth.html'; 
+                return null; 
+            }
             const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
-            if (!adminEmails.includes(user.email)) { showNotification('Unauthorized access!', true, 'Access Denied'); window.location.href = 'index.html'; return null; }
+            if (!adminEmails.includes(user.email)) { 
+                showNotification('Unauthorized access!', true, 'Access Denied'); 
+                window.location.href = 'index.html'; 
+                return null; 
+            }
             document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
             await refreshAllData();
             return user;
@@ -1535,7 +1649,15 @@
                     }
                     
                     const status = enabled ? 'enabled' : 'disabled';
-                    Swal.fire({ title: `Chat ${status}`, text: `Chat has been ${status} for this user. The user will see this change immediately.`, icon: 'success', background: '#1a3d33', color: '#fff', timer: 2000, showConfirmButton: false });
+                    Swal.fire({ 
+                        title: `Chat ${status}`, 
+                        text: `Chat has been ${status} for this user. The user will see this change immediately and cannot send messages.`, 
+                        icon: 'success', 
+                        background: '#1a3d33', 
+                        color: '#fff', 
+                        timer: 2000, 
+                        showConfirmButton: false 
+                    });
                     
                     // Update local user data
                     const user = this.users.find(u => u.id === userId && u.type === userType);
@@ -1560,7 +1682,15 @@
                     }
                     
                     const status = enabled ? 'enabled' : 'disabled';
-                    Swal.fire({ title: `Voice Messages ${status}`, text: `Voice messages have been ${status} for this user.`, icon: 'success', background: '#1a3d33', color: '#fff', timer: 2000, showConfirmButton: false });
+                    Swal.fire({ 
+                        title: `Voice Messages ${status}`, 
+                        text: `Voice messages have been ${status} for this user.`, 
+                        icon: 'success', 
+                        background: '#1a3d33', 
+                        color: '#fff', 
+                        timer: 2000, 
+                        showConfirmButton: false 
+                    });
                     
                     const user = this.users.find(u => u.id === userId && u.type === userType);
                     if (user) user.voiceEnabled = enabled;
@@ -1584,7 +1714,15 @@
                     }
                     
                     const status = enabled ? 'enabled' : 'disabled';
-                    Swal.fire({ title: `Video Messages ${status}`, text: `Video messages have been ${status} for this user.`, icon: 'success', background: '#1a3d33', color: '#fff', timer: 2000, showConfirmButton: false });
+                    Swal.fire({ 
+                        title: `Video Messages ${status}`, 
+                        text: `Video messages have been ${status} for this user.`, 
+                        icon: 'success', 
+                        background: '#1a3d33', 
+                        color: '#fff', 
+                        timer: 2000, 
+                        showConfirmButton: false 
+                    });
                     
                     const user = this.users.find(u => u.id === userId && u.type === userType);
                     if (user) user.videoEnabled = enabled;
@@ -1600,21 +1738,45 @@
                     if (enabled) {
                         statusSpan.innerHTML = '● Active';
                         statusSpan.style.color = '#1e7e5e';
-                        Swal.fire({ title: 'Global Chat Active', text: 'All users can send messages (subject to individual permissions).', icon: 'success', background: '#1a3d33', color: '#fff', timer: 2000, showConfirmButton: false });
+                        Swal.fire({ 
+                            title: 'Global Chat Active', 
+                            text: 'All users can send messages (subject to individual permissions).', 
+                            icon: 'success', 
+                            background: '#1a3d33', 
+                            color: '#fff', 
+                            timer: 2000, 
+                            showConfirmButton: false 
+                        });
                     } else {
                         statusSpan.innerHTML = '○ Disabled';
                         statusSpan.style.color = '#dc3545';
-                        Swal.fire({ title: 'Global Chat Disabled', text: 'No users can send messages.', icon: 'warning', background: '#1a3d33', color: '#fff', timer: 2000, showConfirmButton: false });
+                        Swal.fire({ 
+                            title: 'Global Chat Disabled', 
+                            text: 'No users can send messages.', 
+                            icon: 'warning', 
+                            background: '#1a3d33', 
+                            color: '#fff', 
+                            timer: 2000, 
+                            showConfirmButton: false 
+                        });
                     }
                 },
                 
                 loadUsers: async function() {
                     try {
-                        const { data: investors } = await this.supabaseClient.from('investors').select('id, full_name, email, chat_enabled, voice_enabled, video_enabled');
-                        const { data: buyers } = await this.supabaseClient.from('buyers').select('id, full_name, email, chat_enabled, voice_enabled, video_enabled');
+                        const { data: investors, error: invError } = await this.supabaseClient
+                            .from('investors')
+                            .select('id, full_name, email, chat_enabled, voice_enabled, video_enabled');
+                        
+                        const { data: buyers, error: buyError } = await this.supabaseClient
+                            .from('buyers')
+                            .select('id, full_name, email, chat_enabled, voice_enabled, video_enabled');
+                        
+                        if (invError) console.error('Error loading investors:', invError);
+                        if (buyError) console.error('Error loading buyers:', buyError);
                         
                         this.users = [];
-                        if (investors) {
+                        if (investors && investors.length > 0) {
                             investors.forEach(inv => {
                                 this.users.push({
                                     id: inv.id,
@@ -1629,7 +1791,7 @@
                                 });
                             });
                         }
-                        if (buyers) {
+                        if (buyers && buyers.length > 0) {
                             buyers.forEach(buyer => {
                                 this.users.push({
                                     id: buyer.id,
@@ -1645,10 +1807,15 @@
                             });
                         }
                         
+                        console.log('Users loaded:', this.users.length);
                         this.renderUserList();
                         this.loadLastMessages();
                     } catch (error) {
                         console.error('Error loading users for chat:', error);
+                        const container = document.getElementById('chatUsersList');
+                        if (container) {
+                            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i> Error loading users. Please refresh.</div>';
+                        }
                     }
                 },
                 
@@ -1675,6 +1842,11 @@
                 renderUserList: function() {
                     const container = document.getElementById('chatUsersList');
                     if (!container) return;
+                    
+                    if (this.users.length === 0) {
+                        container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No users found. Add investors or buyers first.</p></div>';
+                        return;
+                    }
                     
                     const searchTerm = document.getElementById('chatUserSearch')?.value.toLowerCase() || '';
                     const filteredUsers = this.users.filter(user => 
@@ -1723,7 +1895,9 @@
                     return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
                 },
                 
-                filterUsers: function() { this.renderUserList(); },
+                filterUsers: function() { 
+                    this.renderUserList(); 
+                },
                 
                 selectUser: async function(userId, userType, userName) {
                     this.currentChatUserId = userId;
@@ -1733,7 +1907,7 @@
                     const perms = await this.getUserPermissions(userId, userType);
                     
                     document.getElementById('selectedUserName').textContent = userName;
-                    document.getElementById('selectedUserStatus').textContent = `${userType === 'investor' ? '💰 Investor' : '🛒 Buyer'} | Chat: ${perms.chatEnabled ? '✅' : '❌'} | Voice: ${perms.voiceEnabled ? '✅' : '❌'} | Video: ${perms.videoEnabled ? '✅' : '❌'}`;
+                    document.getElementById('selectedUserStatus').innerHTML = `${userType === 'investor' ? '💰 Investor' : '🛒 Buyer'} | <span style="color:${perms.chatEnabled ? '#1e7e5e' : '#dc3545'}">Chat ${perms.chatEnabled ? 'ON' : 'OFF'}</span> | <span style="color:${perms.voiceEnabled ? '#1e7e5e' : '#dc3545'}">Voice ${perms.voiceEnabled ? 'ON' : 'OFF'}</span> | <span style="color:${perms.videoEnabled ? '#1e7e5e' : '#dc3545'}">Video ${perms.videoEnabled ? 'ON' : 'OFF'}</span>`;
                     
                     this.updateIndividualControls();
                     
@@ -1796,7 +1970,9 @@
                 
                 setupEventListeners: function() {
                     const chatInput = document.getElementById('chatInput');
-                    if (chatInput) chatInput.addEventListener('input', () => this.sendTypingIndicator());
+                    if (chatInput) {
+                        chatInput.addEventListener('input', () => this.sendTypingIndicator());
+                    }
                 },
                 
                 startRealtimeSubscriptions: function() {
@@ -1817,10 +1993,13 @@
                 handleNewMessage: async function(message) {
                     if (!this.globalChatEnabled && message.sender_type !== 'admin') return;
                     
-                    // Check if user has chat permission
+                    // Check if user has chat permission - BLOCK if disabled
                     if (message.sender_type !== 'admin') {
                         const perms = await this.getUserPermissions(message.sender_id, message.sender_type);
-                        if (!perms.chatEnabled) return; // Block message if chat is disabled
+                        if (!perms.chatEnabled) {
+                            console.log('Message blocked - user chat disabled:', message.sender_id);
+                            return; // Block message completely
+                        }
                     }
                     
                     const isForCurrentChat = this.currentChatUserId && 
@@ -1849,20 +2028,28 @@
                 
                 handleMessageUpdate: function(message) {
                     const index = this.messages.findIndex(m => m.id === message.id);
-                    if (index !== -1) { this.messages[index] = message; this.renderMessages(); }
+                    if (index !== -1) { 
+                        this.messages[index] = message; 
+                        this.renderMessages(); 
+                    }
                 },
                 
                 handleMessageDelete: function(messageId) {
                     const index = this.messages.findIndex(m => m.id === messageId);
-                    if (index !== -1) { this.messages.splice(index, 1); this.renderMessages(); }
+                    if (index !== -1) { 
+                        this.messages.splice(index, 1); 
+                        this.renderMessages(); 
+                    }
                 },
                 
                 sendTypingIndicator: async function() {
                     if (!this.currentChatUserId || !this.currentChatUserType) return;
                     clearTimeout(this.typingTimeout);
                     await this.supabaseClient.from('chat_typing').insert([{
-                        sender_id: this.adminId, sender_type: 'admin',
-                        receiver_id: this.currentChatUserId, receiver_type: this.currentChatUserType,
+                        sender_id: this.adminId, 
+                        sender_type: 'admin',
+                        receiver_id: this.currentChatUserId, 
+                        receiver_type: this.currentChatUserType,
                         timestamp: new Date().toISOString()
                     }]);
                     this.typingTimeout = setTimeout(() => {}, 2000);
@@ -1888,28 +2075,50 @@
                         return;
                     }
                     
-                    // Check user permissions
+                    // Check user permissions - BLOCK if disabled
                     const perms = await this.getUserPermissions(this.currentChatUserId, this.currentChatUserType);
                     if (!perms.chatEnabled) {
-                        Swal.fire({ title: 'Chat Disabled', text: 'Chat is disabled for this user. Enable it from the controls above.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        Swal.fire({ 
+                            title: 'Chat Disabled', 
+                            text: 'Chat is disabled for this user. Enable it from the controls above to send messages.', 
+                            icon: 'warning', 
+                            background: '#1a3d33', 
+                            color: '#fff' 
+                        });
                         return;
                     }
                     
                     if (this.pendingMedia) {
                         if (this.pendingMedia.type === 'audio' && !perms.voiceEnabled) {
-                            Swal.fire({ title: 'Voice Disabled', text: 'Voice messages are disabled for this user.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                            Swal.fire({ 
+                                title: 'Voice Disabled', 
+                                text: 'Voice messages are disabled for this user.', 
+                                icon: 'warning', 
+                                background: '#1a3d33', 
+                                color: '#fff' 
+                            });
                             return;
                         }
                         if ((this.pendingMedia.type === 'video' || this.pendingMedia.type === 'image') && !perms.videoEnabled) {
-                            Swal.fire({ title: 'Media Disabled', text: 'Media messages are disabled for this user.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                            Swal.fire({ 
+                                title: 'Media Disabled', 
+                                text: 'Media messages are disabled for this user.', 
+                                icon: 'warning', 
+                                background: '#1a3d33', 
+                                color: '#fff' 
+                            });
                             return;
                         }
                     }
                     
                     let messageData = {
-                        sender_id: this.adminId, sender_type: 'admin',
-                        receiver_id: this.currentChatUserId, receiver_type: this.currentChatUserType,
-                        text: text || null, read: false, created_at: new Date().toISOString()
+                        sender_id: this.adminId, 
+                        sender_type: 'admin',
+                        receiver_id: this.currentChatUserId, 
+                        receiver_type: this.currentChatUserType,
+                        text: text || null, 
+                        read: false, 
+                        created_at: new Date().toISOString()
                     };
                     
                     if (this.pendingMedia) {
@@ -1940,7 +2149,13 @@
                     if (this.currentChatUserId) {
                         const perms = await this.getUserPermissions(this.currentChatUserId, this.currentChatUserType);
                         if (!perms.voiceEnabled) {
-                            Swal.fire({ title: 'Voice Disabled', text: 'Voice messages are disabled for this user.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                            Swal.fire({ 
+                                title: 'Voice Disabled', 
+                                text: 'Voice messages are disabled for this user.', 
+                                icon: 'warning', 
+                                background: '#1a3d33', 
+                                color: '#fff' 
+                            });
                             return;
                         }
                     }
@@ -1950,7 +2165,9 @@
                         this.mediaRecorder = new MediaRecorder(stream);
                         this.audioChunks = [];
                         
-                        this.mediaRecorder.ondataavailable = (event) => { this.audioChunks.push(event.data); };
+                        this.mediaRecorder.ondataavailable = (event) => { 
+                            this.audioChunks.push(event.data); 
+                        };
                         this.mediaRecorder.onstop = async () => {
                             const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
                             const reader = new FileReader();
@@ -2003,23 +2220,46 @@
                     if (this.recordingTimerInterval) clearInterval(this.recordingTimerInterval);
                 },
                 
-                showVoiceRecorder: function() { this.startVoiceRecording(); },
-                clearPendingMedia: function() { this.pendingMedia = null; document.getElementById('mediaPreview').classList.remove('active'); document.getElementById('mediaPreview').innerHTML = ''; },
+                showVoiceRecorder: function() { 
+                    this.startVoiceRecording(); 
+                },
+                
+                clearPendingMedia: function() { 
+                    this.pendingMedia = null; 
+                    document.getElementById('mediaPreview').classList.remove('active'); 
+                    document.getElementById('mediaPreview').innerHTML = ''; 
+                },
                 
                 setupEmojiPicker: function() {
                     const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
                     const picker = document.getElementById('emojiPicker');
-                    if (picker) picker.innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="adminChatSystem.addEmoji('${emoji}')">${emoji}</div>`).join('');
+                    if (picker) {
+                        picker.innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="adminChatSystem.addEmoji('${emoji}')">${emoji}</div>`).join('');
+                    }
                 },
                 
-                toggleEmojiPicker: function() { document.getElementById('emojiPicker').classList.toggle('active'); },
-                addEmoji: function(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.focus(); document.getElementById('emojiPicker').classList.remove('active'); },
+                toggleEmojiPicker: function() { 
+                    document.getElementById('emojiPicker').classList.toggle('active'); 
+                },
+                
+                addEmoji: function(emoji) { 
+                    const input = document.getElementById('chatInput'); 
+                    input.value += emoji; 
+                    input.focus(); 
+                    document.getElementById('emojiPicker').classList.remove('active'); 
+                },
                 
                 showAttachMenu: async function() {
                     if (this.currentChatUserId) {
                         const perms = await this.getUserPermissions(this.currentChatUserId, this.currentChatUserType);
                         if (!perms.videoEnabled) {
-                            Swal.fire({ title: 'Media Disabled', text: 'Media messages are disabled for this user.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                            Swal.fire({ 
+                                title: 'Media Disabled', 
+                                text: 'Media messages are disabled for this user.', 
+                                icon: 'warning', 
+                                background: '#1a3d33', 
+                                color: '#fff' 
+                            });
                             return;
                         }
                     }
@@ -2034,7 +2274,13 @@
                     if (this.currentChatUserId) {
                         const perms = await this.getUserPermissions(this.currentChatUserId, this.currentChatUserType);
                         if (!perms.videoEnabled) {
-                            Swal.fire({ title: 'Media Disabled', text: 'Media messages are disabled for this user.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                            Swal.fire({ 
+                                title: 'Media Disabled', 
+                                text: 'Media messages are disabled for this user.', 
+                                icon: 'warning', 
+                                background: '#1a3d33', 
+                                color: '#fff' 
+                            });
                             return;
                         }
                     }
@@ -2059,9 +2305,13 @@
                     reader.onload = (ev) => {
                         this.pendingMedia = { url: ev.target.result, type: type };
                         const preview = document.getElementById('mediaPreview');
-                        if (type === 'image') preview.innerHTML = `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button>`;
-                        else if (type === 'video') preview.innerHTML = `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button>`;
-                        else preview.innerHTML = `<div><i class="fas fa-file-alt"></i> ${file.name}<button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button></div>`;
+                        if (type === 'image') {
+                            preview.innerHTML = `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button>`;
+                        } else if (type === 'video') {
+                            preview.innerHTML = `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button>`;
+                        } else {
+                            preview.innerHTML = `<div><i class="fas fa-file-alt"></i> ${file.name}<button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button></div>`;
+                        }
                         preview.classList.add('active');
                     };
                     reader.readAsDataURL(file);
@@ -2081,60 +2331,127 @@
                     return [
                         { url: 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif' },
                         { url: 'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif' },
-                        { url: 'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif' }
+                        { url: 'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif' },
+                        { url: 'https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif' },
+                        { url: 'https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif' }
                     ];
                 },
                 
                 renderGIFs: function(gifs) {
                     const grid = document.getElementById('gifGrid');
-                    if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found</div>'; return; }
+                    if (!gifs.length) { 
+                        grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found</div>'; 
+                        return; 
+                    }
                     grid.innerHTML = gifs.map(g => `<img src="${g.url}" class="gif-item" onclick="adminChatSystem.sendGIF('${g.url}')">`).join('');
                 },
                 
-                searchGIFs: async function(query) { const gifs = await this.fetchGIFs(); this.renderGIFs(gifs); },
-                sendGIF: function(url) { this.pendingMedia = { url: url, type: 'image' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button>`; preview.classList.add('active'); this.closeGifPicker(); },
-                closeGifPicker: function() { document.getElementById('gifPickerModal').classList.remove('active'); },
+                searchGIFs: async function(query) { 
+                    const gifs = await this.fetchGIFs(); 
+                    this.renderGIFs(gifs); 
+                },
+                
+                sendGIF: function(url) { 
+                    this.pendingMedia = { url: url, type: 'image' }; 
+                    const preview = document.getElementById('mediaPreview'); 
+                    preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button>`; 
+                    preview.classList.add('active'); 
+                    this.closeGifPicker(); 
+                },
+                
+                closeGifPicker: function() { 
+                    document.getElementById('gifPickerModal').classList.remove('active'); 
+                },
                 
                 showProductSelector: async function() {
                     const { data: products } = await this.supabaseClient.from('products').select('*').eq('is_active', true);
-                    if (!products || products.length === 0) { Swal.fire({ title: 'No Products', text: 'No products available.', icon: 'info', background: '#1a3d33', color: '#fff' }); return; }
+                    if (!products || products.length === 0) { 
+                        Swal.fire({ title: 'No Products', text: 'No products available.', icon: 'info', background: '#1a3d33', color: '#fff' }); 
+                        return; 
+                    }
                     const modal = document.getElementById('productSelectorModal');
                     const list = document.getElementById('productSelectorList');
-                    list.innerHTML = products.map(product => `<div class="product-selector-item" onclick="adminChatSystem.sendProductCard('${product.id}', '${product.name}', '${product.price}', '${product.category || ''}', '${product.image_url || ''}')"><div style="flex:1;"><h4 style="color:#E8B13C;">${this.escapeHtml(product.name)}</h4><p>Rs. ${parseInt(product.price).toLocaleString()}</p></div></div>`).join('');
+                    list.innerHTML = products.map(product => `
+                        <div class="product-selector-item" onclick="adminChatSystem.sendProductCard('${product.id}', '${product.name}', '${product.price}', '${product.category || ''}', '${product.image_url || ''}')">
+                            <div style="flex:1;">
+                                <h4 style="color:#E8B13C;">${this.escapeHtml(product.name)}</h4>
+                                <p>Rs. ${parseInt(product.price).toLocaleString()}</p>
+                                <small>${product.category || ''}</small>
+                            </div>
+                        </div>
+                    `).join('');
                     modal.classList.add('active');
                 },
                 
                 sendProductCard: async function(id, name, price, category, imageUrl) {
                     this.closeProductSelector();
-                    if (!this.currentChatUserId || !this.currentChatUserType) { Swal.fire({ title: 'No User Selected', text: 'Please select a user first.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                    if (!this.currentChatUserId || !this.currentChatUserType) { 
+                        Swal.fire({ title: 'No User Selected', text: 'Please select a user first.', icon: 'warning', background: '#1a3d33', color: '#fff' }); 
+                        return; 
+                    }
                     const productData = { id, name, price, category, image: imageUrl };
-                    await this.supabaseClient.from('chat_messages').insert([{ sender_id: this.adminId, sender_type: 'admin', receiver_id: this.currentChatUserId, receiver_type: this.currentChatUserType, text: null, product_data: productData, read: false, created_at: new Date().toISOString() }]);
+                    await this.supabaseClient.from('chat_messages').insert([{ 
+                        sender_id: this.adminId, 
+                        sender_type: 'admin', 
+                        receiver_id: this.currentChatUserId, 
+                        receiver_type: this.currentChatUserType, 
+                        text: null, 
+                        product_data: productData, 
+                        read: false, 
+                        created_at: new Date().toISOString() 
+                    }]);
                 },
                 
-                closeProductSelector: function() { document.getElementById('productSelectorModal').classList.remove('active'); },
+                closeProductSelector: function() { 
+                    document.getElementById('productSelectorModal').classList.remove('active'); 
+                },
                 
                 shareLocation: function() {
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition((position) => {
                             const mapsUrl = `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`;
                             this.sendMessageWithText(`📍 Our Location: ${mapsUrl}`);
-                        }, () => { Swal.fire({ title: 'Location Error', text: 'Could not get location.', icon: 'error', background: '#1a3d33', color: '#fff' }); });
-                    } else { Swal.fire({ title: 'Not Supported', text: 'Geolocation not supported.', icon: 'warning', background: '#1a3d33', color: '#fff' }); }
+                        }, () => { 
+                            Swal.fire({ title: 'Location Error', text: 'Could not get location.', icon: 'error', background: '#1a3d33', color: '#fff' }); 
+                        });
+                    } else { 
+                        Swal.fire({ title: 'Not Supported', text: 'Geolocation not supported.', icon: 'warning', background: '#1a3d33', color: '#fff' }); 
+                    }
                 },
                 
                 sendMessageWithText: async function(text) {
                     if (!this.currentChatUserId || !this.currentChatUserType) return;
-                    await this.supabaseClient.from('chat_messages').insert([{ sender_id: this.adminId, sender_type: 'admin', receiver_id: this.currentChatUserId, receiver_type: this.currentChatUserType, text: text, read: false, created_at: new Date().toISOString() }]);
+                    await this.supabaseClient.from('chat_messages').insert([{ 
+                        sender_id: this.adminId, 
+                        sender_type: 'admin', 
+                        receiver_id: this.currentChatUserId, 
+                        receiver_type: this.currentChatUserType, 
+                        text: text, 
+                        read: false, 
+                        created_at: new Date().toISOString() 
+                    }]);
                 },
                 
-                showPollCreator: function() { document.getElementById('pollModal').classList.add('active'); },
-                addPollOption: function() { const container = document.getElementById('pollOptionsList'); const div = document.createElement('div'); div.className = 'poll-option-row'; div.innerHTML = `<input type="text" placeholder="Option ${container.children.length + 1}" style="flex:1;">`; container.appendChild(div); },
+                showPollCreator: function() { 
+                    document.getElementById('pollModal').classList.add('active'); 
+                },
+                
+                addPollOption: function() { 
+                    const container = document.getElementById('pollOptionsList'); 
+                    const div = document.createElement('div'); 
+                    div.className = 'poll-option-row'; 
+                    div.innerHTML = `<input type="text" placeholder="Option ${container.children.length + 1}" style="flex:1;">`; 
+                    container.appendChild(div); 
+                },
                 
                 sendPoll: async function() {
                     const question = document.getElementById('pollQuestion').value.trim();
                     const optionInputs = document.querySelectorAll('#pollOptionsList input');
                     const options = Array.from(optionInputs).map(inp => inp.value.trim()).filter(opt => opt);
-                    if (!question || options.length < 2) { Swal.fire({ title: 'Invalid Poll', text: 'Please enter a question and at least 2 options.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                    if (!question || options.length < 2) { 
+                        Swal.fire({ title: 'Invalid Poll', text: 'Please enter a question and at least 2 options.', icon: 'warning', background: '#1a3d33', color: '#fff' }); 
+                        return; 
+                    }
                     const pollText = `📊 POLL: ${question}\n\n${options.map((opt, i) => `${i + 1}. ${opt}`).join('\n')}\n\nReply with the option number to vote!`;
                     await this.sendMessageWithText(pollText);
                     document.getElementById('pollQuestion').value = '';
@@ -2142,14 +2459,22 @@
                     this.closePollModal();
                 },
                 
-                closePollModal: function() { document.getElementById('pollModal').classList.remove('active'); },
+                closePollModal: function() { 
+                    document.getElementById('pollModal').classList.remove('active'); 
+                },
                 
                 createEvent: async function() {
                     const { value: formData } = await Swal.fire({
                         title: 'Create Event',
                         html: `<input id="eventTitle" class="swal2-input" placeholder="Event Title"><input id="eventDate" class="swal2-input" type="datetime-local"><textarea id="eventDesc" class="swal2-textarea" placeholder="Description"></textarea>`,
-                        confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff',
-                        preConfirm: () => ({ title: document.getElementById('eventTitle').value, date: document.getElementById('eventDate').value, desc: document.getElementById('eventDesc').value })
+                        confirmButtonColor: '#E8B13C', 
+                        background: '#1a3d33', 
+                        color: '#fff',
+                        preConfirm: () => ({ 
+                            title: document.getElementById('eventTitle').value, 
+                            date: document.getElementById('eventDate').value, 
+                            desc: document.getElementById('eventDesc').value 
+                        })
                     });
                     if (formData && formData.title) {
                         const eventText = `📅 EVENT: ${formData.title}\n🕒 Date/Time: ${new Date(formData.date).toLocaleString()}\n📝 Details: ${formData.desc || 'No details'}`;
@@ -2159,19 +2484,43 @@
                 },
                 
                 deleteMessage: async function(messageId, deleteForEveryone = false) {
-                    const result = await Swal.fire({ title: 'Delete Message', text: deleteForEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'question', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' });
+                    const result = await Swal.fire({ 
+                        title: 'Delete Message', 
+                        text: deleteForEveryone ? 'Delete for everyone?' : 'Delete only for you?', 
+                        icon: 'question', 
+                        showCancelButton: true, 
+                        confirmButtonColor: '#dc3545', 
+                        confirmButtonText: 'Delete', 
+                        background: '#1a3d33', 
+                        color: '#fff' 
+                    });
                     if (result.isConfirmed) {
-                        if (deleteForEveryone) await this.supabaseClient.from('chat_messages').delete().eq('id', messageId);
-                        else await this.supabaseClient.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId);
+                        if (deleteForEveryone) {
+                            await this.supabaseClient.from('chat_messages').delete().eq('id', messageId);
+                        } else {
+                            await this.supabaseClient.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId);
+                        }
                         Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
                     }
                     this.closeMenu();
                 },
                 
                 editMessage: async function(messageId, oldText) {
-                    const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' });
+                    const { value: newText } = await Swal.fire({ 
+                        title: 'Edit Message', 
+                        input: 'textarea', 
+                        inputValue: oldText, 
+                        showCancelButton: true, 
+                        confirmButtonColor: '#E8B13C', 
+                        background: '#1a3d33', 
+                        color: '#fff' 
+                    });
                     if (newText && newText !== oldText) {
-                        await this.supabaseClient.from('chat_messages').update({ text: newText, edited: true, edited_at: new Date().toISOString() }).eq('id', messageId);
+                        await this.supabaseClient.from('chat_messages').update({ 
+                            text: newText, 
+                            edited: true, 
+                            edited_at: new Date().toISOString() 
+                        }).eq('id', messageId);
                         Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
                     }
                     this.closeMenu();
@@ -2185,10 +2534,22 @@
                     this.closeMenu();
                 },
                 
-                cancelReply: function() { this.replyToMessage = null; document.getElementById('replyBar').classList.remove('active'); },
+                cancelReply: function() { 
+                    this.replyToMessage = null; 
+                    document.getElementById('replyBar').classList.remove('active'); 
+                },
                 
                 forwardMessage: async function(message) {
-                    const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff', confirmButtonColor: '#E8B13C' });
+                    const { value: userInput } = await Swal.fire({ 
+                        title: 'Forward Message', 
+                        input: 'textarea', 
+                        inputPlaceholder: 'Add a note (optional)', 
+                        showCancelButton: true, 
+                        confirmButtonText: 'Forward', 
+                        background: '#1a3d33', 
+                        color: '#fff', 
+                        confirmButtonColor: '#E8B13C' 
+                    });
                     const forwardText = userInput ? `📨 Forwarded: "${message.text || '[Media]'}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text || '[Media]'}"`;
                     await this.sendMessageWithText(forwardText);
                     Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
@@ -2198,33 +2559,61 @@
                 toggleMessageActions: function(messageId) {
                     const menuId = `menu-${messageId.replace(/-/g, '')}`;
                     const menu = document.getElementById(menuId);
-                    if (this.currentOpenMenu && this.currentOpenMenu !== menuId) document.getElementById(this.currentOpenMenu)?.classList.remove('show');
-                    if (menu) { menu.classList.toggle('show'); this.currentOpenMenu = menu.classList.contains('show') ? menuId : null; }
+                    if (this.currentOpenMenu && this.currentOpenMenu !== menuId) {
+                        document.getElementById(this.currentOpenMenu)?.classList.remove('show');
+                    }
+                    if (menu) { 
+                        menu.classList.toggle('show'); 
+                        this.currentOpenMenu = menu.classList.contains('show') ? menuId : null; 
+                    }
                 },
                 
-                closeMenu: function() { if (this.currentOpenMenu) { document.getElementById(this.currentOpenMenu)?.classList.remove('show'); this.currentOpenMenu = null; } },
+                closeMenu: function() { 
+                    if (this.currentOpenMenu) { 
+                        document.getElementById(this.currentOpenMenu)?.classList.remove('show'); 
+                        this.currentOpenMenu = null; 
+                    } 
+                },
                 
                 renderMessages: function() {
                     const container = document.getElementById('chatMessagesArea');
                     if (!container) return;
                     let statusHtml = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div>';
-                    if (this.messages.length === 0) { container.innerHTML = statusHtml + '<div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Start chatting with the user</p></div>'; return; }
+                    if (this.messages.length === 0) { 
+                        container.innerHTML = statusHtml + '<div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Start chatting with the user</p></div>'; 
+                        return; 
+                    }
                     
                     let messagesHtml = this.messages.map(msg => {
-                        if (msg.deleted_for_sender && msg.sender_type === 'admin') return `<div class="message sent"><div class="message-bubble"><div class="message-text" style="font-style:italic; opacity:0.6;">Message deleted</div><div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>`;
+                        if (msg.deleted_for_sender && msg.sender_type === 'admin') {
+                            return `<div class="message sent"><div class="message-bubble"><div class="message-text" style="font-style:italic; opacity:0.6;">Message deleted</div><div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>`;
+                        }
                         const isSent = msg.sender_type === 'admin';
                         const senderName = isSent ? 'You (Admin)' : (this.currentChatUserType === 'investor' ? '💰 Investor' : '🛒 Buyer');
                         let replyHtml = '';
-                        if (msg.reply_to) { const repliedMsg = this.messages.find(m => m.id === msg.reply_to); if (repliedMsg) replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${this.escapeHtml((repliedMsg.text || '[Media]').substring(0, 50))}</div>`; }
+                        if (msg.reply_to) { 
+                            const repliedMsg = this.messages.find(m => m.id === msg.reply_to); 
+                            if (repliedMsg) {
+                                replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${this.escapeHtml((repliedMsg.text || '[Media]').substring(0, 50))}</div>`;
+                            }
+                        }
                         let mediaHtml = '';
                         if (msg.media_url) {
-                            if (msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank')">`;
-                            else if (msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`;
-                            else if (msg.media_type === 'audio') mediaHtml = `<div class="voice-message-preview"><audio src="${msg.media_url}" controls></audio></div>`;
-                            else mediaHtml = `<div class="voice-message-preview"><i class="fas fa-file-alt"></i> <a href="${msg.media_url}" target="_blank">View File</a></div>`;
+                            if (msg.media_type === 'image') {
+                                mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank')">`;
+                            } else if (msg.media_type === 'video') {
+                                mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`;
+                            } else if (msg.media_type === 'audio') {
+                                mediaHtml = `<div class="voice-message-preview"><audio src="${msg.media_url}" controls></audio></div>`;
+                            } else {
+                                mediaHtml = `<div class="voice-message-preview"><i class="fas fa-file-alt"></i> <a href="${msg.media_url}" target="_blank">View File</a></div>`;
+                            }
                         }
                         let productHtml = '';
-                        if (msg.product_data) { const product = msg.product_data; productHtml = `<div class="product-card-message"><div style="flex:1;"><h4 style="color:#E8B13C;">${this.escapeHtml(product.name)}</h4><p>Rs. ${parseInt(product.price).toLocaleString()}</p></div></div>`; }
+                        if (msg.product_data) { 
+                            const product = msg.product_data; 
+                            productHtml = `<div class="product-card-message"><div style="flex:1;"><h4 style="color:#E8B13C;">${this.escapeHtml(product.name)}</h4><p>Rs. ${parseInt(product.price).toLocaleString()}</p></div></div>`; 
+                        }
                         const editedMark = msg.edited ? ' <span style="font-size:0.6rem;">(edited)</span>' : '';
                         const msgShortId = msg.id.replace(/-/g, '');
                         const timeStr = new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
@@ -2240,9 +2629,25 @@
                     this.scrollToBottom();
                 },
                 
-                escapeHtml: function(text) { if (!text) return ''; return text.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); },
-                scrollToBottom: function() { const container = document.getElementById('chatMessagesArea'); if (container) container.scrollTop = container.scrollHeight; },
-                updateUnreadIndicator: function() { const totalUnread = Object.values(this.userUnreadCounts).reduce((a, b) => a + b, 0); const liveChatTab = document.getElementById('liveChatTabBtn'); if (totalUnread > 0) liveChatTab.classList.add('has-unread'); else liveChatTab.classList.remove('has-unread'); }
+                escapeHtml: function(text) { 
+                    if (!text) return ''; 
+                    return text.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); 
+                },
+                
+                scrollToBottom: function() { 
+                    const container = document.getElementById('chatMessagesArea'); 
+                    if (container) container.scrollTop = container.scrollHeight; 
+                },
+                
+                updateUnreadIndicator: function() { 
+                    const totalUnread = Object.values(this.userUnreadCounts).reduce((a, b) => a + b, 0); 
+                    const liveChatTab = document.getElementById('liveChatTabBtn'); 
+                    if (totalUnread > 0) {
+                        liveChatTab.classList.add('has-unread'); 
+                    } else {
+                        liveChatTab.classList.remove('has-unread'); 
+                    }
+                }
             };
         })();
     </script>
