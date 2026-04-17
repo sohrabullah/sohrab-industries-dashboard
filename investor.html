@@ -505,6 +505,7 @@
             max-width: 320px;
             max-height: 280px;
             overflow-y: auto;
+            border: 1px solid rgba(232,177,60,0.3);
         }
         .emoji-picker.active { display: grid; }
         .emoji-item { font-size: 1.3rem; cursor: pointer; padding: 4px; text-align: center; }
@@ -660,17 +661,17 @@
                 <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments</h2>
                 <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + New Investment Request</button>
             </div>
-            <div class="table-container"></table><thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentsList"></tbody></table></div>
         </div>
 
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
-            <div class="table-container"><table><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
-            <div class="table-container"><table><thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody></table></div>
         </div>
 
         <div id="withdrawalsTab" class="tab-content">
@@ -678,7 +679,7 @@
                 <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
-            <div class="table-container"><tr><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
         </div>
 
         <div id="profileTab" class="tab-content">
@@ -714,16 +715,16 @@
                         <span><i class="fas fa-reply"></i> Replying to: <span id="replyingToText"></span></span>
                         <button onclick="window.investorChat.cancelReply()" style="background:none; border:none; color:#dc3545; cursor:pointer;">×</button>
                     </div>
-                    <div class="chat-toolbar" id="chatToolbar">
-                        <button class="chat-tool-btn" id="imageBtn" onclick="window.investorChat.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
-                        <button class="chat-tool-btn" id="videoBtn" onclick="window.investorChat.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
-                        <button class="chat-tool-btn" id="voiceBtn" onclick="window.investorChat.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
-                        <button class="chat-tool-btn" id="gifBtn" onclick="window.investorChat.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
+                    <div class="chat-toolbar">
+                        <button class="chat-tool-btn" onclick="window.investorChat.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
+                        <button class="chat-tool-btn" onclick="window.investorChat.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
+                        <button class="chat-tool-btn" onclick="window.investorChat.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
+                        <button class="chat-tool-btn" onclick="window.investorChat.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
                     </div>
                     <div class="chat-input-wrapper">
                         <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
-                        <button class="emoji-btn" id="emojiBtn" onclick="window.investorChat.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
-                        <button class="chat-send-btn" id="sendBtn" onclick="window.investorChat.sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                        <button class="emoji-btn" onclick="window.investorChat.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
+                        <button class="chat-send-btn" onclick="window.investorChat.sendMessage()"><i class="fas fa-paper-plane"></i></button>
                     </div>
                     <div id="emojiPicker" class="emoji-picker"></div>
                     <div id="mediaPreview" class="media-preview"></div>
@@ -794,7 +795,6 @@
                         .single();
                     
                     if (error || !data) {
-                        console.log('Using default permissions for investor');
                         userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
                     } else {
                         userPermissions = {
@@ -802,29 +802,24 @@
                             voiceEnabled: data.voice_enabled !== false,
                             videoEnabled: data.video_enabled !== false
                         };
-                        console.log('Investor permissions loaded:', userPermissions);
                     }
+                    
+                    updateUIForPermissions();
+                    return userPermissions;
                 } catch (err) {
-                    console.error('Error checking investor permissions:', err);
+                    console.error('Error checking permissions:', err);
                     userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
+                    return userPermissions;
                 }
-                
-                updateUIForPermissions();
-                return userPermissions;
             }
             
             // Update UI based on permissions
             function updateUIForPermissions() {
                 const warningDiv = document.getElementById('permissionWarning');
                 const chatInput = document.getElementById('chatInput');
-                const sendBtn = document.getElementById('sendBtn');
-                const emojiBtn = document.getElementById('emojiBtn');
-                const imageBtn = document.getElementById('imageBtn');
-                const videoBtn = document.getElementById('videoBtn');
-                const voiceBtn = document.getElementById('voiceBtn');
-                const gifBtn = document.getElementById('gifBtn');
-                
-                console.log('Updating investor UI for permissions:', userPermissions);
+                const sendBtn = document.querySelector('.chat-send-btn');
+                const emojiBtn = document.querySelector('.emoji-btn');
+                const chatToolbar = document.querySelectorAll('.chat-tool-btn');
                 
                 if (!userPermissions.chatEnabled) {
                     warningDiv.innerHTML = '<i class="fas fa-ban"></i> ⚠️ Chat has been disabled by admin. You cannot send messages.';
@@ -832,33 +827,27 @@
                     if (chatInput) { chatInput.disabled = true; chatInput.classList.add('disabled'); }
                     if (sendBtn) { sendBtn.disabled = true; sendBtn.classList.add('disabled'); }
                     if (emojiBtn) { emojiBtn.disabled = true; emojiBtn.classList.add('disabled'); }
-                    if (imageBtn) { imageBtn.disabled = true; imageBtn.classList.add('disabled'); }
-                    if (videoBtn) { videoBtn.disabled = true; videoBtn.classList.add('disabled'); }
-                    if (voiceBtn) { voiceBtn.disabled = true; voiceBtn.classList.add('disabled'); }
-                    if (gifBtn) { gifBtn.disabled = true; gifBtn.classList.add('disabled'); }
+                    chatToolbar.forEach(btn => { btn.disabled = true; btn.classList.add('disabled'); });
                 } else {
                     warningDiv.classList.remove('show');
                     if (chatInput) { chatInput.disabled = false; chatInput.classList.remove('disabled'); }
                     if (sendBtn) { sendBtn.disabled = false; sendBtn.classList.remove('disabled'); }
                     if (emojiBtn) { emojiBtn.disabled = false; emojiBtn.classList.remove('disabled'); }
                     
-                    // Voice permission
-                    if (!userPermissions.voiceEnabled) {
-                        if (voiceBtn) { voiceBtn.disabled = true; voiceBtn.classList.add('disabled'); }
-                    } else {
-                        if (voiceBtn) { voiceBtn.disabled = false; voiceBtn.classList.remove('disabled'); }
-                    }
-                    
-                    // Video/Media permission
-                    if (!userPermissions.videoEnabled) {
-                        if (imageBtn) { imageBtn.disabled = true; imageBtn.classList.add('disabled'); }
-                        if (videoBtn) { videoBtn.disabled = true; videoBtn.classList.add('disabled'); }
-                        if (gifBtn) { gifBtn.disabled = true; gifBtn.classList.add('disabled'); }
-                    } else {
-                        if (imageBtn) { imageBtn.disabled = false; imageBtn.classList.remove('disabled'); }
-                        if (videoBtn) { videoBtn.disabled = false; videoBtn.classList.remove('disabled'); }
-                        if (gifBtn) { gifBtn.disabled = false; gifBtn.classList.remove('disabled'); }
-                    }
+                    // Apply individual permissions to toolbar buttons
+                    chatToolbar.forEach(btn => {
+                        const btnText = btn.innerText.toLowerCase();
+                        if (!userPermissions.voiceEnabled && btnText.includes('voice')) {
+                            btn.disabled = true;
+                            btn.classList.add('disabled');
+                        } else if (!userPermissions.videoEnabled && (btnText.includes('image') || btnText.includes('video') || btnText.includes('gif'))) {
+                            btn.disabled = true;
+                            btn.classList.add('disabled');
+                        } else {
+                            btn.disabled = false;
+                            btn.classList.remove('disabled');
+                        }
+                    });
                 }
             }
             
@@ -945,9 +934,10 @@
                     const overlay = document.getElementById('dragOverlay');
                     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { 
                         dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); 
+                        document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); 
                     });
-                    ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active')); });
-                    ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active')); });
+                    ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active'), false); });
+                    ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false); });
                     dropZone.addEventListener('drop', async (e) => {
                         const files = e.dataTransfer.files;
                         if (files.length > 0 && userPermissions.chatEnabled && userPermissions.videoEnabled) {
@@ -989,17 +979,19 @@
                     
                     const input = document.getElementById('chatInput');
                     const text = input.value.trim();
-                    if (!text && !pendingMedia) return;
+                    if (!text && !pendingMedia && !currentReplyingTo) return;
                     
                     // Check voice permission for voice messages
                     if (pendingMedia && pendingMedia.type === 'audio' && !userPermissions.voiceEnabled) {
                         Swal.fire({ title: 'Voice Disabled', text: 'Voice messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        this.clearPendingMedia();
                         return;
                     }
                     
                     // Check video permission for media
                     if (pendingMedia && (pendingMedia.type === 'image' || pendingMedia.type === 'video') && !userPermissions.videoEnabled) {
                         Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        this.clearPendingMedia();
                         return;
                     }
                     
