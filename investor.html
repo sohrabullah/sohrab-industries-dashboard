@@ -284,6 +284,7 @@
             max-height: 100px;
             border-radius: 8px;
             object-fit: cover;
+            cursor: pointer;
         }
         .remove-screenshot {
             background: #dc3545;
@@ -794,7 +795,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr></thead>
                     <tbody id="investmentRequestsList"></tbody>
                 </table>
@@ -804,7 +805,7 @@
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead>
                     <tbody id="profitsList"></tbody>
                 </table>
@@ -1030,7 +1031,7 @@
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         currentInvestmentScreenshot = e.target.result;
-                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`;
+                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot" onclick="window.open('${e.target.result}','_blank')"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`;
                         previewDiv.classList.add('active');
                     };
                     reader.readAsDataURL(input.files[0]);
@@ -1088,8 +1089,9 @@
             }
             
             function closeModal(modalId) {
-                document.getElementById(modalId).classList.remove('active');
-                document.getElementById(modalId).style.display = 'none';
+                const modal = document.getElementById(modalId);
+                modal.classList.remove('active');
+                modal.style.display = 'none';
             }
             
             window.closeModal = closeModal;
@@ -1152,7 +1154,10 @@
                 setupDragAndDrop() {
                     const dropZone = document.getElementById('chatMessagesArea');
                     const overlay = document.getElementById('dragOverlay');
-                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); });
+                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { 
+                        dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); 
+                        document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); 
+                    });
                     ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active'), false); });
                     ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false); });
                     dropZone.addEventListener('drop', async (e) => {
@@ -1281,7 +1286,7 @@
                 const tbody = document.getElementById('investmentRequestsList');
                 if (!tbody) return;
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
+                if(!data?.length) { tbody.innerHTML='<td><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
                 tbody.innerHTML = data.map(inv => `<tr>
                     <td>${new Date(inv.created_at).toLocaleDateString()}</td>
                     <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
@@ -1359,7 +1364,6 @@
             
             // Open modals with proper display
             document.getElementById('openInvestmentModalBtn').onclick = () => {
-                // Reset form
                 document.getElementById('selectedPaymentMethod').value = '';
                 document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
                 currentInvestmentScreenshot = null;
@@ -1369,18 +1373,15 @@
                 document.getElementById('investmentAmount').value = '';
                 document.getElementById('investmentTransactionId').value = '';
                 document.getElementById('investmentNotes').value = '';
-                // Show modal
                 const modal = document.getElementById('investmentModal');
                 modal.style.display = 'flex';
                 modal.classList.add('active');
             };
             
             document.getElementById('openWithdrawalModalBtn').onclick = () => {
-                // Reset form
                 document.getElementById('withdrawAmount').value = '';
                 document.getElementById('accountTitle').value = '';
                 document.getElementById('accountDetails').value = '';
-                // Show modal
                 const modal = document.getElementById('withdrawalModal');
                 modal.style.display = 'flex';
                 modal.classList.add('active');
@@ -1393,18 +1394,23 @@
                 const notes = document.getElementById('investmentNotes').value;
                 if(!amount || !paymentMethod || !transactionId) { showToast('Amount, Payment Method and Transaction ID required', true); return; }
                 if(parseFloat(amount) < 1000) { showToast('Minimum investment Rs. 1,000', true); return; }
-                const { error } = await supabase.from('investments').insert([{ 
+                const insertData = { 
                     investor_id: currentInvestorId, 
                     amount: parseFloat(amount), 
                     investment_date: new Date().toISOString().split('T')[0], 
                     payment_method: paymentMethod, 
                     transaction_id: transactionId, 
                     status: 'pending', 
-                    notes: notes || `Payment via ${paymentMethod}`,
-                    screenshot: currentInvestmentScreenshot
-                }]);
-                if(error) showToast(error.message, true);
-                else { 
+                    notes: notes || `Payment via ${paymentMethod}`
+                };
+                if (currentInvestmentScreenshot) {
+                    insertData.screenshot = currentInvestmentScreenshot;
+                }
+                const { error } = await supabase.from('investments').insert([insertData]);
+                if(error) {
+                    console.error('Investment error:', error);
+                    showToast(error.message || 'Failed to submit investment request', true);
+                } else { 
                     showToast('Investment request submitted!', false); 
                     closeModal('investmentModal'); 
                     await loadInvestmentRequests(); 
@@ -1429,8 +1435,10 @@
                     account_details: accountDetails, 
                     status: 'pending' 
                 }]);
-                if(error) showToast(error.message, true);
-                else { 
+                if(error) {
+                    console.error('Withdrawal error:', error);
+                    showToast(error.message || 'Failed to submit withdrawal request', true);
+                } else { 
                     showToast('Withdrawal request submitted!', false); 
                     closeModal('withdrawalModal'); 
                     await loadWithdrawals(); 
