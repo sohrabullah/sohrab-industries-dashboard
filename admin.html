@@ -46,6 +46,16 @@
             50% { opacity: 0.6; background: linear-gradient(135deg, #ff6b6b, #e74c3c); }
         }
         
+        @keyframes typingAnim {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-4px); opacity: 1; }
+        }
+        
+        @keyframes wave {
+            from { height: 15px; }
+            to { height: 50px; }
+        }
+        
         ::-webkit-scrollbar { width: 10px; height: 10px; }
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
@@ -243,6 +253,7 @@
         
         .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); }
         
+        /* Screenshot Styles */
         .screenshot-preview {
             max-width: 80px;
             max-height: 60px;
@@ -267,11 +278,430 @@
         }
         .upload-screenshot-btn:hover { background: rgba(232,177,60,0.4); }
         
+        /* Chat System Styles */
+        .chat-container {
+            display: flex;
+            height: calc(100vh - 320px);
+            min-height: 600px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(232,177,60,0.2);
+        }
+        
+        .chat-user-list {
+            width: 450px;
+            background: linear-gradient(145deg, rgba(10,35,28,0.95), rgba(5,25,18,0.95));
+            border-right: 1px solid rgba(232,177,60,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-user-list-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(232,177,60,0.2);
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .chat-user-list-header h3 { color: #E8B13C; margin: 0 0 10px 0; display: flex; align-items: center; gap: 10px; }
+        .chat-user-search { width: 100%; padding: 10px 15px; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 25px; color: white; }
+        
+        .chat-users-scroll { flex: 1; overflow-y: auto; padding: 10px 0; }
+        
+        .chat-user-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            position: relative;
+            border-bottom: 1px solid rgba(232,177,60,0.1);
+        }
+        
+        .chat-user-item:hover { background: rgba(232,177,60,0.1); }
+        .chat-user-item.active { background: rgba(232,177,60,0.15); border-left-color: #E8B13C; }
+        
+        .chat-user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .chat-user-avatar i { font-size: 24px; color: #0a1f1a; }
+        
+        .chat-user-info { flex: 1; min-width: 0; }
+        
+        .chat-user-name {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .chat-user-type {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            background: rgba(232,177,60,0.2);
+            border-radius: 12px;
+            color: #E8B13C;
+        }
+        
+        .user-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .user-control-btn {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(232,177,60,0.3);
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: rgba(255,255,255,0.7);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .user-control-btn.active { background: #1e7e5e; color: white; border-color: #1e7e5e; }
+        .user-control-btn.disabled { background: #dc3545; color: white; border-color: #dc3545; }
+        .user-control-btn:hover { transform: scale(1.02); }
+        
+        .chat-user-preview {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.5);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .chat-user-unread {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(15,35,28,0.95);
+        }
+        
+        .chat-area-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(232,177,60,0.2);
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .chat-area-info { display: flex; align-items: center; gap: 15px; }
+        .chat-area-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .chat-area-avatar i { font-size: 22px; color: #0a1f1a; }
+        .chat-area-info h3 { color: #E8B13C; margin: 0 0 5px 0; font-size: 1.1rem; }
+        .chat-area-info p { color: rgba(255,255,255,0.5); margin: 0; font-size: 0.75rem; }
+        
+        .individual-controls-group {
+            display: flex;
+            gap: 12px;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 15px;
+            border-radius: 40px;
+        }
+        
+        .individual-control-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 30px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .individual-control-btn.active { background: #1e7e5e; color: white; }
+        .individual-control-btn.disabled { background: #dc3545; color: white; }
+        .individual-control-btn:hover { transform: scale(1.02); }
+        
+        .chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: rgba(10, 31, 26, 0.3);
+        }
+        
+        .message {
+            max-width: 75%;
+            width: auto;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin-bottom: 8px;
+            animation: fadeSlideUp 0.2s ease-out;
+        }
+        
+        .message.sent { align-self: flex-end; margin-left: auto; margin-right: 4px; }
+        .message.received { align-self: flex-start; margin-right: auto; margin-left: 4px; }
+        
+        .message-bubble { padding: 8px 12px; border-radius: 18px; position: relative; word-wrap: break-word; }
+        .message.sent .message-bubble { background: #dcf8c5; color: #111; border-bottom-right-radius: 4px; }
+        .message.received .message-bubble { background: rgba(255,255,255,0.12); color: white; border-bottom-left-radius: 4px; }
+        
+        .sender-name { font-size: 0.7rem; font-weight: bold; margin-bottom: 4px; color: #E8B13C; }
+        .message.sent .sender-name { color: #0a5e3a; }
+        .message-text { font-size: 0.9rem; line-height: 1.4; white-space: pre-wrap; }
+        
+        .message-time { font-size: 0.6rem; opacity: 0.7; margin-top: 4px; display: flex; gap: 6px; align-items: center; }
+        .message.sent .message-time { justify-content: flex-end; color: #555; }
+        
+        .reply-preview { background: rgba(232,177,60,0.15); padding: 5px 8px; border-radius: 10px; margin-bottom: 5px; font-size: 0.7rem; border-left: 3px solid #E8B13C; }
+        
+        .message-actions-trigger {
+            position: absolute;
+            right: -32px;
+            top: 6px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.6;
+            color: #E8B13C;
+            font-size: 12px;
+            z-index: 10;
+        }
+        
+        .message:hover .message-actions-trigger { opacity: 1; }
+        .message.sent .message-actions-trigger { right: -32px; left: auto; }
+        .message.received .message-actions-trigger { left: -32px; right: auto; }
+        
+        .message-actions-menu {
+            position: absolute;
+            background: #1a3d33;
+            border-radius: 12px;
+            padding: 6px;
+            display: none;
+            gap: 4px;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(232,177,60,0.3);
+            flex-direction: column;
+            min-width: 140px;
+        }
+        
+        .message-actions-menu.show { display: flex; }
+        .message.sent .message-actions-menu { right: 0; top: 100%; margin-top: 5px; }
+        .message.received .message-actions-menu { left: 0; top: 100%; margin-top: 5px; }
+        
+        .message-action-btn { background: none; border: none; color: #E8B13C; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; text-align: left; display: flex; align-items: center; gap: 8px; }
+        .message-action-btn:hover { background: rgba(232,177,60,0.2); }
+        .message-action-btn.danger { color: #dc3545; }
+        
+        .chat-media { max-width: 200px; max-height: 200px; border-radius: 12px; margin: 4px 0; cursor: pointer; }
+        .voice-message-preview { display: flex; align-items: center; gap: 8px; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 30px; min-width: 180px; }
+        
+        .product-card-message { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 8px; margin-top: 5px; display: flex; gap: 10px; cursor: pointer; transition: all 0.2s; }
+        .product-card-message:hover { background: rgba(232,177,60,0.2); }
+        
+        .typing-indicator { background: rgba(232,177,60,0.1); border-radius: 18px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; font-size: 0.7rem; color: #E8B13C; width: fit-content; margin: 0 12px 8px 12px; }
+        .typing-dot { width: 5px; height: 5px; background: #E8B13C; border-radius: 50%; display: inline-block; animation: typingAnim 1.4s infinite; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        .online-status { display: inline-flex; align-items: center; gap: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 20px; margin-bottom: 8px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ecc71; animation: pulseGreen 1.5s infinite; }
+        @keyframes pulseGreen { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .chat-input-area { padding: 12px 16px; background: rgba(0,0,0,0.4); border-top: 1px solid rgba(232,177,60,0.2); }
+        .reply-bar { background: rgba(232,177,60,0.1); padding: 6px 10px; border-radius: 10px; margin-bottom: 8px; display: none; font-size: 0.75rem; }
+        .reply-bar.active { display: flex; justify-content: space-between; align-items: center; }
+        
+        .chat-toolbar { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+        .chat-tool-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.3); border-radius: 30px; padding: 5px 12px; color: #E8B13C; cursor: pointer; font-size: 0.7rem; }
+        .chat-tool-btn:hover { background: rgba(232,177,60,0.2); }
+        
+        .chat-input-wrapper { display: flex; gap: 10px; align-items: center; }
+        .chat-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(232,177,60,0.4); border-radius: 40px; padding: 10px 16px; color: white; resize: none; font-size: 0.85rem; font-family: 'Inter', sans-serif; max-height: 100px; }
+        .chat-input:focus { outline: none; border-color: #E8B13C; }
+        
+        .emoji-btn, .chat-send-btn { background: linear-gradient(135deg, #E8B13C, #c99b2e); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: #0a1f1a; font-size: 1.1rem; }
+        
+        .emoji-picker {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            background: #1a3d33;
+            border-radius: 20px;
+            padding: 12px;
+            display: none;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 6px;
+            z-index: 1001;
+            max-width: 340px;
+            max-height: 280px;
+            overflow-y: auto;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        .emoji-picker.active { display: grid; }
+        .emoji-item { font-size: 1.3rem; cursor: pointer; padding: 4px; text-align: center; }
+        .emoji-item:hover { transform: scale(1.1); background: rgba(232,177,60,0.2); border-radius: 6px; }
+        
+        .gif-picker-modal {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 350px;
+            max-height: 400px;
+            background: #1a3d33;
+            border-radius: 20px;
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        .gif-picker-modal.active { display: flex; }
+        .gif-search-header { padding: 10px; background: #0a2f24; display: flex; gap: 8px; }
+        .gif-search-header input { flex: 1; padding: 8px; border-radius: 20px; border: none; background: rgba(255,255,255,0.1); color: white; }
+        .gif-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; max-height: 300px; overflow-y: auto; }
+        .gif-item { width: 100%; border-radius: 10px; cursor: pointer; }
+        
+        .media-preview { margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 12px; display: none; position: relative; }
+        .media-preview.active { display: block; }
+        .remove-media { position: absolute; top: -8px; right: -8px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; }
+        
+        .voice-recording-overlay {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            padding: 20px;
+            text-align: center;
+            z-index: 1002;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            border-top: 1px solid rgba(232,177,60,0.3);
+        }
+        .voice-recording-overlay.active { transform: translateY(0); }
+        .recording-wave { display: flex; justify-content: center; align-items: center; gap: 5px; height: 50px; }
+        .wave-bar { width: 3px; background: #dc3545; border-radius: 2px; animation: wave 0.5s ease-in-out infinite alternate; }
+        .wave-bar:nth-child(1) { animation-delay: 0s; height: 25px; }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 35px; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 45px; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 35px; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; height: 25px; }
+        .recording-controls { display: flex; justify-content: center; gap: 20px; margin-top: 12px; }
+        .recording-stop-btn, .recording-cancel-btn { width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; font-size: 20px; }
+        .recording-stop-btn { background: #dc3545; color: white; }
+        .recording-cancel-btn { background: #6c757d; color: white; }
+        .recording-timer { font-size: 1rem; color: white; margin-top: 8px; }
+        
+        .product-selector-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80%;
+            overflow-y: auto;
+            z-index: 1002;
+            display: none;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        .product-selector-modal.active { display: block; animation: slideInModal 0.3s ease-out; }
+        .product-selector-header { padding: 15px; background: linear-gradient(135deg, #0a2f24, #1a4a3a); border-bottom: 1px solid rgba(232,177,60,0.3); display: flex; justify-content: space-between; align-items: center; }
+        .product-selector-item { padding: 15px; border-bottom: 1px solid rgba(232,177,60,0.1); display: flex; gap: 15px; cursor: pointer; transition: all 0.3s; }
+        .product-selector-item:hover { background: rgba(232,177,60,0.1); }
+        
+        .poll-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            z-index: 1002;
+            display: none;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        .poll-modal.active { display: block; animation: slideInModal 0.3s ease-out; }
+        .poll-option-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        
+        .quick-replies { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+        .quick-reply-btn { background: rgba(232,177,60,0.15); border: 1px solid rgba(232,177,60,0.3); border-radius: 20px; padding: 4px 12px; font-size: 0.7rem; color: #E8B13C; cursor: pointer; }
+        
+        .chat-system-toggle { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 12px; }
+        .toggle-switch { position: relative; width: 50px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #dc3545; transition: 0.3s; border-radius: 24px; }
+        .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%; }
+        input:checked + .toggle-slider { background-color: #1e7e5e; }
+        input:checked + .toggle-slider:before { transform: translateX(26px); }
+        
+        .perm-badge {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+        .perm-enabled { background: #1e7e5e; color: white; }
+        .perm-disabled { background: #dc3545; color: white; }
+        
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; text-align: center; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
             .nav-tabs { justify-content: center; }
             .nav-tab { padding: 8px 16px; font-size: 12px; }
+            .chat-container { flex-direction: column; height: auto; }
+            .chat-user-list { width: 100%; max-height: 400px; }
+            .message { max-width: 85%; }
+            .user-controls { flex-wrap: wrap; }
+            .individual-controls-group { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -303,6 +733,7 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
+            <button class="nav-tab live-chat-tab" onclick="showSection('livechat')" id="liveChatTabBtn"><i class="fas fa-comments"></i> Live Chat</button>
         </div>
 
         <!-- Dashboard Section -->
@@ -328,8 +759,8 @@
                 </div>
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
-            <div class="search-box"><input type="text" id="investorSearch" placeholder="Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
+            <div class="table-container"></table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
@@ -344,7 +775,7 @@
                 </div>
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
-            <div class="search-box"><input type="text" id="buyerSearch" placeholder="Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
+            <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
             <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
@@ -390,7 +821,7 @@
         <!-- Withdrawals Section -->
         <div id="withdrawalsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
-            <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary">Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button></div>
+            <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary">Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button></div>
             <div class="table-container"><table><thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Screenshot</th><th>Actions</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
         </div>
 
@@ -407,17 +838,120 @@
                 </div>
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
-            <div class="search-box"><input type="text" id="productSearch" placeholder="Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
+            <div class="table-container"></table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
         <!-- Orders Section -->
         <div id="ordersSection" class="admin-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
-                <div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div>
+                <div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="🔍 Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div>
             </div>
             <div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
+        </div>
+
+        <!-- Live Chat Section -->
+        <div id="livechatSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat Control Center</h2>
+            
+            <div class="chat-system-toggle">
+                <i class="fas fa-power-off" style="color:#E8B13C;"></i>
+                <span style="color:white;">Global Chat System:</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="chatSystemToggle" checked onchange="adminChatSystem.toggleGlobalChatSystem(this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span id="chatSystemStatus" style="color:#1e7e5e;">● Active</span>
+            </div>
+            
+            <div class="chat-container">
+                <div class="chat-user-list">
+                    <div class="chat-user-list-header">
+                        <h3><i class="fas fa-users"></i> Conversations</h3>
+                        <input type="text" id="chatUserSearch" class="chat-user-search" placeholder="Search users..." onkeyup="adminChatSystem.filterUsers()">
+                    </div>
+                    <div class="chat-users-scroll" id="chatUsersList">
+                        <div class="empty-state" style="padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading users...</div>
+                    </div>
+                </div>
+                
+                <div class="chat-area">
+                    <div class="chat-area-header" id="chatAreaHeader">
+                        <div class="chat-area-info">
+                            <div class="chat-area-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div><h3 id="selectedUserName">Select a conversation</h3><p id="selectedUserStatus">Choose a user to start chatting</p></div>
+                        </div>
+                        <div id="individualControls" class="individual-controls-group"></div>
+                    </div>
+                    
+                    <div id="chatMessagesArea" class="chat-messages-area">
+                        <div class="empty-state" style="text-align: center; padding: 50px;"><i class="fas fa-comments" style="font-size: 48px; margin-bottom: 15px;"></i><p>Select a user to start chatting</p></div>
+                    </div>
+                    
+                    <div id="typingIndicatorArea"></div>
+                    
+                    <div class="chat-input-area">
+                        <div id="replyBar" class="reply-bar"><span><i class="fas fa-reply"></i> Replying to: <span id="replyingToText"></span></span><button onclick="adminChatSystem.cancelReply()" style="background:none; border:none; color:#dc3545; cursor:pointer;">×</button></div>
+                        
+                        <div class="quick-replies">
+                            <button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('Thank you for contacting Sohrab Industries! How can I help you today?')">🙏 Thank You</button>
+                            <button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('Your request is being processed. We will get back to you shortly.')">⏳ Processing</button>
+                            <button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('I have forwarded your concern to the relevant department.')">📤 Forwarded</button>
+                            <button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('Please provide your order/investment ID for faster assistance.')">🆔 Need ID</button>
+                        </div>
+                        
+                        <div class="chat-toolbar">
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showDocumentMenu()"><i class="fas fa-file-pdf"></i> Document</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showProductSelector()"><i class="fas fa-box"></i> Product</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showPollCreator()"><i class="fas fa-poll"></i> Poll</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.shareLocation()"><i class="fas fa-map-marker-alt"></i> Location</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.createEvent()"><i class="fas fa-calendar-alt"></i> Event</button>
+                        </div>
+                        
+                        <div class="chat-input-wrapper">
+                            <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();adminChatSystem.sendMessage();}"></textarea>
+                            <button class="emoji-btn" onclick="adminChatSystem.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
+                            <button class="chat-send-btn" onclick="adminChatSystem.sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                        
+                        <div id="emojiPicker" class="emoji-picker"></div>
+                        <div id="mediaPreview" class="media-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="voiceRecordingOverlay" class="voice-recording-overlay">
+        <div class="recording-wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
+        <div class="recording-timer" id="recordingTimer">0:00</div>
+        <div class="recording-controls"><button class="recording-cancel-btn" onclick="adminChatSystem.cancelVoiceRecording()"><i class="fas fa-times"></i></button><button class="recording-stop-btn" onclick="adminChatSystem.stopVoiceRecording()"><i class="fas fa-stop"></i></button></div>
+    </div>
+    
+    <div id="productSelectorModal" class="product-selector-modal">
+        <div class="product-selector-header"><h3 style="color:#E8B13C;">Select Product to Share</h3><button onclick="adminChatSystem.closeProductSelector()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div>
+        <div id="productSelectorList"></div>
+    </div>
+
+    <div id="gifPickerModal" class="gif-picker-modal">
+        <div class="gif-search-header"><input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="adminChatSystem.searchGIFs(this.value)"><button onclick="adminChatSystem.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px; cursor:pointer;">&times;</button></div>
+        <div id="gifGrid" class="gif-grid"><div style="padding:20px;text-align:center;">Loading GIFs...</div></div>
+    </div>
+
+    <div id="pollModal" class="poll-modal">
+        <div class="product-selector-header"><h3 style="color:#E8B13C;">Create a Poll</h3><button onclick="adminChatSystem.closePollModal()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div>
+        <div style="padding:20px;">
+            <div class="form-group"><label>Poll Question</label><input type="text" id="pollQuestion" placeholder="Ask a question..."></div>
+            <div class="form-group"><label>Options</label>
+                <div id="pollOptionsList"><div class="poll-option-row"><input type="text" placeholder="Option 1" style="flex:1;"></div><div class="poll-option-row"><input type="text" placeholder="Option 2" style="flex:1;"></div></div>
+                <button onclick="adminChatSystem.addPollOption()" class="btn-primary" style="margin-top:10px; padding:6px 12px; font-size:0.8rem;">+ Add Option</button>
+            </div>
+            <button onclick="adminChatSystem.sendPoll()" class="btn-primary" style="margin-top:15px; width:100%;">Send Poll</button>
         </div>
     </div>
 
@@ -430,31 +964,100 @@
         let supabaseClient = null;
         let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [], allProducts = [];
 
-        // Helper Functions
         function showNotification(msg, isError = false, title = "") { 
-            Swal.fire({ icon: isError ? 'error' : 'success', title: title || (isError ? 'Error!' : 'Success!'), text: msg, background: '#1a3d33', color: '#fff', confirmButtonColor: '#E8B13C', timer: isError ? 3000 : 2000 });
+            Swal.fire({ icon: isError ? 'error' : 'success', title: title || (isError ? 'Error!' : 'Success!'), text: msg, background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff', confirmButtonColor: '#E8B13C', timer: isError ? 3000 : 2000 });
         }
         
         async function confirmAction(message, title = "Confirm Action") {
-            const result = await Swal.fire({ title: title, text: message, icon: 'question', showCancelButton: true, confirmButtonColor: '#E8B13C', cancelButtonColor: '#dc3545', confirmButtonText: 'Yes, proceed!', cancelButtonText: 'Cancel', background: '#1a3d33', color: '#fff' });
+            const result = await Swal.fire({ title: title, text: message, icon: 'question', showCancelButton: true, confirmButtonColor: '#E8B13C', cancelButtonColor: '#dc3545', confirmButtonText: 'Yes, proceed!', cancelButtonText: 'Cancel', background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff' });
             return result.isConfirmed;
         }
         
         window.showSection = function(section) {
             document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            const targetSection = document.getElementById(section + 'Section');
+            const targetSection = document.getElementById(`${section}Section`);
             if (targetSection) targetSection.classList.add('active');
             const btns = document.querySelectorAll('.nav-tab');
-            for(let btn of btns) { 
-                if(btn.innerText.toLowerCase().includes(section.toLowerCase())) { 
-                    btn.classList.add('active'); 
-                    break; 
-                } 
+            for(let btn of btns) { if(btn.innerText.toLowerCase().includes(section.toLowerCase())) { btn.classList.add('active'); break; } }
+            if (section === 'livechat' && window.adminChatSystem) { 
+                setTimeout(() => { 
+                    window.adminChatSystem.loadUsers(); 
+                    window.adminChatSystem.updateUnreadIndicator(); 
+                }, 100); 
             }
         };
 
-        // Business Functions
+        // SCREENSHOT FUNCTIONS (NEW FEATURES)
+        window.uploadWithdrawalScreenshot = async function(withdrawalId) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async (ev) => {
+                        await supabaseClient.from('withdrawals').update({ screenshot_url: ev.target.result }).eq('id', withdrawalId);
+                        showNotification('Screenshot uploaded successfully!', false, 'Uploaded');
+                        await loadWithdrawals();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        };
+        
+        window.uploadInvestmentScreenshot = async function(investmentId) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async (ev) => {
+                        await supabaseClient.from('investments').update({ screenshot_url: ev.target.result }).eq('id', investmentId);
+                        showNotification('Screenshot uploaded successfully!', false, 'Uploaded');
+                        await loadInvestmentRequests();
+                        await loadInvestmentHistory();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        };
+        
+        window.approveWithdrawalWithScreenshot = async function(id, amount, investorId) {
+            const { data: withdrawal } = await supabaseClient.from('withdrawals').select('screenshot_url').eq('id', id).single();
+            if (!withdrawal.screenshot_url) {
+                Swal.fire({ title: 'Screenshot Required', text: 'Please upload a transaction screenshot before approving this withdrawal.', icon: 'warning', confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' });
+                return;
+            }
+            if(!await confirmAction(`Approve withdrawal of Rs. ${amount.toLocaleString()}?`, 'Approve Withdrawal')) return; 
+            await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
+            showNotification('Withdrawal approved!', false, 'Approved'); 
+            await loadWithdrawals(); 
+            await loadInvestors(); 
+            await loadStats(); 
+        };
+        
+        window.approveInvestmentWithScreenshot = async function(id, amount, investorId) {
+            const { data: investment } = await supabaseClient.from('investments').select('screenshot_url').eq('id', id).single();
+            if (!investment.screenshot_url) {
+                Swal.fire({ title: 'Screenshot Required', text: 'Please upload a payment screenshot before approving this investment request.', icon: 'warning', confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' });
+                return;
+            }
+            if(!await confirmAction(`Approve investment of Rs. ${amount.toLocaleString()}?`, 'Approve Investment')) return; 
+            await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
+            showNotification('Investment approved!', false, 'Approved'); 
+            await loadInvestmentRequests(); 
+            await loadInvestmentHistory(); 
+            await loadInvestors(); 
+            await loadStats(); 
+        };
+
+        // Business Functions (existing)
         async function loadStats() {
             if(!supabaseClient) return;
             const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
@@ -481,18 +1084,12 @@
             if(!supabaseClient) return;
             const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
             allInvestors = data || [];
-            const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>'<option value="'+i.id+'">'+i.full_name+'</option>').join('');
+            const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${i.full_name}</option>`).join('');
             if(document.getElementById('investorSelect')) document.getElementById('investorSelect').innerHTML = selectHtml;
             if(document.getElementById('profitInvestorSelect')) document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
             const investorsList = document.getElementById('investorsList');
             if(investorsList) {
-                if(allInvestors.length === 0) {
-                    investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>';
-                } else {
-                    investorsList.innerHTML = allInvestors.map(function(i) {
-                        return '<tr><td><strong>'+i.full_name+'</strong></td><td>'+i.email+'</td><td>'+(i.phone||'-')+'</td><td>'+(i.city||'-')+'</td><td>Rs.'+(i.total_investment||0).toLocaleString()+'</td><td>Rs.'+(i.total_profit||0).toLocaleString()+'</td><td>Rs.'+(i.available_balance||0).toLocaleString()+'</td><td class="action-buttons"><button onclick="deleteInvestor(\''+i.id+'\')" class="btn-danger">Delete</button></td></tr>';
-                    }).join('');
-                }
+                investorsList.innerHTML = allInvestors.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
             }
         }
 
@@ -502,13 +1099,7 @@
             allBuyers = data || [];
             const buyersList = document.getElementById('buyersList');
             if(buyersList) {
-                if(allBuyers.length === 0) {
-                    buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>';
-                } else {
-                    buyersList.innerHTML = allBuyers.map(function(b) {
-                        return '<tr><td><strong>'+b.full_name+'</strong></td><td>'+b.email+'</td><td>'+(b.phone||'-')+'</td><td>'+(b.address||'-')+'</td><td class="action-buttons"><button onclick="deleteBuyer(\''+b.id+'\')" class="btn-danger">Delete</button></td></tr>';
-                    }).join('');
-                }
+                buyersList.innerHTML = allBuyers.map(b=>`<tr><td><strong>${b.full_name}</strong></td><td>${b.email}</td><td>${b.phone||'-'}</td><td>${b.address||'-'}</td><td><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
             }
         }
 
@@ -518,13 +1109,8 @@
             allProducts = data || [];
             const productsList = document.getElementById('productsList');
             if(productsList) {
-                if (!data || data.length === 0) { 
-                    productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>'; 
-                    return; 
-                }
-                productsList.innerHTML = data.map(function(p) {
-                    return '<tr><td><strong>'+p.name+'</strong></td><td>'+p.category+'</td><td>Rs.'+(p.price||0).toLocaleString()+'</td><td>'+(p.stock_quantity||0)+'</td><td class="action-buttons"><button onclick="editProduct(\''+p.id+'\')" class="btn-warning">Edit</button><button onclick="uploadProductImage(\''+p.id+'\')" class="btn-info">Upload Image</button><button onclick="deleteProduct(\''+p.id+'\')" class="btn-danger">Delete</button></td></tr>';
-                }).join('');
+                if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>'; return; }
+                productsList.innerHTML = data.map(p=>`<tr><td><strong>${p.name}</strong></td><td>${p.category}</td><td>Rs.${(p.price||0).toLocaleString()}</td><td>${p.stock_quantity||0}</td><td><button onclick="editProduct('${p.id}')" class="btn-warning">Edit</button><button onclick="uploadProductImage('${p.id}')" class="btn-info">Upload Image</button><button onclick="deleteProduct('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
             }
         }
 
@@ -533,14 +1119,7 @@
             const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
             const investmentHistory = document.getElementById('investmentHistory');
             if(investmentHistory) {
-                if(!data || data.length === 0) {
-                    investmentHistory.innerHTML = '<tr><td colspan="7" class="empty-state">No investment history found</td></tr>';
-                } else {
-                    investmentHistory.innerHTML = data.map(function(i) {
-                        var screenshotHtml = i.screenshot_url ? '<img src="'+i.screenshot_url+'" class="screenshot-preview" onclick="window.open(\''+i.screenshot_url+'\',\'_blank\')">' : '-';
-                        return '<tr><td>'+(i.investors?.full_name||'-')+'</td><td>Rs.'+(i.amount||0).toLocaleString()+'</td><td>'+new Date(i.investment_date).toLocaleDateString()+'</td><td>'+(i.payment_method||'-')+'</td><td><span class="status-badge status-active">'+i.status+'</span></td><td>'+screenshotHtml+'</td><td class="action-buttons"><button onclick="deleteInvestment(\''+i.id+'\')" class="btn-danger">Delete</button></td></tr>';
-                    }).join('');
-                }
+                investmentHistory.innerHTML = (data||[]).map(i=>`<tr><td>${i.investors?.full_name||'-'}</td><td>Rs.${(i.amount||0).toLocaleString()}</td><td>${new Date(i.investment_date).toLocaleDateString()}</td><td>${i.payment_method||'-'}</td><td><span class="status-badge status-active">${i.status}</span></td><td>${i.screenshot_url ? `<img src="${i.screenshot_url}" class="screenshot-preview" onclick="window.open('${i.screenshot_url}','_blank')">` : '-'}</td><td><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
             }
         }
         
@@ -549,13 +1128,7 @@
             const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); 
             const profitHistory = document.getElementById('profitHistory');
             if(profitHistory) {
-                if(!data || data.length === 0) {
-                    profitHistory.innerHTML = '<tr><td colspan="5" class="empty-state">No profit history found</td></tr>';
-                } else {
-                    profitHistory.innerHTML = data.map(function(p) {
-                        return '<tr><td>'+(p.investors?.full_name||'-')+'</td><td>Rs.'+(p.amount||0).toLocaleString()+'</td><td>'+new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})+'</td><td>'+(p.profit_percentage||10)+'%</td><td class="action-buttons"><button onclick="deleteProfit(\''+p.id+'\')" class="btn-danger">Delete</button></td></tr>';
-                    }).join('');
-                }
+                profitHistory.innerHTML = (data||[]).map(p=>`<tr><td>${p.investors?.full_name||'-'}</td><td>Rs.${(p.amount||0).toLocaleString()}</td><td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td><td>${p.profit_percentage||10}%</td><td><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
             }
         }
         
@@ -564,14 +1137,7 @@
             const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); 
             const requestsList = document.getElementById('investmentRequestsList');
             if(requestsList) {
-                if(!data || data.length === 0) {
-                    requestsList.innerHTML = '<tr><td colspan="7" class="empty-state">No pending investment requests</td></tr>';
-                } else {
-                    requestsList.innerHTML = data.map(function(req) {
-                        var screenshotHtml = req.screenshot_url ? '<img src="'+req.screenshot_url+'" class="screenshot-preview" onclick="window.open(\''+req.screenshot_url+'\',\'_blank\')">' : '<span class="upload-screenshot-btn" onclick="uploadInvestmentScreenshot(\''+req.id+'\')"><i class="fas fa-camera"></i> Upload</span>';
-                        return '<tr><td><strong>'+(req.investors?.full_name || '-')+'</strong><br><small>'+(req.investors?.email || '-')+'</small></td><td>Rs. '+(req.amount || 0).toLocaleString()+'</td><td>'+new Date(req.created_at).toLocaleDateString()+'</td><td>'+(req.payment_method || '-')+'</td><td>'+(req.transaction_id || '-')+'</td><td>'+screenshotHtml+'</td><td class="action-buttons"><button onclick="approveInvestmentWithScreenshot(\''+req.id+'\', '+req.amount+', \''+req.investor_id+'\')" class="btn-success">Approve</button><button onclick="rejectInvestment(\''+req.id+'\')" class="btn-danger">Reject</button></td></tr>';
-                    }).join('');
-                }
+                requestsList.innerHTML = (data || []).map(req => `<tr><td><strong>${req.investors?.full_name || '-'}</strong><br><small>${req.investors?.email || '-'}</small></td><td>Rs. ${(req.amount || 0).toLocaleString()}</td><td>${new Date(req.created_at).toLocaleDateString()}</td><td>${req.payment_method || '-'}</td><td>${req.transaction_id || '-'}</td><td>${req.screenshot_url ? `<img src="${req.screenshot_url}" class="screenshot-preview" onclick="window.open('${req.screenshot_url}','_blank')">` : '<span class="upload-screenshot-btn" onclick="uploadInvestmentScreenshot(\''+req.id+'\')"><i class="fas fa-camera"></i> Upload</span>'}</td><td><button onclick="approveInvestmentWithScreenshot('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></td></tr>`).join('');
             }
         }
         
@@ -581,15 +1147,9 @@
             allWithdrawals = data || [];
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
-            if (!allWithdrawals || allWithdrawals.length === 0) { 
-                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; 
-                return; 
+            if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; return; }
+            withdrawalsList.innerHTML = allWithdrawals.map(w => `<tr><td><strong>${w.investors?.full_name || 'Unknown'}</strong></td><td><small>${w.investors?.email || '-'}</small></td><td>Rs. ${(w.amount || 0).toLocaleString()}</td><td>${new Date(w.request_date).toLocaleDateString()}</td><td>${w.payment_method || '-'}</td><td><small>${w.account_details || '-'}</small></td><td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td><td>${w.screenshot_url ? `<img src="${w.screenshot_url}" class="screenshot-preview" onclick="window.open('${w.screenshot_url}','_blank')">` : (w.status === 'pending' ? '<span class="upload-screenshot-btn" onclick="uploadWithdrawalScreenshot(\''+w.id+'\')"><i class="fas fa-camera"></i> Upload</span>' : '-')}</td><td>${w.status === 'pending' ? `<button onclick="approveWithdrawalWithScreenshot('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td></tr>`).join('');
             }
-            withdrawalsList.innerHTML = allWithdrawals.map(function(w) {
-                var screenshotHtml = w.screenshot_url ? '<img src="'+w.screenshot_url+'" class="screenshot-preview" onclick="window.open(\''+w.screenshot_url+'\',\'_blank\')">' : (w.status === 'pending' ? '<span class="upload-screenshot-btn" onclick="uploadWithdrawalScreenshot(\''+w.id+'\')"><i class="fas fa-camera"></i> Upload</span>' : '-');
-                var actionsHtml = w.status === 'pending' ? '<button onclick="approveWithdrawalWithScreenshot(\''+w.id+'\', '+w.amount+', \''+w.investor_id+'\')" class="btn-success">Approve</button><button onclick="rejectWithdrawal(\''+w.id+'\')" class="btn-danger">Reject</button>' : '<button onclick="deleteWithdrawal(\''+w.id+'\')" class="btn-danger">Delete</button>';
-                return '<tr><td><strong>'+(w.investors?.full_name || 'Unknown')+'</strong></td><td><small>'+(w.investors?.email || '-')+'</small></td><td>Rs. '+(w.amount || 0).toLocaleString()+'</td><td>'+new Date(w.request_date).toLocaleDateString()+'</td><td>'+(w.payment_method || '-')+'</td><td><small>'+(w.account_details || '-')+'</small></td><td><span class="status-badge '+(w.status === 'pending' ? 'status-pending' : 'status-active')+'">'+w.status+'</span></td><td>'+screenshotHtml+'</td><td class="action-buttons">'+actionsHtml+'</td></tr>';
-            }).join('');
         }
         
         async function loadOrders() { 
@@ -598,108 +1158,26 @@
             allOrders = data || [];
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
-            if (!allOrders || allOrders.length === 0) { 
-                ordersList.innerHTML = '<tr><td colspan="9" class="empty-state">No orders found</td></tr>'; 
-                return; 
+            if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="9" class="empty-state">No orders found</td></tr>'; return; }
+            ordersList.innerHTML = allOrders.map(o => `<tr><td><strong>${o.id?.slice(0, 12)}...</strong></td><td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td><td>Rs. ${(o.total_amount || 0).toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td>${o.payment_method || '-'}</td><td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></td><td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td><td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td><td><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
             }
-            ordersList.innerHTML = allOrders.map(function(o) {
-                return '<tr><td><strong>'+(o.id?.slice(0, 12)||'')+'...</strong></td><td><strong>'+(o.customer_name || o.user_type || 'buyer')+'</strong></td><td>Rs. '+(o.total_amount || 0).toLocaleString()+'</td><td>'+new Date(o.order_date).toLocaleDateString()+'</td><td>'+(o.payment_method || '-')+'</td><td><select onchange="updatePaymentStatus(\''+o.id+'\', this.value)" class="status-badge" style="padding:5px;"><option value="pending" '+(o.payment_status === 'pending' ? 'selected' : '')+'>Pending</option><option value="paid" '+(o.payment_status === 'paid' ? 'selected' : '')+'>Paid</option></select></td><td><small>'+(o.delivery_address?.substring(0, 30) || '-')+'</small></td><td><select onchange="updateOrderStatus(\''+o.id+'\', this.value)" class="status-badge" style="padding:5px;"><option value="pending" '+(o.status === 'pending' ? 'selected' : '')+'>Pending</option><option value="processing" '+(o.status === 'processing' ? 'selected' : '')+'>Processing</option><option value="shipped" '+(o.status === 'shipped' ? 'selected' : '')+'>Shipped</option><option value="delivered" '+(o.status === 'delivered' ? 'selected' : '')+'>Delivered</option><option value="cancelled" '+(o.status === 'cancelled' ? 'selected' : '')+'>Cancelled</option></select></td><td class="action-buttons"><button onclick="editOrder(\''+o.id+'\')" class="btn-warning">Edit</button><button onclick="deleteOrder(\''+o.id+'\')" class="btn-danger">Delete</button></td></tr>';
-            }).join('');
         }
         
         async function loadRecentActivities() { 
             const activities = []; 
             if(!supabaseClient) return;
             const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
-            if(inv && inv.length) inv.forEach(function(i) {
-                activities.push({action:'Investment',details:(i.investors?.full_name||'')+' invested Rs.'+i.amount,time:new Date(i.created_at).toLocaleString()});
-            }); 
+            if(inv) inv.forEach(i=>activities.push({action:'Investment',details:`${i.investors?.full_name} invested Rs.${i.amount}`,time:new Date(i.created_at).toLocaleString()})); 
             const { data: ord } = await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); 
-            if(ord && ord.length) ord.forEach(function(o) {
-                activities.push({action:'Order',details:'Order #'+(o.id?.slice(0,8)||'')+' - Rs.'+o.total_amount,time:new Date(o.created_at).toLocaleString()});
-            }); 
-            activities.sort(function(a,b){return new Date(b.time)-new Date(a.time);}); 
+            if(ord) ord.forEach(o=>activities.push({action:'Order',details:`Order #${o.id?.slice(0,8)} - Rs.${o.total_amount}`,time:new Date(o.created_at).toLocaleString()})); 
+            activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
             const recentActivities = document.getElementById('recentActivities');
             if(recentActivities) {
-                if(activities.length === 0) {
-                    recentActivities.innerHTML = '<tr><td colspan="4" class="empty-state">No recent activities</td></tr>';
-                } else {
-                    recentActivities.innerHTML = activities.slice(0,10).map(function(a) {
-                        return '<tr><td>'+a.action+'</td><td>'+a.details+'</td><td>'+a.time+'</td><td><button class="btn-info">View</button></td></tr>';
-                    }).join('');
-                }
+                recentActivities.innerHTML = activities.slice(0,10).map(a=>`<tr><td>${a.action}</td><td>${a.details}</td><td>${a.time}</td><td><button class="btn-info">View</button></td></tr>`).join('');
             }
         }
 
-        // SCREENSHOT UPLOAD FUNCTIONS
-        window.uploadWithdrawalScreenshot = async function(withdrawalId) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = async function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = async function(ev) {
-                        await supabaseClient.from('withdrawals').update({ screenshot_url: ev.target.result }).eq('id', withdrawalId);
-                        showNotification('Screenshot uploaded successfully!', false, 'Uploaded');
-                        await loadWithdrawals();
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        };
-        
-        window.uploadInvestmentScreenshot = async function(investmentId) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = async function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = async function(ev) {
-                        await supabaseClient.from('investments').update({ screenshot_url: ev.target.result }).eq('id', investmentId);
-                        showNotification('Screenshot uploaded successfully!', false, 'Uploaded');
-                        await loadInvestmentRequests();
-                        await loadInvestmentHistory();
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        };
-        
-        window.approveWithdrawalWithScreenshot = async function(id, amount, investorId) {
-            const { data: withdrawal } = await supabaseClient.from('withdrawals').select('screenshot_url').eq('id', id).single();
-            if (!withdrawal || !withdrawal.screenshot_url) {
-                Swal.fire({ title: 'Screenshot Required', text: 'Please upload a transaction screenshot before approving this withdrawal.', icon: 'warning', confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' });
-                return;
-            }
-            if(!await confirmAction('Approve withdrawal of Rs. '+amount.toLocaleString()+'?', 'Approve Withdrawal')) return; 
-            await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
-            showNotification('Withdrawal approved!', false, 'Approved'); 
-            await loadWithdrawals(); 
-            await loadInvestors(); 
-            await loadStats(); 
-        };
-        
-        window.approveInvestmentWithScreenshot = async function(id, amount, investorId) {
-            const { data: investment } = await supabaseClient.from('investments').select('screenshot_url').eq('id', id).single();
-            if (!investment || !investment.screenshot_url) {
-                Swal.fire({ title: 'Screenshot Required', text: 'Please upload a payment screenshot before approving this investment request.', icon: 'warning', confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' });
-                return;
-            }
-            if(!await confirmAction('Approve investment of Rs. '+amount.toLocaleString()+'?', 'Approve Investment')) return; 
-            await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
-            showNotification('Investment approved!', false, 'Approved'); 
-            await loadInvestmentRequests(); 
-            await loadInvestmentHistory(); 
-            await loadInvestors(); 
-            await loadStats(); 
-        };
-
+        // CRUD Operations (existing)
         window.addNewInvestor = async function() {
             const name = document.getElementById('newInvestorName').value.trim();
             const email = document.getElementById('newInvestorEmail').value.trim();
@@ -708,7 +1186,7 @@
             const investment = parseFloat(document.getElementById('newInvestorInvestment').value) || 0;
             if(!name || !email){ showNotification('Name and email are required!', true, 'Missing Fields'); return; }
             const { error } = await supabaseClient.from('investors').insert([{ 
-                id: crypto.randomUUID(), full_name: name, email: email, phone: phone, city: city, 
+                id: crypto.randomUUID(), full_name: name, email, phone, city, 
                 total_investment: investment, total_profit: 0, available_balance: investment,
                 created_at: new Date().toISOString() 
             }]);
@@ -719,6 +1197,7 @@
             document.getElementById('newInvestorInvestment').value = '0';
             await loadInvestors(); 
             await loadStats();
+            if (window.adminChatSystem) window.adminChatSystem.loadUsers();
         };
 
         window.addNewBuyer = async function() {
@@ -728,7 +1207,7 @@
             const address = document.getElementById('newBuyerAddress').value;
             if(!name || !email){ showNotification('Name and email required!', true, 'Missing Fields'); return; }
             const { error } = await supabaseClient.from('buyers').insert([{ 
-                id: crypto.randomUUID(), full_name: name, email: email, phone: phone, address: address,
+                id: crypto.randomUUID(), full_name: name, email, phone, address,
                 created_at: new Date().toISOString() 
             }]);
             if(error){ showNotification(error.message, true, 'Error'); return; }
@@ -738,6 +1217,7 @@
             document.getElementById('newBuyerAddress').value = '';
             await loadBuyers(); 
             await loadStats();
+            if (window.adminChatSystem) window.adminChatSystem.loadUsers();
         };
 
         window.addNewProduct = async function() {
@@ -748,7 +1228,7 @@
             const stock = parseInt(document.getElementById('newProductStock').value) || 0;
             if(!name || !category || !price){ showNotification('Name, category and price required', true, 'Missing Fields'); return; }
             const { error } = await supabaseClient.from('products').insert([{ 
-                id: crypto.randomUUID(), name: name, category: category, wattage: wattage, price: price, 
+                id: crypto.randomUUID(), name, category, wattage, price, 
                 stock_quantity: stock, is_active: true, created_at: new Date().toISOString() 
             }]);
             if(error){ showNotification(error.message, true, 'Error'); return; }
@@ -770,6 +1250,7 @@
                 showNotification('Investor deleted', false, 'Deleted'); 
                 await loadInvestors(); 
                 await loadStats();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
             } 
         };
 
@@ -779,6 +1260,7 @@
                 showNotification('Buyer deleted', false, 'Deleted'); 
                 await loadBuyers(); 
                 await loadStats();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
             } 
         };
 
@@ -837,13 +1319,13 @@
 
         window.updatePaymentStatus = async function(id, status) { 
             await supabaseClient.from('orders').update({ payment_status: status }).eq('id', id); 
-            showNotification('Payment status updated to '+status+'!', false, 'Updated'); 
+            showNotification(`Payment status updated to ${status}!`, false, 'Updated'); 
             await loadOrders(); 
         };
         
         window.updateOrderStatus = async function(id, status) { 
             await supabaseClient.from('orders').update({ status: status }).eq('id', id); 
-            showNotification('Order status updated to '+status+'!', false, 'Updated'); 
+            showNotification(`Order status updated to ${status}!`, false, 'Updated'); 
             await loadOrders(); 
         };
         
@@ -857,20 +1339,18 @@
         };
         
         window.editOrder = async function(id) {
-            const order = allOrders.find(function(o) { return o.id === id; });
+            const order = allOrders.find(o => o.id === id);
             if(!order) return;
             const { value: formData } = await Swal.fire({
                 title: 'Edit Order',
-                html: '<input id="editAmount" class="swal2-input" placeholder="Amount" value="'+order.total_amount+'"><input id="editAddress" class="swal2-input" placeholder="Address" value="'+(order.delivery_address || '')+'">',
-                background: '#1a3d33', 
+                html: `<input id="editAmount" class="swal2-input" placeholder="Amount" value="${order.total_amount}"><input id="editAddress" class="swal2-input" placeholder="Address" value="${order.delivery_address || ''}">`,
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', 
                 color: '#fff', 
                 confirmButtonColor: '#E8B13C',
-                preConfirm: function() { 
-                    return { 
-                        amount: parseFloat(document.getElementById('editAmount').value), 
-                        address: document.getElementById('editAddress').value 
-                    };
-                }
+                preConfirm: () => ({ 
+                    amount: parseFloat(document.getElementById('editAmount').value), 
+                    address: document.getElementById('editAddress').value 
+                })
             });
             if (formData) {
                 await supabaseClient.from('orders').update({ 
@@ -883,21 +1363,19 @@
         };
 
         window.editProduct = async function(id) {
-            const product = allProducts.find(function(p) { return p.id === id; });
+            const product = allProducts.find(p => p.id === id);
             if(!product) return;
             const { value: formData } = await Swal.fire({
                 title: 'Edit Product',
-                html: '<input id="editName" class="swal2-input" placeholder="Name" value="'+product.name+'"><input id="editPrice" class="swal2-input" placeholder="Price" value="'+product.price+'"><input id="editStock" class="swal2-input" placeholder="Stock" value="'+(product.stock_quantity||0)+'">',
-                background: '#1a3d33', 
+                html: `<input id="editName" class="swal2-input" placeholder="Name" value="${product.name}"><input id="editPrice" class="swal2-input" placeholder="Price" value="${product.price}"><input id="editStock" class="swal2-input" placeholder="Stock" value="${product.stock_quantity}">`,
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', 
                 color: '#fff', 
                 confirmButtonColor: '#E8B13C',
-                preConfirm: function() { 
-                    return { 
-                        name: document.getElementById('editName').value, 
-                        price: parseFloat(document.getElementById('editPrice').value), 
-                        stock: parseInt(document.getElementById('editStock').value) || 0 
-                    };
-                }
+                preConfirm: () => ({ 
+                    name: document.getElementById('editName').value, 
+                    price: parseFloat(document.getElementById('editPrice').value), 
+                    stock: parseInt(document.getElementById('editStock').value) || 0 
+                })
             });
             if (formData) {
                 await supabaseClient.from('products').update({ 
@@ -914,11 +1392,11 @@
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
-            input.onchange = async function(e) {
+            input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = async function(ev) {
+                    reader.onload = async (ev) => {
                         await supabaseClient.from('products').update({ image_url: ev.target.result }).eq('id', id);
                         showNotification('Image uploaded!', false, 'Uploaded');
                         await loadProducts();
@@ -941,7 +1419,7 @@
             } 
             const { error } = await supabaseClient.from('investments').insert([{ 
                 investor_id: investorId, 
-                amount: amount, 
+                amount, 
                 investment_date: date, 
                 payment_method: paymentMethod, 
                 transaction_id: transactionId, 
@@ -969,7 +1447,7 @@
             } 
             const { error } = await supabaseClient.from('profits').insert([{ 
                 investor_id: investorId, 
-                amount: amount, 
+                amount, 
                 month: month + '-01', 
                 profit_percentage: percentage, 
                 paid: true, 
@@ -988,16 +1466,10 @@
         
         window.searchInvestors = function() { 
             const term = document.getElementById('investorSearch').value.toLowerCase(); 
-            const filtered = allInvestors.filter(function(i){ return i.full_name?.toLowerCase().includes(term) || i.email?.toLowerCase().includes(term); }); 
+            const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
             const investorsList = document.getElementById('investorsList');
             if(investorsList) {
-                if(filtered.length === 0) {
-                    investorsList.innerHTML = '<tr><td colspan="8" class="empty-state">No investors found</td></tr>';
-                } else {
-                    investorsList.innerHTML = filtered.map(function(i) {
-                        return '<tr><td><strong>'+i.full_name+'</strong></td><td>'+i.email+'</td><td>'+(i.phone||'-')+'</td><td>'+(i.city||'-')+'</td><td>Rs.'+(i.total_investment||0).toLocaleString()+'</td><td>Rs.'+(i.total_profit||0).toLocaleString()+'</td><td>Rs.'+(i.available_balance||0).toLocaleString()+'</td><td class="action-buttons"><button onclick="deleteInvestor(\''+i.id+'\')" class="btn-danger">Delete</button></td></tr>';
-                    }).join('');
-                }
+                investorsList.innerHTML = filtered.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
             }
         };
         
@@ -1008,16 +1480,10 @@
         
         window.searchBuyers = function() { 
             const term = document.getElementById('buyerSearch').value.toLowerCase(); 
-            const filtered = allBuyers.filter(function(b){ return b.full_name?.toLowerCase().includes(term) || b.email?.toLowerCase().includes(term); }); 
+            const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
             const buyersList = document.getElementById('buyersList');
             if(buyersList) {
-                if(filtered.length === 0) {
-                    buyersList.innerHTML = '<tr><td colspan="5" class="empty-state">No buyers found</td></tr>';
-                } else {
-                    buyersList.innerHTML = filtered.map(function(b) {
-                        return '<tr><td><strong>'+b.full_name+'</strong></td><td>'+b.email+'</td><td>'+(b.phone||'-')+'</td><td>'+(b.address||'-')+'</td><td class="action-buttons"><button onclick="deleteBuyer(\''+b.id+'\')" class="btn-danger">Delete</button></td></tr>';
-                    }).join('');
-                }
+                buyersList.innerHTML = filtered.map(b=>`<tr><td><strong>${b.full_name}</strong></td><td>${b.email}</td><td>${b.phone||'-'}</td><td>${b.address||'-'}</td><td><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
             }
         };
         
@@ -1028,18 +1494,14 @@
         
         window.searchWithdrawals = function() {
             const term = document.getElementById('withdrawalSearch').value.toLowerCase();
-            const filtered = allWithdrawals.filter(function(w){ return w.investors?.full_name?.toLowerCase().includes(term) || w.investors?.email?.toLowerCase().includes(term); });
+            const filtered = allWithdrawals.filter(w => w.investors?.full_name?.toLowerCase().includes(term) || w.investors?.email?.toLowerCase().includes(term));
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
             if (filtered.length === 0) { 
                 withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; 
                 return; 
             }
-            withdrawalsList.innerHTML = filtered.map(function(w) {
-                var screenshotHtml = w.screenshot_url ? '<img src="'+w.screenshot_url+'" class="screenshot-preview" onclick="window.open(\''+w.screenshot_url+'\',\'_blank\')">' : (w.status === 'pending' ? '<span class="upload-screenshot-btn" onclick="uploadWithdrawalScreenshot(\''+w.id+'\')"><i class="fas fa-camera"></i> Upload</span>' : '-');
-                var actionsHtml = w.status === 'pending' ? '<button onclick="approveWithdrawalWithScreenshot(\''+w.id+'\', '+w.amount+', \''+w.investor_id+'\')" class="btn-success">Approve</button><button onclick="rejectWithdrawal(\''+w.id+'\')" class="btn-danger">Reject</button>' : '<button onclick="deleteWithdrawal(\''+w.id+'\')" class="btn-danger">Delete</button>';
-                return '<tr><td><strong>'+(w.investors?.full_name || 'Unknown')+'</strong></td><td><small>'+(w.investors?.email || '-')+'</small></td><td>Rs. '+(w.amount || 0).toLocaleString()+'</td><td>'+new Date(w.request_date).toLocaleDateString()+'</td><td>'+(w.payment_method || '-')+'</td><td><small>'+(w.account_details || '-')+'</small></td><td><span class="status-badge '+(w.status === 'pending' ? 'status-pending' : 'status-active')+'">'+w.status+'</span></td><td>'+screenshotHtml+'</td><td class="action-buttons">'+actionsHtml+'</button></td></td>';
-            }).join('');
+            withdrawalsList.innerHTML = filtered.map(w => `<tr><td><strong>${w.investors?.full_name || 'Unknown'}</strong></td><td><small>${w.investors?.email || '-'}</small></td><td>Rs. ${(w.amount || 0).toLocaleString()}</td><td>${new Date(w.request_date).toLocaleDateString()}</td><td>${w.payment_method || '-'}</td><td><small>${w.account_details || '-'}</small></td><td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td><td>${w.screenshot_url ? `<img src="${w.screenshot_url}" class="screenshot-preview" onclick="window.open('${w.screenshot_url}','_blank')">` : (w.status === 'pending' ? '<span class="upload-screenshot-btn" onclick="uploadWithdrawalScreenshot(\''+w.id+'\')"><i class="fas fa-camera"></i> Upload</span>' : '-')}</td><td>${w.status === 'pending' ? `<button onclick="approveWithdrawalWithScreenshot('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td></tr>`).join('');
         };
         
         window.resetWithdrawalSearch = function() { 
@@ -1049,16 +1511,14 @@
         
         window.searchOrders = function() { 
             const term = document.getElementById('orderSearch').value.toLowerCase(); 
-            const filtered = allOrders.filter(function(o){ return o.id?.toLowerCase().includes(term) || (o.customer_name || o.user_type)?.toLowerCase().includes(term); });
+            const filtered = allOrders.filter(o => o.id?.toLowerCase().includes(term) || (o.customer_name || o.user_type)?.toLowerCase().includes(term));
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
             if (filtered.length === 0) { 
                 ordersList.innerHTML = '<tr><td colspan="9" class="empty-state">No orders found</td></tr>'; 
                 return; 
             }
-            ordersList.innerHTML = filtered.map(function(o) {
-                return '<tr><td><strong>'+(o.id?.slice(0, 12)||'')+'...</strong></td><td><strong>'+(o.customer_name || o.user_type || 'buyer')+'</strong></td><td>Rs. '+(o.total_amount || 0).toLocaleString()+'</td><td>'+new Date(o.order_date).toLocaleDateString()+'</td><td>'+(o.payment_method || '-')+'</td><td><select onchange="updatePaymentStatus(\''+o.id+'\', this.value)" class="status-badge" style="padding:5px;"><option value="pending" '+(o.payment_status === 'pending' ? 'selected' : '')+'>Pending</option><option value="paid" '+(o.payment_status === 'paid' ? 'selected' : '')+'>Paid</option></select></td><td><small>'+(o.delivery_address?.substring(0, 30) || '-')+'</small><td><select onchange="updateOrderStatus(\''+o.id+'\', this.value)" class="status-badge" style="padding:5px;"><option value="pending" '+(o.status === 'pending' ? 'selected' : '')+'>Pending</option><option value="processing" '+(o.status === 'processing' ? 'selected' : '')+'>Processing</option><option value="shipped" '+(o.status === 'shipped' ? 'selected' : '')+'>Shipped</option><option value="delivered" '+(o.status === 'delivered' ? 'selected' : '')+'>Delivered</option><option value="cancelled" '+(o.status === 'cancelled' ? 'selected' : '')+'>Cancelled</option></select></td><td class="action-buttons"><button onclick="editOrder(\''+o.id+'\')" class="btn-warning">Edit</button><button onclick="deleteOrder(\''+o.id+'\')" class="btn-danger">Delete</button></td></tr>';
-            }).join('');
+            ordersList.innerHTML = filtered.map(o => `<tr><td><strong>${o.id?.slice(0, 12)}...</strong></td><td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td><td>Rs. ${(o.total_amount || 0).toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td>${o.payment_method || '-'}</td><td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></td><td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td><td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td><td><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
         };
         
         window.resetOrderSearch = function() { 
@@ -1069,7 +1529,7 @@
         window.searchProducts = function() { 
             const term = document.getElementById('productSearch').value.toLowerCase(); 
             const rows = document.querySelectorAll('#productsList tr'); 
-            rows.forEach(function(row){ 
+            rows.forEach(row=>{ 
                 row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; 
             }); 
         };
@@ -1105,16 +1565,426 @@
                 window.location.href = 'index.html'; 
                 return null; 
             }
-            document.getElementById('adminEmail').innerHTML = '<i class="fas fa-user-shield"></i> '+user.email;
+            document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
             await refreshAllData();
             return user;
         }
         
-        // Initialize Supabase
         document.addEventListener('DOMContentLoaded', function() {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             checkAuth();
+            
+            setTimeout(() => {
+                if (window.adminChatSystem) {
+                    window.adminChatSystem.init(supabaseClient);
+                }
+            }, 2000);
         });
+        
+        // Enhanced Admin Chat System (full original)
+        (function() {
+            window.adminChatSystem = {
+                supabaseClient: null,
+                currentChatUserId: null,
+                currentChatUserType: null,
+                currentChatUserName: null,
+                messages: [],
+                users: [],
+                typingTimeout: null,
+                replyToMessage: null,
+                pendingMedia: null,
+                userUnreadCounts: {},
+                messageSubscription: null,
+                mediaRecorder: null,
+                audioChunks: [],
+                isRecording: false,
+                globalChatEnabled: true,
+                adminId: '00000000-0000-0000-0000-000000000001',
+                
+                init: function(client) {
+                    this.supabaseClient = client;
+                    this.loadUsers();
+                    this.setupEventListeners();
+                    this.startRealtimeSubscriptions();
+                    this.setupEmojiPicker();
+                },
+                
+                loadUsers: async function() {
+                    try {
+                        const { data: investors, error: invError } = await this.supabaseClient.from('investors').select('id, full_name, email');
+                        const { data: buyers, error: buyError } = await this.supabaseClient.from('buyers').select('id, full_name, email');
+                        this.users = [];
+                        if (investors && investors.length > 0) {
+                            investors.forEach(inv => {
+                                this.users.push({ id: inv.id, name: inv.full_name, email: inv.email, type: 'investor', avatar: 'fa-chart-line', role: '💰 Investor' });
+                            });
+                        }
+                        if (buyers && buyers.length > 0) {
+                            buyers.forEach(buyer => {
+                                this.users.push({ id: buyer.id, name: buyer.full_name, email: buyer.email, type: 'buyer', avatar: 'fa-shopping-cart', role: '🛒 Buyer' });
+                            });
+                        }
+                        this.renderUserList();
+                        this.loadLastMessages();
+                    } catch (error) {
+                        console.error('Error loading users:', error);
+                    }
+                },
+                
+                loadLastMessages: async function() {
+                    for (const user of this.users) {
+                        const { data } = await this.supabaseClient.from('chat_messages').select('text, created_at').or(`and(sender_type.eq.admin,receiver_id.eq.${user.id},receiver_type.eq.${user.type}),and(sender_id.eq.${user.id},sender_type.eq.${user.type},receiver_type.eq.admin)`).order('created_at', { ascending: false }).limit(1);
+                        if (data && data.length > 0) {
+                            user.lastMessage = data[0].text || '[Media]';
+                            user.lastMessageTime = data[0].created_at;
+                        } else {
+                            user.lastMessage = 'No messages yet';
+                            user.lastMessageTime = null;
+                        }
+                    }
+                    this.renderUserList();
+                },
+                
+                renderUserList: function() {
+                    const container = document.getElementById('chatUsersList');
+                    if (!container) return;
+                    if (this.users.length === 0) {
+                        container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No users found. Add investors or buyers first.</p></div>';
+                        return;
+                    }
+                    const searchTerm = document.getElementById('chatUserSearch')?.value.toLowerCase() || '';
+                    const filteredUsers = this.users.filter(user => user.name.toLowerCase().includes(searchTerm) || user.email.toLowerCase().includes(searchTerm));
+                    container.innerHTML = filteredUsers.map(user => `<div class="chat-user-item ${this.currentChatUserId === user.id && this.currentChatUserType === user.type ? 'active' : ''}" onclick="adminChatSystem.selectUser('${user.id}', '${user.type}', '${user.name.replace(/'/g, "\\'")}')"><div class="chat-user-avatar"><i class="fas ${user.avatar}"></i></div><div class="chat-user-info"><div class="chat-user-name"><span>${this.escapeHtml(user.name)}</span><span class="chat-user-type">${user.role || user.type}</span></div><div class="chat-user-preview">${this.escapeHtml(user.lastMessage || 'No messages')}</div></div>${this.userUnreadCounts[`${user.type}_${user.id}`] ? `<div class="chat-user-unread">${this.userUnreadCounts[`${user.type}_${user.id}`]}</div>` : ''}</div>`).join('');
+                },
+                
+                selectUser: async function(userId, userType, userName) {
+                    this.currentChatUserId = userId;
+                    this.currentChatUserType = userType;
+                    this.currentChatUserName = userName;
+                    document.getElementById('selectedUserName').textContent = userName;
+                    document.getElementById('selectedUserStatus').innerHTML = `${userType === 'investor' ? '💰 Investor' : '🛒 Buyer'} | Online`;
+                    const key = `${userType}_${userId}`;
+                    if (this.userUnreadCounts[key]) {
+                        delete this.userUnreadCounts[key];
+                        this.updateUnreadIndicator();
+                        this.renderUserList();
+                    }
+                    await this.loadMessages();
+                    this.renderUserList();
+                },
+                
+                loadMessages: async function() {
+                    if (!this.currentChatUserId || !this.currentChatUserType) return;
+                    const { data } = await this.supabaseClient.from('chat_messages').select('*').or(`and(sender_type.eq.admin,receiver_id.eq.${this.currentChatUserId},receiver_type.eq.${this.currentChatUserType}),and(sender_id.eq.${this.currentChatUserId},sender_type.eq.${this.currentChatUserType},receiver_type.eq.admin)`).order('created_at', { ascending: true });
+                    this.messages = data || [];
+                    this.renderMessages();
+                    this.scrollToBottom();
+                    await this.markMessagesAsRead();
+                },
+                
+                markMessagesAsRead: async function() {
+                    if (!this.currentChatUserId || !this.currentChatUserType) return;
+                    await this.supabaseClient.from('chat_messages').update({ read: true }).eq('receiver_id', this.adminId).eq('receiver_type', 'admin').eq('sender_id', this.currentChatUserId).eq('sender_type', this.currentChatUserType).eq('read', false);
+                },
+                
+                setupEventListeners: function() {
+                    const chatInput = document.getElementById('chatInput');
+                    if (chatInput) chatInput.addEventListener('input', () => this.sendTypingIndicator());
+                },
+                
+                startRealtimeSubscriptions: function() {
+                    this.messageSubscription = this.supabaseClient.channel('admin-chat-messages').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, (payload) => { this.handleNewMessage(payload.new); }).subscribe();
+                },
+                
+                handleNewMessage: async function(message) {
+                    if (!this.globalChatEnabled && message.sender_type !== 'admin') return;
+                    const isForCurrentChat = this.currentChatUserId && ((message.sender_type === 'admin' && message.receiver_id === this.currentChatUserId && message.receiver_type === this.currentChatUserType) || (message.sender_id === this.currentChatUserId && message.sender_type === this.currentChatUserType));
+                    if (isForCurrentChat) {
+                        this.messages.push(message);
+                        this.renderMessages();
+                        this.scrollToBottom();
+                        this.markMessagesAsRead();
+                    } else if (message.receiver_type === 'admin' && message.receiver_id === this.adminId && message.sender_type !== 'admin') {
+                        const key = `${message.sender_type}_${message.sender_id}`;
+                        this.userUnreadCounts[key] = (this.userUnreadCounts[key] || 0) + 1;
+                        this.updateUnreadIndicator();
+                        this.renderUserList();
+                    }
+                    const user = this.users.find(u => u.id === message.sender_id && u.type === message.sender_type);
+                    if (user) {
+                        user.lastMessage = message.text || '[Media]';
+                        user.lastMessageTime = message.created_at;
+                        this.renderUserList();
+                    }
+                },
+                
+                sendTypingIndicator: async function() {
+                    if (!this.currentChatUserId || !this.currentChatUserType) return;
+                    clearTimeout(this.typingTimeout);
+                    await this.supabaseClient.from('chat_typing').insert([{ sender_id: this.adminId, sender_type: 'admin', receiver_id: this.currentChatUserId, receiver_type: this.currentChatUserType, timestamp: new Date().toISOString() }]);
+                    this.typingTimeout = setTimeout(() => {}, 2000);
+                },
+                
+                sendQuickReply: async function(text) {
+                    document.getElementById('chatInput').value = text;
+                    await this.sendMessage();
+                },
+                
+                sendMessage: async function() {
+                    if (!this.globalChatEnabled) {
+                        Swal.fire({ title: 'Global Chat Disabled', text: 'Chat system is currently disabled.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    const input = document.getElementById('chatInput');
+                    const text = input.value.trim();
+                    if (!text && !this.pendingMedia && !this.replyToMessage) return;
+                    if (!this.currentChatUserId || !this.currentChatUserType) {
+                        Swal.fire({ title: 'No User Selected', text: 'Please select a user to chat with first.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    let messageData = { sender_id: this.adminId, sender_type: 'admin', receiver_id: this.currentChatUserId, receiver_type: this.currentChatUserType, text: text || null, read: false, created_at: new Date().toISOString() };
+                    if (this.pendingMedia) {
+                        messageData.media_url = this.pendingMedia.url;
+                        messageData.media_type = this.pendingMedia.type;
+                    }
+                    if (this.replyToMessage) messageData.reply_to = this.replyToMessage.id;
+                    const { error } = await this.supabaseClient.from('chat_messages').insert([messageData]);
+                    if (error) {
+                        Swal.fire({ title: 'Error', text: 'Failed to send message.', icon: 'error', background: '#1a3d33', color: '#fff' });
+                    } else {
+                        input.value = '';
+                        this.pendingMedia = null;
+                        this.replyToMessage = null;
+                        document.getElementById('mediaPreview').classList.remove('active');
+                        document.getElementById('replyBar').classList.remove('active');
+                        this.scrollToBottom();
+                    }
+                },
+                
+                startVoiceRecording: async function() {
+                    if (this.isRecording) return;
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        this.mediaRecorder = new MediaRecorder(stream);
+                        this.audioChunks = [];
+                        this.mediaRecorder.ondataavailable = (event) => { this.audioChunks.push(event.data); };
+                        this.mediaRecorder.onstop = async () => {
+                            const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                                this.pendingMedia = { url: ev.target.result, type: 'audio' };
+                                const preview = document.getElementById('mediaPreview');
+                                preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button></div>`;
+                                preview.classList.add('active');
+                            };
+                            reader.readAsDataURL(audioBlob);
+                            stream.getTracks().forEach(track => track.stop());
+                        };
+                        this.mediaRecorder.start();
+                        this.isRecording = true;
+                        this.startRecordingTimer();
+                        document.getElementById('voiceRecordingOverlay').classList.add('active');
+                    } catch (err) {
+                        Swal.fire({ title: 'Error', text: 'Could not access microphone.', icon: 'error', background: '#1a3d33', color: '#fff' });
+                    }
+                },
+                
+                startRecordingTimer: function() {
+                    let seconds = 0;
+                    if (this.recordingTimerInterval) clearInterval(this.recordingTimerInterval);
+                    this.recordingTimerInterval = setInterval(() => {
+                        seconds++;
+                        const mins = Math.floor(seconds / 60);
+                        const secs = seconds % 60;
+                        document.getElementById('recordingTimer').innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+                    }, 1000);
+                },
+                
+                stopVoiceRecording: function() {
+                    if (this.mediaRecorder && this.isRecording) {
+                        this.mediaRecorder.stop();
+                        this.isRecording = false;
+                        document.getElementById('voiceRecordingOverlay').classList.remove('active');
+                        if (this.recordingTimerInterval) clearInterval(this.recordingTimerInterval);
+                    }
+                },
+                
+                cancelVoiceRecording: function() {
+                    if (this.mediaRecorder && this.isRecording) {
+                        this.mediaRecorder.onstop = () => {};
+                        this.mediaRecorder.stop();
+                    }
+                    this.isRecording = false;
+                    document.getElementById('voiceRecordingOverlay').classList.remove('active');
+                    if (this.recordingTimerInterval) clearInterval(this.recordingTimerInterval);
+                },
+                
+                showVoiceRecorder: function() { this.startVoiceRecording(); },
+                clearPendingMedia: function() { this.pendingMedia = null; document.getElementById('mediaPreview').classList.remove('active'); document.getElementById('mediaPreview').innerHTML = ''; },
+                
+                setupEmojiPicker: function() {
+                    const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
+                    const picker = document.getElementById('emojiPicker');
+                    if (picker) picker.innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="adminChatSystem.addEmoji('${emoji}')">${emoji}</div>`).join('');
+                },
+                
+                toggleEmojiPicker: function() { document.getElementById('emojiPicker').classList.toggle('active'); },
+                addEmoji: function(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.focus(); document.getElementById('emojiPicker').classList.remove('active'); },
+                showAttachMenu: function() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'image'); input.click(); },
+                showVideoMenu: function() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'video'); input.click(); },
+                showDocumentMenu: function() { const input = document.createElement('input'); input.type = 'file'; input.accept = '.pdf,.doc,.docx,.txt'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'document'); input.click(); },
+                
+                handleMediaUpload: function(file, type) {
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        this.pendingMedia = { url: ev.target.result, type: type };
+                        const preview = document.getElementById('mediaPreview');
+                        if (type === 'image') preview.innerHTML = `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button>`;
+                        else if (type === 'video') preview.innerHTML = `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button>`;
+                        else preview.innerHTML = `<div><i class="fas fa-file-alt"></i> ${file.name}<button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button></div>`;
+                        preview.classList.add('active');
+                    };
+                    reader.readAsDataURL(file);
+                },
+                
+                openGifPicker: async function() {
+                    const modal = document.getElementById('gifPickerModal');
+                    modal.classList.toggle('active');
+                    if (modal.classList.contains('active')) {
+                        document.getElementById('gifGrid').innerHTML = '<div style="padding:20px;text-align:center;">Loading GIFs...</div>';
+                        const gifs = await this.fetchGIFs();
+                        this.renderGIFs(gifs);
+                    }
+                },
+                
+                fetchGIFs: async function() { return [{ url: 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif' }, { url: 'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif' }, { url: 'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif' }]; },
+                renderGIFs: function(gifs) { const grid = document.getElementById('gifGrid'); if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found</div>'; return; } grid.innerHTML = gifs.map(g => `<img src="${g.url}" class="gif-item" onclick="adminChatSystem.sendGIF('${g.url}')">`).join(''); },
+                searchGIFs: async function(query) { const gifs = await this.fetchGIFs(); this.renderGIFs(gifs); },
+                sendGIF: function(url) { this.pendingMedia = { url: url, type: 'image' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="adminChatSystem.clearPendingMedia()">×</button>`; preview.classList.add('active'); this.closeGifPicker(); },
+                closeGifPicker: function() { document.getElementById('gifPickerModal').classList.remove('active'); },
+                
+                showProductSelector: async function() {
+                    const { data: products } = await this.supabaseClient.from('products').select('*').eq('is_active', true);
+                    if (!products || products.length === 0) { Swal.fire({ title: 'No Products', text: 'No products available.', icon: 'info', background: '#1a3d33', color: '#fff' }); return; }
+                    const modal = document.getElementById('productSelectorModal');
+                    const list = document.getElementById('productSelectorList');
+                    list.innerHTML = products.map(product => `<div class="product-selector-item" onclick="adminChatSystem.sendProductCard('${product.id}', '${product.name}', '${product.price}', '${product.category || ''}', '${product.image_url || ''}')"><div style="flex:1;"><h4 style="color:#E8B13C;">${this.escapeHtml(product.name)}</h4><p>Rs. ${parseInt(product.price).toLocaleString()}</p><small>${product.category || ''}</small></div></div>`).join('');
+                    modal.classList.add('active');
+                },
+                
+                sendProductCard: async function(id, name, price, category, imageUrl) {
+                    this.closeProductSelector();
+                    if (!this.currentChatUserId || !this.currentChatUserType) { Swal.fire({ title: 'No User Selected', text: 'Please select a user first.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                    const productData = { id, name, price, category, image: imageUrl };
+                    await this.supabaseClient.from('chat_messages').insert([{ sender_id: this.adminId, sender_type: 'admin', receiver_id: this.currentChatUserId, receiver_type: this.currentChatUserType, text: null, product_data: productData, read: false, created_at: new Date().toISOString() }]);
+                },
+                
+                closeProductSelector: function() { document.getElementById('productSelectorModal').classList.remove('active'); },
+                
+                shareLocation: function() {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((position) => { const mapsUrl = `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`; this.sendMessageWithText(`📍 Our Location: ${mapsUrl}`); }, () => { Swal.fire({ title: 'Location Error', text: 'Could not get location.', icon: 'error', background: '#1a3d33', color: '#fff' }); });
+                    } else { Swal.fire({ title: 'Not Supported', text: 'Geolocation not supported.', icon: 'warning', background: '#1a3d33', color: '#fff' }); }
+                },
+                
+                sendMessageWithText: async function(text) { if (!this.currentChatUserId || !this.currentChatUserType) return; await this.supabaseClient.from('chat_messages').insert([{ sender_id: this.adminId, sender_type: 'admin', receiver_id: this.currentChatUserId, receiver_type: this.currentChatUserType, text: text, read: false, created_at: new Date().toISOString() }]); },
+                
+                showPollCreator: function() { document.getElementById('pollModal').classList.add('active'); },
+                addPollOption: function() { const container = document.getElementById('pollOptionsList'); const div = document.createElement('div'); div.className = 'poll-option-row'; div.innerHTML = `<input type="text" placeholder="Option ${container.children.length + 1}" style="flex:1;">`; container.appendChild(div); },
+                
+                sendPoll: async function() {
+                    const question = document.getElementById('pollQuestion').value.trim();
+                    const optionInputs = document.querySelectorAll('#pollOptionsList input');
+                    const options = Array.from(optionInputs).map(inp => inp.value.trim()).filter(opt => opt);
+                    if (!question || options.length < 2) { Swal.fire({ title: 'Invalid Poll', text: 'Please enter a question and at least 2 options.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                    const pollText = `📊 POLL: ${question}\n\n${options.map((opt, i) => `${i + 1}. ${opt}`).join('\n')}\n\nReply with the option number to vote!`;
+                    await this.sendMessageWithText(pollText);
+                    document.getElementById('pollQuestion').value = '';
+                    document.getElementById('pollOptionsList').innerHTML = `<div class="poll-option-row"><input type="text" placeholder="Option 1" style="flex:1;"></div><div class="poll-option-row"><input type="text" placeholder="Option 2" style="flex:1;"></div>`;
+                    this.closePollModal();
+                },
+                
+                closePollModal: function() { document.getElementById('pollModal').classList.remove('active'); },
+                
+                createEvent: async function() {
+                    const { value: formData } = await Swal.fire({ title: 'Create Event', html: `<input id="eventTitle" class="swal2-input" placeholder="Event Title"><input id="eventDate" class="swal2-input" type="datetime-local"><textarea id="eventDesc" class="swal2-textarea" placeholder="Description"></textarea>`, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff', preConfirm: () => ({ title: document.getElementById('eventTitle').value, date: document.getElementById('eventDate').value, desc: document.getElementById('eventDesc').value }) });
+                    if (formData && formData.title) {
+                        const eventText = `📅 EVENT: ${formData.title}\n🕒 Date/Time: ${new Date(formData.date).toLocaleString()}\n📝 Details: ${formData.desc || 'No details'}`;
+                        await this.sendMessageWithText(eventText);
+                        Swal.fire({ title: 'Event Sent!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
+                    }
+                },
+                
+                deleteMessage: async function(messageId, deleteForEveryone = false) {
+                    const result = await Swal.fire({ title: 'Delete Message', text: deleteForEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'question', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' });
+                    if (result.isConfirmed) {
+                        if (deleteForEveryone) await this.supabaseClient.from('chat_messages').delete().eq('id', messageId);
+                        else await this.supabaseClient.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId);
+                        Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
+                    }
+                    this.closeMenu();
+                },
+                
+                editMessage: async function(messageId, oldText) {
+                    const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' });
+                    if (newText && newText !== oldText) { await this.supabaseClient.from('chat_messages').update({ text: newText, edited: true, edited_at: new Date().toISOString() }).eq('id', messageId); Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); }
+                    this.closeMenu();
+                },
+                
+                replyToMessage: function(message) { this.replyToMessage = message; document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50); document.getElementById('replyBar').classList.add('active'); document.getElementById('chatInput').focus(); this.closeMenu(); },
+                cancelReply: function() { this.replyToMessage = null; document.getElementById('replyBar').classList.remove('active'); },
+                
+                forwardMessage: async function(message) {
+                    const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff', confirmButtonColor: '#E8B13C' });
+                    const forwardText = userInput ? `📨 Forwarded: "${message.text || '[Media]'}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text || '[Media]'}"`;
+                    await this.sendMessageWithText(forwardText);
+                    Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
+                    this.closeMenu();
+                },
+                
+                toggleMessageActions: function(messageId) { const menuId = `menu-${messageId.replace(/-/g, '')}`; const menu = document.getElementById(menuId); if (this.currentOpenMenu && this.currentOpenMenu !== menuId) { document.getElementById(this.currentOpenMenu)?.classList.remove('show'); } if (menu) { menu.classList.toggle('show'); this.currentOpenMenu = menu.classList.contains('show') ? menuId : null; } },
+                closeMenu: function() { if (this.currentOpenMenu) { document.getElementById(this.currentOpenMenu)?.classList.remove('show'); this.currentOpenMenu = null; } },
+                
+                renderMessages: function() {
+                    const container = document.getElementById('chatMessagesArea');
+                    if (!container) return;
+                    let statusHtml = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div>';
+                    if (this.messages.length === 0) { container.innerHTML = statusHtml + '<div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Start chatting with the user</p></div>'; return; }
+                    let messagesHtml = this.messages.map(msg => {
+                        if (msg.deleted_for_sender && msg.sender_type === 'admin') return `<div class="message sent"><div class="message-bubble"><div class="message-text" style="font-style:italic; opacity:0.6;">Message deleted</div><div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>`;
+                        const isSent = msg.sender_type === 'admin';
+                        const senderName = isSent ? 'You (Admin)' : (this.currentChatUserType === 'investor' ? '💰 Investor' : '🛒 Buyer');
+                        let replyHtml = '';
+                        if (msg.reply_to) { const repliedMsg = this.messages.find(m => m.id === msg.reply_to); if (repliedMsg) replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${this.escapeHtml((repliedMsg.text || '[Media]').substring(0, 50))}</div>`; }
+                        let mediaHtml = '';
+                        if (msg.media_url) {
+                            if (msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank')">`;
+                            else if (msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`;
+                            else if (msg.media_type === 'audio') mediaHtml = `<div class="voice-message-preview"><audio src="${msg.media_url}" controls></audio></div>`;
+                            else mediaHtml = `<div class="voice-message-preview"><i class="fas fa-file-alt"></i> <a href="${msg.media_url}" target="_blank">View File</a></div>`;
+                        }
+                        let productHtml = '';
+                        if (msg.product_data) { const product = msg.product_data; productHtml = `<div class="product-card-message"><div style="flex:1;"><h4 style="color:#E8B13C;">${this.escapeHtml(product.name)}</h4><p>Rs. ${parseInt(product.price).toLocaleString()}</p></div></div>`; }
+                        const editedMark = msg.edited ? ' <span style="font-size:0.6rem;">(edited)</span>' : '';
+                        const msgShortId = msg.id.replace(/-/g, '');
+                        const timeStr = new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                        let actionButtons = '';
+                        if (isSent) actionButtons = `<div class="message-actions-trigger" onclick="adminChatSystem.toggleMessageActions('${msg.id}')"><i class="fas fa-ellipsis-v"></i></div><div class="message-actions-menu" id="menu-${msgShortId}"><button class="message-action-btn" onclick="adminChatSystem.editMessage('${msg.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button><button class="message-action-btn" onclick="adminChatSystem.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button><button class="message-action-btn danger" onclick="adminChatSystem.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete for all</button><button class="message-action-btn" onclick="adminChatSystem.forwardMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-share"></i> Forward</button><button class="message-action-btn" onclick="adminChatSystem.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button></div>`;
+                        else actionButtons = `<div class="message-actions-trigger" onclick="adminChatSystem.toggleMessageActions('${msg.id}')"><i class="fas fa-ellipsis-v"></i></div><div class="message-actions-menu" id="menu-${msgShortId}"><button class="message-action-btn" onclick="adminChatSystem.forwardMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-share"></i> Forward</button><button class="message-action-btn" onclick="adminChatSystem.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button></div>`;
+                        return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msgShortId}" style="position:relative;">${actionButtons}<div class="message-bubble"><div class="sender-name">${senderName}</div>${replyHtml}<div class="message-text">${this.escapeHtml(msg.text || '')}${editedMark}</div>${mediaHtml}${productHtml}<div class="message-time">${timeStr} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#25D366;"></i>' : ''}</div></div></div>`;
+                    }).join('');
+                    container.innerHTML = statusHtml + messagesHtml;
+                    this.scrollToBottom();
+                },
+                
+                escapeHtml: function(text) { if (!text) return ''; return text.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); },
+                scrollToBottom: function() { const container = document.getElementById('chatMessagesArea'); if (container) container.scrollTop = container.scrollHeight; },
+                updateUnreadIndicator: function() { const totalUnread = Object.values(this.userUnreadCounts).reduce((a, b) => a + b, 0); const liveChatTab = document.getElementById('liveChatTabBtn'); if (totalUnread > 0) liveChatTab.classList.add('has-unread'); else liveChatTab.classList.remove('has-unread'); },
+                toggleGlobalChatSystem: function(enabled) { this.globalChatEnabled = enabled; const statusSpan = document.getElementById('chatSystemStatus'); if (enabled) { statusSpan.innerHTML = '● Active'; statusSpan.style.color = '#1e7e5e'; } else { statusSpan.innerHTML = '○ Disabled'; statusSpan.style.color = '#dc3545'; } },
+                filterUsers: function() { this.renderUserList(); }
+            };
+        })();
     </script>
 </body>
 </html>
