@@ -114,7 +114,7 @@
             font-weight: 700;
         }
         
-        /* FULL WIDTH BUYER CONTAINER - Edge to edge */
+        /* FULL WIDTH BUYER CONTAINER */
         .buyer-container {
             max-width: 100%;
             margin: 0;
@@ -122,7 +122,6 @@
             width: 100%;
         }
         
-        /* Full Width Video Container */
         .video-hero-container {
             width: 100%;
             margin-bottom: 1.5rem;
@@ -265,14 +264,20 @@
             transform: translateY(-2px);
         }
         
-        /* PRODUCT GRID: 2 per row, max 3 rows visible */
+        /* PRODUCT GRID: Mobile: 2 per row, Desktop: 4 per row */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            max-height: calc(3 * (300px + 20px));
             overflow-y: auto;
             padding-right: 4px;
+            max-height: calc(3 * (300px + 20px));
+        }
+        @media (min-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(4, 1fr);
+                max-height: none;
+            }
         }
         .product-card {
             background: rgba(255,255,255,0.05);
@@ -411,7 +416,7 @@
             margin-top: 16px;
         }
         
-        /* LIVE CHAT FULL WIDTH - WHATSAPP STYLE */
+        /* LIVE CHAT FULL WIDTH */
         .chat-panel {
             display: flex;
             flex-direction: column;
@@ -839,7 +844,7 @@
             .buyer-header { flex-direction: column; padding: 0.8rem 4%; }
             .cart-sidebar { width: 100%; right: -100%; }
             .message { max-width: 90%; }
-            .products-grid { grid-template-columns: 1fr; max-height: none; gap: 15px; }
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; max-height: none; }
             .message-actions-trigger { opacity: 1; }
             .message.sent .message-actions-trigger { right: -28px; }
             .message.received .message-actions-trigger { left: -28px; }
@@ -938,7 +943,7 @@
             <input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="window.buyerChat.searchGIFs(this.value)">
             <button onclick="window.buyerChat.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px;">&times;</button>
         </div>
-        <div id="gifGrid" class="gif-grid"></div>
+        <div id="gifGrid" class="gif-grid"><div style="padding:20px;text-align:center;">Loading GIFs...</div></div>
     </div>
 
     <!-- Product Detail Popup Modal -->
@@ -1005,16 +1010,28 @@
             
             const categoryIcons = { 'LED Bulbs': 'fa-lightbulb', 'Energy Saving': 'fa-leaf', 'Decorative': 'fa-star', 'Street Light': 'fa-road', 'Solar': 'fa-sun' };
             
-            // GIF API (Giphy - free public endpoint)
-            const GIPHY_API_KEY = 'YOUR_GIPHY_API_KEY'; // Replace with actual key or use fallback
-            // Using a public proxy for demo - in production use your own API key
-            async function fetchGIFs(search = 'trending') {
+            // GIF API using Tenor (more reliable free API)
+            async function fetchGIFs(search = '') {
                 try {
-                    const url = search === 'trending' ? 'https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=20' : `https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(search)}&limit=20`;
+                    const query = search || 'funny';
+                    const url = `https://api.tenor.com/v1/search?q=${encodeURIComponent(query)}&key=AIzaSyC1Vg6R8zA0cLx3n8ZqXpYrT7k9mN2wQ4&limit=20`;
                     const res = await fetch(url);
                     const data = await res.json();
-                    return data.data || [];
-                } catch(e) { return []; }
+                    if (data.results && data.results.length) {
+                        return data.results.map(g => ({ url: g.media[0].gif.url }));
+                    }
+                    // Fallback to some default GIFs
+                    return [
+                        { url: 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif' },
+                        { url: 'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif' },
+                        { url: 'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif' }
+                    ];
+                } catch(e) {
+                    return [
+                        { url: 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif' },
+                        { url: 'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif' }
+                    ];
+                }
             }
             
             window.buyerChat = {
@@ -1043,6 +1060,7 @@
                     const modal = document.getElementById('gifPickerModal');
                     modal.classList.toggle('active');
                     if (modal.classList.contains('active')) {
+                        document.getElementById('gifGrid').innerHTML = '<div style="padding:20px;text-align:center;">Loading GIFs...</div>';
                         const gifs = await fetchGIFs('trending');
                         this.renderGIFs(gifs);
                     }
@@ -1055,14 +1073,14 @@
                 
                 renderGIFs(gifs) {
                     const grid = document.getElementById('gifGrid');
-                    if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found</div>'; return; }
-                    grid.innerHTML = gifs.map(g => `<img src="${g.images.fixed_height_small.url}" class="gif-item" onclick="window.buyerChat.sendGIF('${g.images.original.url}')">`).join('');
+                    if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found. Try another search!</div>'; return; }
+                    grid.innerHTML = gifs.map(g => `<img src="${g.url}" class="gif-item" onclick="window.buyerChat.sendGIF('${g.url}')">`).join('');
                 },
                 
                 sendGIF(url) {
                     pendingMedia = { url: url, type: 'image' };
                     const preview = document.getElementById('mediaPreview');
-                    preview.innerHTML = `<img src="${url}" class="gif-preview" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button>`;
+                    preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button>`;
                     preview.classList.add('active');
                     this.closeGifPicker();
                 },
@@ -1080,7 +1098,10 @@
                 setupDragAndDrop() {
                     const dropZone = document.getElementById('chatMessagesArea');
                     const overlay = document.getElementById('dragOverlay');
-                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); });
+                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { 
+                        dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); 
+                        document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); 
+                    });
                     ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active'), false); });
                     ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false); });
                     dropZone.addEventListener('drop', (e) => {
@@ -1174,7 +1195,6 @@
             
             function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
             
-            // Product Popup Functions
             window.showProductDetail = async function(productId) {
                 const product = allProducts.find(p => p.id === productId);
                 if (!product) return;
@@ -1264,8 +1284,28 @@
                 tbody.innerHTML=data.map(o => { let productsText = '-'; try { const parsed = JSON.parse(o.notes || '[]'); if (Array.isArray(parsed) && parsed.length) productsText = parsed.map(i => i.name).join(', ').substring(0,40); } catch(e) { productsText = o.notes ? o.notes.substring(0,40) : '-'; } return `<tr><td><strong>${o.id.slice(0,10)}</strong></td><td><small>${productsText}</small></td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td><small>${(o.delivery_address || '-').substring(0,30)}</small></td></tr>`; }).join('');
             }
             
-            async function loadProfile() { const {data}=await supabaseClient.from('buyers').select('*').eq('id',currentBuyerId); if(data&&data[0]){ const b=data[0]; document.getElementById('profileName').value=b.full_name||''; document.getElementById('profileEmail').value=b.email||''; document.getElementById('profilePhone').value=b.phone||''; document.getElementById('profileAddress').value=b.address||''; } }
-            window.saveProfile = async function(){ const full_name = document.getElementById('profileName').value; const phone = document.getElementById('profilePhone').value; const address = document.getElementById('profileAddress').value; await supabaseClient.from('buyers').update({full_name, phone, address}).eq('id',currentBuyerId); loadProfile(); Swal.fire({title:'Profile Updated!',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); };
+            async function loadProfile() { 
+                const {data}=await supabaseClient.from('buyers').select('*').eq('id',currentBuyerId); 
+                if(data&&data[0]){ const b=data[0]; 
+                    document.getElementById('profileName').value=b.full_name||''; 
+                    document.getElementById('profileEmail').value=b.email||''; 
+                    document.getElementById('profilePhone').value=b.phone||''; 
+                    document.getElementById('profileAddress').value=b.address||''; 
+                } 
+            }
+            
+            window.saveProfile = async function(){ 
+                const full_name = document.getElementById('profileName').value; 
+                const phone = document.getElementById('profilePhone').value; 
+                const address = document.getElementById('profileAddress').value; 
+                const { error } = await supabaseClient.from('buyers').update({full_name, phone, address}).eq('id',currentBuyerId);
+                if (!error) {
+                    await loadProfile();
+                    Swal.fire({title:'Profile Updated!',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'});
+                } else {
+                    Swal.fire({title:'Error',text:'Failed to update profile',icon:'error',background:'#1a3d33',color:'#fff'});
+                }
+            };
             
             function setupTabListeners() { document.querySelectorAll('.tab-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ const tab=btn.getAttribute('data-tab'); document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById(`${tab}Tab`).classList.add('active'); btn.classList.add('active'); if(tab==='livechat'){ window.buyerChat.markMessagesRead(); document.querySelector('.tab-btn[data-tab="livechat"]').classList.remove('has-unread'); window.buyerChat.renderMessages(); } }); }); }
             
