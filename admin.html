@@ -253,6 +253,43 @@
         
         .empty-state { text-align: center; padding: 50px; color: rgba(255,255,255,0.5); }
         
+        /* Screenshot Preview Styles */
+        .screenshot-preview {
+            max-width: 80px;
+            max-height: 60px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid rgba(232,177,60,0.5);
+            transition: transform 0.2s;
+        }
+        .screenshot-preview:hover { transform: scale(1.05); }
+        .upload-screenshot-btn {
+            background: rgba(232,177,60,0.2);
+            border: 1px dashed #E8B13C;
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #E8B13C;
+            transition: all 0.2s;
+        }
+        .upload-screenshot-btn:hover { background: rgba(232,177,60,0.4); }
+        .screenshot-upload-area {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+        }
+        .screenshot-preview-large {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+        
         /* Chat System Styles */
         .chat-container {
             display: flex;
@@ -753,13 +790,13 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
         </div>
 
         <!-- Investments Section -->
@@ -776,7 +813,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Screenshot</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -799,7 +836,7 @@
         <div id="withdrawalsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
             <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary">Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Actions</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Screenshot</th><th>Actions</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
         </div>
 
         <!-- Products Section -->
@@ -825,7 +862,7 @@
                 <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
                 <div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="🔍 Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div>
             </div>
-            <div class="table-container"></table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
         </div>
 
         <!-- Live Chat Section - Full Control Center -->
@@ -1013,12 +1050,8 @@
                     <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
                     <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                     <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                    <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
-
-
-
-
-                                        </tr>`).join('');
+                    <td class="action-buttons"><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
             }
         }
 
@@ -1066,6 +1099,7 @@
                     <td>${new Date(i.investment_date).toLocaleDateString()}</td>
                     <td>${i.payment_method||'-'}</td>
                     <td><span class="status-badge status-active">${i.status}</span></td>
+                    <td>${i.screenshot_url ? `<img src="${i.screenshot_url}" class="screenshot-preview" onclick="window.open('${i.screenshot_url}','_blank')">` : '-'}</td>
                     <td class="action-buttons"><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td>
                 </tr>`).join('');
             }
@@ -1097,7 +1131,8 @@
                     <td>${new Date(req.created_at).toLocaleDateString()}</td>
                     <td>${req.payment_method || '-'}</td>
                     <td>${req.transaction_id || '-'}</td>
-                    <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></td>
+                    <td>${req.screenshot_url ? `<img src="${req.screenshot_url}" class="screenshot-preview" onclick="window.open('${req.screenshot_url}','_blank')">` : '<span class="upload-screenshot-btn" onclick="uploadInvestmentScreenshot(\''+req.id+'\')"><i class="fas fa-camera"></i> Upload</span>'}</td>
+                    <td class="action-buttons"><button onclick="approveInvestmentWithScreenshot('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></td>
                 </tr>`).join('');
             }
         }
@@ -1108,7 +1143,7 @@
             allWithdrawals = data || [];
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
-            if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state">No withdrawal requests found</td></tr>'; return; }
+            if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; return; }
             withdrawalsList.innerHTML = allWithdrawals.map(w => `<tr>
                 <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
                 <td><small>${w.investors?.email || '-'}</small></td>
@@ -1117,8 +1152,10 @@
                 <td>${w.payment_method || '-'}</td>
                 <td><small>${w.account_details || '-'}</small></td>
                 <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
-                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
+                <td>${w.screenshot_url ? `<img src="${w.screenshot_url}" class="screenshot-preview" onclick="window.open('${w.screenshot_url}','_blank')">` : (w.status === 'pending' ? '<span class="upload-screenshot-btn" onclick="uploadWithdrawalScreenshot(\''+w.id+'\')"><i class="fas fa-camera"></i> Upload</span>' : '-')}</td>
+                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawalWithScreenshot('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
             </tr>`).join('');
+            }
         }
         
         async function loadOrders() { 
@@ -1159,6 +1196,75 @@
                 </tr>`).join('');
             }
         }
+
+        // SCREENSHOT UPLOAD FUNCTIONS
+        window.uploadWithdrawalScreenshot = async function(withdrawalId) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async (ev) => {
+                        await supabaseClient.from('withdrawals').update({ screenshot_url: ev.target.result }).eq('id', withdrawalId);
+                        showNotification('Screenshot uploaded successfully!', false, 'Uploaded');
+                        await loadWithdrawals();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        };
+        
+        window.uploadInvestmentScreenshot = async function(investmentId) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async (ev) => {
+                        await supabaseClient.from('investments').update({ screenshot_url: ev.target.result }).eq('id', investmentId);
+                        showNotification('Screenshot uploaded successfully!', false, 'Uploaded');
+                        await loadInvestmentRequests();
+                        await loadInvestmentHistory();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        };
+        
+        window.approveWithdrawalWithScreenshot = async function(id, amount, investorId) {
+            const { data: withdrawal } = await supabaseClient.from('withdrawals').select('screenshot_url').eq('id', id).single();
+            if (!withdrawal.screenshot_url) {
+                Swal.fire({ title: 'Screenshot Required', text: 'Please upload a transaction screenshot before approving this withdrawal.', icon: 'warning', confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' });
+                return;
+            }
+            if(!await confirmAction(`Approve withdrawal of Rs. ${amount.toLocaleString()}?`, 'Approve Withdrawal')) return; 
+            await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
+            showNotification('Withdrawal approved!', false, 'Approved'); 
+            await loadWithdrawals(); 
+            await loadInvestors(); 
+            await loadStats(); 
+        };
+        
+        window.approveInvestmentWithScreenshot = async function(id, amount, investorId) {
+            const { data: investment } = await supabaseClient.from('investments').select('screenshot_url').eq('id', id).single();
+            if (!investment.screenshot_url) {
+                Swal.fire({ title: 'Screenshot Required', text: 'Please upload a payment screenshot before approving this investment request.', icon: 'warning', confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' });
+                return;
+            }
+            if(!await confirmAction(`Approve investment of Rs. ${amount.toLocaleString()}?`, 'Approve Investment')) return; 
+            await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
+            showNotification('Investment approved!', false, 'Approved'); 
+            await loadInvestmentRequests(); 
+            await loadInvestmentHistory(); 
+            await loadInvestors(); 
+            await loadStats(); 
+        };
 
         window.addNewInvestor = async function() {
             const name = document.getElementById('newInvestorName').value.trim();
@@ -1257,30 +1363,11 @@
             } 
         };
         
-        window.approveInvestment = async function(id, amount, investorId) { 
-            if(!await confirmAction(`Approve investment of Rs. ${amount.toLocaleString()}?`, 'Approve Investment')) return; 
-            await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
-            showNotification('Investment approved!', false, 'Approved'); 
-            await loadInvestmentRequests(); 
-            await loadInvestmentHistory(); 
-            await loadInvestors(); 
-            await loadStats(); 
-        };
-        
         window.rejectInvestment = async function(id){ 
             if(!await confirmAction('Reject this investment request?', 'Reject Investment')) return; 
             await supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id); 
             showNotification('Investment rejected', false, 'Rejected'); 
             await loadInvestmentRequests(); 
-            await loadStats(); 
-        };
-        
-        window.approveWithdrawal = async function(id, amount, investorId){ 
-            if(!await confirmAction(`Approve withdrawal of Rs. ${amount.toLocaleString()}?`, 'Approve Withdrawal')) return; 
-            await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0] }).eq('id', id); 
-            showNotification('Withdrawal approved!', false, 'Approved'); 
-            await loadWithdrawals(); 
-            await loadInvestors(); 
             await loadStats(); 
         };
         
@@ -1503,7 +1590,7 @@
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
             if (filtered.length === 0) { 
-                withdrawalsList.innerHTML = '<tr><td colspan="8" class="empty-state">No withdrawal requests found</td></tr>'; 
+                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; 
                 return; 
             }
             withdrawalsList.innerHTML = filtered.map(w => `<tr>...</tr>`).join('');
