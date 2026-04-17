@@ -805,7 +805,7 @@
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
             <div class="table-container">
-                <tr>
+                </table>
                     <thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead>
                     <tbody id="profitsList"></tbody>
                 </table>
@@ -818,7 +818,7 @@
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Title</th><th>Account Details</th><th>Status</th><th>Processed Date</th><th>Approval Screenshot</th></tr></thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
@@ -1031,11 +1031,24 @@
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         currentInvestmentScreenshot = e.target.result;
-                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot" onclick="window.open('${e.target.result}','_blank')"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`;
+                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot" onclick="viewScreenshot('${e.target.result}')" style="cursor:pointer;"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`;
                         previewDiv.classList.add('active');
                     };
                     reader.readAsDataURL(input.files[0]);
                 }
+            }
+            
+            function viewScreenshot(url) {
+                Swal.fire({
+                    imageUrl: url,
+                    imageAlt: 'Screenshot',
+                    background: '#1a3d33',
+                    color: '#fff',
+                    confirmButtonColor: '#E8B13C',
+                    width: '80%',
+                    imageWidth: '100%',
+                    imageHeight: 'auto'
+                });
             }
             
             function clearInvestmentScreenshot() {
@@ -1046,6 +1059,7 @@
                 previewDiv.classList.remove('active');
             }
             
+            window.viewScreenshot = viewScreenshot;
             window.clearInvestmentScreenshot = clearInvestmentScreenshot;
             window.selectPaymentMethod = selectPaymentMethod;
             window.previewInvestmentScreenshot = previewInvestmentScreenshot;
@@ -1154,10 +1168,7 @@
                 setupDragAndDrop() {
                     const dropZone = document.getElementById('chatMessagesArea');
                     const overlay = document.getElementById('dragOverlay');
-                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { 
-                        dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); 
-                        document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); 
-                    });
+                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); });
                     ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active'), false); });
                     ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false); });
                     dropZone.addEventListener('drop', async (e) => {
@@ -1270,7 +1281,7 @@
                 const tbody = document.getElementById('investmentsList');
                 if (!tbody) return;
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments yet</td></tr>'; return; }
+                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments yet</tr>'; return; }
                 tbody.innerHTML = data.map(inv => `<tr>
                     <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
                     <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
@@ -1278,7 +1289,7 @@
                     <td>${inv.transaction_id||'-'}</td>
                     <td><span class="status-badge status-active">Approved</span></td>
                     <td>${inv.notes||'-'}</td>
-                    <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td>
+                    <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="viewScreenshot('${inv.screenshot}')">` : '-'}</td>
                 </tr>`).join('');
             }
             
@@ -1286,7 +1297,7 @@
                 const tbody = document.getElementById('investmentRequestsList');
                 if (!tbody) return;
                 const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
-                if(!data?.length) { tbody.innerHTML='<td><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
+                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</tr>'; return; }
                 tbody.innerHTML = data.map(inv => `<tr>
                     <td>${new Date(inv.created_at).toLocaleDateString()}</td>
                     <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
@@ -1294,7 +1305,7 @@
                     <td>${inv.transaction_id||'-'}</td>
                     <td><span class="status-badge status-pending">Pending</span></td>
                     <td>${inv.notes||'-'}</td>
-                    <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td>
+                    <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="viewScreenshot('${inv.screenshot}')">` : '-'}</td>
                 </tr>`).join('');
             }
             
@@ -1302,7 +1313,7 @@
                 const tbody = document.getElementById('profitsList');
                 if (!tbody) return;
                 const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; return; }
+                if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</tr>'; return; }
                 tbody.innerHTML = data.map(p => `<tr>
                     <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
                     <td>Rs. ${(p.amount||0).toLocaleString()}</td>
@@ -1316,7 +1327,7 @@
                 const tbody = document.getElementById('withdrawalsList');
                 if (!tbody) return;
                 const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</td></tr>'; return; }
+                if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</tr>'; return; }
                 tbody.innerHTML = data.map(w => `<tr>
                     <td>${new Date(w.request_date).toLocaleDateString()}</td>
                     <td>Rs. ${(w.amount||0).toLocaleString()}</td>
@@ -1325,7 +1336,7 @@
                     <td>${w.account_details||'-'}</td>
                     <td><span class="status-badge ${w.status==='approved'?'status-active':(w.status==='rejected'?'status-rejected':'status-pending')}">${w.status==='pending'?'Pending':(w.status==='approved'?'Approved':'Rejected')}</span></td>
                     <td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</td>
-                    <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="window.open('${w.approval_screenshot}','_blank')">` : '-'}</td>
+                    <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="viewScreenshot('${w.approval_screenshot}')">` : '-'}</td>
                 </tr>`).join('');
             }
             
