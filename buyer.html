@@ -263,7 +263,7 @@
             transform: translateY(-2px);
         }
         
-        /* PRODUCT GRID: Mobile: 2 per row, Desktop: 4 per row */
+        /* PRODUCT GRID */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -432,7 +432,7 @@
         .modal-add-to-cart { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
         .modal-buy-now { background: linear-gradient(135deg, #28a745, #1e7e5e); color: white; }
         
-        /* Cart Item with Quantity Controls */
+        /* Cart Item */
         .cart-item {
             display: flex;
             gap: 12px;
@@ -446,17 +446,10 @@
             border-radius: 10px;
             background: rgba(0,0,0,0.3);
         }
-        .cart-item-details {
-            flex: 1;
-        }
+        .cart-item-details { flex: 1; }
         .cart-item-name { font-weight: 600; color: #E8B13C; margin-bottom: 4px; }
         .cart-item-price { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
-        .cart-item-quantity {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
+        .cart-item-quantity { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
         .qty-btn {
             background: rgba(232,177,60,0.2);
             border: 1px solid rgba(232,177,60,0.4);
@@ -694,7 +687,26 @@
             font-size: 1.1rem;
         }
         
-        /* GIF Picker Modal */
+        /* Disabled button styles */
+        .chat-tool-btn.disabled, .chat-send-btn.disabled, .emoji-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        /* Permission warning banner */
+        .permission-warning {
+            background: linear-gradient(135deg, #dc3545, #c0392b);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            display: none;
+        }
+        .permission-warning.show { display: block; }
+        
         .gif-picker-modal {
             position: fixed;
             bottom: 80px;
@@ -977,22 +989,23 @@
 
         <div id="livechatTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Sohrab Industries Support</h2>
+            <div id="permissionWarning" class="permission-warning"></div>
             <div class="chat-panel">
                 <div id="chatMessagesArea" class="chat-messages-area"><div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div></div>
                 <div id="typingIndicatorArea"></div>
                 <div class="chat-input-area">
                     <div id="replyBar" class="reply-bar"><span><i class="fas fa-reply"></i> Replying to: <span id="replyingToText"></span></span><button onclick="window.buyerChat.cancelReply()" style="background:none; border:none; color:#dc3545; cursor:pointer;">×</button></div>
-                    <div class="chat-toolbar">
-                        <button class="chat-tool-btn" onclick="window.buyerChat.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
-                        <button class="chat-tool-btn" onclick="window.buyerChat.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
-                        <button class="chat-tool-btn" onclick="window.buyerChat.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
-                        <button class="chat-tool-btn" onclick="window.buyerChat.showProductSelector()"><i class="fas fa-box"></i> Product</button>
-                        <button class="chat-tool-btn" onclick="window.buyerChat.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
+                    <div class="chat-toolbar" id="chatToolbar">
+                        <button class="chat-tool-btn" id="imageBtn" onclick="window.buyerChat.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
+                        <button class="chat-tool-btn" id="videoBtn" onclick="window.buyerChat.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
+                        <button class="chat-tool-btn" id="voiceBtn" onclick="window.buyerChat.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
+                        <button class="chat-tool-btn" id="productBtn" onclick="window.buyerChat.showProductSelector()"><i class="fas fa-box"></i> Product</button>
+                        <button class="chat-tool-btn" id="gifBtn" onclick="window.buyerChat.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
                     </div>
                     <div class="chat-input-wrapper">
                         <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
-                        <button class="emoji-btn" onclick="window.buyerChat.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
-                        <button class="chat-send-btn" onclick="window.buyerChat.sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                        <button class="emoji-btn" id="emojiBtn" onclick="window.buyerChat.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
+                        <button class="chat-send-btn" id="sendBtn" onclick="window.buyerChat.sendMessage()"><i class="fas fa-paper-plane"></i></button>
                     </div>
                     <div id="emojiPicker" class="emoji-picker"></div>
                     <div id="mediaPreview" class="media-preview"></div>
@@ -1069,23 +1082,99 @@
             let recordingTimerInterval = null;
             let currentReplyingTo = null;
             let currentOpenMenu = null;
+            let userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
             
             const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
             
             const categoryIcons = { 'LED Bulbs': 'fa-lightbulb', 'Energy Saving': 'fa-leaf', 'Decorative': 'fa-star', 'Street Light': 'fa-road', 'Solar': 'fa-sun' };
             
-            // Fallback GIFs that always work
             const fallbackGIFs = [
                 'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif',
                 'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif',
-                'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif',
-                'https://media.giphy.com/media/xT9IgzoKnwFNmISR8/giphy.gif',
                 'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif'
             ];
             
-            async function fetchGIFs(search = '') {
-                // Return fallback GIFs always for reliability
-                return fallbackGIFs.map(url => ({ url }));
+            async function fetchGIFs(search = '') { return fallbackGIFs.map(url => ({ url })); }
+            
+            // Check user permissions from database
+            async function checkUserPermissions() {
+                const { data, error } = await supabaseClient.from('buyers')
+                    .select('chat_enabled, voice_enabled, video_enabled')
+                    .eq('id', currentBuyerId)
+                    .single();
+                
+                if (error || !data) {
+                    userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
+                } else {
+                    userPermissions = {
+                        chatEnabled: data.chat_enabled !== false,
+                        voiceEnabled: data.voice_enabled !== false,
+                        videoEnabled: data.video_enabled !== false
+                    };
+                }
+                
+                updateUIForPermissions();
+                return userPermissions;
+            }
+            
+            // Update UI based on permissions
+            function updateUIForPermissions() {
+                const warningDiv = document.getElementById('permissionWarning');
+                const chatInput = document.getElementById('chatInput');
+                const sendBtn = document.getElementById('sendBtn');
+                const emojiBtn = document.getElementById('emojiBtn');
+                const imageBtn = document.getElementById('imageBtn');
+                const videoBtn = document.getElementById('videoBtn');
+                const voiceBtn = document.getElementById('voiceBtn');
+                const productBtn = document.getElementById('productBtn');
+                const gifBtn = document.getElementById('gifBtn');
+                
+                if (!userPermissions.chatEnabled) {
+                    warningDiv.innerHTML = '<i class="fas fa-ban"></i> Chat has been disabled by admin. You cannot send messages.';
+                    warningDiv.classList.add('show');
+                    if (chatInput) chatInput.disabled = true;
+                    if (sendBtn) sendBtn.disabled = true;
+                    if (emojiBtn) emojiBtn.disabled = true;
+                    if (imageBtn) imageBtn.disabled = true;
+                    if (videoBtn) videoBtn.disabled = true;
+                    if (voiceBtn) voiceBtn.disabled = true;
+                    if (productBtn) productBtn.disabled = true;
+                    if (gifBtn) gifBtn.disabled = true;
+                    
+                    // Add disabled class for styling
+                    document.querySelectorAll('.chat-tool-btn, .emoji-btn, .chat-send-btn').forEach(btn => {
+                        btn.classList.add('disabled');
+                    });
+                } else {
+                    warningDiv.classList.remove('show');
+                    if (chatInput) chatInput.disabled = false;
+                    if (sendBtn) sendBtn.disabled = false;
+                    if (emojiBtn) emojiBtn.disabled = false;
+                    
+                    // Voice permission
+                    if (!userPermissions.voiceEnabled) {
+                        if (voiceBtn) { voiceBtn.disabled = true; voiceBtn.classList.add('disabled'); }
+                    } else {
+                        if (voiceBtn) { voiceBtn.disabled = false; voiceBtn.classList.remove('disabled'); }
+                    }
+                    
+                    // Video/Media permission
+                    if (!userPermissions.videoEnabled) {
+                        if (imageBtn) { imageBtn.disabled = true; imageBtn.classList.add('disabled'); }
+                        if (videoBtn) { videoBtn.disabled = true; videoBtn.classList.add('disabled'); }
+                        if (gifBtn) { gifBtn.disabled = true; gifBtn.classList.add('disabled'); }
+                        if (productBtn) { productBtn.disabled = true; productBtn.classList.add('disabled'); }
+                    } else {
+                        if (imageBtn) { imageBtn.disabled = false; imageBtn.classList.remove('disabled'); }
+                        if (videoBtn) { videoBtn.disabled = false; videoBtn.classList.remove('disabled'); }
+                        if (gifBtn) { gifBtn.disabled = false; gifBtn.classList.remove('disabled'); }
+                        if (productBtn) { productBtn.disabled = false; productBtn.classList.remove('disabled'); }
+                    }
+                    
+                    document.querySelectorAll('.chat-tool-btn, .emoji-btn, .chat-send-btn').forEach(btn => {
+                        if (!btn.disabled) btn.classList.remove('disabled');
+                    });
+                }
             }
             
             window.buyerChat = {
@@ -1108,9 +1197,20 @@
                             if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; }
                         }
                     });
+                    
+                    // Refresh permissions periodically
+                    setInterval(() => checkUserPermissions(), 10000);
                 },
                 
                 async openGifPicker() {
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    if (!userPermissions.videoEnabled) {
+                        Swal.fire({ title: 'Media Disabled', text: 'Media/GIF sharing has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
                     const modal = document.getElementById('gifPickerModal');
                     modal.classList.toggle('active');
                     if (modal.classList.contains('active')) {
@@ -1127,11 +1227,15 @@
                 
                 renderGIFs(gifs) {
                     const grid = document.getElementById('gifGrid');
-                    if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found. Try another search!</div>'; return; }
+                    if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found</div>'; return; }
                     grid.innerHTML = gifs.map(g => `<img src="${g.url}" class="gif-item" onclick="window.buyerChat.sendGIF('${g.url}')">`).join('');
                 },
                 
                 sendGIF(url) {
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
                     pendingMedia = { url: url, type: 'image' };
                     const preview = document.getElementById('mediaPreview');
                     preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button>`;
@@ -1160,17 +1264,16 @@
                     ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false); });
                     dropZone.addEventListener('drop', (e) => {
                         const files = e.dataTransfer.files;
-                        if (files.length > 0) {
+                        if (files.length > 0 && userPermissions.chatEnabled && userPermissions.videoEnabled) {
                             const file = files[0];
                             if (file.type.startsWith('image/')) window.buyerChat.handleMediaUpload(file, 'image');
                             else if (file.type.startsWith('video/')) window.buyerChat.handleMediaUpload(file, 'video');
-                            else Swal.fire({ title: 'Invalid', text: 'Please upload image or video', icon: 'warning', background: '#1a3d33', color: '#fff' });
                         }
                     });
                 },
                 
                 setupEmojiPicker() { document.getElementById('emojiPicker').innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="window.buyerChat.addEmoji('${emoji}')">${emoji}</div>`).join(''); },
-                toggleEmojiPicker() { document.getElementById('emojiPicker').classList.toggle('active'); },
+                toggleEmojiPicker() { if (userPermissions.chatEnabled) document.getElementById('emojiPicker').classList.toggle('active'); },
                 addEmoji(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.focus(); document.getElementById('emojiPicker').classList.remove('active'); },
                 
                 async loadMessages() {
@@ -1182,42 +1285,173 @@
                 subscribeToMessages() {
                     if (this.subscription) return;
                     this.subscription = supabaseClient.channel('buyer-chat')
-                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => { chatMessages.push(payload.new); this.renderMessages(); this.markMessagesRead(); this.updateUnreadBadge(true); })
-                        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_messages' }, (payload) => { const idx = chatMessages.findIndex(m => m.id === payload.new.id); if (idx !== -1) chatMessages[idx] = payload.new; this.renderMessages(); })
-                        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, (payload) => { chatMessages = chatMessages.filter(m => m.id !== payload.old.id); this.renderMessages(); })
-                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_typing', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => { if (payload.new.sender_type === 'admin') this.showTypingIndicator(); })
+                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => { 
+                            chatMessages.push(payload.new); 
+                            this.renderMessages(); 
+                            this.markMessagesRead(); 
+                            this.updateUnreadBadge(true); 
+                        })
+                        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_messages' }, (payload) => { 
+                            const idx = chatMessages.findIndex(m => m.id === payload.new.id); 
+                            if (idx !== -1) chatMessages[idx] = payload.new; 
+                            this.renderMessages(); 
+                        })
+                        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, (payload) => { 
+                            chatMessages = chatMessages.filter(m => m.id !== payload.old.id); 
+                            this.renderMessages(); 
+                        })
+                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_typing', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => { 
+                            if (payload.new.sender_type === 'admin') this.showTypingIndicator(); 
+                        })
                         .subscribe();
                 },
                 
                 async sendMessage() {
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin. You cannot send messages.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    
                     const input = document.getElementById('chatInput');
                     const text = input.value.trim();
                     if (!text && !pendingMedia) return;
+                    
+                    // Check voice permission for voice messages
+                    if (pendingMedia && pendingMedia.type === 'audio' && !userPermissions.voiceEnabled) {
+                        Swal.fire({ title: 'Voice Disabled', text: 'Voice messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    
+                    // Check video permission for media
+                    if (pendingMedia && (pendingMedia.type === 'image' || pendingMedia.type === 'video') && !userPermissions.videoEnabled) {
+                        Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    
                     let messageData = { id: crypto.randomUUID(), sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', text: text || null, read: false, created_at: new Date().toISOString() };
                     if (pendingMedia) { messageData.media_url = pendingMedia.url; messageData.media_type = pendingMedia.type; if (pendingMedia.productData) messageData.product_data = pendingMedia.productData; }
-                    if (currentReplyingTo) { messageData.reply_to = currentReplyingTo.id; messageData.reply_to_text = currentReplyingTo.text; }
+                    if (currentReplyingTo) { messageData.reply_to = currentReplyingTo.id; }
                     const { error } = await supabaseClient.from('chat_messages').insert([messageData]);
                     if (!error) { chatMessages.push(messageData); this.renderMessages(); input.value = ''; this.clearPendingMedia(); this.cancelReply(); this.scrollToBottom(); }
                     else Swal.fire({ title: 'Error', text: 'Failed to send', icon: 'error', background: '#1a3d33', color: '#fff' });
                 },
                 
                 toggleMessageActions(messageId) { const menuId = `menu-${messageId.replace(/-/g, '')}`; const menu = document.getElementById(menuId); if (currentOpenMenu && currentOpenMenu !== menuId) document.getElementById(currentOpenMenu)?.classList.remove('show'); if (menu) { menu.classList.toggle('show'); currentOpenMenu = menu.classList.contains('show') ? menuId : null; } },
-                async editMessage(messageId, oldText) { const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); if (newText && newText !== oldText) { await supabaseClient.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
-                async deleteMessage(messageId, forEveryone = false) { const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); if (result.isConfirmed) { if (forEveryone) await supabaseClient.from('chat_messages').delete().eq('id', messageId); else await supabaseClient.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
+                
+                async editMessage(messageId, oldText) { 
+                    if (!userPermissions.chatEnabled) return;
+                    const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); 
+                    if (newText && newText !== oldText) { await supabaseClient.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } 
+                    this.closeMenu(); 
+                },
+                
+                async deleteMessage(messageId, forEveryone = false) { 
+                    const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); 
+                    if (result.isConfirmed) { 
+                        if (forEveryone) await supabaseClient.from('chat_messages').delete().eq('id', messageId); 
+                        else await supabaseClient.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); 
+                        Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); 
+                    } 
+                    this.closeMenu(); 
+                },
+                
                 replyToMessage(message) { currentReplyingTo = message; document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50); document.getElementById('replyBar').classList.add('active'); document.getElementById('chatInput').focus(); this.closeMenu(); },
                 cancelReply() { currentReplyingTo = null; document.getElementById('replyBar').classList.remove('active'); },
-                async forwardMessage(message) { const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; await supabaseClient.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); this.closeMenu(); },
+                
+                async forwardMessage(message) { 
+                    if (!userPermissions.chatEnabled) return;
+                    const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); 
+                    const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; 
+                    await supabaseClient.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); 
+                    Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); 
+                    this.closeMenu(); 
+                },
+                
                 closeMenu() { if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; } },
                 clearPendingMedia() { pendingMedia = null; const preview = document.getElementById('mediaPreview'); preview.classList.remove('active'); preview.innerHTML = ''; },
-                showAttachMenu() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'image'); input.click(); },
-                showVideoMenu() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'video'); input.click(); },
-                handleMediaUpload(file, type) { if (!file) return; const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: type }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button>`; preview.classList.add('active'); }; reader.readAsDataURL(file); },
-                showVoiceRecorder() { document.getElementById('voiceRecordingOverlay').classList.add('active'); recordingStartTime = Date.now(); this.startRecordingTimer(); navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { mediaRecorder = new MediaRecorder(stream); audioChunks = []; mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); mediaRecorder.onstop = () => { const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: 'audio' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div>`; preview.classList.add('active'); }; reader.readAsDataURL(audioBlob); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); }).catch(() => { Swal.fire({ title: 'Error', text: 'Microphone access denied', icon: 'error', background: '#1a3d33', color: '#fff' }); this.cancelVoiceRecording(); }); },
+                
+                showAttachMenu() { 
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    if (!userPermissions.videoEnabled) {
+                        Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    const input = document.createElement('input'); 
+                    input.type = 'file'; 
+                    input.accept = 'image/*'; 
+                    input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'image'); 
+                    input.click(); 
+                },
+                
+                showVideoMenu() { 
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    if (!userPermissions.videoEnabled) {
+                        Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    const input = document.createElement('input'); 
+                    input.type = 'file'; 
+                    input.accept = 'video/*'; 
+                    input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'video'); 
+                    input.click(); 
+                },
+                
+                handleMediaUpload(file, type) { 
+                    if (!file) return; 
+                    const reader = new FileReader(); 
+                    reader.onload = (ev) => { 
+                        pendingMedia = { url: ev.target.result, type: type }; 
+                        const preview = document.getElementById('mediaPreview'); 
+                        preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button>`; 
+                        preview.classList.add('active'); 
+                    }; 
+                    reader.readAsDataURL(file); 
+                },
+                
+                showVoiceRecorder() { 
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    if (!userPermissions.voiceEnabled) {
+                        Swal.fire({ title: 'Voice Disabled', text: 'Voice messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    document.getElementById('voiceRecordingOverlay').classList.add('active'); 
+                    recordingStartTime = Date.now(); 
+                    this.startRecordingTimer(); 
+                    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { 
+                        mediaRecorder = new MediaRecorder(stream); 
+                        audioChunks = []; 
+                        mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); 
+                        mediaRecorder.onstop = () => { 
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); 
+                            const reader = new FileReader(); 
+                            reader.onload = (ev) => { 
+                                pendingMedia = { url: ev.target.result, type: 'audio' }; 
+                                const preview = document.getElementById('mediaPreview'); 
+                                preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div>`; 
+                                preview.classList.add('active'); 
+                            }; 
+                            reader.readAsDataURL(audioBlob); 
+                            stream.getTracks().forEach(track => track.stop()); 
+                        }; 
+                        mediaRecorder.start(); 
+                    }).catch(() => { Swal.fire({ title: 'Error', text: 'Microphone access denied', icon: 'error', background: '#1a3d33', color: '#fff' }); this.cancelVoiceRecording(); }); 
+                },
+                
                 startRecordingTimer() { if (recordingTimerInterval) clearInterval(recordingTimerInterval); recordingTimerInterval = setInterval(() => { const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000); const minutes = Math.floor(elapsed / 60); const seconds = elapsed % 60; document.getElementById('recordingTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`; }, 1000); },
                 stopVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); } },
                 cancelVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.onstop = () => {}; mediaRecorder.stop(); } document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); },
                 
                 async showProductSelector() { 
+                    if (!userPermissions.chatEnabled || !userPermissions.videoEnabled) return;
                     const { data: products } = await supabaseClient.from('products').select('*').eq('is_active', true); 
                     if (!products || products.length === 0) { Swal.fire({ title: 'No Products', icon: 'info', background: '#1a3d33', color: '#fff' }); return; } 
                     const list = document.getElementById('productSelectorList'); 
@@ -1241,7 +1475,7 @@
                 
                 closeProductSelector() { document.getElementById('productSelectorModal').classList.remove('active'); },
                 sendTyping() { clearTimeout(typingTimeout); supabaseClient.from('chat_typing').insert([{ sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', timestamp: new Date().toISOString() }]); typingTimeout = setTimeout(() => {}, 2000); },
-                showTypingIndicator() { const container = document.getElementById('typingIndicatorArea'); container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot</span><span class="typing-dot"></span></div>'; setTimeout(() => { container.innerHTML = ''; }, 3000); },
+                showTypingIndicator() { const container = document.getElementById('typingIndicatorArea'); container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>'; setTimeout(() => { container.innerHTML = ''; }, 3000); },
                 async markMessagesRead() { await supabaseClient.from('chat_messages').update({ read: true }).eq('receiver_id', currentBuyerId).eq('receiver_type', 'buyer').eq('read', false); this.updateUnreadBadge(false); },
                 updateUnreadBadge(hasNew) { const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]'); const livechatTab = document.getElementById('livechatTab'); if (hasNew && !livechatTab.classList.contains('active')) chatTab.classList.add('has-unread'); else if (livechatTab.classList.contains('active')) chatTab.classList.remove('has-unread'); },
                 
@@ -1338,8 +1572,9 @@
                 if (!user) { window.location.href = 'buyer-auth.html'; return; }
                 currentBuyerId = user.id;
                 document.getElementById('userName').innerHTML = `<i class="fas fa-user-circle"></i> ${user.email.split('@')[0]}`;
-                await supabaseClient.from('buyers').upsert([{ id: user.id, email: user.email, full_name: user.user_metadata?.full_name || user.email.split('@')[0], phone: '', address: '', total_orders: 0, total_spent: 0, created_at: new Date().toISOString() }]);
+                await supabaseClient.from('buyers').upsert([{ id: user.id, email: user.email, full_name: user.user_metadata?.full_name || user.email.split('@')[0], phone: '', address: '', total_orders: 0, total_spent: 0, created_at: new Date().toISOString(), chat_enabled: true, voice_enabled: true, video_enabled: true }]);
                 await loadProducts(); await loadOrders(); await loadProfile(); loadCart();
+                await checkUserPermissions();
                 window.buyerChat.init();
                 setupTabListeners();
             }
@@ -1382,7 +1617,6 @@
             function updateCartUI() { 
                 document.getElementById('cartCount').innerHTML=cart.reduce((s,i)=>s+i.quantity,0); 
                 document.getElementById('cartTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString(); 
-                document.getElementById('cartTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString();
                 const container = document.getElementById('cartItems');
                 if(!cart.length){ container.innerHTML='<p style="text-align:center;padding:20px;">Cart empty</p>'; return; }
                 container.innerHTML = cart.map(i => {
@@ -1404,19 +1638,6 @@
                 }).join('');
             }
             
-            window.updateCartQuantity = function(id, delta) {
-                const item = cart.find(i => i.id === id);
-                if (item) {
-                    const newQty = item.quantity + delta;
-                    if (newQty <= 0) {
-                        cart = cart.filter(i => i.id !== id);
-                    } else {
-                        item.quantity = newQty;
-                    }
-                    saveCart();
-                }
-            };
-            
             window.removeFromCart = function(id){ cart=cart.filter(i=>i.id!==id); saveCart(); };
             window.toggleCart = function(){ document.getElementById('cartSidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); };
             window.showCheckout = function(){ if(!cart.length){ Swal.fire({title:'Empty Cart',icon:'warning',background:'#1a3d33',color:'#fff'}); return; } document.getElementById('checkoutTotal').innerHTML=cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString(); document.getElementById('checkoutModal').style.display='flex'; };
@@ -1435,7 +1656,7 @@
             async function loadOrders() {
                 const {data}=await supabaseClient.from('orders').select('*').eq('user_id',currentBuyerId).eq('user_type','buyer').order('order_date',{ascending:false});
                 const tbody=document.getElementById('ordersList');
-                if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="7" class="empty-state">No orders found</td></td>'; return; }
+                if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="7" class="empty-state">No orders found</td></tr>'; return; }
                 tbody.innerHTML=data.map(o => { let productsText = '-'; try { const parsed = JSON.parse(o.notes || '[]'); if (Array.isArray(parsed) && parsed.length) productsText = parsed.map(i => i.name).join(', ').substring(0,40); } catch(e) { productsText = o.notes ? o.notes.substring(0,40) : '-'; } return `<tr><td><strong>${o.id.slice(0,10)}</strong></td><td><small>${productsText}</small></td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td><small>${(o.delivery_address || '-').substring(0,30)}</small></td>`; }).join('');
             }
             
@@ -1462,7 +1683,23 @@
                 }
             };
             
-            function setupTabListeners() { document.querySelectorAll('.tab-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ const tab=btn.getAttribute('data-tab'); document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById(`${tab}Tab`).classList.add('active'); btn.classList.add('active'); if(tab==='livechat'){ window.buyerChat.markMessagesRead(); document.querySelector('.tab-btn[data-tab="livechat"]').classList.remove('has-unread'); window.buyerChat.renderMessages(); } }); }); }
+            function setupTabListeners() { 
+                document.querySelectorAll('.tab-btn').forEach(btn=>{ 
+                    btn.addEventListener('click',()=>{ 
+                        const tab=btn.getAttribute('data-tab'); 
+                        document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); 
+                        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); 
+                        document.getElementById(`${tab}Tab`).classList.add('active'); 
+                        btn.classList.add('active'); 
+                        if(tab==='livechat'){ 
+                            window.buyerChat.markMessagesRead(); 
+                            document.querySelector('.tab-btn[data-tab="livechat"]').classList.remove('has-unread'); 
+                            window.buyerChat.renderMessages(); 
+                            checkUserPermissions();
+                        } 
+                    }); 
+                }); 
+            }
             
             document.getElementById('logoutBtn').onclick = async()=>{ await supabaseClient.auth.signOut(); window.location.href='buyer-auth.html'; };
             checkAuth();
