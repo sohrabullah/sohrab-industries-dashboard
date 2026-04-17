@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -125,6 +126,7 @@
             padding: 8px 20px;
             border-radius: 80px;
             flex-wrap: wrap;
+            justify-content: center;
         }
         .tab-btn {
             padding: 10px 28px;
@@ -141,8 +143,6 @@
         }
         .tab-btn:hover { background: rgba(232,177,60,0.2); color: #E8B13C; }
         .tab-btn.active { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
-        .tab-btn.has-unread { background: linear-gradient(135deg, #dc3545, #c0392b); color: white; animation: pulseRed 0.8s ease-in-out infinite; }
-        @keyframes pulseRed { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
         
         .tab-content {
             display: none;
@@ -169,7 +169,7 @@
         }
         
         .table-container { overflow-x: auto; margin-top: 15px; border-radius: 20px; }
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid rgba(232,177,60,0.15); }
         th { background: linear-gradient(135deg, #0a2f24, #1a4a3a); color: #E8B13C; font-weight: 700; }
         tr:hover td { background: rgba(232,177,60,0.08); }
@@ -229,21 +229,6 @@
             position: relative;
             overflow: hidden;
         }
-        @keyframes easypaisaGlow {
-            0%, 100% { box-shadow: 0 0 5px #00a859; border-color: #00a859; background: linear-gradient(145deg, rgba(0,168,89,0.15), rgba(0,168,89,0.05)); }
-            50% { box-shadow: 0 0 20px #00a859; border-color: #00a859; background: linear-gradient(145deg, rgba(0,168,89,0.25), rgba(0,168,89,0.1)); }
-        }
-        @keyframes jazzcashGlow {
-            0%, 100% { box-shadow: 0 0 5px #e31e24; border-color: #e31e24; background: linear-gradient(145deg, rgba(227,30,36,0.15), rgba(227,30,36,0.05)); }
-            50% { box-shadow: 0 0 20px #e31e24; border-color: #e31e24; background: linear-gradient(145deg, rgba(227,30,36,0.25), rgba(227,30,36,0.1)); }
-        }
-        @keyframes bankGlow {
-            0%, 100% { box-shadow: 0 0 5px #2196F3; border-color: #2196F3; background: linear-gradient(145deg, rgba(33,150,243,0.15), rgba(33,150,243,0.05)); }
-            50% { box-shadow: 0 0 20px #2196F3; border-color: #2196F3; background: linear-gradient(145deg, rgba(33,150,243,0.25), rgba(33,150,243,0.1)); }
-        }
-        .payment-card.easypaisa { animation: easypaisaGlow 2s ease-in-out infinite; }
-        .payment-card.jazzcash { animation: jazzcashGlow 2s ease-in-out infinite; }
-        .payment-card.bank { animation: bankGlow 2s ease-in-out infinite; }
         .payment-card.selected {
             border: 2px solid #E8B13C;
             background: linear-gradient(145deg, rgba(232,177,60,0.25), rgba(232,177,60,0.1));
@@ -260,9 +245,6 @@
         .payment-card.jazzcash .payment-card-header i { color: #e31e24; }
         .payment-card.bank .payment-card-header i { color: #2196F3; }
         .payment-card-header h3 { font-size: 1.3rem; margin: 0; }
-        .payment-card.easypaisa .payment-card-header h3 { color: #00a859; }
-        .payment-card.jazzcash .payment-card-header h3 { color: #e31e24; }
-        .payment-card.bank .payment-card-header h3 { color: #2196F3; }
         .payment-details { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-top: 10px; }
         .payment-details p { margin: 5px 0; word-break: break-all; }
         .payment-details strong { color: #E8B13C; }
@@ -317,7 +299,6 @@
         .profile-field { display: flex; align-items: center; gap: 10px; }
         
         .empty-state { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
-        .info-text { margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.5); }
         
         .modal {
             display: none;
@@ -331,13 +312,8 @@
             backdrop-filter: blur(12px);
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease;
         }
         .modal.active { display: flex; }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
         .modal-content {
             background: linear-gradient(145deg, #1a3d33, #0f2a22);
             margin: 0 auto;
@@ -348,25 +324,7 @@
             overflow-y: auto;
             border-radius: 32px;
             border: 1px solid rgba(232,177,60,0.3);
-            animation: slideIn 0.3s ease;
             position: relative;
-        }
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .modal-content h2 {
-            color: #E8B13C;
-            margin-bottom: 20px;
-            font-size: 1.6rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 2px solid rgba(232,177,60,0.3);
-            padding-bottom: 15px;
-        }
-        .modal-content h2 i {
-            font-size: 1.8rem;
         }
         .close {
             position: absolute;
@@ -379,10 +337,7 @@
             transition: all 0.3s;
             z-index: 10;
         }
-        .close:hover {
-            color: #E8B13C;
-            transform: rotate(90deg);
-        }
+        .close:hover { color: #E8B13C; transform: rotate(90deg); }
         
         .chat-panel {
             display: flex;
@@ -397,11 +352,10 @@
         .chat-messages-area {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 35px;
+            padding: 12px 20px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            width: 100%;
+            gap: 8px;
             background: rgba(10, 31, 26, 0.4);
         }
         
@@ -410,16 +364,14 @@
             width: auto;
             display: flex;
             flex-direction: column;
-            position: relative;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
-        .message.sent { align-self: flex-end; margin-left: auto; margin-right: 4px; }
-        .message.received { align-self: flex-start; margin-right: auto; margin-left: 4px; }
+        .message.sent { align-self: flex-end; }
+        .message.received { align-self: flex-start; }
         
         .message-bubble {
             padding: 8px 12px;
             border-radius: 18px;
-            position: relative;
             word-wrap: break-word;
         }
         .message.sent .message-bubble { background: #dcf8c5; color: #111; border-bottom-right-radius: 4px; }
@@ -453,8 +405,7 @@
             width: fit-content;
             margin-bottom: 8px;
         }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 4px #2ecc71; animation: pulseGreen 1.5s infinite; }
-        @keyframes pulseGreen { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ecc71; }
         
         .chat-input-area {
             padding: 12px 16px;
@@ -490,15 +441,13 @@
         }
         
         @media (max-width: 768px) {
-            .header { flex-direction: column; }
+            .header { flex-direction: column; text-align: center; }
             .tabs { justify-content: center; }
             .tab-btn { padding: 8px 16px; font-size: 12px; }
             .stats { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
             .message { max-width: 90%; }
             .payment-options { grid-template-columns: 1fr; }
-            .screenshot-preview.active { flex-direction: column; align-items: flex-start; }
             .modal-content { width: 95%; padding: 20px; }
-            .modal-content h2 { font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -525,7 +474,7 @@
             <button class="tab-btn" data-tab="profits"><i class="fas fa-coins"></i> Profit History</button>
             <button class="tab-btn" data-tab="withdrawals"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> My Profile</button>
-            <button class="tab-btn" data-tab="livechat" id="chatTabBtn"><i class="fas fa-headset"></i> Live Chat</button>
+            <button class="tab-btn" data-tab="livechat"><i class="fas fa-headset"></i> Live Chat</button>
         </div>
 
         <div id="investmentsTab" class="tab-content active">
@@ -597,11 +546,10 @@
             <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Sohrab Industries Support</h2>
             <div class="chat-panel">
                 <div id="chatMessagesArea" class="chat-messages-area"><div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div></div>
-                <div id="typingIndicatorArea"></div>
                 <div class="chat-input-area">
                     <div class="chat-input-wrapper">
                         <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
-                        <button class="chat-send-btn" onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+                        <button class="chat-send-btn" onclick="window.sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
@@ -709,334 +657,336 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let currentInvestorId = null;
-        let chatMessages = [];
-        let chatSubscription = null;
-        let currentInvestmentScreenshot = null;
-        
-        function selectPaymentMethod(method) {
-            document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
-            document.getElementById(`card-${method}`).classList.add('selected');
-            document.getElementById('selectedPaymentMethod').value = method;
-        }
-        
-        function previewInvestmentScreenshot(input) {
-            const previewDiv = document.getElementById('investmentScreenshotPreview');
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentInvestmentScreenshot = e.target.result;
-                    previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`;
-                    previewDiv.classList.add('active');
-                };
-                reader.readAsDataURL(input.files[0]);
+        (function() {
+            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+            const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            let currentInvestorId = null;
+            let chatMessages = [];
+            let chatSubscription = null;
+            let currentInvestmentScreenshot = null;
+            
+            function selectPaymentMethod(method) {
+                document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
+                document.getElementById(`card-${method}`).classList.add('selected');
+                document.getElementById('selectedPaymentMethod').value = method;
             }
-        }
-        
-        function clearInvestmentScreenshot() {
-            currentInvestmentScreenshot = null;
-            document.getElementById('investmentScreenshot').value = '';
-            const previewDiv = document.getElementById('investmentScreenshotPreview');
-            previewDiv.innerHTML = '';
-            previewDiv.classList.remove('active');
-        }
-        
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            document.getElementById(modalId).style.display = 'none';
-        }
-        
-        async function computeAvailableBalance() {
-            const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-            const totalInvested = investments?.reduce((s,i)=> s + (i.amount || 0),0) || 0;
-            const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
-            const totalPaidProfit = profits?.reduce((s,p)=> s + (p.amount || 0),0) || 0;
-            const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
-            const totalWithdrawn = withdrawals?.reduce((s,w)=> s + (w.amount || 0),0) || 0;
-            return { available: totalInvested + totalPaidProfit - totalWithdrawn, totalInvested, totalPaidProfit };
-        }
-        
-        async function loadStatsAndBalance() {
-            const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
-            document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-            document.getElementById('totalProfit').innerHTML = `Rs. ${totalPaidProfit.toLocaleString()}`;
-            document.getElementById('availableBalance').innerHTML = `Rs. ${available.toLocaleString()}`;
-            const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
-            document.getElementById('activeInvestments').innerHTML = activeInv?.length || 0;
-            await supabase.from('investors').update({ available_balance: available }).eq('id', currentInvestorId);
-        }
-        
-        async function loadInvestments() {
-            const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
-            const tbody = document.getElementById('investmentsList');
-            if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments yet</td></tr>'; return; }
-            tbody.innerHTML = data.map(inv => `<tr>
-                <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
-                <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
-                <td>${inv.payment_method||'-'}</td>
-                <td>${inv.transaction_id||'-'}</td>
-                <td><span class="status-badge status-active">Approved</span></td>
-                <td>${inv.notes||'-'}</td>
-                <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank','noopener,noreferrer')">` : '-'}</td>
-            </tr>`).join('');
-        }
-        
-        async function loadInvestmentRequests() {
-            const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
-            const tbody = document.getElementById('investmentRequestsList');
-            if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
-            tbody.innerHTML = data.map(inv => `<tr>
-                <td>${new Date(inv.created_at).toLocaleDateString()}</td>
-                <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
-                <td>${inv.payment_method||'-'}</td>
-                <td>${inv.transaction_id||'-'}</td>
-                <td><span class="status-badge status-pending">Pending</span></td>
-                <td>${inv.notes||'-'}</td>
-                <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank','noopener,noreferrer')">` : '-'}</td>
-            </tr>`).join('');
-        }
-        
-        async function loadProfits() {
-            const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
-            const tbody = document.getElementById('profitsList');
-            if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; return; }
-            tbody.innerHTML = data.map(p => `<tr>
-                <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
-                <td>Rs. ${(p.amount||0).toLocaleString()}</td>
-                <td>${p.profit_percentage||10}%</td>
-                <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td>
-                <td>${p.paid_date?new Date(p.paid_date).toLocaleDateString():'-'}</td>
-            </tr>`).join('');
-        }
-        
-        async function loadWithdrawals() {
-            const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
-            const tbody = document.getElementById('withdrawalsList');
-            if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</td></tr>'; return; }
-            tbody.innerHTML = data.map(w => `<tr>
-                <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                <td>Rs. ${(w.amount||0).toLocaleString()}</td>
-                <td>${w.payment_method||'-'}</td>
-                <td>${w.account_title||'-'}</td>
-                <td>${w.account_details||'-'}</td>
-                <td><span class="status-badge ${w.status==='approved'?'status-active':(w.status==='rejected'?'status-rejected':'status-pending')}">${w.status==='pending'?'Pending':(w.status==='approved'?'Approved':'Rejected')}</span></td>
-                <td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</td>
-                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="window.open('${w.approval_screenshot}','_blank','noopener,noreferrer')">` : '-'}</td>
-            </tr>`).join('');
-        }
-        
-        async function loadProfile() {
-            const { data } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
-            if(data && data[0]){
-                const i = data[0];
-                document.getElementById('profileName').value = i.full_name || '';
-                document.getElementById('profileEmail').value = i.email || '';
-                document.getElementById('profilePhone').value = i.phone || '';
-                document.getElementById('profileCity').value = i.city || '';
+            
+            function previewInvestmentScreenshot(input) {
+                const previewDiv = document.getElementById('investmentScreenshotPreview');
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        currentInvestmentScreenshot = e.target.result;
+                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`;
+                        previewDiv.classList.add('active');
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            
+            function clearInvestmentScreenshot() {
+                currentInvestmentScreenshot = null;
+                document.getElementById('investmentScreenshot').value = '';
+                const previewDiv = document.getElementById('investmentScreenshotPreview');
+                previewDiv.innerHTML = '';
+                previewDiv.classList.remove('active');
+            }
+            
+            function closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+                document.getElementById(modalId).style.display = 'none';
+            }
+            
+            async function computeAvailableBalance() {
+                const { data: investments } = await supabaseClient.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+                const totalInvested = investments?.reduce((s,i)=> s + (i.amount || 0),0) || 0;
+                const { data: profits } = await supabaseClient.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
+                const totalPaidProfit = profits?.reduce((s,p)=> s + (p.amount || 0),0) || 0;
+                const { data: withdrawals } = await supabaseClient.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
+                const totalWithdrawn = withdrawals?.reduce((s,w)=> s + (w.amount || 0),0) || 0;
+                return { available: totalInvested + totalPaidProfit - totalWithdrawn, totalInvested, totalPaidProfit };
+            }
+            
+            async function loadStatsAndBalance() {
                 const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
-                document.getElementById('profileTotalInvestment').value = `Rs. ${totalInvested.toLocaleString()}`;
-                document.getElementById('profileTotalProfit').value = `Rs. ${totalPaidProfit.toLocaleString()}`;
-                document.getElementById('profileBalance').value = `Rs. ${available.toLocaleString()}`;
+                document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
+                document.getElementById('totalProfit').innerHTML = `Rs. ${totalPaidProfit.toLocaleString()}`;
+                document.getElementById('availableBalance').innerHTML = `Rs. ${available.toLocaleString()}`;
+                const { data: activeInv } = await supabaseClient.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
+                document.getElementById('activeInvestments').innerHTML = activeInv?.length || 0;
+                await supabaseClient.from('investors').update({ available_balance: available }).eq('id', currentInvestorId);
             }
-        }
-        
-        window.editField = async function(inputId, dbField) {
-            const input = document.getElementById(inputId);
-            const newValue = prompt(`Enter new ${dbField.replace('_',' ')}:`, input.value);
-            if(newValue && newValue !== input.value){
-                const { error } = await supabase.from('investors').update({ [dbField]: newValue }).eq('id', currentInvestorId);
-                if(error) Swal.fire({ title: 'Error', text: error.message, icon: 'error', background: '#1a3d33', color: '#fff' });
-                else { Swal.fire({ title: 'Updated!', text: `${dbField} updated successfully`, icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); await loadProfile(); }
+            
+            async function loadInvestments() {
+                const { data } = await supabaseClient.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
+                const tbody = document.getElementById('investmentsList');
+                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments yet</td></tr>'; return; }
+                tbody.innerHTML = data.map(inv => `<tr>
+                    <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
+                    <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
+                    <td>${inv.payment_method||'-'}</td>
+                    <td>${inv.transaction_id||'-'}</td>
+                    <td><span class="status-badge status-active">Approved</span></td>
+                    <td>${inv.notes||'-'}</td>
+                    <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank','noopener,noreferrer')">` : '-'}</td>
+                </tr>`).join('');
             }
-        };
-        
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            const tabDiv = document.getElementById(`${tabName}Tab`); if(tabDiv) tabDiv.classList.add('active');
-            const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`); if(btn) btn.classList.add('active');
-            if(tabName === 'livechat') { renderChatMessages(); }
-        }
-        
-        document.getElementById('openInvestmentModalBtn').onclick = () => {
-            clearInvestmentScreenshot();
-            document.getElementById('selectedPaymentMethod').value = '';
-            document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
-            document.getElementById('investmentAmount').value = '';
-            document.getElementById('investmentTransactionId').value = '';
-            document.getElementById('investmentNotes').value = '';
-            const modal = document.getElementById('investmentModal');
-            modal.style.display = 'flex';
-            modal.classList.add('active');
-        };
-        
-        document.getElementById('openWithdrawalModalBtn').onclick = () => {
-            document.getElementById('withdrawAmount').value = '';
-            document.getElementById('accountTitle').value = '';
-            document.getElementById('accountDetails').value = '';
-            const modal = document.getElementById('withdrawalModal');
-            modal.style.display = 'flex';
-            modal.classList.add('active');
-        };
-        
-        document.getElementById('submitInvestmentBtn').onclick = async () => {
-            const amount = document.getElementById('investmentAmount').value;
-            const paymentMethod = document.getElementById('selectedPaymentMethod').value;
-            const transactionId = document.getElementById('investmentTransactionId').value;
-            const notes = document.getElementById('investmentNotes').value;
-            if(!amount || !paymentMethod || !transactionId) { Swal.fire({ title: 'Missing Fields', text: 'Amount, Payment Method and Transaction ID required', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
-            if(parseFloat(amount) < 1000) { Swal.fire({ title: 'Invalid Amount', text: 'Minimum investment Rs. 1,000', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
-            const { error } = await supabase.from('investments').insert([{ 
-                investor_id: currentInvestorId, 
-                amount: parseFloat(amount), 
-                investment_date: new Date().toISOString().split('T')[0], 
-                payment_method: paymentMethod, 
-                transaction_id: transactionId, 
-                status: 'pending', 
-                notes: notes || `Payment via ${paymentMethod}`,
-                screenshot: currentInvestmentScreenshot,
-                created_at: new Date().toISOString()
-            }]);
-            if(error) Swal.fire({ title: 'Error', text: error.message, icon: 'error', background: '#1a3d33', color: '#fff' });
-            else { 
-                Swal.fire({ title: 'Submitted!', text: 'Investment request submitted successfully', icon: 'success', timer: 2000, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); 
-                closeModal('investmentModal'); 
-                await loadInvestmentRequests(); 
-                clearInvestmentScreenshot();
+            
+            async function loadInvestmentRequests() {
+                const { data } = await supabaseClient.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
+                const tbody = document.getElementById('investmentRequestsList');
+                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
+                tbody.innerHTML = data.map(inv => `<tr>
+                    <td>${new Date(inv.created_at).toLocaleDateString()}</td>
+                    <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
+                    <td>${inv.payment_method||'-'}</td>
+                    <td>${inv.transaction_id||'-'}</td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
+                    <td>${inv.notes||'-'}</td>
+                    <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank','noopener,noreferrer')">` : '-'}</td>
+                </tr>`).join('');
             }
-        };
-        
-        document.getElementById('submitWithdrawalBtn').onclick = async () => {
-            const amount = document.getElementById('withdrawAmount').value;
-            const method = document.getElementById('withdrawMethod').value;
-            const accountTitle = document.getElementById('accountTitle').value;
-            const accountDetails = document.getElementById('accountDetails').value;
-            if(!amount || !accountTitle || !accountDetails) { Swal.fire({ title: 'Missing Fields', text: 'All fields required', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
-            if(parseFloat(amount) < 1000) { Swal.fire({ title: 'Invalid Amount', text: 'Minimum withdrawal Rs. 1,000', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
-            const { available } = await computeAvailableBalance();
-            if(parseFloat(amount) > available) { Swal.fire({ title: 'Insufficient Balance', text: `Available balance: Rs. ${available.toLocaleString()}`, icon: 'error', background: '#1a3d33', color: '#fff' }); return; }
-            const { error } = await supabase.from('withdrawals').insert([{ 
-                investor_id: currentInvestorId, 
-                amount: parseFloat(amount), 
-                request_date: new Date().toISOString().split('T')[0], 
-                payment_method: method, 
-                account_title: accountTitle,
-                account_details: accountDetails, 
-                status: 'pending' 
-            }]);
-            if(error) Swal.fire({ title: 'Error', text: error.message, icon: 'error', background: '#1a3d33', color: '#fff' });
-            else { 
-                Swal.fire({ title: 'Submitted!', text: 'Withdrawal request submitted', icon: 'success', timer: 2000, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); 
-                closeModal('withdrawalModal'); 
-                await loadWithdrawals(); 
-                await loadStatsAndBalance(); 
-                await loadProfile(); 
+            
+            async function loadProfits() {
+                const { data } = await supabaseClient.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
+                const tbody = document.getElementById('profitsList');
+                if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; return; }
+                tbody.innerHTML = data.map(p => `<tr>
+                    <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
+                    <td>Rs. ${(p.amount||0).toLocaleString()}</td>
+                    <td>${p.profit_percentage||10}%</td>
+                    <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td>
+                    <td>${p.paid_date?new Date(p.paid_date).toLocaleDateString():'-'}</td>
+                </tr>`).join('');
             }
-        };
-        
-        document.getElementById('logoutBtn').onclick = async () => { await supabase.auth.signOut(); window.location.href = 'investor-auth.html'; };
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
-        document.querySelectorAll('.stat-card').forEach(card => card.addEventListener('click', () => switchTab(card.getAttribute('data-tab'))));
-        
-        async function loadChatMessages() {
-            if(!currentInvestorId) return;
-            const { data } = await supabase.from('chat_messages').select('*').or(`and(sender_type.eq.investor,receiver_id.eq.00000000-0000-0000-0000-000000000001,receiver_type.eq.admin),and(sender_id.eq.00000000-0000-0000-0000-000000000001,sender_type.eq.admin,receiver_id.eq.${currentInvestorId},receiver_type.eq.investor)`).order('created_at', { ascending: true });
-            if(data) { chatMessages = data; renderChatMessages(); }
-        }
-        
-        function renderChatMessages() {
-            const container = document.getElementById('chatMessagesArea');
-            if(!container) return;
-            if(chatMessages.length === 0) {
-                container.innerHTML = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div><div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div>';
-                return;
+            
+            async function loadWithdrawals() {
+                const { data } = await supabaseClient.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
+                const tbody = document.getElementById('withdrawalsList');
+                if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</td></tr>'; return; }
+                tbody.innerHTML = data.map(w => `<tr>
+                    <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                    <td>Rs. ${(w.amount||0).toLocaleString()}</td>
+                    <td>${w.payment_method||'-'}</td>
+                    <td>${w.account_title||'-'}</td>
+                    <td>${w.account_details||'-'}</td>
+                    <td><span class="status-badge ${w.status==='approved'?'status-active':(w.status==='rejected'?'status-rejected':'status-pending')}">${w.status==='pending'?'Pending':(w.status==='approved'?'Approved':'Rejected')}</span></td>
+                    <td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</td>
+                    <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="window.open('${w.approval_screenshot}','_blank','noopener,noreferrer')">` : '-'}</td>
+                </tr>`).join('');
             }
-            let statusHtml = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div>';
-            let messagesHtml = chatMessages.map(msg => {
-                const isSent = msg.sender_type === 'investor';
-                const senderName = isSent ? 'You' : '🛡️ Sohrab Industries Support';
-                let mediaHtml = '';
-                if(msg.media_url && msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank','noopener,noreferrer')">`;
-                if(msg.media_url && msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`;
-                return `<div class="message ${isSent ? 'sent' : 'received'}">
-                    <div class="message-bubble">
-                        <div class="sender-name">${senderName}</div>
-                        <div class="message-text">${escapeHtml(msg.text || '')}</div>
-                        ${mediaHtml}
-                        <div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
-                    </div>
-                </div>`;
-            }).join('');
-            container.innerHTML = statusHtml + messagesHtml;
-            container.scrollTop = container.scrollHeight;
-        }
-        
-        function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-        
-        window.sendChatMessage = async () => {
-            if(!currentInvestorId) return;
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if(!text) return;
-            const newMsg = {
-                id: crypto.randomUUID(),
-                sender_id: currentInvestorId,
-                sender_type: 'investor',
-                receiver_id: '00000000-0000-0000-0000-000000000001',
-                receiver_type: 'admin',
-                text: text,
-                read: false,
-                created_at: new Date().toISOString()
+            
+            async function loadProfile() {
+                const { data } = await supabaseClient.from('investors').select('*').eq('id', currentInvestorId);
+                if(data && data[0]){
+                    const i = data[0];
+                    document.getElementById('profileName').value = i.full_name || '';
+                    document.getElementById('profileEmail').value = i.email || '';
+                    document.getElementById('profilePhone').value = i.phone || '';
+                    document.getElementById('profileCity').value = i.city || '';
+                    const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
+                    document.getElementById('profileTotalInvestment').value = `Rs. ${totalInvested.toLocaleString()}`;
+                    document.getElementById('profileTotalProfit').value = `Rs. ${totalPaidProfit.toLocaleString()}`;
+                    document.getElementById('profileBalance').value = `Rs. ${available.toLocaleString()}`;
+                }
+            }
+            
+            window.editField = async function(inputId, dbField) {
+                const input = document.getElementById(inputId);
+                const newValue = prompt(`Enter new ${dbField.replace('_',' ')}:`, input.value);
+                if(newValue && newValue !== input.value){
+                    const { error } = await supabaseClient.from('investors').update({ [dbField]: newValue }).eq('id', currentInvestorId);
+                    if(error) Swal.fire({ title: 'Error', text: error.message, icon: 'error', background: '#1a3d33', color: '#fff' });
+                    else { Swal.fire({ title: 'Updated!', text: `${dbField} updated successfully`, icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); await loadProfile(); }
+                }
             };
-            const { error } = await supabase.from('chat_messages').insert([newMsg]);
-            if(!error) {
-                chatMessages.push(newMsg);
-                renderChatMessages();
-                input.value = '';
-            } else {
-                Swal.fire({ title: 'Error', text: 'Failed to send message', icon: 'error', background: '#1a3d33', color: '#fff' });
+            
+            function switchTab(tabName) {
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                const tabDiv = document.getElementById(`${tabName}Tab`); if(tabDiv) tabDiv.classList.add('active');
+                const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`); if(btn) btn.classList.add('active');
+                if(tabName === 'livechat') { renderChatMessages(); }
             }
-        };
-        
-        function subscribeToChat() {
-            if(chatSubscription) return;
-            chatSubscription = supabase.channel('investor-chat-realtime')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentInvestorId},receiver_type=eq.investor` }, (payload) => {
-                    chatMessages.push(payload.new);
+            
+            document.getElementById('openInvestmentModalBtn').onclick = () => {
+                clearInvestmentScreenshot();
+                document.getElementById('selectedPaymentMethod').value = '';
+                document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
+                document.getElementById('investmentAmount').value = '';
+                document.getElementById('investmentTransactionId').value = '';
+                document.getElementById('investmentNotes').value = '';
+                const modal = document.getElementById('investmentModal');
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            };
+            
+            document.getElementById('openWithdrawalModalBtn').onclick = () => {
+                document.getElementById('withdrawAmount').value = '';
+                document.getElementById('accountTitle').value = '';
+                document.getElementById('accountDetails').value = '';
+                const modal = document.getElementById('withdrawalModal');
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            };
+            
+            document.getElementById('submitInvestmentBtn').onclick = async () => {
+                const amount = document.getElementById('investmentAmount').value;
+                const paymentMethod = document.getElementById('selectedPaymentMethod').value;
+                const transactionId = document.getElementById('investmentTransactionId').value;
+                const notes = document.getElementById('investmentNotes').value;
+                if(!amount || !paymentMethod || !transactionId) { Swal.fire({ title: 'Missing Fields', text: 'Amount, Payment Method and Transaction ID required', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                if(parseFloat(amount) < 1000) { Swal.fire({ title: 'Invalid Amount', text: 'Minimum investment Rs. 1,000', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                const { error } = await supabaseClient.from('investments').insert([{ 
+                    investor_id: currentInvestorId, 
+                    amount: parseFloat(amount), 
+                    investment_date: new Date().toISOString().split('T')[0], 
+                    payment_method: paymentMethod, 
+                    transaction_id: transactionId, 
+                    status: 'pending', 
+                    notes: notes || `Payment via ${paymentMethod}`,
+                    screenshot: currentInvestmentScreenshot,
+                    created_at: new Date().toISOString()
+                }]);
+                if(error) Swal.fire({ title: 'Error', text: error.message, icon: 'error', background: '#1a3d33', color: '#fff' });
+                else { 
+                    Swal.fire({ title: 'Submitted!', text: 'Investment request submitted successfully', icon: 'success', timer: 2000, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); 
+                    closeModal('investmentModal'); 
+                    await loadInvestmentRequests(); 
+                    clearInvestmentScreenshot();
+                }
+            };
+            
+            document.getElementById('submitWithdrawalBtn').onclick = async () => {
+                const amount = document.getElementById('withdrawAmount').value;
+                const method = document.getElementById('withdrawMethod').value;
+                const accountTitle = document.getElementById('accountTitle').value;
+                const accountDetails = document.getElementById('accountDetails').value;
+                if(!amount || !accountTitle || !accountDetails) { Swal.fire({ title: 'Missing Fields', text: 'All fields required', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                if(parseFloat(amount) < 1000) { Swal.fire({ title: 'Invalid Amount', text: 'Minimum withdrawal Rs. 1,000', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                const { available } = await computeAvailableBalance();
+                if(parseFloat(amount) > available) { Swal.fire({ title: 'Insufficient Balance', text: `Available balance: Rs. ${available.toLocaleString()}`, icon: 'error', background: '#1a3d33', color: '#fff' }); return; }
+                const { error } = await supabaseClient.from('withdrawals').insert([{ 
+                    investor_id: currentInvestorId, 
+                    amount: parseFloat(amount), 
+                    request_date: new Date().toISOString().split('T')[0], 
+                    payment_method: method, 
+                    account_title: accountTitle,
+                    account_details: accountDetails, 
+                    status: 'pending' 
+                }]);
+                if(error) Swal.fire({ title: 'Error', text: error.message, icon: 'error', background: '#1a3d33', color: '#fff' });
+                else { 
+                    Swal.fire({ title: 'Submitted!', text: 'Withdrawal request submitted', icon: 'success', timer: 2000, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); 
+                    closeModal('withdrawalModal'); 
+                    await loadWithdrawals(); 
+                    await loadStatsAndBalance(); 
+                    await loadProfile(); 
+                }
+            };
+            
+            document.getElementById('logoutBtn').onclick = async () => { await supabaseClient.auth.signOut(); window.location.href = 'investor-auth.html'; };
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
+            document.querySelectorAll('.stat-card').forEach(card => card.addEventListener('click', () => switchTab(card.getAttribute('data-tab'))));
+            
+            async function loadChatMessages() {
+                if(!currentInvestorId) return;
+                const { data } = await supabaseClient.from('chat_messages').select('*').or(`and(sender_type.eq.investor,receiver_id.eq.00000000-0000-0000-0000-000000000001,receiver_type.eq.admin),and(sender_id.eq.00000000-0000-0000-0000-000000000001,sender_type.eq.admin,receiver_id.eq.${currentInvestorId},receiver_type.eq.investor)`).order('created_at', { ascending: true });
+                if(data) { chatMessages = data; renderChatMessages(); }
+            }
+            
+            function renderChatMessages() {
+                const container = document.getElementById('chatMessagesArea');
+                if(!container) return;
+                if(chatMessages.length === 0) {
+                    container.innerHTML = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div><div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div>';
+                    return;
+                }
+                let statusHtml = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div>';
+                let messagesHtml = chatMessages.map(msg => {
+                    const isSent = msg.sender_type === 'investor';
+                    const senderName = isSent ? 'You' : '🛡️ Sohrab Industries Support';
+                    let mediaHtml = '';
+                    if(msg.media_url && msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank','noopener,noreferrer')">`;
+                    if(msg.media_url && msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`;
+                    return `<div class="message ${isSent ? 'sent' : 'received'}">
+                        <div class="message-bubble">
+                            <div class="sender-name">${senderName}</div>
+                            <div class="message-text">${escapeHtml(msg.text || '')}</div>
+                            ${mediaHtml}
+                            <div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+                        </div>
+                    </div>`;
+                }).join('');
+                container.innerHTML = statusHtml + messagesHtml;
+                container.scrollTop = container.scrollHeight;
+            }
+            
+            function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+            
+            window.sendChatMessage = async () => {
+                if(!currentInvestorId) return;
+                const input = document.getElementById('chatInput');
+                const text = input.value.trim();
+                if(!text) return;
+                const newMsg = {
+                    id: crypto.randomUUID(),
+                    sender_id: currentInvestorId,
+                    sender_type: 'investor',
+                    receiver_id: '00000000-0000-0000-0000-000000000001',
+                    receiver_type: 'admin',
+                    text: text,
+                    read: false,
+                    created_at: new Date().toISOString()
+                };
+                const { error } = await supabaseClient.from('chat_messages').insert([newMsg]);
+                if(!error) {
+                    chatMessages.push(newMsg);
                     renderChatMessages();
-                })
-                .subscribe();
-        }
-        
-        async function checkAuth() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if(!user) { window.location.href = 'investor-auth.html'; return; }
-            currentInvestorId = user.id;
-            document.getElementById('userName').innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
-            const { data: existing } = await supabase.from('investors').select('id').eq('id', currentInvestorId);
-            if(!existing?.length) {
-                await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', total_investment: 0, total_profit: 0, available_balance: 0, created_at: new Date().toISOString(), chat_enabled: true, voice_enabled: true, video_enabled: true }]);
+                    input.value = '';
+                } else {
+                    Swal.fire({ title: 'Error', text: 'Failed to send message', icon: 'error', background: '#1a3d33', color: '#fff' });
+                }
+            };
+            
+            function subscribeToChat() {
+                if(chatSubscription) return;
+                chatSubscription = supabaseClient.channel('investor-chat-realtime')
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentInvestorId},receiver_type=eq.investor` }, (payload) => {
+                        chatMessages.push(payload.new);
+                        renderChatMessages();
+                    })
+                    .subscribe();
             }
-            await loadInvestments();
-            await loadInvestmentRequests();
-            await loadProfits();
-            await loadWithdrawals();
-            await loadProfile();
-            await loadStatsAndBalance();
-            await loadChatMessages();
-            subscribeToChat();
-        }
-        
-        checkAuth();
-        window.selectPaymentMethod = selectPaymentMethod;
-        window.previewInvestmentScreenshot = previewInvestmentScreenshot;
-        window.clearInvestmentScreenshot = clearInvestmentScreenshot;
-        window.closeModal = closeModal;
+            
+            async function checkAuth() {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if(!user) { window.location.href = 'investor-auth.html'; return; }
+                currentInvestorId = user.id;
+                document.getElementById('userName').innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
+                const { data: existing } = await supabaseClient.from('investors').select('id').eq('id', currentInvestorId);
+                if(!existing?.length) {
+                    await supabaseClient.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', total_investment: 0, total_profit: 0, available_balance: 0, created_at: new Date().toISOString(), chat_enabled: true, voice_enabled: true, video_enabled: true }]);
+                }
+                await loadInvestments();
+                await loadInvestmentRequests();
+                await loadProfits();
+                await loadWithdrawals();
+                await loadProfile();
+                await loadStatsAndBalance();
+                await loadChatMessages();
+                subscribeToChat();
+            }
+            
+            window.selectPaymentMethod = selectPaymentMethod;
+            window.previewInvestmentScreenshot = previewInvestmentScreenshot;
+            window.clearInvestmentScreenshot = clearInvestmentScreenshot;
+            window.closeModal = closeModal;
+            
+            checkAuth();
+        })();
     </script>
 </body>
 </html>
