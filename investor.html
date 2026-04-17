@@ -405,7 +405,7 @@
             align-items: center;
             gap: 6px;
             font-size: 0.7rem;
-            background: linear-gradient(135deg, #6b4f00 0%, #6b4f00 30%, #E8B13C 30%, #ffd966 100%);
+            background: rgba(0,0,0,0.4);
             padding: 4px 12px;
             border-radius: 20px;
             width: fit-content;
@@ -470,6 +470,26 @@
             color: #0a1f1a;
             font-size: 1.1rem;
         }
+        
+        /* Disabled button styles */
+        .chat-tool-btn.disabled, .chat-send-btn.disabled, .emoji-btn.disabled, .chat-input.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        /* Permission warning banner */
+        .permission-warning {
+            background: linear-gradient(135deg, #dc3545, #c0392b);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            display: none;
+        }
+        .permission-warning.show { display: block; }
         
         .emoji-picker {
             position: absolute;
@@ -640,7 +660,7 @@
                 <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments</h2>
                 <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + New Investment Request</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentsList"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentsList"></tbody></table></div>
         </div>
 
         <div id="investmentRequestsTab" class="tab-content">
@@ -658,7 +678,7 @@
                 <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
         </div>
 
         <div id="profileTab" class="tab-content">
@@ -683,6 +703,7 @@
         <!-- Live Chat Tab - Full WhatsApp Style -->
         <div id="livechatTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Sohrab Industries Support</h2>
+            <div id="permissionWarning" class="permission-warning"></div>
             <div class="chat-panel">
                 <div id="chatMessagesArea" class="chat-messages-area">
                     <div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div>
@@ -693,16 +714,16 @@
                         <span><i class="fas fa-reply"></i> Replying to: <span id="replyingToText"></span></span>
                         <button onclick="window.investorChat.cancelReply()" style="background:none; border:none; color:#dc3545; cursor:pointer;">×</button>
                     </div>
-                    <div class="chat-toolbar">
-                        <button class="chat-tool-btn" onclick="window.investorChat.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
-                        <button class="chat-tool-btn" onclick="window.investorChat.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
-                        <button class="chat-tool-btn" onclick="window.investorChat.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
-                        <button class="chat-tool-btn" onclick="window.investorChat.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
+                    <div class="chat-toolbar" id="chatToolbar">
+                        <button class="chat-tool-btn" id="imageBtn" onclick="window.investorChat.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
+                        <button class="chat-tool-btn" id="videoBtn" onclick="window.investorChat.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
+                        <button class="chat-tool-btn" id="voiceBtn" onclick="window.investorChat.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
+                        <button class="chat-tool-btn" id="gifBtn" onclick="window.investorChat.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
                     </div>
                     <div class="chat-input-wrapper">
                         <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
-                        <button class="emoji-btn" onclick="window.investorChat.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
-                        <button class="chat-send-btn" onclick="window.investorChat.sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                        <button class="emoji-btn" id="emojiBtn" onclick="window.investorChat.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
+                        <button class="chat-send-btn" id="sendBtn" onclick="window.investorChat.sendMessage()"><i class="fas fa-paper-plane"></i></button>
                     </div>
                     <div id="emojiPicker" class="emoji-picker"></div>
                     <div id="mediaPreview" class="media-preview"></div>
@@ -750,6 +771,7 @@
             let recordingTimerInterval = null;
             let currentReplyingTo = null;
             let currentOpenMenu = null;
+            let userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
             
             const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
             
@@ -760,6 +782,85 @@
             ];
             
             async function fetchGIFs(search = '') { return fallbackGIFs.map(url => ({ url })); }
+            
+            // Check user permissions from database
+            async function checkUserPermissions() {
+                if (!currentInvestorId) return userPermissions;
+                
+                try {
+                    const { data, error } = await supabase.from('investors')
+                        .select('chat_enabled, voice_enabled, video_enabled')
+                        .eq('id', currentInvestorId)
+                        .single();
+                    
+                    if (error || !data) {
+                        console.log('Using default permissions for investor');
+                        userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
+                    } else {
+                        userPermissions = {
+                            chatEnabled: data.chat_enabled !== false,
+                            voiceEnabled: data.voice_enabled !== false,
+                            videoEnabled: data.video_enabled !== false
+                        };
+                        console.log('Investor permissions loaded:', userPermissions);
+                    }
+                } catch (err) {
+                    console.error('Error checking investor permissions:', err);
+                    userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
+                }
+                
+                updateUIForPermissions();
+                return userPermissions;
+            }
+            
+            // Update UI based on permissions
+            function updateUIForPermissions() {
+                const warningDiv = document.getElementById('permissionWarning');
+                const chatInput = document.getElementById('chatInput');
+                const sendBtn = document.getElementById('sendBtn');
+                const emojiBtn = document.getElementById('emojiBtn');
+                const imageBtn = document.getElementById('imageBtn');
+                const videoBtn = document.getElementById('videoBtn');
+                const voiceBtn = document.getElementById('voiceBtn');
+                const gifBtn = document.getElementById('gifBtn');
+                
+                console.log('Updating investor UI for permissions:', userPermissions);
+                
+                if (!userPermissions.chatEnabled) {
+                    warningDiv.innerHTML = '<i class="fas fa-ban"></i> ⚠️ Chat has been disabled by admin. You cannot send messages.';
+                    warningDiv.classList.add('show');
+                    if (chatInput) { chatInput.disabled = true; chatInput.classList.add('disabled'); }
+                    if (sendBtn) { sendBtn.disabled = true; sendBtn.classList.add('disabled'); }
+                    if (emojiBtn) { emojiBtn.disabled = true; emojiBtn.classList.add('disabled'); }
+                    if (imageBtn) { imageBtn.disabled = true; imageBtn.classList.add('disabled'); }
+                    if (videoBtn) { videoBtn.disabled = true; videoBtn.classList.add('disabled'); }
+                    if (voiceBtn) { voiceBtn.disabled = true; voiceBtn.classList.add('disabled'); }
+                    if (gifBtn) { gifBtn.disabled = true; gifBtn.classList.add('disabled'); }
+                } else {
+                    warningDiv.classList.remove('show');
+                    if (chatInput) { chatInput.disabled = false; chatInput.classList.remove('disabled'); }
+                    if (sendBtn) { sendBtn.disabled = false; sendBtn.classList.remove('disabled'); }
+                    if (emojiBtn) { emojiBtn.disabled = false; emojiBtn.classList.remove('disabled'); }
+                    
+                    // Voice permission
+                    if (!userPermissions.voiceEnabled) {
+                        if (voiceBtn) { voiceBtn.disabled = true; voiceBtn.classList.add('disabled'); }
+                    } else {
+                        if (voiceBtn) { voiceBtn.disabled = false; voiceBtn.classList.remove('disabled'); }
+                    }
+                    
+                    // Video/Media permission
+                    if (!userPermissions.videoEnabled) {
+                        if (imageBtn) { imageBtn.disabled = true; imageBtn.classList.add('disabled'); }
+                        if (videoBtn) { videoBtn.disabled = true; videoBtn.classList.add('disabled'); }
+                        if (gifBtn) { gifBtn.disabled = true; gifBtn.classList.add('disabled'); }
+                    } else {
+                        if (imageBtn) { imageBtn.disabled = false; imageBtn.classList.remove('disabled'); }
+                        if (videoBtn) { videoBtn.disabled = false; videoBtn.classList.remove('disabled'); }
+                        if (gifBtn) { gifBtn.disabled = false; gifBtn.classList.remove('disabled'); }
+                    }
+                }
+            }
             
             // ========== INVESTOR CHAT SYSTEM ==========
             window.investorChat = {
@@ -782,9 +883,21 @@
                             if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; }
                         }
                     });
+                    
+                    // Refresh permissions every 5 seconds
+                    setInterval(() => checkUserPermissions(), 5000);
                 },
                 
                 async openGifPicker() {
+                    await checkUserPermissions();
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    if (!userPermissions.videoEnabled) {
+                        Swal.fire({ title: 'Media Disabled', text: 'Media/GIF sharing has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
                     const modal = document.getElementById('gifPickerModal');
                     modal.classList.toggle('active');
                     if (modal.classList.contains('active')) {
@@ -806,6 +919,10 @@
                 },
                 
                 sendGIF(url) {
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
                     pendingMedia = { url: url, type: 'image' };
                     const preview = document.getElementById('mediaPreview');
                     preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`;
@@ -831,9 +948,9 @@
                     });
                     ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active')); });
                     ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active')); });
-                    dropZone.addEventListener('drop', (e) => {
+                    dropZone.addEventListener('drop', async (e) => {
                         const files = e.dataTransfer.files;
-                        if (files.length > 0) {
+                        if (files.length > 0 && userPermissions.chatEnabled && userPermissions.videoEnabled) {
                             const file = files[0];
                             if (file.type.startsWith('image/')) this.handleMediaUpload(file, 'image');
                             else if (file.type.startsWith('video/')) this.handleMediaUpload(file, 'video');
@@ -843,7 +960,7 @@
                 },
                 
                 setupEmojiPicker() { document.getElementById('emojiPicker').innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="window.investorChat.addEmoji('${emoji}')">${emoji}</div>`).join(''); },
-                toggleEmojiPicker() { document.getElementById('emojiPicker').classList.toggle('active'); },
+                toggleEmojiPicker() { if (userPermissions.chatEnabled) document.getElementById('emojiPicker').classList.toggle('active'); },
                 addEmoji(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.focus(); document.getElementById('emojiPicker').classList.remove('active'); },
                 
                 async loadMessages() {
@@ -863,29 +980,158 @@
                 },
                 
                 async sendMessage() {
+                    await checkUserPermissions();
+                    
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin. You cannot send messages.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    
                     const input = document.getElementById('chatInput');
                     const text = input.value.trim();
                     if (!text && !pendingMedia) return;
+                    
+                    // Check voice permission for voice messages
+                    if (pendingMedia && pendingMedia.type === 'audio' && !userPermissions.voiceEnabled) {
+                        Swal.fire({ title: 'Voice Disabled', text: 'Voice messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    
+                    // Check video permission for media
+                    if (pendingMedia && (pendingMedia.type === 'image' || pendingMedia.type === 'video') && !userPermissions.videoEnabled) {
+                        Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    
                     let messageData = { id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: text || null, read: false, created_at: new Date().toISOString() };
                     if (pendingMedia) { messageData.media_url = pendingMedia.url; messageData.media_type = pendingMedia.type; }
-                    if (currentReplyingTo) { messageData.reply_to = currentReplyingTo.id; messageData.reply_to_text = currentReplyingTo.text; }
+                    if (currentReplyingTo) { messageData.reply_to = currentReplyingTo.id; }
                     const { error } = await supabase.from('chat_messages').insert([messageData]);
                     if (!error) { chatMessages.push(messageData); this.renderMessages(); input.value = ''; this.clearPendingMedia(); this.cancelReply(); this.scrollToBottom(); }
                     else Swal.fire({ title: 'Error', text: 'Failed to send', icon: 'error', background: '#1a3d33', color: '#fff' });
                 },
                 
                 toggleMessageActions(messageId) { const menuId = `menu-${messageId.replace(/-/g, '')}`; const menu = document.getElementById(menuId); if (currentOpenMenu && currentOpenMenu !== menuId) document.getElementById(currentOpenMenu)?.classList.remove('show'); if (menu) { menu.classList.toggle('show'); currentOpenMenu = menu.classList.contains('show') ? menuId : null; } },
-                async editMessage(messageId, oldText) { const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); if (newText && newText !== oldText) { await supabase.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
-                async deleteMessage(messageId, forEveryone = false) { const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); if (result.isConfirmed) { if (forEveryone) await supabase.from('chat_messages').delete().eq('id', messageId); else await supabase.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
+                
+                async editMessage(messageId, oldText) { 
+                    await checkUserPermissions();
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); 
+                    if (newText && newText !== oldText) { await supabase.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } 
+                    this.closeMenu(); 
+                },
+                
+                async deleteMessage(messageId, forEveryone = false) { 
+                    const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); 
+                    if (result.isConfirmed) { 
+                        if (forEveryone) await supabase.from('chat_messages').delete().eq('id', messageId); 
+                        else await supabase.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); 
+                        Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); 
+                    } 
+                    this.closeMenu(); 
+                },
+                
                 replyToMessage(message) { currentReplyingTo = message; document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50); document.getElementById('replyBar').classList.add('active'); document.getElementById('chatInput').focus(); this.closeMenu(); },
                 cancelReply() { currentReplyingTo = null; document.getElementById('replyBar').classList.remove('active'); },
-                async forwardMessage(message) { const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; await supabase.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); this.closeMenu(); },
+                
+                async forwardMessage(message) { 
+                    await checkUserPermissions();
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); 
+                    const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; 
+                    await supabase.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); 
+                    Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); 
+                    this.closeMenu(); 
+                },
+                
                 closeMenu() { if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; } },
                 clearPendingMedia() { pendingMedia = null; const preview = document.getElementById('mediaPreview'); preview.classList.remove('active'); preview.innerHTML = ''; },
-                showAttachMenu() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'image'); input.click(); },
-                showVideoMenu() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'video'); input.click(); },
-                handleMediaUpload(file, type) { if (!file) return; const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: type }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`; preview.classList.add('active'); }; reader.readAsDataURL(file); },
-                showVoiceRecorder() { document.getElementById('voiceRecordingOverlay').classList.add('active'); recordingStartTime = Date.now(); this.startRecordingTimer(); navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { mediaRecorder = new MediaRecorder(stream); audioChunks = []; mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); mediaRecorder.onstop = () => { const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: 'audio' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button></div>`; preview.classList.add('active'); }; reader.readAsDataURL(audioBlob); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); }).catch(() => { Swal.fire({ title: 'Error', text: 'Microphone access denied', icon: 'error', background: '#1a3d33', color: '#fff' }); this.cancelVoiceRecording(); }); },
+                
+                showAttachMenu: async function() { 
+                    await checkUserPermissions();
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    if (!userPermissions.videoEnabled) {
+                        Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    const input = document.createElement('input'); 
+                    input.type = 'file'; 
+                    input.accept = 'image/*'; 
+                    input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'image'); 
+                    input.click(); 
+                },
+                
+                showVideoMenu: async function() { 
+                    await checkUserPermissions();
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    if (!userPermissions.videoEnabled) {
+                        Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    const input = document.createElement('input'); 
+                    input.type = 'file'; 
+                    input.accept = 'video/*'; 
+                    input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'video'); 
+                    input.click(); 
+                },
+                
+                handleMediaUpload(file, type) { 
+                    if (!file) return; 
+                    const reader = new FileReader(); 
+                    reader.onload = (ev) => { 
+                        pendingMedia = { url: ev.target.result, type: type }; 
+                        const preview = document.getElementById('mediaPreview'); 
+                        preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`; 
+                        preview.classList.add('active'); 
+                    }; 
+                    reader.readAsDataURL(file); 
+                },
+                
+                showVoiceRecorder: async function() { 
+                    await checkUserPermissions();
+                    if (!userPermissions.chatEnabled) {
+                        Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    if (!userPermissions.voiceEnabled) {
+                        Swal.fire({ title: 'Voice Disabled', text: 'Voice messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                        return;
+                    }
+                    document.getElementById('voiceRecordingOverlay').classList.add('active'); 
+                    recordingStartTime = Date.now(); 
+                    this.startRecordingTimer(); 
+                    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { 
+                        mediaRecorder = new MediaRecorder(stream); 
+                        audioChunks = []; 
+                        mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); 
+                        mediaRecorder.onstop = () => { 
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); 
+                            const reader = new FileReader(); 
+                            reader.onload = (ev) => { 
+                                pendingMedia = { url: ev.target.result, type: 'audio' }; 
+                                const preview = document.getElementById('mediaPreview'); 
+                                preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button></div>`; 
+                                preview.classList.add('active'); 
+                            }; 
+                            reader.readAsDataURL(audioBlob); 
+                            stream.getTracks().forEach(track => track.stop()); 
+                        }; 
+                        mediaRecorder.start(); 
+                    }).catch(() => { Swal.fire({ title: 'Error', text: 'Microphone access denied', icon: 'error', background: '#1a3d33', color: '#fff' }); this.cancelVoiceRecording(); }); 
+                },
+                
                 startRecordingTimer() { if (recordingTimerInterval) clearInterval(recordingTimerInterval); recordingTimerInterval = setInterval(() => { const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000); const minutes = Math.floor(elapsed / 60); const seconds = elapsed % 60; document.getElementById('recordingTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`; }, 1000); },
                 stopVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); } },
                 cancelVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.onstop = () => {}; mediaRecorder.stop(); } document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); },
@@ -893,6 +1139,7 @@
                 showTypingIndicator() { const container = document.getElementById('typingIndicatorArea'); container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>'; setTimeout(() => { container.innerHTML = ''; }, 3000); },
                 async markMessagesRead() { await supabase.from('chat_messages').update({ read: true }).eq('receiver_id', currentInvestorId).eq('receiver_type', 'investor').eq('read', false); this.updateUnreadBadge(false); },
                 updateUnreadBadge(hasNew) { const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]'); const livechatTab = document.getElementById('livechatTab'); if (hasNew && !livechatTab.classList.contains('active')) chatTab.classList.add('has-unread'); else if (livechatTab.classList.contains('active')) chatTab.classList.remove('has-unread'); },
+                
                 renderMessages() {
                     const container = document.getElementById('chatMessagesArea');
                     if (!container) return;
@@ -999,7 +1246,7 @@
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 const tabDiv = document.getElementById(`${tabName}Tab`); if(tabDiv) tabDiv.classList.add('active');
                 const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`); if(btn) btn.classList.add('active');
-                if(tabName === 'livechat') { window.investorChat.markMessagesRead(); window.investorChat.renderMessages(); }
+                if(tabName === 'livechat') { window.investorChat.markMessagesRead(); window.investorChat.renderMessages(); checkUserPermissions(); }
             }
             
             document.getElementById('openInvestmentModalBtn').onclick = () => document.getElementById('investmentModal').style.display = 'block';
@@ -1041,9 +1288,10 @@
                 document.getElementById('userName').innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
                 const { data: existing } = await supabase.from('investors').select('id').eq('id', currentInvestorId);
                 if(!existing?.length) {
-                    await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', total_investment: 0, total_profit: 0, available_balance: 0, created_at: new Date().toISOString() }]);
+                    await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', total_investment: 0, total_profit: 0, available_balance: 0, created_at: new Date().toISOString(), chat_enabled: true, voice_enabled: true, video_enabled: true }]);
                 }
                 await loadInvestments(); await loadInvestmentRequests(); await loadProfits(); await loadWithdrawals(); await loadProfile(); await loadStatsAndBalance();
+                await checkUserPermissions();
                 window.investorChat.init();
             }
             checkAuth();
