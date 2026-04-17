@@ -135,7 +135,7 @@
         .responsive-video {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
         }
@@ -270,7 +270,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            max-height: calc(3 * (270px + 20px));
+            max-height: calc(3 * (300px + 20px));
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -281,21 +281,33 @@
             overflow: hidden;
             border: 1px solid rgba(232,177,60,0.2);
             transition: all 0.3s;
+            cursor: pointer;
         }
         .product-card:hover { transform: translateY(-5px); border-color: #E8B13C; }
         .product-image {
             background: linear-gradient(135deg, rgba(232,177,60,0.1), rgba(30,78,62,0.2));
-            height: 160px;
+            height: 170px;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .product-image img:hover { transform: scale(1.05); }
+        .product-image i {
             font-size: 3rem;
             color: #E8B13C;
         }
-        .product-info { padding: 16px; }
+        .product-info { padding: 14px; }
         .product-name { font-size: 1rem; font-weight: 700; color: #E8B13C; margin-bottom: 4px; }
         .product-category { font-size: 0.65rem; color: rgba(255,255,255,0.5); text-transform: uppercase; }
-        .product-price { font-size: 1.2rem; font-weight: 800; color: #E8B13C; margin: 8px 0; }
+        .product-price { font-size: 1.2rem; font-weight: 800; color: #E8B13C; margin: 6px 0; }
         .add-to-cart {
             width: 100%;
             padding: 10px;
@@ -305,10 +317,101 @@
             cursor: pointer;
             font-weight: 700;
             transition: all 0.3s;
+            margin-top: 8px;
         }
         .add-to-cart:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(232,177,60,0.4); }
         
-        /* LIVE CHAT FULL WIDTH - WHATSAPP STYLE EDGE TO EDGE */
+        /* Product Detail Popup Modal */
+        .product-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(15px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+        .product-modal.active { display: flex; }
+        .product-modal-content {
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 28px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid rgba(232,177,60,0.3);
+            animation: modalFadeIn 0.3s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(232,177,60,0.2);
+        }
+        .modal-header h3 { color: #E8B13C; font-size: 1.3rem; }
+        .close-modal {
+            background: none;
+            border: none;
+            color: #E8B13C;
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .close-modal:hover { transform: scale(1.1); }
+        .modal-body { padding: 20px; }
+        .product-detail-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            background: rgba(0,0,0,0.3);
+        }
+        .product-detail-gallery {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+        }
+        .gallery-thumb {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .gallery-thumb:hover, .gallery-thumb.active { border-color: #E8B13C; transform: scale(1.05); }
+        .product-detail-name { font-size: 1.5rem; color: #E8B13C; margin-bottom: 8px; }
+        .product-detail-price { font-size: 1.8rem; font-weight: 800; color: #E8B13C; margin: 10px 0; }
+        .product-detail-desc { color: rgba(255,255,255,0.8); line-height: 1.5; margin: 12px 0; }
+        .product-detail-stock { color: #28a745; font-weight: 600; margin: 8px 0; }
+        .modal-add-to-cart {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        
+        /* LIVE CHAT FULL WIDTH - WHATSAPP STYLE */
         .chat-panel {
             display: flex;
             flex-direction: column;
@@ -330,7 +433,6 @@
             background: rgba(10, 31, 26, 0.4);
         }
         
-        /* WhatsApp style clear separation - FULL WIDTH UTILIZATION */
         .message {
             max-width: 85%;
             width: auto;
@@ -339,16 +441,8 @@
             position: relative;
             margin-bottom: 6px;
         }
-        .message.sent { 
-            align-self: flex-end; 
-            margin-left: auto;
-            margin-right: 4px;
-        }
-        .message.received { 
-            align-self: flex-start; 
-            margin-right: auto;
-            margin-left: 4px;
-        }
+        .message.sent { align-self: flex-end; margin-left: auto; margin-right: 4px; }
+        .message.received { align-self: flex-start; margin-right: auto; margin-left: 4px; }
         
         .message-bubble {
             padding: 8px 12px;
@@ -356,23 +450,10 @@
             position: relative;
             word-wrap: break-word;
         }
-        .message.sent .message-bubble {
-            background: #dcf8c5;
-            color: #111;
-            border-bottom-right-radius: 4px;
-        }
-        .message.received .message-bubble {
-            background: rgba(255,255,255,0.12);
-            color: white;
-            border-bottom-left-radius: 4px;
-        }
+        .message.sent .message-bubble { background: #dcf8c5; color: #111; border-bottom-right-radius: 4px; }
+        .message.received .message-bubble { background: rgba(255,255,255,0.12); color: white; border-bottom-left-radius: 4px; }
         
-        .sender-name {
-            font-size: 0.7rem;
-            font-weight: bold;
-            margin-bottom: 4px;
-            color: #E8B13C;
-        }
+        .sender-name { font-size: 0.7rem; font-weight: bold; margin-bottom: 4px; color: #E8B13C; }
         .message.sent .sender-name { color: #0a5e3a; }
         .message-text { font-size: 0.9rem; line-height: 1.4; white-space: pre-wrap; }
         
@@ -396,7 +477,6 @@
             border-left: 3px solid #E8B13C;
         }
         
-        /* THREE DOTS - Clearly visible, no clipping */
         .message-actions-trigger {
             position: absolute;
             right: -30px;
@@ -410,7 +490,6 @@
             justify-content: center;
             cursor: pointer;
             opacity: 0.7;
-            transition: opacity 0.2s;
             color: #E8B13C;
             font-size: 12px;
             z-index: 10;
@@ -443,7 +522,6 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.7rem;
-            transition: all 0.2s;
             text-align: left;
             display: flex;
             align-items: center;
@@ -452,31 +530,9 @@
         .message-action-btn:hover { background: rgba(232,177,60,0.2); }
         .message-action-btn.danger { color: #dc3545; }
         
-        .chat-media {
-            max-width: 180px;
-            max-height: 180px;
-            border-radius: 12px;
-            margin: 4px 0;
-            cursor: pointer;
-        }
-        .voice-message-preview {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 30px;
-            min-width: 180px;
-        }
-        .product-card-message {
-            background: rgba(0,0,0,0.3);
-            border-radius: 12px;
-            padding: 8px;
-            margin-top: 5px;
-            display: flex;
-            gap: 10px;
-            cursor: pointer;
-        }
+        .chat-media { max-width: 180px; max-height: 180px; border-radius: 12px; margin: 4px 0; cursor: pointer; }
+        .voice-message-preview { display: flex; align-items: center; gap: 8px; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 30px; min-width: 180px; }
+        .product-card-message { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 8px; margin-top: 5px; display: flex; gap: 10px; cursor: pointer; }
         .product-card-message:hover { background: rgba(232,177,60,0.2); }
         
         .typing-indicator {
@@ -491,14 +547,7 @@
             width: fit-content;
             margin: 0 12px 8px 12px;
         }
-        .typing-dot {
-            width: 5px;
-            height: 5px;
-            background: #E8B13C;
-            border-radius: 50%;
-            display: inline-block;
-            animation: typingAnim 1.4s infinite;
-        }
+        .typing-dot { width: 5px; height: 5px; background: #E8B13C; border-radius: 50%; display: inline-block; animation: typingAnim 1.4s infinite; }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes typingAnim {
@@ -506,7 +555,6 @@
             30% { transform: translateY(-4px); opacity: 1; }
         }
         
-        /* Online Status Indicator */
         .online-status {
             display: inline-flex;
             align-items: center;
@@ -518,18 +566,8 @@
             width: fit-content;
             margin-bottom: 8px;
         }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #2ecc71;
-            box-shadow: 0 0 4px #2ecc71;
-            animation: pulseGreen 1.5s infinite;
-        }
-        @keyframes pulseGreen {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 4px #2ecc71; animation: pulseGreen 1.5s infinite; }
+        @keyframes pulseGreen { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         
         .chat-input-area {
             padding: 12px 16px;
@@ -586,11 +624,54 @@
             cursor: pointer;
             color: #0a1f1a;
             font-size: 1.1rem;
-            transition: all 0.2s;
         }
-        .emoji-btn:hover, .chat-send-btn:hover { transform: scale(1.05); }
         
-        /* Drag & Drop overlay */
+        /* GIF Picker Modal */
+        .gif-picker-modal {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 320px;
+            max-height: 400px;
+            background: #1a3d33;
+            border-radius: 20px;
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            border: 1px solid rgba(232,177,60,0.3);
+            overflow: hidden;
+        }
+        .gif-picker-modal.active { display: flex; }
+        .gif-search-header {
+            padding: 10px;
+            background: #0a2f24;
+            display: flex;
+            gap: 8px;
+        }
+        .gif-search-header input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 20px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .gif-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .gif-item {
+            width: 100%;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .gif-item:hover { transform: scale(1.05); }
+        
         .drag-overlay {
             position: fixed;
             top: 0;
@@ -605,18 +686,9 @@
             justify-content: center;
             flex-direction: column;
             color: #E8B13C;
-            font-size: 1.5rem;
             pointer-events: none;
         }
         .drag-overlay.active { display: flex; }
-        
-        /* GIF Support */
-        .gif-preview {
-            max-width: 200px;
-            max-height: 150px;
-            border-radius: 12px;
-            margin: 5px 0;
-        }
         
         .emoji-picker {
             position: absolute;
@@ -635,12 +707,7 @@
             overflow-y: auto;
         }
         .emoji-picker.active { display: grid; }
-        .emoji-item {
-            font-size: 1.3rem;
-            cursor: pointer;
-            padding: 4px;
-            text-align: center;
-        }
+        .emoji-item { font-size: 1.3rem; cursor: pointer; padding: 4px; text-align: center; }
         .emoji-item:hover { transform: scale(1.1); background: rgba(232,177,60,0.2); border-radius: 6px; }
         
         .voice-recording-overlay {
@@ -657,20 +724,8 @@
             border-top: 1px solid rgba(232,177,60,0.3);
         }
         .voice-recording-overlay.active { transform: translateY(0); }
-        .recording-wave {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            height: 50px;
-        }
-        .wave-bar {
-            width: 3px;
-            height: 15px;
-            background: #dc3545;
-            border-radius: 2px;
-            animation: wave 0.5s ease-in-out infinite alternate;
-        }
+        .recording-wave { display: flex; justify-content: center; align-items: center; gap: 5px; height: 50px; }
+        .wave-bar { width: 3px; height: 15px; background: #dc3545; border-radius: 2px; animation: wave 0.5s ease-in-out infinite alternate; }
         .wave-bar:nth-child(1) { animation-delay: 0s; height: 25px; }
         .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 35px; }
         .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 45px; }
@@ -680,20 +735,8 @@
             from { height: 15px; }
             to { height: 50px; }
         }
-        .recording-controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 12px;
-        }
-        .recording-stop-btn, .recording-cancel-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-        }
+        .recording-controls { display: flex; justify-content: center; gap: 20px; margin-top: 12px; }
+        .recording-stop-btn, .recording-cancel-btn { width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; font-size: 20px; }
         .recording-stop-btn { background: #dc3545; color: white; }
         .recording-cancel-btn { background: #6c757d; color: white; }
         .recording-timer { font-size: 1rem; color: white; margin-top: 8px; }
@@ -737,23 +780,10 @@
             border: 1px solid rgba(232,177,60,0.3);
         }
         .product-selector-modal.active { display: block; }
-        .product-selector-header {
-            padding: 12px;
-            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .product-selector-item {
-            padding: 12px;
-            border-bottom: 1px solid rgba(232,177,60,0.1);
-            display: flex;
-            gap: 12px;
-            cursor: pointer;
-        }
+        .product-selector-header { padding: 12px; background: linear-gradient(135deg, #0a2f24, #1a4a3a); display: flex; justify-content: space-between; align-items: center; }
+        .product-selector-item { padding: 12px; border-bottom: 1px solid rgba(232,177,60,0.1); display: flex; gap: 12px; cursor: pointer; }
         .product-selector-item:hover { background: rgba(232,177,60,0.1); }
         
-        /* Profile Tab - Direct Editing Inputs */
         .form-card input, .form-card textarea {
             background: rgba(255,255,255,0.12);
             border: 1px solid rgba(232,177,60,0.4);
@@ -763,44 +793,15 @@
             width: 100%;
             font-size: 0.9rem;
         }
-        .form-card input:focus, .form-card textarea:focus {
-            outline: none;
-            border-color: #E8B13C;
-            background: rgba(255,255,255,0.2);
-        }
+        .form-card input:focus, .form-card textarea:focus { outline: none; border-color: #E8B13C; background: rgba(255,255,255,0.2); }
         .form-group { margin-bottom: 12px; }
         .form-group label { color: #E8B13C; font-weight: 600; display: block; margin-bottom: 5px; font-size: 0.85rem; }
         
-        .orders-table-wrapper {
-            overflow-x: auto;
-            border-radius: 16px;
-        }
-        .orders-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(0,0,0,0.2);
-            border-radius: 16px;
-            overflow: hidden;
-            font-size: 0.8rem;
-        }
-        .orders-table th {
-            background: linear-gradient(135deg, #0a2f24, #1a4a3a);
-            color: #E8B13C;
-            padding: 10px 8px;
-            font-weight: 700;
-        }
-        .orders-table td {
-            padding: 8px;
-            border-bottom: 1px solid rgba(232,177,60,0.1);
-            color: rgba(255,255,255,0.9);
-        }
-        .status-badge {
-            padding: 3px 10px;
-            border-radius: 30px;
-            font-size: 10px;
-            font-weight: 700;
-            display: inline-block;
-        }
+        .orders-table-wrapper { overflow-x: auto; border-radius: 16px; }
+        .orders-table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.2); border-radius: 16px; overflow: hidden; font-size: 0.8rem; }
+        .orders-table th { background: linear-gradient(135deg, #0a2f24, #1a4a3a); color: #E8B13C; padding: 10px 8px; font-weight: 700; }
+        .orders-table td { padding: 8px; border-bottom: 1px solid rgba(232,177,60,0.1); color: rgba(255,255,255,0.9); }
+        .status-badge { padding: 3px 10px; border-radius: 30px; font-size: 10px; font-weight: 700; display: inline-block; }
         .status-pending { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
         .status-processing { background: linear-gradient(135deg, #17a2b8, #0f7a8a); color: #fff; }
         .status-shipped { background: linear-gradient(135deg, #004085, #002d5a); color: #fff; }
@@ -866,13 +867,9 @@
     </div>
 
     <div class="buyer-container">
-        <!-- TOP VIDEO SECTION: Full width responsive, autoplay muted loop -->
         <div class="video-hero-container">
             <div class="responsive-video">
-                <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&enablejsapi=1" 
-                        allow="autoplay; encrypted-media" 
-                        allowfullscreen>
-                </iframe>
+                <iframe src="https://www.youtube-nocookie.com/embed/AxwCUJq17dw?autoplay=1&mute=1&loop=1&playlist=AxwCUJq17dw&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
 
@@ -889,20 +886,13 @@
         </div>
 
         <div id="shopTab" class="tab-content active">
-            <div class="categories-wrapper">
-                <div class="categories" id="categoriesList"></div>
-            </div>
+            <div class="categories-wrapper"><div class="categories" id="categoriesList"></div></div>
             <div class="products-grid" id="productsGrid"></div>
         </div>
 
         <div id="ordersTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-truck"></i> My Order History</h2>
-            <div class="orders-table-wrapper">
-                <table class="orders-table">
-                    <thead><tr><th>Order ID</th><th>Products</th><th>Amount</th><th>Date</th><th>Status</th><th>Payment</th><th>Address</th></tr></thead>
-                    <tbody id="ordersList"></tbody>
-                </table>
-            </div>
+            <div class="orders-table-wrapper"><table class="orders-table"><thead><tr><th>Order ID</th><th>Products</th><th>Amount</th><th>Date</th><th>Status</th><th>Payment</th><th>Address</th></tr></thead><tbody id="ordersList"></tbody></table></div>
         </div>
 
         <div id="profileTab" class="tab-content">
@@ -919,21 +909,16 @@
         <div id="livechatTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Sohrab Industries Support</h2>
             <div class="chat-panel">
-                <div id="chatMessagesArea" class="chat-messages-area">
-                    <div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div>
-                </div>
+                <div id="chatMessagesArea" class="chat-messages-area"><div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div></div>
                 <div id="typingIndicatorArea"></div>
                 <div class="chat-input-area">
-                    <div id="replyBar" class="reply-bar">
-                        <span><i class="fas fa-reply"></i> Replying to: <span id="replyingToText"></span></span>
-                        <button onclick="window.buyerChat.cancelReply()" style="background:none; border:none; color:#dc3545; cursor:pointer;">×</button>
-                    </div>
+                    <div id="replyBar" class="reply-bar"><span><i class="fas fa-reply"></i> Replying to: <span id="replyingToText"></span></span><button onclick="window.buyerChat.cancelReply()" style="background:none; border:none; color:#dc3545; cursor:pointer;">×</button></div>
                     <div class="chat-toolbar">
                         <button class="chat-tool-btn" onclick="window.buyerChat.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
                         <button class="chat-tool-btn" onclick="window.buyerChat.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
                         <button class="chat-tool-btn" onclick="window.buyerChat.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
                         <button class="chat-tool-btn" onclick="window.buyerChat.showProductSelector()"><i class="fas fa-box"></i> Product</button>
-                        <button class="chat-tool-btn" onclick="window.buyerChat.showGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
+                        <button class="chat-tool-btn" onclick="window.buyerChat.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
                     </div>
                     <div class="chat-input-wrapper">
                         <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1"></textarea>
@@ -944,6 +929,23 @@
                     <div id="mediaPreview" class="media-preview"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- GIF Picker Modal -->
+    <div id="gifPickerModal" class="gif-picker-modal">
+        <div class="gif-search-header">
+            <input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="window.buyerChat.searchGIFs(this.value)">
+            <button onclick="window.buyerChat.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px;">&times;</button>
+        </div>
+        <div id="gifGrid" class="gif-grid"></div>
+    </div>
+
+    <!-- Product Detail Popup Modal -->
+    <div id="productDetailModal" class="product-modal">
+        <div class="product-modal-content">
+            <div class="modal-header"><h3 id="modalProductTitle">Product Details</h3><button class="close-modal" onclick="window.closeProductModal()">&times;</button></div>
+            <div class="modal-body" id="productModalBody"></div>
         </div>
     </div>
 
@@ -958,9 +960,7 @@
         <div class="modal-content">
             <h2><i class="fas fa-credit-card"></i> Checkout</h2>
             <textarea id="checkoutAddress" rows="3" placeholder="Delivery Address *" style="width:100%; margin:10px 0; padding:12px; background:rgba(255,255,255,0.08); border:1px solid rgba(232,177,60,0.3); border-radius:12px; color:white;"></textarea>
-            <select id="paymentMethod" style="width:100%; padding:12px; margin:10px 0; background:rgba(255,255,255,0.08); border:1px solid rgba(232,177,60,0.3); border-radius:12px; color:white;">
-                <option>Cash on Delivery</option><option>EasyPaisa</option><option>JazzCash</option>
-            </select>
+            <select id="paymentMethod" style="width:100%; padding:12px; margin:10px 0; background:rgba(255,255,255,0.08); border:1px solid rgba(232,177,60,0.3); border-radius:12px; color:white;"><option>Cash on Delivery</option><option>EasyPaisa</option><option>JazzCash</option></select>
             <div class="cart-total">Total: Rs. <span id="checkoutTotal">0</span></div>
             <button id="placeOrderBtn" class="checkout-btn">Place Order</button>
             <button onclick="window.closeCheckout()" style="margin-top:10px; width:100%; padding:12px; background:#6c757d; border:none; border-radius:40px; color:white;">Cancel</button>
@@ -968,14 +968,9 @@
     </div>
 
     <div id="voiceRecordingOverlay" class="voice-recording-overlay">
-        <div class="recording-wave">
-            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-        </div>
+        <div class="recording-wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
         <div class="recording-timer" id="recordingTimer">0:00</div>
-        <div class="recording-controls">
-            <button class="recording-cancel-btn" onclick="window.buyerChat.cancelVoiceRecording()"><i class="fas fa-times"></i></button>
-            <button class="recording-stop-btn" onclick="window.buyerChat.stopVoiceRecording()"><i class="fas fa-stop"></i></button>
-        </div>
+        <div class="recording-controls"><button class="recording-cancel-btn" onclick="window.buyerChat.cancelVoiceRecording()"><i class="fas fa-times"></i></button><button class="recording-stop-btn" onclick="window.buyerChat.stopVoiceRecording()"><i class="fas fa-stop"></i></button></div>
     </div>
 
     <div id="productSelectorModal" class="product-selector-modal">
@@ -983,11 +978,7 @@
         <div id="productSelectorList"></div>
     </div>
     
-    <!-- Drag & Drop Overlay -->
-    <div id="dragOverlay" class="drag-overlay">
-        <i class="fas fa-cloud-upload-alt" style="font-size: 3rem;"></i>
-        <p>Drop image/video/GIF here to send</p>
-    </div>
+    <div id="dragOverlay" class="drag-overlay"><i class="fas fa-cloud-upload-alt" style="font-size: 3rem;"></i><p>Drop image/video/GIF here to send</p></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -1012,13 +1003,19 @@
             
             const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
             
-            const categoryIcons = {
-                'LED Bulbs': 'fa-lightbulb',
-                'Energy Saving': 'fa-leaf',
-                'Decorative': 'fa-star',
-                'Street Light': 'fa-road',
-                'Solar': 'fa-sun'
-            };
+            const categoryIcons = { 'LED Bulbs': 'fa-lightbulb', 'Energy Saving': 'fa-leaf', 'Decorative': 'fa-star', 'Street Light': 'fa-road', 'Solar': 'fa-sun' };
+            
+            // GIF API (Giphy - free public endpoint)
+            const GIPHY_API_KEY = 'YOUR_GIPHY_API_KEY'; // Replace with actual key or use fallback
+            // Using a public proxy for demo - in production use your own API key
+            async function fetchGIFs(search = 'trending') {
+                try {
+                    const url = search === 'trending' ? 'https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=20' : `https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(search)}&limit=20`;
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    return data.data || [];
+                } catch(e) { return []; }
+            }
             
             window.buyerChat = {
                 adminId: '00000000-0000-0000-0000-000000000001',
@@ -1032,133 +1029,88 @@
                     this.setupDragAndDrop();
                     this.showOnlineStatus();
                     document.getElementById('chatInput').addEventListener('input', () => this.sendTyping());
-                    document.getElementById('chatInput').addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            this.sendMessage();
-                        }
-                    });
+                    document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); } });
                     setInterval(() => this.markMessagesRead(), 3000);
                     document.addEventListener('click', (e) => {
-                        if (!e.target.closest('.emoji-picker') && !e.target.closest('.emoji-btn')) {
-                            document.getElementById('emojiPicker').classList.remove('active');
-                        }
+                        if (!e.target.closest('.emoji-picker') && !e.target.closest('.emoji-btn')) document.getElementById('emojiPicker').classList.remove('active');
                         if (!e.target.closest('.message-actions-menu') && !e.target.closest('.message-actions-trigger')) {
-                            if (currentOpenMenu) {
-                                document.getElementById(currentOpenMenu)?.classList.remove('show');
-                                currentOpenMenu = null;
-                            }
+                            if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; }
                         }
                     });
                 },
+                
+                async openGifPicker() {
+                    const modal = document.getElementById('gifPickerModal');
+                    modal.classList.toggle('active');
+                    if (modal.classList.contains('active')) {
+                        const gifs = await fetchGIFs('trending');
+                        this.renderGIFs(gifs);
+                    }
+                },
+                
+                async searchGIFs(query) {
+                    const gifs = await fetchGIFs(query || 'trending');
+                    this.renderGIFs(gifs);
+                },
+                
+                renderGIFs(gifs) {
+                    const grid = document.getElementById('gifGrid');
+                    if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found</div>'; return; }
+                    grid.innerHTML = gifs.map(g => `<img src="${g.images.fixed_height_small.url}" class="gif-item" onclick="window.buyerChat.sendGIF('${g.images.original.url}')">`).join('');
+                },
+                
+                sendGIF(url) {
+                    pendingMedia = { url: url, type: 'image' };
+                    const preview = document.getElementById('mediaPreview');
+                    preview.innerHTML = `<img src="${url}" class="gif-preview" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button>`;
+                    preview.classList.add('active');
+                    this.closeGifPicker();
+                },
+                
+                closeGifPicker() { document.getElementById('gifPickerModal').classList.remove('active'); },
                 
                 showOnlineStatus() {
                     const statusDiv = document.createElement('div');
                     statusDiv.className = 'online-status';
                     statusDiv.innerHTML = '<span class="status-dot"></span><span>Support Online</span>';
                     const container = document.getElementById('chatMessagesArea');
-                    if (container && !container.querySelector('.online-status')) {
-                        container.insertBefore(statusDiv, container.firstChild);
-                    }
+                    if (container && !container.querySelector('.online-status')) container.insertBefore(statusDiv, container.firstChild);
                 },
                 
                 setupDragAndDrop() {
                     const dropZone = document.getElementById('chatMessagesArea');
                     const overlay = document.getElementById('dragOverlay');
-                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                        dropZone.addEventListener(eventName, preventDefaults, false);
-                        document.body.addEventListener(eventName, preventDefaults, false);
-                    });
-                    function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
-                    ['dragenter', 'dragover'].forEach(eventName => {
-                        dropZone.addEventListener(eventName, () => overlay.classList.add('active'), false);
-                    });
-                    ['dragleave', 'drop'].forEach(eventName => {
-                        dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false);
-                    });
+                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); });
+                    ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active'), false); });
+                    ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false); });
                     dropZone.addEventListener('drop', (e) => {
-                        const dt = e.dataTransfer;
-                        const files = dt.files;
+                        const files = e.dataTransfer.files;
                         if (files.length > 0) {
                             const file = files[0];
                             if (file.type.startsWith('image/')) window.buyerChat.handleMediaUpload(file, 'image');
                             else if (file.type.startsWith('video/')) window.buyerChat.handleMediaUpload(file, 'video');
-                            else if (file.type === 'image/gif' || file.name.endsWith('.gif')) window.buyerChat.handleMediaUpload(file, 'image');
-                            else Swal.fire({ title: 'Invalid', text: 'Please upload image, video, or GIF', icon: 'warning', background: '#1a3d33', color: '#fff' });
+                            else Swal.fire({ title: 'Invalid', text: 'Please upload image or video', icon: 'warning', background: '#1a3d33', color: '#fff' });
                         }
                     });
                 },
                 
-                async showGifPicker() {
-                    const { value: gifUrl } = await Swal.fire({
-                        title: 'Enter GIF URL',
-                        input: 'url',
-                        inputPlaceholder: 'https://media.giphy.com/...',
-                        showCancelButton: true,
-                        confirmButtonText: 'Send GIF',
-                        background: '#1a3d33', color: '#fff'
-                    });
-                    if (gifUrl) {
-                        pendingMedia = { url: gifUrl, type: 'image' };
-                        const preview = document.getElementById('mediaPreview');
-                        preview.innerHTML = `<img src="${gifUrl}" class="gif-preview" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button>`;
-                        preview.classList.add('active');
-                    }
-                },
-                
-                setupEmojiPicker() {
-                    const picker = document.getElementById('emojiPicker');
-                    picker.innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="window.buyerChat.addEmoji('${emoji}')">${emoji}</div>`).join('');
-                },
-                
-                toggleEmojiPicker() {
-                    const picker = document.getElementById('emojiPicker');
-                    picker.classList.toggle('active');
-                },
-                
-                addEmoji(emoji) {
-                    const input = document.getElementById('chatInput');
-                    input.value += emoji;
-                    input.focus();
-                    document.getElementById('emojiPicker').classList.remove('active');
-                },
+                setupEmojiPicker() { document.getElementById('emojiPicker').innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="window.buyerChat.addEmoji('${emoji}')">${emoji}</div>`).join(''); },
+                toggleEmojiPicker() { document.getElementById('emojiPicker').classList.toggle('active'); },
+                addEmoji(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.focus(); document.getElementById('emojiPicker').classList.remove('active'); },
                 
                 async loadMessages() {
                     if (!currentBuyerId) return;
-                    const { data, error } = await supabaseClient
-                        .from('chat_messages')
-                        .select('*')
-                        .or(`and(sender_type.eq.buyer,receiver_id.eq.${this.adminId},receiver_type.eq.admin),and(sender_id.eq.${this.adminId},sender_type.eq.admin,receiver_id.eq.${currentBuyerId},receiver_type.eq.buyer)`)
-                        .order('created_at', { ascending: true });
-                    if (!error && data) {
-                        chatMessages = data;
-                        this.renderMessages();
-                        this.markMessagesRead();
-                    }
+                    const { data, error } = await supabaseClient.from('chat_messages').select('*').or(`and(sender_type.eq.buyer,receiver_id.eq.${this.adminId},receiver_type.eq.admin),and(sender_id.eq.${this.adminId},sender_type.eq.admin,receiver_id.eq.${currentBuyerId},receiver_type.eq.buyer)`).order('created_at', { ascending: true });
+                    if (!error && data) { chatMessages = data; this.renderMessages(); this.markMessagesRead(); }
                 },
                 
                 subscribeToMessages() {
                     if (this.subscription) return;
-                    this.subscription = supabaseClient
-                        .channel('buyer-chat')
-                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => {
-                            chatMessages.push(payload.new);
-                            this.renderMessages();
-                            this.markMessagesRead();
-                            this.updateUnreadBadge(true);
-                        })
-                        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_messages' }, (payload) => {
-                            const index = chatMessages.findIndex(m => m.id === payload.new.id);
-                            if (index !== -1) chatMessages[index] = payload.new;
-                            this.renderMessages();
-                        })
-                        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, (payload) => {
-                            chatMessages = chatMessages.filter(m => m.id !== payload.old.id);
-                            this.renderMessages();
-                        })
-                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_typing', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => {
-                            if (payload.new.sender_type === 'admin') this.showTypingIndicator();
-                        })
+                    this.subscription = supabaseClient.channel('buyer-chat')
+                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => { chatMessages.push(payload.new); this.renderMessages(); this.markMessagesRead(); this.updateUnreadBadge(true); })
+                        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_messages' }, (payload) => { const idx = chatMessages.findIndex(m => m.id === payload.new.id); if (idx !== -1) chatMessages[idx] = payload.new; this.renderMessages(); })
+                        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, (payload) => { chatMessages = chatMessages.filter(m => m.id !== payload.old.id); this.renderMessages(); })
+                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_typing', filter: `receiver_id=eq.${currentBuyerId},receiver_type=eq.buyer` }, (payload) => { if (payload.new.sender_type === 'admin') this.showTypingIndicator(); })
                         .subscribe();
                 },
                 
@@ -1166,333 +1118,90 @@
                     const input = document.getElementById('chatInput');
                     const text = input.value.trim();
                     if (!text && !pendingMedia) return;
-                    
-                    let messageData = {
-                        id: crypto.randomUUID(),
-                        sender_id: currentBuyerId,
-                        sender_type: 'buyer',
-                        receiver_id: this.adminId,
-                        receiver_type: 'admin',
-                        text: text || null,
-                        read: false,
-                        created_at: new Date().toISOString()
-                    };
-                    
-                    if (pendingMedia) {
-                        messageData.media_url = pendingMedia.url;
-                        messageData.media_type = pendingMedia.type;
-                        if (pendingMedia.productData) messageData.product_data = pendingMedia.productData;
-                    }
-                    if (currentReplyingTo) {
-                        messageData.reply_to = currentReplyingTo.id;
-                        messageData.reply_to_text = currentReplyingTo.text;
-                    }
-                    
+                    let messageData = { id: crypto.randomUUID(), sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', text: text || null, read: false, created_at: new Date().toISOString() };
+                    if (pendingMedia) { messageData.media_url = pendingMedia.url; messageData.media_type = pendingMedia.type; if (pendingMedia.productData) messageData.product_data = pendingMedia.productData; }
+                    if (currentReplyingTo) { messageData.reply_to = currentReplyingTo.id; messageData.reply_to_text = currentReplyingTo.text; }
                     const { error } = await supabaseClient.from('chat_messages').insert([messageData]);
-                    if (!error) {
-                        chatMessages.push(messageData);
-                        this.renderMessages();
-                        input.value = '';
-                        this.clearPendingMedia();
-                        this.cancelReply();
-                        this.scrollToBottom();
-                    } else {
-                        Swal.fire({ title: 'Error', text: 'Failed to send', icon: 'error', background: '#1a3d33', color: '#fff' });
-                    }
+                    if (!error) { chatMessages.push(messageData); this.renderMessages(); input.value = ''; this.clearPendingMedia(); this.cancelReply(); this.scrollToBottom(); }
+                    else Swal.fire({ title: 'Error', text: 'Failed to send', icon: 'error', background: '#1a3d33', color: '#fff' });
                 },
                 
-                toggleMessageActions(messageId) {
-                    const menuId = `menu-${messageId.replace(/-/g, '')}`;
-                    const menu = document.getElementById(menuId);
-                    if (currentOpenMenu && currentOpenMenu !== menuId) {
-                        document.getElementById(currentOpenMenu)?.classList.remove('show');
-                    }
-                    if (menu) {
-                        menu.classList.toggle('show');
-                        currentOpenMenu = menu.classList.contains('show') ? menuId : null;
-                    }
-                },
-                
-                async editMessage(messageId, oldText) {
-                    const { value: newText } = await Swal.fire({
-                        title: 'Edit Message',
-                        input: 'textarea',
-                        inputValue: oldText,
-                        showCancelButton: true,
-                        confirmButtonColor: '#E8B13C',
-                        background: '#1a3d33', color: '#fff'
-                    });
-                    if (newText && newText !== oldText) {
-                        await supabaseClient.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId);
-                        Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
-                    }
-                    this.closeMenu();
-                },
-                
-                async deleteMessage(messageId, forEveryone = false) {
-                    const result = await Swal.fire({
-                        title: 'Delete Message',
-                        text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc3545',
-                        confirmButtonText: 'Delete',
-                        background: '#1a3d33', color: '#fff'
-                    });
-                    if (result.isConfirmed) {
-                        if (forEveryone) {
-                            await supabaseClient.from('chat_messages').delete().eq('id', messageId);
-                        } else {
-                            await supabaseClient.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId);
-                        }
-                        Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
-                    }
-                    this.closeMenu();
-                },
-                
-                replyToMessage(message) {
-                    currentReplyingTo = message;
-                    document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50);
-                    document.getElementById('replyBar').classList.add('active');
-                    document.getElementById('chatInput').focus();
-                    this.closeMenu();
-                },
-                
-                cancelReply() {
-                    currentReplyingTo = null;
-                    document.getElementById('replyBar').classList.remove('active');
-                },
-                
-                async forwardMessage(message) {
-                    const { value: userInput } = await Swal.fire({
-                        title: 'Forward Message',
-                        input: 'textarea',
-                        inputPlaceholder: 'Add a note (optional)',
-                        showCancelButton: true,
-                        confirmButtonText: 'Forward',
-                        background: '#1a3d33', color: '#fff'
-                    });
-                    const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`;
-                    await supabaseClient.from('chat_messages').insert([{
-                        id: crypto.randomUUID(), sender_id: currentBuyerId, sender_type: 'buyer',
-                        receiver_id: this.adminId, receiver_type: 'admin', text: forwardText,
-                        read: false, created_at: new Date().toISOString()
-                    }]);
-                    Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' });
-                    this.closeMenu();
-                },
-                
-                closeMenu() {
-                    if (currentOpenMenu) {
-                        document.getElementById(currentOpenMenu)?.classList.remove('show');
-                        currentOpenMenu = null;
-                    }
-                },
-                
-                clearPendingMedia() {
-                    pendingMedia = null;
-                    const preview = document.getElementById('mediaPreview');
-                    preview.classList.remove('active');
-                    preview.innerHTML = '';
-                },
-                
-                showAttachMenu() {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'image');
-                    input.click();
-                },
-                
-                showVideoMenu() {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'video/*';
-                    input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'video');
-                    input.click();
-                },
-                
-                handleMediaUpload(file, type) {
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        pendingMedia = { url: ev.target.result, type: type };
-                        const preview = document.getElementById('mediaPreview');
-                        preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button>`;
-                        preview.classList.add('active');
-                    };
-                    reader.readAsDataURL(file);
-                },
-                
-                showVoiceRecorder() {
-                    document.getElementById('voiceRecordingOverlay').classList.add('active');
-                    recordingStartTime = Date.now();
-                    this.startRecordingTimer();
-                    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                        mediaRecorder = new MediaRecorder(stream);
-                        audioChunks = [];
-                        mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
-                        mediaRecorder.onstop = () => {
-                            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                            const reader = new FileReader();
-                            reader.onload = (ev) => {
-                                pendingMedia = { url: ev.target.result, type: 'audio' };
-                                const preview = document.getElementById('mediaPreview');
-                                preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div>`;
-                                preview.classList.add('active');
-                            };
-                            reader.readAsDataURL(audioBlob);
-                            stream.getTracks().forEach(track => track.stop());
-                        };
-                        mediaRecorder.start();
-                    }).catch(() => {
-                        Swal.fire({ title: 'Error', text: 'Microphone access denied', icon: 'error', background: '#1a3d33', color: '#fff' });
-                        this.cancelVoiceRecording();
-                    });
-                },
-                
-                startRecordingTimer() {
-                    if (recordingTimerInterval) clearInterval(recordingTimerInterval);
-                    recordingTimerInterval = setInterval(() => {
-                        const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
-                        const minutes = Math.floor(elapsed / 60);
-                        const seconds = elapsed % 60;
-                        document.getElementById('recordingTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                    }, 1000);
-                },
-                
-                stopVoiceRecording() {
-                    if (mediaRecorder && mediaRecorder.state === 'recording') {
-                        mediaRecorder.stop();
-                        document.getElementById('voiceRecordingOverlay').classList.remove('active');
-                        if (recordingTimerInterval) clearInterval(recordingTimerInterval);
-                    }
-                },
-                
-                cancelVoiceRecording() {
-                    if (mediaRecorder && mediaRecorder.state === 'recording') {
-                        mediaRecorder.onstop = () => {};
-                        mediaRecorder.stop();
-                    }
-                    document.getElementById('voiceRecordingOverlay').classList.remove('active');
-                    if (recordingTimerInterval) clearInterval(recordingTimerInterval);
-                },
-                
-                async showProductSelector() {
-                    const { data: products } = await supabaseClient.from('products').select('*').eq('is_active', true);
-                    if (!products || products.length === 0) {
-                        Swal.fire({ title: 'No Products', icon: 'info', background: '#1a3d33', color: '#fff' });
-                        return;
-                    }
-                    const list = document.getElementById('productSelectorList');
-                    list.innerHTML = products.map(p => `
-                        <div class="product-selector-item" onclick="window.buyerChat.sendProductCard(${JSON.stringify(p).replace(/"/g, '&quot;')})">
-                            <div style="width:40px;height:40px;background:rgba(232,177,60,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-lightbulb"></i></div>
-                            <div><h4 style="color:#E8B13C;">${escapeHtml(p.name)}</h4><p>Rs. ${p.price.toLocaleString()}</p><small>${p.category || ''}</small></div>
-                        </div>
-                    `).join('');
-                    document.getElementById('productSelectorModal').classList.add('active');
-                },
-                
-                sendProductCard(product) {
-                    pendingMedia = { productData: { id: product.id, name: product.name, price: product.price, category: product.category } };
-                    const preview = document.getElementById('mediaPreview');
-                    preview.innerHTML = `<div class="product-card-message"><i class="fas fa-box" style="font-size:30px;"></i><div><h4>${escapeHtml(product.name)}</h4><p>Rs. ${product.price.toLocaleString()}</p><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div></div>`;
-                    preview.classList.add('active');
-                    this.closeProductSelector();
-                },
-                
+                toggleMessageActions(messageId) { const menuId = `menu-${messageId.replace(/-/g, '')}`; const menu = document.getElementById(menuId); if (currentOpenMenu && currentOpenMenu !== menuId) document.getElementById(currentOpenMenu)?.classList.remove('show'); if (menu) { menu.classList.toggle('show'); currentOpenMenu = menu.classList.contains('show') ? menuId : null; } },
+                async editMessage(messageId, oldText) { const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); if (newText && newText !== oldText) { await supabaseClient.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
+                async deleteMessage(messageId, forEveryone = false) { const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); if (result.isConfirmed) { if (forEveryone) await supabaseClient.from('chat_messages').delete().eq('id', messageId); else await supabaseClient.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
+                replyToMessage(message) { currentReplyingTo = message; document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50); document.getElementById('replyBar').classList.add('active'); document.getElementById('chatInput').focus(); this.closeMenu(); },
+                cancelReply() { currentReplyingTo = null; document.getElementById('replyBar').classList.remove('active'); },
+                async forwardMessage(message) { const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; await supabaseClient.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); this.closeMenu(); },
+                closeMenu() { if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; } },
+                clearPendingMedia() { pendingMedia = null; const preview = document.getElementById('mediaPreview'); preview.classList.remove('active'); preview.innerHTML = ''; },
+                showAttachMenu() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'image'); input.click(); },
+                showVideoMenu() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'video'); input.click(); },
+                handleMediaUpload(file, type) { if (!file) return; const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: type }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button>`; preview.classList.add('active'); }; reader.readAsDataURL(file); },
+                showVoiceRecorder() { document.getElementById('voiceRecordingOverlay').classList.add('active'); recordingStartTime = Date.now(); this.startRecordingTimer(); navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { mediaRecorder = new MediaRecorder(stream); audioChunks = []; mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); mediaRecorder.onstop = () => { const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: 'audio' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div>`; preview.classList.add('active'); }; reader.readAsDataURL(audioBlob); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); }).catch(() => { Swal.fire({ title: 'Error', text: 'Microphone access denied', icon: 'error', background: '#1a3d33', color: '#fff' }); this.cancelVoiceRecording(); }); },
+                startRecordingTimer() { if (recordingTimerInterval) clearInterval(recordingTimerInterval); recordingTimerInterval = setInterval(() => { const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000); const minutes = Math.floor(elapsed / 60); const seconds = elapsed % 60; document.getElementById('recordingTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`; }, 1000); },
+                stopVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); } },
+                cancelVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.onstop = () => {}; mediaRecorder.stop(); } document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); },
+                async showProductSelector() { const { data: products } = await supabaseClient.from('products').select('*').eq('is_active', true); if (!products || products.length === 0) { Swal.fire({ title: 'No Products', icon: 'info', background: '#1a3d33', color: '#fff' }); return; } const list = document.getElementById('productSelectorList'); list.innerHTML = products.map(p => `<div class="product-selector-item" onclick="window.buyerChat.sendProductCard(${JSON.stringify(p).replace(/"/g, '&quot;')})"><div style="width:40px;height:40px;background:rgba(232,177,60,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-lightbulb"></i></div><div><h4 style="color:#E8B13C;">${escapeHtml(p.name)}</h4><p>Rs. ${p.price.toLocaleString()}</p><small>${p.category || ''}</small></div></div>`).join(''); document.getElementById('productSelectorModal').classList.add('active'); },
+                sendProductCard(product) { pendingMedia = { productData: { id: product.id, name: product.name, price: product.price, category: product.category } }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="product-card-message"><i class="fas fa-box" style="font-size:30px;"></i><div><h4>${escapeHtml(product.name)}</h4><p>Rs. ${product.price.toLocaleString()}</p><button class="remove-media" onclick="window.buyerChat.clearPendingMedia()">×</button></div></div>`; preview.classList.add('active'); this.closeProductSelector(); },
                 closeProductSelector() { document.getElementById('productSelectorModal').classList.remove('active'); },
-                
-                sendTyping() {
-                    clearTimeout(typingTimeout);
-                    supabaseClient.from('chat_typing').insert([{ sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', timestamp: new Date().toISOString() }]);
-                    typingTimeout = setTimeout(() => {}, 2000);
-                },
-                
-                showTypingIndicator() {
-                    const container = document.getElementById('typingIndicatorArea');
-                    container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
-                    setTimeout(() => { container.innerHTML = ''; }, 3000);
-                },
-                
-                async markMessagesRead() {
-                    await supabaseClient.from('chat_messages').update({ read: true }).eq('receiver_id', currentBuyerId).eq('receiver_type', 'buyer').eq('read', false);
-                    this.updateUnreadBadge(false);
-                },
-                
-                updateUnreadBadge(hasNew) {
-                    const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]');
-                    const livechatTab = document.getElementById('livechatTab');
-                    if (hasNew && !livechatTab.classList.contains('active')) chatTab.classList.add('has-unread');
-                    else if (livechatTab.classList.contains('active')) chatTab.classList.remove('has-unread');
-                },
+                sendTyping() { clearTimeout(typingTimeout); supabaseClient.from('chat_typing').insert([{ sender_id: currentBuyerId, sender_type: 'buyer', receiver_id: this.adminId, receiver_type: 'admin', timestamp: new Date().toISOString() }]); typingTimeout = setTimeout(() => {}, 2000); },
+                showTypingIndicator() { const container = document.getElementById('typingIndicatorArea'); container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>'; setTimeout(() => { container.innerHTML = ''; }, 3000); },
+                async markMessagesRead() { await supabaseClient.from('chat_messages').update({ read: true }).eq('receiver_id', currentBuyerId).eq('receiver_type', 'buyer').eq('read', false); this.updateUnreadBadge(false); },
+                updateUnreadBadge(hasNew) { const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]'); const livechatTab = document.getElementById('livechatTab'); if (hasNew && !livechatTab.classList.contains('active')) chatTab.classList.add('has-unread'); else if (livechatTab.classList.contains('active')) chatTab.classList.remove('has-unread'); },
                 
                 renderMessages() {
                     const container = document.getElementById('chatMessagesArea');
                     if (!container) return;
-                    // Keep online status at top
                     let statusHtml = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div>';
-                    if (chatMessages.length === 0) {
-                        container.innerHTML = statusHtml + '<div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div>';
-                        return;
-                    }
+                    if (chatMessages.length === 0) { container.innerHTML = statusHtml + '<div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div>'; return; }
                     let messagesHtml = chatMessages.map(msg => {
-                        if (msg.deleted_for_sender && msg.sender_type === 'buyer') {
-                            return `<div class="message sent"><div class="message-bubble"><div class="message-text" style="font-style:italic; opacity:0.6;">Message deleted</div><div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>`;
-                        }
+                        if (msg.deleted_for_sender && msg.sender_type === 'buyer') return `<div class="message sent"><div class="message-bubble"><div class="message-text" style="font-style:italic; opacity:0.6;">Message deleted</div><div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>`;
                         const isSent = msg.sender_type === 'buyer';
                         const senderName = isSent ? 'You' : '🛡️ Sohrab Industries Support';
-                        let replyHtml = '';
-                        if (msg.reply_to) {
-                            const repliedMsg = chatMessages.find(m => m.id === msg.reply_to);
-                            if (repliedMsg) replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${escapeHtml((repliedMsg.text || '[Media]').substring(0, 50))}</div>`;
-                        }
-                        let mediaHtml = '';
-                        if (msg.media_url) {
-                            if (msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank')">`;
-                            else if (msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`;
-                            else if (msg.media_type === 'audio') mediaHtml = `<div class="voice-message-preview"><audio src="${msg.media_url}" controls></audio></div>`;
-                        }
-                        let productHtml = '';
-                        if (msg.product_data) {
-                            const p = msg.product_data;
-                            productHtml = `<div class="product-card-message"><i class="fas fa-lightbulb"></i><div><h4>${escapeHtml(p.name)}</h4><p>Rs. ${parseInt(p.price).toLocaleString()}</p></div></div>`;
-                        }
+                        let replyHtml = ''; if (msg.reply_to) { const repliedMsg = chatMessages.find(m => m.id === msg.reply_to); if (repliedMsg) replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${escapeHtml((repliedMsg.text || '[Media]').substring(0, 50))}</div>`; }
+                        let mediaHtml = ''; if (msg.media_url) { if (msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank')">`; else if (msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`; else if (msg.media_type === 'audio') mediaHtml = `<div class="voice-message-preview"><audio src="${msg.media_url}" controls></audio></div>`; }
+                        let productHtml = ''; if (msg.product_data) { const p = msg.product_data; productHtml = `<div class="product-card-message"><i class="fas fa-lightbulb"></i><div><h4>${escapeHtml(p.name)}</h4><p>Rs. ${parseInt(p.price).toLocaleString()}</p></div></div>`; }
                         const editedMark = msg.edited ? ' <span style="font-size:0.6rem;">(edited)</span>' : '';
                         const msgShortId = msg.id.replace(/-/g, '');
                         const timeStr = new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-                        return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msgShortId}" style="position:relative;">
-                                    <div class="message-actions-trigger" onclick="window.buyerChat.toggleMessageActions('${msg.id}')">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </div>
-                                    <div class="message-bubble">
-                                        <div class="sender-name">${senderName}</div>
-                                        ${replyHtml}
-                                        <div class="message-text">${escapeHtml(msg.text || '')}${editedMark}</div>
-                                        ${mediaHtml}${productHtml}
-                                        <div class="message-time">${timeStr} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#25D366;"></i>' : ''}</div>
-                                    </div>
-                                    <div class="message-actions-menu" id="menu-${msgShortId}">
-                                        <button class="message-action-btn" onclick="window.buyerChat.editMessage('${msg.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="message-action-btn" onclick="window.buyerChat.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button>
-                                        <button class="message-action-btn danger" onclick="window.buyerChat.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete for all</button>
-                                        <button class="message-action-btn" onclick="window.buyerChat.forwardMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-share"></i> Forward</button>
-                                        <button class="message-action-btn" onclick="window.buyerChat.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button>
-                                    </div>
-                                </div>`;
+                        return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msgShortId}" style="position:relative;"><div class="message-actions-trigger" onclick="window.buyerChat.toggleMessageActions('${msg.id}')"><i class="fas fa-ellipsis-v"></i></div><div class="message-bubble"><div class="sender-name">${senderName}</div>${replyHtml}<div class="message-text">${escapeHtml(msg.text || '')}${editedMark}</div>${mediaHtml}${productHtml}<div class="message-time">${timeStr} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#25D366;"></i>' : ''}</div></div><div class="message-actions-menu" id="menu-${msgShortId}"><button class="message-action-btn" onclick="window.buyerChat.editMessage('${msg.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button><button class="message-action-btn" onclick="window.buyerChat.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button><button class="message-action-btn danger" onclick="window.buyerChat.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete for all</button><button class="message-action-btn" onclick="window.buyerChat.forwardMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-share"></i> Forward</button><button class="message-action-btn" onclick="window.buyerChat.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button></div></div>`;
                     }).join('');
                     container.innerHTML = statusHtml + messagesHtml;
                     this.scrollToBottom();
                 },
-                
-                scrollToBottom() {
-                    const area = document.getElementById('chatMessagesArea');
-                    if (area) area.scrollTop = area.scrollHeight;
-                }
+                scrollToBottom() { const area = document.getElementById('chatMessagesArea'); if (area) area.scrollTop = area.scrollHeight; }
             };
             
             function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+            
+            // Product Popup Functions
+            window.showProductDetail = async function(productId) {
+                const product = allProducts.find(p => p.id === productId);
+                if (!product) return;
+                const images = product.images ? (Array.isArray(product.images) ? product.images : JSON.parse(product.images || '[]')) : [];
+                const allMedia = [product.image_url, ...images].filter(Boolean);
+                const modal = document.getElementById('productDetailModal');
+                const body = document.getElementById('productModalBody');
+                document.getElementById('modalProductTitle').innerText = product.name;
+                let galleryHtml = '';
+                if (allMedia.length > 0) {
+                    galleryHtml = `<div class="product-detail-gallery" id="galleryContainer">${allMedia.map((img, idx) => `<img src="${img}" class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="document.getElementById('mainDetailImage').src='${img}'" data-img="${img}">`).join('')}</div>`;
+                }
+                body.innerHTML = `
+                    <img id="mainDetailImage" src="${allMedia[0] || 'https://via.placeholder.com/300?text=No+Image'}" class="product-detail-image">
+                    ${galleryHtml}
+                    <div class="product-detail-name">${escapeHtml(product.name)}</div>
+                    <div class="product-detail-price">Rs. ${(product.price || 0).toLocaleString()}</div>
+                    <div class="product-detail-category"><i class="fas fa-tag"></i> ${product.category || 'General'}</div>
+                    <div class="product-detail-stock"><i class="fas fa-boxes"></i> ${product.stock > 0 ? `In Stock (${product.stock})` : 'Out of Stock'}</div>
+                    <div class="product-detail-desc">${escapeHtml(product.description || 'No description available.')}</div>
+                    <button class="modal-add-to-cart" onclick="window.addToCartFromModal('${product.id}', '${escapeHtml(product.name).replace(/'/g, "\\'")}', ${product.price}); window.closeProductModal();"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                `;
+                modal.classList.add('active');
+            };
+            
+            window.addToCartFromModal = function(id, name, price) { let item = cart.find(i => i.id === id); if (item) item.quantity++; else cart.push({ id, name, price, quantity: 1 }); saveCart(); Swal.fire({ title: 'Added!', text: `${name} added to cart`, icon: 'success', timer: 1000, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); };
+            window.closeProductModal = function() { document.getElementById('productDetailModal').classList.remove('active'); };
             
             async function checkAuth() {
                 const { data: { user } } = await supabaseClient.auth.getUser();
@@ -1512,10 +1221,7 @@
             
             function displayCategories() {
                 const categories = ['all', ...new Set(allProducts.map(p=>p.category).filter(Boolean))];
-                document.getElementById('categoriesList').innerHTML = categories.map(cat => {
-                    const icon = cat === 'all' ? 'fa-grid-2' : (categoryIcons[cat] || 'fa-tag');
-                    return `<button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="window.filterByCategory('${cat}')"><i class="fas ${icon}"></i> ${cat === 'all' ? 'All Products' : cat}</button>`;
-                }).join('');
+                document.getElementById('categoriesList').innerHTML = categories.map(cat => `<button class="category-btn ${currentCategory === cat ? 'active' : ''}" onclick="window.filterByCategory('${cat}')"><i class="fas ${cat === 'all' ? 'fa-grid-2' : (categoryIcons[cat] || 'fa-tag')}"></i> ${cat === 'all' ? 'All Products' : cat}</button>`).join('');
             }
             
             window.filterByCategory = function(c) { currentCategory = c; displayCategories(); displayProducts(); };
@@ -1526,7 +1232,10 @@
                 if(search) filtered = filtered.filter(p=>p.name.toLowerCase().includes(search));
                 const container = document.getElementById('productsGrid');
                 if(!filtered.length){ container.innerHTML='<div class="empty-state">No products found</div>'; return; }
-                container.innerHTML = filtered.map(p=>`<div class="product-card"><div class="product-image"><i class="fas fa-lightbulb"></i></div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-category">${p.category || 'General'}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><button class="add-to-cart" onclick="window.addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price})">Add to Cart</button></div></div>`).join('');
+                container.innerHTML = filtered.map(p => {
+                    const productImage = p.image_url || (p.images ? (Array.isArray(p.images) ? p.images[0] : (JSON.parse(p.images || '[]')[0])) : null);
+                    return `<div class="product-card"><div class="product-image" onclick="window.showProductDetail('${p.id}')">${productImage ? `<img src="${productImage}" alt="${escapeHtml(p.name)}">` : `<i class="fas fa-lightbulb"></i>`}</div><div class="product-info"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-category">${p.category || 'General'}</div><div class="product-price">Rs. ${(p.price||0).toLocaleString()}</div><button class="add-to-cart" onclick="event.stopPropagation(); window.addToCart('${p.id}','${escapeHtml(p.name).replace(/'/g,"\\'")}',${p.price})">Add to Cart</button></div></div>`;
+                }).join('');
             }
             
             window.addToCart = function(id,name,price){ let item=cart.find(i=>i.id===id); if(item) item.quantity++; else cart.push({id,name,price,quantity:1}); saveCart(); Swal.fire({title:'Added!',text:`${name} added`,icon:'success',timer:1000,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); };
@@ -1552,49 +1261,13 @@
                 const {data}=await supabaseClient.from('orders').select('*').eq('user_id',currentBuyerId).eq('user_type','buyer').order('order_date',{ascending:false});
                 const tbody=document.getElementById('ordersList');
                 if(!data||!data.length){ tbody.innerHTML='<tr><td colspan="7" class="empty-state">No orders found</td></tr>'; return; }
-                tbody.innerHTML=data.map(o => {
-                    let productsText = '-';
-                    try {
-                        const parsed = JSON.parse(o.notes || '[]');
-                        if (Array.isArray(parsed) && parsed.length > 0) {
-                            productsText = parsed.map(i => i.name).join(', ');
-                            if (productsText.length > 40) productsText = productsText.substring(0, 40) + '...';
-                        } else if (typeof o.notes === 'string' && o.notes) {
-                            productsText = o.notes.substring(0, 40);
-                        }
-                    } catch(e) {
-                        productsText = o.notes ? o.notes.substring(0, 40) : '-';
-                    }
-                    return `<tr><td><strong>${o.id.slice(0,10)}</strong></td><td><small>${productsText}</small></td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td><small>${(o.delivery_address || '-').substring(0,30)}</small></td></tr>`;
-                }).join('');
+                tbody.innerHTML=data.map(o => { let productsText = '-'; try { const parsed = JSON.parse(o.notes || '[]'); if (Array.isArray(parsed) && parsed.length) productsText = parsed.map(i => i.name).join(', ').substring(0,40); } catch(e) { productsText = o.notes ? o.notes.substring(0,40) : '-'; } return `<tr><td><strong>${o.id.slice(0,10)}</strong></td><td><small>${productsText}</small></td><td>Rs.${o.total_amount.toLocaleString()}</td><td>${new Date(o.order_date).toLocaleDateString()}</td><td><span class="status-badge status-${o.status}">${o.status}</span></td><td>${o.payment_status}</td><td><small>${(o.delivery_address || '-').substring(0,30)}</small></td></tr>`; }).join('');
             }
             
-            async function loadProfile() {
-                const {data}=await supabaseClient.from('buyers').select('*').eq('id',currentBuyerId);
-                if(data&&data[0]){ const b=data[0]; document.getElementById('profileName').value=b.full_name||''; document.getElementById('profileEmail').value=b.email||''; document.getElementById('profilePhone').value=b.phone||''; document.getElementById('profileAddress').value=b.address||''; }
-            }
+            async function loadProfile() { const {data}=await supabaseClient.from('buyers').select('*').eq('id',currentBuyerId); if(data&&data[0]){ const b=data[0]; document.getElementById('profileName').value=b.full_name||''; document.getElementById('profileEmail').value=b.email||''; document.getElementById('profilePhone').value=b.phone||''; document.getElementById('profileAddress').value=b.address||''; } }
+            window.saveProfile = async function(){ const full_name = document.getElementById('profileName').value; const phone = document.getElementById('profilePhone').value; const address = document.getElementById('profileAddress').value; await supabaseClient.from('buyers').update({full_name, phone, address}).eq('id',currentBuyerId); loadProfile(); Swal.fire({title:'Profile Updated!',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'}); };
             
-            window.saveProfile = async function(){
-                const full_name = document.getElementById('profileName').value;
-                const phone = document.getElementById('profilePhone').value;
-                const address = document.getElementById('profileAddress').value;
-                await supabaseClient.from('buyers').update({full_name, phone, address}).eq('id',currentBuyerId);
-                loadProfile();
-                Swal.fire({title:'Profile Updated!',icon:'success',timer:1500,showConfirmButton:false,background:'#1a3d33',color:'#fff'});
-            };
-            
-            function setupTabListeners() {
-                document.querySelectorAll('.tab-btn').forEach(btn=>{
-                    btn.addEventListener('click',()=>{
-                        const tab=btn.getAttribute('data-tab');
-                        document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-                        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-                        document.getElementById(`${tab}Tab`).classList.add('active');
-                        btn.classList.add('active');
-                        if(tab==='livechat'){ window.buyerChat.markMessagesRead(); document.querySelector('.tab-btn[data-tab="livechat"]').classList.remove('has-unread'); window.buyerChat.renderMessages(); }
-                    });
-                });
-            }
+            function setupTabListeners() { document.querySelectorAll('.tab-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ const tab=btn.getAttribute('data-tab'); document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById(`${tab}Tab`).classList.add('active'); btn.classList.add('active'); if(tab==='livechat'){ window.buyerChat.markMessagesRead(); document.querySelector('.tab-btn[data-tab="livechat"]').classList.remove('has-unread'); window.buyerChat.renderMessages(); } }); }); }
             
             document.getElementById('logoutBtn').onclick = async()=>{ await supabaseClient.auth.signOut(); window.location.href='buyer-auth.html'; };
             checkAuth();
