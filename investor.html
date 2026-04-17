@@ -259,7 +259,7 @@
         .empty-state { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
         .info-text { margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.5); }
         
-        /* ========== CHAT STYLES - Full Width WhatsApp Style ========== */
+        /* ========== CHAT STYLES ========== */
         .chat-panel {
             display: flex;
             flex-direction: column;
@@ -380,8 +380,6 @@
         
         .chat-media { max-width: 180px; max-height: 180px; border-radius: 12px; margin: 4px 0; cursor: pointer; }
         .voice-message-preview { display: flex; align-items: center; gap: 8px; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 30px; min-width: 180px; }
-        .product-card-message { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 8px; margin-top: 5px; display: flex; gap: 10px; cursor: pointer; }
-        .product-card-message:hover { background: rgba(232,177,60,0.2); }
         
         .typing-indicator {
             background: rgba(232,177,60,0.1);
@@ -661,17 +659,38 @@
                 <h2 class="section-title"><i class="fas fa-check-circle"></i> Your Approved Investments</h2>
                 <button id="openInvestmentModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + New Investment Request</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentsList"></tbody></table></div>
+            <div class="table-container">
+                <table class="investments-table">
+                    <thead>
+                        <tr><th>Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody id="investmentsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
-            <div class="table-container"><tr><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div>
+            <div class="table-container">
+                <table class="requests-table">
+                    <thead>
+                        <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody id="investmentRequestsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
-            <div class="table-container"><tr><thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead><tbody id="profitsList"></tbody></table></div>
+            <div class="table-container">
+                <table class="profits-table">
+                    <thead>
+                        <tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr>
+                    </thead>
+                    <tbody id="profitsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="withdrawalsTab" class="tab-content">
@@ -679,7 +698,14 @@
                 <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Your Withdrawal Requests</h2>
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div>
+            <div class="table-container">
+                <table class="withdrawals-table">
+                    <thead>
+                        <tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Processed Date</th></tr>
+                    </thead>
+                    <tbody id="withdrawalsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="profileTab" class="tab-content">
@@ -701,7 +727,7 @@
             </div>
         </div>
 
-        <!-- Live Chat Tab - Full WhatsApp Style -->
+        <!-- Live Chat Tab -->
         <div id="livechatTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat - Sohrab Industries Support</h2>
             <div id="permissionWarning" class="permission-warning"></div>
@@ -1181,29 +1207,33 @@
             }
             
             async function loadInvestments() {
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
                 const tbody = document.getElementById('investmentsList');
+                if (!tbody) return;
+                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
                 if(!data?.length) { tbody.innerHTML='<tr><td colspan="6" class="empty-state">No approved investments yet</td></tr>'; return; }
                 tbody.innerHTML = data.map(inv => `<tr><td>${new Date(inv.investment_date).toLocaleDateString()}</td><td>Rs. ${(inv.amount||0).toLocaleString()}</td><td>${inv.payment_method||'-'}</td><td>${inv.transaction_id||'-'}</td><td><span class="status-badge status-active">Approved</span></td><td>${inv.notes||'-'}</td></tr>`).join('');
             }
             
             async function loadInvestmentRequests() {
-                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
                 const tbody = document.getElementById('investmentRequestsList');
+                if (!tbody) return;
+                const { data } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
                 if(!data?.length) { tbody.innerHTML='<tr><td colspan="6" class="empty-state">No pending requests</td></tr>'; return; }
                 tbody.innerHTML = data.map(inv => `<tr><td>${new Date(inv.created_at).toLocaleDateString()}</td><td>Rs. ${(inv.amount||0).toLocaleString()}</td><td>${inv.payment_method||'-'}</td><td>${inv.transaction_id||'-'}</td><td><span class="status-badge status-pending">Pending</span></td><td>${inv.notes||'-'}</td></tr>`).join('');
             }
             
             async function loadProfits() {
-                const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
                 const tbody = document.getElementById('profitsList');
+                if (!tbody) return;
+                const { data } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
                 if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; return; }
                 tbody.innerHTML = data.map(p => `<tr><td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td><td>Rs. ${(p.amount||0).toLocaleString()}</td><td>${p.profit_percentage||10}%</td><td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td><td>${p.paid_date?new Date(p.paid_date).toLocaleDateString():'-'}</td></tr>`).join('');
             }
             
             async function loadWithdrawals() {
-                const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
                 const tbody = document.getElementById('withdrawalsList');
+                if (!tbody) return;
+                const { data } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
                 if(!data?.length) { tbody.innerHTML='<tr><td colspan="6" class="empty-state">No withdrawal requests yet</td></tr>'; return; }
                 tbody.innerHTML = data.map(w => `<tr><td>${new Date(w.request_date).toLocaleDateString()}</td><td>Rs. ${(w.amount||0).toLocaleString()}</td><td>${w.payment_method||'-'}</td><td>${w.account_details||'-'}</td><td><span class="status-badge ${w.status==='approved'?'status-active':'status-pending'}">${w.status==='pending'?'Pending':'Approved'}</span></td><td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</td></tr>`).join('');
             }
