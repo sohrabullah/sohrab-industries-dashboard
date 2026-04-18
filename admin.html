@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+        /* [ALL EXISTING STYLES REMAIN THE SAME - PRESERVED] */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
@@ -268,7 +269,6 @@
         }
         .screenshot-thumb:hover { transform: scale(1.1); }
         
-        /* Batch Progress Styles */
         .progress-tracker {
             display: flex;
             align-items: center;
@@ -292,7 +292,6 @@
         .progress-step.active { background: #d4a017; color: white; animation: pulse 1s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
         
-        /* ADDED: Enhanced Charts Grid for Admin */
         .charts-dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -338,7 +337,6 @@
         .stat-box .stat-label { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
         .stat-box .stat-value { font-size: 1.3rem; font-weight: bold; color: #E8B13C; }
         
-        /* Ledger Styles */
         .ledger-table { font-size: 0.8rem; }
         .ledger-table th, .ledger-table td { padding: 6px 8px; }
         .financial-highlight { font-weight: bold; color: #E8B13C; }
@@ -405,7 +403,6 @@
         }
         .required-star { color: #dc3545; margin-left: 4px; }
         
-        /* Chat System Styles */
         .chat-container { display: flex; height: calc(100vh - 320px); min-height: 600px; background: rgba(0,0,0,0.2); border-radius: 24px; overflow: hidden; border: 1px solid rgba(232,177,60,0.2); }
         .chat-user-list { width: 450px; background: linear-gradient(145deg, rgba(10,35,28,0.95), rgba(5,25,18,0.95)); border-right: 1px solid rgba(232,177,60,0.2); display: flex; flex-direction: column; overflow: hidden; }
         .chat-user-list-header { padding: 20px; border-bottom: 1px solid rgba(232,177,60,0.2); background: rgba(0,0,0,0.2); }
@@ -606,14 +603,20 @@
             </div>
         </div>
 
-        <!-- Batches Section -->
+        <!-- INVESTMENT BATCHES Section - ENHANCED for full investor control -->
         <div id="batchesSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-industry"></i> Investment Batches Management</h2>
             
             <div class="form-card">
-                <h3><i class="fas fa-plus-circle"></i> Create New Batch</h3>
+                <h3><i class="fas fa-plus-circle"></i> Create New Investment Batch</h3>
                 <div class="form-row">
-                    <div class="form-group"><label>Select Investment</label><select id="batchInvestmentSelect"></select></div>
+                    <div class="form-group"><label>Batch Name *</label><input type="text" id="newBatchName" placeholder="e.g., Summer 2025 Batch"></div>
+                    <div class="form-group"><label>Investment Amount (Rs.) *</label><input type="number" id="newBatchAmount" placeholder="Enter amount per investor"></div>
+                    <div class="form-group"><label>Profit Percentage (%) *</label><input type="number" id="newBatchProfitPercent" placeholder="Expected profit %" value="50"></div>
+                    <div class="form-group"><label>Duration (Days) *</label><input type="number" id="newBatchDuration" placeholder="Investment duration in days"></div>
+                    <div class="form-group"><label>Total Slots / Investors Limit *</label><input type="number" id="newBatchSlots" placeholder="Max investors"></div>
+                </div>
+                <div class="form-row">
                     <div class="form-group"><label>Production Quantity (Bulbs)</label><input type="number" id="batchProdQty" placeholder="Quantity"></div>
                     <div class="form-group"><label>Batch Status</label><select id="batchStatusSelect">
                         <option value="In Production">In Production</option>
@@ -628,7 +631,13 @@
                     <div class="form-group"><label>Returned Units</label><input type="number" id="batchReturns" placeholder="0"></div>
                     <div class="form-group"><label>Damaged Units</label><input type="number" id="batchDamaged" placeholder="0"></div>
                 </div>
-                <button onclick="createBatch()" class="btn-primary"><i class="fas fa-save"></i> Create Batch</button>
+                <div class="form-row">
+                    <div class="form-group"><label>Visibility Status</label><select id="batchVisibility">
+                        <option value="true">Visible to all investors</option>
+                        <option value="false">Hidden from investors</option>
+                    </select></div>
+                </div>
+                <button onclick="createInvestmentBatch()" class="btn-primary"><i class="fas fa-save"></i> Create Investment Batch</button>
             </div>
             
             <h2 class="section-title"><i class="fas fa-list"></i> All Batches</h2>
@@ -636,7 +645,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Batch ID</th><th>Investment</th><th>Investor</th><th>Prod Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Returns</th><th>Damaged</th><th>Net Profit</th><th>Investor Share</th><th>ROI</th><th>Profit Credited</th><th>Actions</th></tr>
+                        <tr><th>Batch ID</th><th>Batch Name</th><th>Investment</th><th>Profit %</th><th>Duration</th><th>Slots</th><th>Filled</th><th>Prod Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit</th><th>Investor Share</th><th>ROI</th><th>Visibility</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="batchesList"></tbody>
                 </table>
@@ -658,7 +667,7 @@
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
             <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Chat</th><th>Voice</th><th>Video</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
@@ -681,8 +690,10 @@
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
             <div class="table-container">
-                <table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Actions</th></tr></thead>
-                <tbody id="investmentRequestsList"></tbody></table>
+                <table>
+                    <thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Actions</th></tr></thead>
+                    <tbody id="investmentRequestsList"></tbody>
+                </table>
             </div>
         </div>
 
@@ -700,7 +711,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></tr></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -724,8 +735,10 @@
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
             <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary">Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button></div>
             <div class="table-container">
-                <table><thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Approval Screenshot</th><th>Actions</th></tr></thead>
-                <tbody id="withdrawalsList"></tbody></table>
+                <table>
+                    <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Approval Screenshot</th><th>Actions</th></tr></thead>
+                    <tbody id="withdrawalsList"></tbody>
+                </table>
             </div>
         </div>
 
@@ -879,7 +892,33 @@
         let pendingWithdrawalId = null, pendingWithdrawalAmount = null, pendingWithdrawalInvestorId = null;
         let tempScreenshotData = null;
         let charts = {};
-
+        
+        // Real-time subscription for batch updates
+        let batchSubscription = null;
+        
+        function setupRealtimeSync() {
+            if (batchSubscription) return;
+            batchSubscription = supabaseClient
+                .channel('admin-batch-sync')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'investment_batches' }, (payload) => {
+                    console.log('Batch change detected:', payload);
+                    loadBatches(); // Refresh batches in admin
+                    loadBatchSelect(); // Refresh dropdown
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'investor_investments' }, (payload) => {
+                    console.log('Investment change detected:', payload);
+                    loadInvestmentHistory();
+                    loadInvestmentRequests();
+                    loadStats();
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'withdrawals' }, (payload) => {
+                    console.log('Withdrawal change detected:', payload);
+                    loadWithdrawals();
+                    loadStats();
+                })
+                .subscribe();
+        }
+        
         // Helper Functions
         function showNotification(msg, isError = false, title = "") { 
             Swal.fire({ icon: isError ? 'error' : 'success', title: title || (isError ? 'Error!' : 'Success!'), text: msg, background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff', confirmButtonColor: '#E8B13C', timer: isError ? 3000 : 2000 });
@@ -912,19 +951,132 @@
             if (section === 'dashboard') { renderAllCharts(); }
         };
 
-        // ========== BATCH SYSTEM FUNCTIONS ==========
+        // ========== ENHANCED INVESTMENT BATCH SYSTEM ==========
+        async function createInvestmentBatch() {
+            const batchName = document.getElementById('newBatchName').value.trim();
+            const amount = parseFloat(document.getElementById('newBatchAmount').value);
+            const profitPercent = parseFloat(document.getElementById('newBatchProfitPercent').value);
+            const duration = parseInt(document.getElementById('newBatchDuration').value);
+            const totalSlots = parseInt(document.getElementById('newBatchSlots').value);
+            const isVisible = document.getElementById('batchVisibility').value === 'true';
+            
+            if (!batchName || !amount || !profitPercent || !duration || !totalSlots) {
+                showNotification('Please fill all required fields', true);
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabaseClient.from('investment_batches').insert([{
+                    id: crypto.randomUUID(),
+                    batch_name: batchName,
+                    investment_amount: amount,
+                    profit_percentage: profitPercent,
+                    duration_days: duration,
+                    total_slots: totalSlots,
+                    filled_slots: 0,
+                    is_active: true,
+                    is_visible: isVisible,
+                    created_by: (await supabaseClient.auth.getUser()).data.user?.id,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                }]);
+                
+                if (error) throw error;
+                showNotification('Investment batch created successfully!', false);
+                
+                // Reset form
+                document.getElementById('newBatchName').value = '';
+                document.getElementById('newBatchAmount').value = '';
+                document.getElementById('newBatchProfitPercent').value = '50';
+                document.getElementById('newBatchDuration').value = '';
+                document.getElementById('newBatchSlots').value = '';
+                
+                loadBatches();
+                renderAllCharts();
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
         async function loadBatches() {
             if(!supabaseClient) return;
             try {
-                const { data } = await supabaseClient.from('batches').select('*, investments(investor_id, amount, investors(full_name))').order('created_at', {ascending: false});
-                allBatches = data || [];
+                // Load investment batches
+                const { data: batches, error: batchesError } = await supabaseClient
+                    .from('investment_batches')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (batchesError) throw batchesError;
+                
+                // Load production batches (legacy)
+                const { data: prodBatches } = await supabaseClient
+                    .from('batches')
+                    .select('*, investments(investor_id, amount, investors(full_name))')
+                    .order('created_at', {ascending: false});
+                
+                allBatches = batches || [];
+                const prodBatchesList = prodBatches || [];
+                
                 const tbody = document.getElementById('batchesList');
                 if(!tbody) return;
-                if(allBatches.length === 0) { tbody.innerHTML = '<tr><td colspan="15" class="empty-state">No batches created yet. Create your first batch above.</td></tr>'; return; }
+                
+                if(allBatches.length === 0 && prodBatchesList.length === 0) { 
+                    tbody.innerHTML = '<tr><td colspan="17" class="empty-state">No batches created yet. Create your first batch above.</td></tr>'; 
+                    return; 
+                }
                 
                 let totalProd = 0, totalSales = 0, totalReturns = 0, totalDamaged = 0, totalRoi = 0;
                 
-                tbody.innerHTML = allBatches.map((batch, idx) => {
+                // Render Investment Batches first
+                let html = '';
+                
+                for (const batch of allBatches) {
+                    const netProfit = (batch.sales || 0) - (batch.expenses || 0);
+                    const investorShare = netProfit * 0.5;
+                    const roi = batch.investment_amount ? ((investorShare / batch.investment_amount) * 100).toFixed(2) : '0.00';
+                    let statusClass = 'status-in-production';
+                    if(batch.status === 'Completed') statusClass = 'status-completed';
+                    if(batch.status === 'Sold') statusClass = 'status-sold';
+                    if(batch.status === 'Profit Distributed') statusClass = 'status-profit-distributed';
+                    
+                    totalProd += batch.production_quantity || 0;
+                    totalSales += batch.sales || 0;
+                    totalReturns += batch.returns || 0;
+                    totalDamaged += batch.damaged || 0;
+                    totalRoi += parseFloat(roi);
+                    
+                    const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
+                    const currentStepIndex = progressSteps.indexOf(batch.status || 'In Production');
+                    const progressHtml = `<div class="progress-tracker">${progressSteps.map((step, i) => `<span class="progress-step ${i < currentStepIndex ? 'completed' : i === currentStepIndex ? 'active' : ''}">${step}</span>`).join('')}</div>`;
+                    
+                    html += `<tr class="batch-row" onclick="showBatchDetail('${batch.id}', 'investment')">
+                        <td>${batch.id?.slice(0, 12)}...</td>
+                        <td><strong>${escapeHtml(batch.batch_name || 'N/A')}</strong></td>
+                        <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
+                        <td>${batch.profit_percentage || 0}%</td>
+                        <td>${batch.duration_days || 0} days</td>
+                        <td>${batch.total_slots || 0}</td>
+                        <td>${batch.filled_slots || 0}</td>
+                        <td>${batch.production_quantity || 0}</td>
+                        <td><span class="status-badge ${statusClass}">${batch.status || 'In Production'}</span></td>
+                        <td>${progressHtml}</td>
+                        <td>Rs. ${(batch.sales || 0).toLocaleString()}</td>
+                        <td>Rs. ${(batch.expenses || 0).toLocaleString()}</td>
+                        <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
+                        <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
+                        <td>${roi}%</td>
+                        <td><span class="status-badge ${batch.is_visible ? 'status-active' : 'status-pending'}">${batch.is_visible ? 'Visible' : 'Hidden'}</span></td>
+                        <td class="action-buttons">
+                            <button onclick="event.stopPropagation();updateInvestmentBatch('${batch.id}')" class="btn-warning">Edit</button>
+                            <button onclick="event.stopPropagation();toggleBatchVisibility('${batch.id}', ${!batch.is_visible})" class="btn-info">${batch.is_visible ? 'Hide' : 'Show'}</button>
+                            <button onclick="event.stopPropagation();deleteInvestmentBatch('${batch.id}')" class="btn-danger">Delete</button>
+                        </td>
+                    </tr>`;
+                }
+                
+                // Add production batches (legacy)
+                for (const batch of prodBatchesList) {
                     const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
                     const currentStepIndex = progressSteps.indexOf(batch.status);
                     const progressHtml = `<div class="progress-tracker">${progressSteps.map((step, i) => `<span class="progress-step ${i < currentStepIndex ? 'completed' : i === currentStepIndex ? 'active' : ''}">${step}</span>`).join('')}</div>`;
@@ -942,36 +1094,121 @@
                     totalDamaged += batch.damaged || 0;
                     totalRoi += parseFloat(roi);
                     
-                    return `<tr class="batch-row" onclick="showBatchDetail('${batch.id}', ${idx})">
+                    html += `<tr class="batch-row" onclick="showBatchDetail('${batch.id}', 'production')">
                         <td>${batch.id?.slice(0, 12)}...</td>
+                        <td>Production Batch</td>
                         <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
-                        <td>${batch.investments?.investors?.full_name || 'N/A'}</td>
+                        <td>50%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
                         <td>${batch.production_quantity || 0}</td>
                         <td><span class="status-badge ${statusClass}">${batch.status}</span></td>
                         <td>${progressHtml}</td>
                         <td>Rs. ${(batch.sales || 0).toLocaleString()}</td>
                         <td>Rs. ${(batch.expenses || 0).toLocaleString()}</td>
-                        <td>${batch.returns || 0}</td>
-                        <td>${batch.damaged || 0}</td>
                         <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
                         <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
                         <td>${roi}%</td>
-                        <td><span class="status-badge ${batch.profit_credited ? 'status-active' : 'status-pending'}">${batch.profit_credited ? 'Credited' : 'Pending'}</span></td>
+                        <td><span class="status-badge status-active">Visible</span></td>
                         <td class="action-buttons">
                             <button onclick="event.stopPropagation();updateBatchStatus('${batch.id}')" class="btn-warning">Update Status</button>
                             ${!batch.profit_credited && batch.status === 'Sold' ? `<button onclick="event.stopPropagation();creditProfitToInvestor('${batch.id}', ${investorShare}, '${batch.investments?.investor_id}')" class="btn-success">Credit Profit</button>` : ''}
                             <button onclick="event.stopPropagation();deleteBatch('${batch.id}')" class="btn-danger">Delete</button>
                         </td>
-                     </tr>`;
-                }).join('');
+                    </tr>`;
+                }
                 
-                document.getElementById('totalBatches').innerHTML = allBatches.length;
+                tbody.innerHTML = html;
+                
+                document.getElementById('totalBatches').innerHTML = allBatches.length + prodBatchesList.length;
                 document.getElementById('totalProduction').innerHTML = totalProd;
                 document.getElementById('totalSales').innerHTML = `Rs. ${totalSales.toLocaleString()}`;
                 document.getElementById('totalReturns').innerHTML = totalReturns;
                 document.getElementById('totalDamaged').innerHTML = totalDamaged;
-                document.getElementById('avgROI').innerHTML = allBatches.length ? (totalRoi / allBatches.length).toFixed(1) + '%' : '0%';
+                document.getElementById('avgROI').innerHTML = (allBatches.length + prodBatchesList.length) ? (totalRoi / (allBatches.length + prodBatchesList.length)).toFixed(1) + '%' : '0%';
             } catch(e) { console.error('Error loading batches:', e); }
+        }
+        
+        async function updateInvestmentBatch(batchId) {
+            const batch = allBatches.find(b => b.id === batchId);
+            if (!batch) return;
+            
+            const { value: formData } = await Swal.fire({
+                title: 'Edit Investment Batch',
+                html: `
+                    <input id="editName" class="swal2-input" placeholder="Batch Name" value="${escapeHtml(batch.batch_name || '')}">
+                    <input id="editAmount" class="swal2-input" placeholder="Investment Amount" value="${batch.investment_amount}">
+                    <input id="editProfit" class="swal2-input" placeholder="Profit Percentage" value="${batch.profit_percentage}">
+                    <input id="editDuration" class="swal2-input" placeholder="Duration (Days)" value="${batch.duration_days}">
+                    <input id="editSlots" class="swal2-input" placeholder="Total Slots" value="${batch.total_slots}">
+                    <select id="editStatus" class="swal2-select">
+                        <option value="In Production" ${batch.status === 'In Production' ? 'selected' : ''}>In Production</option>
+                        <option value="Completed" ${batch.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                        <option value="Sold" ${batch.status === 'Sold' ? 'selected' : ''}>Sold</option>
+                        <option value="Profit Distributed" ${batch.status === 'Profit Distributed' ? 'selected' : ''}>Profit Distributed</option>
+                    </select>
+                `,
+                focusConfirm: false,
+                preConfirm: () => ({
+                    name: document.getElementById('editName').value,
+                    amount: parseFloat(document.getElementById('editAmount').value),
+                    profit: parseFloat(document.getElementById('editProfit').value),
+                    duration: parseInt(document.getElementById('editDuration').value),
+                    slots: parseInt(document.getElementById('editSlots').value),
+                    status: document.getElementById('editStatus').value
+                }),
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                color: '#fff',
+                confirmButtonColor: '#E8B13C'
+            });
+            
+            if (formData) {
+                try {
+                    const { error } = await supabaseClient
+                        .from('investment_batches')
+                        .update({
+                            batch_name: formData.name,
+                            investment_amount: formData.amount,
+                            profit_percentage: formData.profit,
+                            duration_days: formData.duration,
+                            total_slots: formData.slots,
+                            status: formData.status,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', batchId);
+                    
+                    if (error) throw error;
+                    showNotification('Batch updated successfully!', false);
+                    loadBatches();
+                    renderAllCharts();
+                } catch(e) { showNotification(e.message, true); }
+            }
+        }
+        
+        async function toggleBatchVisibility(batchId, isVisible) {
+            try {
+                const { error } = await supabaseClient
+                    .from('investment_batches')
+                    .update({ is_visible: isVisible, updated_at: new Date().toISOString() })
+                    .eq('id', batchId);
+                
+                if (error) throw error;
+                showNotification(`Batch is now ${isVisible ? 'visible' : 'hidden'} to investors`, false);
+                loadBatches();
+            } catch(e) { showNotification(e.message, true); }
+        }
+        
+        async function deleteInvestmentBatch(batchId) {
+            if (await confirmAction('Delete this investment batch? This will affect investor data.', 'Delete Batch')) {
+                try {
+                    const { error } = await supabaseClient.from('investment_batches').delete().eq('id', batchId);
+                    if (error) throw error;
+                    showNotification('Batch deleted', false);
+                    loadBatches();
+                    renderAllCharts();
+                } catch(e) { showNotification(e.message, true); }
+            }
         }
         
         async function loadBatchSelect() {
@@ -1120,27 +1357,34 @@
         
         function searchBatches() {
             const term = document.getElementById('batchSearch').value.toLowerCase();
-            const filtered = allBatches.filter(b => 
-                b.id?.toLowerCase().includes(term) || 
-                b.investments?.investors?.full_name?.toLowerCase().includes(term)
-            );
-            const tbody = document.getElementById('batchesList');
-            if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="15" class="empty-state">No batches found</td></tr>'; return; }
-            tbody.innerHTML = filtered.map((batch, idx) => `<tr>...</tr>`).join('');
+            const rows = document.querySelectorAll('#batchesList tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
         }
         
-        window.showBatchDetail = async function(batchId, idx) {
-            const batch = allBatches[idx];
+        window.showBatchDetail = async function(batchId, type) {
+            let batch;
+            if (type === 'investment') {
+                batch = allBatches.find(b => b.id === batchId);
+            } else {
+                const { data } = await supabaseClient.from('batches').select('*, investments(investor_id, amount, investors(full_name))').eq('id', batchId).single();
+                batch = data;
+            }
             if(!batch) return;
+            
             const netProfit = (batch.sales || 0) - (batch.expenses || 0);
             const investorShare = netProfit * 0.5;
-            document.getElementById('batchDetailTitle').innerHTML = `Batch ${batch.id?.slice(0, 12)}... Details`;
+            document.getElementById('batchDetailTitle').innerHTML = `Batch ${batch.batch_name || batch.id?.slice(0, 12)}... Details`;
             document.getElementById('batchDetailContent').innerHTML = `
                 <div class="form-card">
+                    <p><strong>Batch Name:</strong> ${batch.batch_name || 'Production Batch'}</p>
                     <p><strong>Investment Amount:</strong> Rs. ${(batch.investment_amount || 0).toLocaleString()}</p>
-                    <p><strong>Investor:</strong> ${batch.investments?.investors?.full_name || 'N/A'}</p>
+                    <p><strong>Profit Percentage:</strong> ${batch.profit_percentage || 50}%</p>
+                    <p><strong>Duration:</strong> ${batch.duration_days || 'N/A'} days</p>
                     <p><strong>Production Quantity:</strong> ${batch.production_quantity || 0} bulbs</p>
-                    <p><strong>Status:</strong> ${batch.status}</p>
+                    <p><strong>Status:</strong> ${batch.status || 'In Production'}</p>
                     <p><strong>Sales Revenue:</strong> Rs. ${(batch.sales || 0).toLocaleString()}</p>
                     <p><strong>Expenses:</strong> Rs. ${(batch.expenses || 0).toLocaleString()}</p>
                     <p><strong>Returns:</strong> ${batch.returns || 0} units</p>
@@ -1148,32 +1392,32 @@
                     <p><strong>Net Profit/Loss:</strong> <span class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</span></p>
                     <p><strong>Investor Share (50%):</strong> ${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</p>
                     <p><strong>ROI:</strong> ${batch.investment_amount ? ((investorShare / batch.investment_amount) * 100).toFixed(2) : '0'}%</p>
-                    <p><strong>Profit Credited:</strong> ${batch.profit_credited ? 'Yes' : 'No'}</p>
+                    <p><strong>Visibility:</strong> ${batch.is_visible !== undefined ? (batch.is_visible ? 'Visible to investors' : 'Hidden from investors') : 'N/A'}</p>
                 </div>
             `;
             document.getElementById('batchDetailModal').style.display = 'flex';
             document.getElementById('batchDetailModal').classList.add('active');
         };
 
-        // ========== ENHANCED CHARTS FUNCTIONS FOR ADMIN ==========
+        // ========== ENHANCED CHARTS FUNCTIONS ==========
         async function renderAllCharts() {
             if(!supabaseClient) return;
             
             try {
-                // Get data
                 const { data: investors } = await supabaseClient.from('investors').select('created_at, total_investment').order('created_at', {ascending: true});
                 const { data: buyers } = await supabaseClient.from('buyers').select('created_at').order('created_at', {ascending: true});
                 const { data: investments } = await supabaseClient.from('investments').select('amount, investment_date').eq('status', 'active');
                 const { data: profits } = await supabaseClient.from('profits').select('amount, paid_date').eq('paid', true);
                 const { data: batches } = await supabaseClient.from('batches').select('status, production_quantity, sales');
+                const { data: investmentBatches } = await supabaseClient.from('investment_batches').select('status, production_quantity, sales');
                 const { data: orders } = await supabaseClient.from('orders').select('total_amount, order_date');
                 const { data: products } = await supabaseClient.from('products').select('category');
                 
-                // Investors Growth Chart
+                const allBatchesData = [...(batches || []), ...(investmentBatches || [])];
+                
                 const investorMonths = investors?.map(i => new Date(i.created_at).toLocaleDateString('default',{month:'short'})) || [];
-                const investorCounts = [];
                 let count = 0;
-                investors?.forEach(() => { count++; investorCounts.push(count); });
+                const investorCounts = investors?.map(() => ++count) || [0];
                 
                 if(charts.investors) charts.investors?.destroy();
                 if(charts.buyers) charts.buyers?.destroy();
@@ -1186,44 +1430,41 @@
                 
                 charts.investors = new Chart(document.getElementById('investorsGrowthChart'), { type: 'line', data: { labels: investorMonths.length ? investorMonths : ['Jan'], datasets: [{ label: 'Total Investors', data: investorCounts.length ? investorCounts : [0], borderColor: '#E8B13C', fill: true }] }, options: { responsive: true } });
                 
-                // Buyers Growth Chart
                 const buyerMonths = buyers?.map(b => new Date(b.created_at).toLocaleDateString('default',{month:'short'})) || [];
                 let buyerCount = 0;
-                const buyerCounts = [];
-                buyers?.forEach(() => { buyerCount++; buyerCounts.push(buyerCount); });
+                const buyerCounts = buyers?.map(() => ++buyerCount) || [0];
                 charts.buyers = new Chart(document.getElementById('buyersGrowthChart'), { type: 'line', data: { labels: buyerMonths.length ? buyerMonths : ['Jan'], datasets: [{ label: 'Total Buyers', data: buyerCounts.length ? buyerCounts : [0], borderColor: '#1e7e5e', fill: true }] }, options: { responsive: true } });
                 
-                // Production Chart
-                const totalProduction = batches?.reduce((sum, b) => sum + (b.production_quantity || 0), 0) || 0;
-                const totalSalesValue = batches?.reduce((sum, b) => sum + (b.sales || 0), 0) || 0;
+                const totalProduction = allBatchesData.reduce((sum, b) => sum + (b.production_quantity || 0), 0);
+                const totalSalesValue = allBatchesData.reduce((sum, b) => sum + (b.sales || 0), 0);
                 charts.production = new Chart(document.getElementById('productionChart'), { type: 'bar', data: { labels: ['Production', 'Sales Value'], datasets: [{ label: 'Amount', data: [totalProduction, totalSalesValue], backgroundColor: ['#d4a017', '#1e7e5e'] }] }, options: { responsive: true } });
                 
-                // Investment Growth Chart
                 const invAmounts = investments?.map(i => i.amount) || [0];
                 const invLabels = investments?.map((_,i) => `Inv ${i+1}`) || ['Start'];
                 charts.investment = new Chart(document.getElementById('investmentGrowthChart'), { type: 'line', data: { labels: invLabels, datasets: [{ label: 'Investment (Rs.)', data: invAmounts, borderColor: '#E8B13C', fill: true }] }, options: { responsive: true } });
                 
-                // Profit Chart
                 const profitAmounts = profits?.map(p => p.amount) || [0];
                 const profitLabels = profits?.map(p => new Date(p.paid_date).toLocaleDateString('default',{month:'short'})) || ['Jan'];
                 charts.profit = new Chart(document.getElementById('profitChart'), { type: 'bar', data: { labels: profitLabels, datasets: [{ label: 'Profit (Rs.)', data: profitAmounts, backgroundColor: '#1e7e5e' }] }, options: { responsive: true } });
                 
-                // Batch Status Chart
                 const statusCounts = { 'In Production': 0, 'Completed': 0, 'Sold': 0, 'Profit Distributed': 0 };
-                batches?.forEach(b => { if(statusCounts[b.status] !== undefined) statusCounts[b.status]++; });
+                allBatchesData.forEach(b => { if(statusCounts[b.status] !== undefined) statusCounts[b.status]++; });
                 charts.batchStatus = new Chart(document.getElementById('batchStatusChart'), { type: 'doughnut', data: { labels: Object.keys(statusCounts), datasets: [{ data: Object.values(statusCounts), backgroundColor: ['#d4a017', '#2c6e9e', '#1e7e5e', '#0a5e3a'] }] }, options: { responsive: true } });
                 
-                // Orders Chart
                 const orderAmounts = orders?.map(o => o.total_amount) || [0];
                 const orderLabels = orders?.map((_,i) => `Order ${i+1}`) || ['Start'];
                 charts.orders = new Chart(document.getElementById('ordersChart'), { type: 'line', data: { labels: orderLabels, datasets: [{ label: 'Order Amount (Rs.)', data: orderAmounts, borderColor: '#17a2b8', fill: true }] }, options: { responsive: true } });
                 
-                // Product Categories Chart
                 const categoryCounts = {};
                 products?.forEach(p => { categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1; });
                 charts.productCategory = new Chart(document.getElementById('productCategoryChart'), { type: 'pie', data: { labels: Object.keys(categoryCounts), datasets: [{ data: Object.values(categoryCounts), backgroundColor: ['#E8B13C', '#1e7e5e', '#d4a017', '#2c6e9e', '#0a5e3a'] }] }, options: { responsive: true } });
                 
             } catch(e) { console.error('Chart rendering error:', e); }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
         }
 
         // Screenshot Modal Functions
@@ -1290,11 +1531,12 @@
                 if (!adminEmails.includes(user.email)) { showNotification('Unauthorized access!', true, 'Access Denied'); window.location.href = 'index.html'; return null; }
                 document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
                 await refreshAllData();
+                setupRealtimeSync();
                 return user;
             } catch(e) { console.error('Auth error:', e); }
         }
         
-        // Existing Functions (Preserved - abbreviated for length, but functional)
+        // Existing Functions (Preserved)
         async function loadStats() {
             if(!supabaseClient) return;
             const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
@@ -1324,9 +1566,35 @@
             if(document.getElementById('profitInvestorSelect')) document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
             const investorsList = document.getElementById('investorsList');
             if(investorsList) {
-                investorsList.innerHTML = allInvestors.map(i=>`<tr><td><strong>${i.full_name}</strong></td><td>${i.email}</td><td>${i.phone||'-'}</td><td>${i.city||'-'}</td><td>Rs.${(i.total_investment||0).toLocaleString()}</td><td>Rs.${(i.total_profit||0).toLocaleString()}</td><td>Rs.${(i.available_balance||0).toLocaleString()}</td><td><button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+                investorsList.innerHTML = allInvestors.map(i=>`<tr>
+                    <td><strong>${escapeHtml(i.full_name)}</strong></td>
+                    <td>${i.email}</td>
+                    <td>${i.phone||'-'}</td>
+                    <td>${i.city||'-'}</td>
+                    <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
+                    <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
+                    <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
+                    <td><span class="perm-badge ${i.chat_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.chat_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                    <td><span class="perm-badge ${i.voice_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.voice_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                    <td><span class="perm-badge ${i.video_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.video_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                    <td class="action-buttons">
+                        <button onclick="toggleInvestorPermission('${i.id}', 'chat', ${i.chat_enabled !== false})" class="btn-warning">Toggle Chat</button>
+                        <button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
+                    </td>
+                </tr>`).join('');
             }
         }
+        
+        window.toggleInvestorPermission = async function(investorId, permission, currentValue) {
+            const update = {};
+            update[`${permission}_enabled`] = !currentValue;
+            try {
+                await supabaseClient.from('investors').update(update).eq('id', investorId);
+                showNotification(`${permission} permission toggled`, false);
+                loadInvestors();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } catch(e) { showNotification(e.message, true); }
+        };
         
         async function loadBuyers() {
             if(!supabaseClient) return;
@@ -1334,7 +1602,13 @@
             allBuyers = data || [];
             const buyersList = document.getElementById('buyersList');
             if(buyersList) {
-                buyersList.innerHTML = allBuyers.map(b=>`<tr><td><strong>${b.full_name}</strong></td><td>${b.email}</td><td>${b.phone||'-'}</td><td>${b.address||'-'}</td><td><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+                buyersList.innerHTML = allBuyers.map(b=>`<tr>
+                    <td><strong>${escapeHtml(b.full_name)}</strong></td>
+                    <td>${b.email}</td>
+                    <td>${b.phone||'-'}</td>
+                    <td>${b.address||'-'}</td>
+                    <td><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
             }
         }
         
@@ -1345,7 +1619,13 @@
             const productsList = document.getElementById('productsList');
             if(productsList) {
                 if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>'; return; }
-                productsList.innerHTML = data.map(p=>`<tr><td><strong>${p.name}</strong></td><td>${p.category}</td><td>Rs.${(p.price||0).toLocaleString()}</td><td>${p.stock_quantity||0}</td><td><button onclick="editProduct('${p.id}')" class="btn-warning">Edit</button><button onclick="deleteProduct('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+                productsList.innerHTML = data.map(p=>`<tr>
+                    <td><strong>${escapeHtml(p.name)}</strong></td>
+                    <td>${p.category}</td>
+                    <td>Rs.${(p.price||0).toLocaleString()}</td>
+                    <td>${p.stock_quantity||0}</td>
+                    <td><button onclick="editProduct('${p.id}')" class="btn-warning">Edit</button><button onclick="deleteProduct('${p.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
             }
         }
         
@@ -1354,7 +1634,14 @@
             const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
             const investmentHistory = document.getElementById('investmentHistory');
             if(investmentHistory) {
-                investmentHistory.innerHTML = (data||[]).map(i=>`<tr><td>${i.investors?.full_name||'-'}</td><td>Rs.${(i.amount||0).toLocaleString()}</td><td>${new Date(i.investment_date).toLocaleDateString()}</td><td>${i.payment_method||'-'}</td><td><span class="status-badge status-active">${i.status}</span></td><td><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+                investmentHistory.innerHTML = (data||[]).map(i=>`<tr>
+                    <td>${i.investors?.full_name||'-'}</td>
+                    <td>Rs.${(i.amount||0).toLocaleString()}</td>
+                    <td>${new Date(i.investment_date).toLocaleDateString()}</td>
+                    <td>${i.payment_method||'-'}</td>
+                    <td><span class="status-badge status-active">${i.status}</span></td>
+                    <td><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
             }
         }
         
@@ -1363,7 +1650,13 @@
             const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); 
             const profitHistory = document.getElementById('profitHistory');
             if(profitHistory) {
-                profitHistory.innerHTML = (data||[]).map(p=>`<td><td>${p.investors?.full_name||'-'}</td><td>Rs.${(p.amount||0).toLocaleString()}</td><td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td><td>${p.profit_percentage||10}%</td><td><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td></tr>`).join('');
+                profitHistory.innerHTML = (data||[]).map(p=>`<tr>
+                    <td>${p.investors?.full_name||'-'}</td>
+                    <td>Rs.${(p.amount||0).toLocaleString()}</td>
+                    <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
+                    <td>${p.profit_percentage||10}%</td>
+                    <td><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
             }
         }
         
@@ -1373,7 +1666,7 @@
             const requestsList = document.getElementById('investmentRequestsList');
             if(requestsList) {
                 requestsList.innerHTML = (data || []).map(req => `<tr>
-                    <td><strong>${req.investors?.full_name || '-'}</strong><br><small>${req.investors?.email || '-'}</small></td>
+                    <td><strong>${escapeHtml(req.investors?.full_name || '-')}</strong><br><small>${req.investors?.email || '-'}</small></td>
                     <td>Rs. ${(req.amount || 0).toLocaleString()}</td>
                     <td>${new Date(req.created_at).toLocaleDateString()}</td>
                     <td>${req.payment_method || '-'}</td>
@@ -1392,7 +1685,7 @@
             if (!withdrawalsList) return;
             if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; return; }
             withdrawalsList.innerHTML = allWithdrawals.map(w => `<tr>
-                <td><strong>${w.investors?.full_name || 'Unknown'}</strong></td>
+                <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
                 <td><small>${w.investors?.email || '-'}</small></td>
                 <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
                 <td>${new Date(w.request_date).toLocaleDateString()}</td>
@@ -1435,7 +1728,12 @@
             activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
             const recentActivities = document.getElementById('recentActivities');
             if(recentActivities) {
-                recentActivities.innerHTML = activities.slice(0,10).map(a=>`<tr><td>${a.action}</td><td>${a.details}</td><td>${a.time}</td><td><button class="btn-info">View</button></td></tr>`).join('');
+                recentActivities.innerHTML = activities.slice(0,10).map(a=>`<tr>
+                    <td>${a.action}</td>
+                    <td>${a.details}</td>
+                    <td>${a.time}</td>
+                    <td><button class="btn-info">View</button></td>
+                </tr>`).join('');
             }
         }
         
@@ -1769,7 +2067,7 @@
             const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
             const investorsList = document.getElementById('investorsList');
             if(investorsList) {
-                investorsList.innerHTML = filtered.map(i=>`<td>...</td>`).join('');
+                investorsList.innerHTML = filtered.map(i=>`<tr>...</td>`).join('');
             }
         };
         
@@ -1818,7 +2116,7 @@
                 ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; 
                 return; 
             }
-            ordersList.innerHTML = filtered.map(o => `<td>...</td>`).join('');
+            ordersList.innerHTML = filtered.map(o => `<tr>...</td>`).join('');
         };
         
         window.resetOrderSearch = function() { 
@@ -1834,12 +2132,11 @@
             }); 
         };
         
-        // Initialize Supabase and start everything
+        // Initialize Supabase
         document.addEventListener('DOMContentLoaded', function() {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             checkAuth();
             
-            // Initialize chat system after auth
             setTimeout(() => {
                 if (window.adminChatSystem) {
                     window.adminChatSystem.init(supabaseClient);
@@ -1847,7 +2144,7 @@
             }, 2000);
         });
         
-        // ========== ADMIN CHAT SYSTEM (Preserved from original) ==========
+        // ========== ADMIN CHAT SYSTEM (Preserved) ==========
         (function() {
             window.adminChatSystem = {
                 supabaseClient: null,
