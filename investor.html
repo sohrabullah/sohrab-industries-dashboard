@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -857,7 +858,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr></thead>
                     <tbody id="investmentRequestsList"></tbody>
                 </table>
@@ -867,7 +868,7 @@
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
             <div class="table-container">
-                <tr>
+                <table>
                     <thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead>
                     <tbody id="profitsList"></tbody>
                 </table>
@@ -1246,6 +1247,18 @@
             
             window.closeModal = closeModal;
             
+            function showToast(message, isError) { 
+                Swal.fire({ 
+                    title: isError ? 'Error' : 'Success', 
+                    text: message, 
+                    icon: isError ? 'error' : 'success', 
+                    background: '#1a3d33', 
+                    color: '#fff', 
+                    timer: 3000, 
+                    showConfirmButton: false 
+                });
+            }
+            
             window.investorChat = {
                 adminId: '00000000-0000-0000-0000-000000000001',
                 subscription: null,
@@ -1269,8 +1282,8 @@
                 },
                 async openGifPicker() {
                     await checkUserPermissions();
-                    if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
-                    if (!userPermissions.videoEnabled) { Swal.fire({ title: 'Media Disabled', text: 'Media/GIF sharing has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                    if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; }
+                    if (!userPermissions.videoEnabled) { showToast('Media/GIF sharing has been disabled by admin.', true); return; }
                     const modal = document.getElementById('gifPickerModal');
                     modal.classList.toggle('active');
                     if (modal.classList.contains('active')) {
@@ -1286,7 +1299,7 @@
                     grid.innerHTML = gifs.map(g => `<img src="${g.url}" class="gif-item" onclick="window.investorChat.sendGIF('${g.url}')">`).join('');
                 },
                 sendGIF(url) {
-                    if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                    if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; }
                     pendingMedia = { url: url, type: 'image' };
                     const preview = document.getElementById('mediaPreview');
                     preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`;
@@ -1328,7 +1341,6 @@
                     try {
                         const { data, error } = await supabase.from('chat_messages').select('*').or(`and(sender_type.eq.investor,receiver_id.eq.${this.adminId},receiver_type.eq.admin),and(sender_id.eq.${this.adminId},sender_type.eq.admin,receiver_id.eq.${currentInvestorId},receiver_type.eq.investor)`).order('created_at', { ascending: true });
                         if (!error && data) { chatMessages = data; this.renderMessages(); this.markMessagesRead(); }
-                        else if (error) console.error('Error loading messages:', error);
                     } catch(e) { console.error('Failed to load messages:', e); }
                 },
                 subscribeToMessages() {
@@ -1342,12 +1354,12 @@
                 },
                 async sendMessage() {
                     await checkUserPermissions();
-                    if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; }
+                    if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; }
                     const input = document.getElementById('chatInput');
                     const text = input.value.trim();
                     if (!text && !pendingMedia && !currentReplyingTo) return;
-                    if (pendingMedia && pendingMedia.type === 'audio' && !userPermissions.voiceEnabled) { Swal.fire({ title: 'Voice Disabled', text: 'Voice messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); this.clearPendingMedia(); return; }
-                    if (pendingMedia && (pendingMedia.type === 'image' || pendingMedia.type === 'video') && !userPermissions.videoEnabled) { Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); this.clearPendingMedia(); return; }
+                    if (pendingMedia && pendingMedia.type === 'audio' && !userPermissions.voiceEnabled) { showToast('Voice messages have been disabled by admin.', true); this.clearPendingMedia(); return; }
+                    if (pendingMedia && (pendingMedia.type === 'image' || pendingMedia.type === 'video') && !userPermissions.videoEnabled) { showToast('Media messages have been disabled by admin.', true); this.clearPendingMedia(); return; }
                     let messageData = { id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: text || null, read: false, created_at: new Date().toISOString() };
                     if (pendingMedia) { messageData.media_url = pendingMedia.url; messageData.media_type = pendingMedia.type; }
                     if (currentReplyingTo) { messageData.reply_to = currentReplyingTo.id; }
@@ -1369,17 +1381,17 @@
                         currentOpenMenu = menu.classList.contains('show') ? menuId : null; 
                     } 
                 },
-                async editMessage(messageId, oldText) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); if (newText && newText !== oldText) { await supabase.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); Swal.fire({ title: 'Updated!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
-                async deleteMessage(messageId, forEveryone = false) { const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); if (result.isConfirmed) { if (forEveryone) await supabase.from('chat_messages').delete().eq('id', messageId); else await supabase.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); Swal.fire({ title: 'Deleted!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); } this.closeMenu(); },
+                async editMessage(messageId, oldText) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); if (newText && newText !== oldText) { await supabase.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); showToast('Message updated!', false); } this.closeMenu(); },
+                async deleteMessage(messageId, forEveryone = false) { const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); if (result.isConfirmed) { if (forEveryone) await supabase.from('chat_messages').delete().eq('id', messageId); else await supabase.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); showToast('Message deleted!', false); } this.closeMenu(); },
                 replyToMessage(message) { currentReplyingTo = message; document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50); document.getElementById('replyBar').classList.add('active'); document.getElementById('chatInput').focus(); this.closeMenu(); },
                 cancelReply() { currentReplyingTo = null; document.getElementById('replyBar').classList.remove('active'); },
-                async forwardMessage(message) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; await supabase.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); Swal.fire({ title: 'Forwarded!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#1a3d33', color: '#fff' }); this.closeMenu(); },
+                async forwardMessage(message) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; await supabase.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); showToast('Message forwarded!', false); this.closeMenu(); },
                 closeMenu() { if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; } },
                 clearPendingMedia() { pendingMedia = null; const preview = document.getElementById('mediaPreview'); preview.classList.remove('active'); preview.innerHTML = ''; },
-                showAttachMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } if (!userPermissions.videoEnabled) { Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => { if(e.target.files[0] && e.target.files[0].size > 5 * 1024 * 1024) { showToast('File too large (max 5MB)', true); return; } this.handleMediaUpload(e.target.files[0], 'image'); }; input.click(); },
-                showVideoMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } if (!userPermissions.videoEnabled) { Swal.fire({ title: 'Media Disabled', text: 'Media messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*'; input.onchange = (e) => { if(e.target.files[0] && e.target.files[0].size > 10 * 1024 * 1024) { showToast('Video too large (max 10MB)', true); return; } this.handleMediaUpload(e.target.files[0], 'video'); }; input.click(); },
+                showAttachMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.videoEnabled) { showToast('Media messages have been disabled by admin.', true); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => { if(e.target.files[0] && e.target.files[0].size > 5 * 1024 * 1024) { showToast('File too large (max 5MB)', true); return; } this.handleMediaUpload(e.target.files[0], 'image'); }; input.click(); },
+                showVideoMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.videoEnabled) { showToast('Media messages have been disabled by admin.', true); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*'; input.onchange = (e) => { if(e.target.files[0] && e.target.files[0].size > 10 * 1024 * 1024) { showToast('Video too large (max 10MB)', true); return; } this.handleMediaUpload(e.target.files[0], 'video'); }; input.click(); },
                 handleMediaUpload(file, type) { if (!file) return; const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: type }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`; preview.classList.add('active'); }; reader.readAsDataURL(file); },
-                showVoiceRecorder: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { Swal.fire({ title: 'Chat Disabled', text: 'Chat has been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } if (!userPermissions.voiceEnabled) { Swal.fire({ title: 'Voice Disabled', text: 'Voice messages have been disabled by admin.', icon: 'warning', background: '#1a3d33', color: '#fff' }); return; } document.getElementById('voiceRecordingOverlay').classList.add('active'); recordingStartTime = Date.now(); this.startRecordingTimer(); navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { mediaRecorder = new MediaRecorder(stream); audioChunks = []; mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); mediaRecorder.onstop = () => { const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: 'audio' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button></div>`; preview.classList.add('active'); }; reader.readAsDataURL(audioBlob); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); }).catch(() => { Swal.fire({ title: 'Error', text: 'Microphone access denied', icon: 'error', background: '#1a3d33', color: '#fff' }); this.cancelVoiceRecording(); }); },
+                showVoiceRecorder: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.voiceEnabled) { showToast('Voice messages have been disabled by admin.', true); return; } document.getElementById('voiceRecordingOverlay').classList.add('active'); recordingStartTime = Date.now(); this.startRecordingTimer(); navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { mediaRecorder = new MediaRecorder(stream); audioChunks = []; mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); mediaRecorder.onstop = () => { const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: 'audio' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button></div>`; preview.classList.add('active'); }; reader.readAsDataURL(audioBlob); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); }).catch(() => { showToast('Microphone access denied', true); this.cancelVoiceRecording(); }); },
                 startRecordingTimer() { if (recordingTimerInterval) clearInterval(recordingTimerInterval); recordingTimerInterval = setInterval(() => { const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000); const minutes = Math.floor(elapsed / 60); const seconds = elapsed % 60; document.getElementById('recordingTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`; }, 1000); },
                 stopVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); } },
                 cancelVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.onstop = () => {}; mediaRecorder.stop(); } document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); },
@@ -1423,8 +1435,6 @@
             };
             
             function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-            
-            function showToast(message, isError) { Swal.fire({ title: isError ? 'Error' : 'Success', text: message, icon: isError ? 'error' : 'success', background: '#1a3d33', color: '#fff', timer: 3000, showConfirmButton: false }).catch(()=>{}); }
             
             async function computeAvailableBalance() {
                 try {
@@ -1494,7 +1504,10 @@
                 try {
                     const { data, error } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
                     if(error) throw error;
-                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; return; }
+                    if(!data?.length) { 
+                        tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; 
+                        return; 
+                    }
                     tbody.innerHTML = data.map(p => `<tr>
                         <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
                         <td>Rs. ${(p.amount||0).toLocaleString()}</td>
@@ -1583,7 +1596,6 @@
                     if(!investments?.length) { tbody.innerHTML='<tr><td colspan="11" class="empty-state">No active batches</td></tr>'; return; }
                     
                     batchDataCache = [];
-                    let totalCredited = 0, totalPending = 0;
                     const rows = investments.map((inv, idx) => {
                         const batchId = `BATCH-${String(idx+1).padStart(3,'0')}`;
                         const prodQty = Math.floor(inv.amount / 85) * 10;
@@ -1593,9 +1605,8 @@
                         if(phase === 0) { batchStatus = 'In Production'; sales = 0; expenses = inv.amount * 0.4; netProfit = -expenses; investorShare = netProfit * 0.5; }
                         else if(phase === 1) { batchStatus = 'Completed'; sales = 0; expenses = inv.amount * 0.55; netProfit = -expenses; investorShare = netProfit * 0.5; }
                         else if(phase === 2) { batchStatus = 'Sold'; sales = inv.amount * (1.5 + (idx * 0.05)); expenses = inv.amount * 0.6; netProfit = sales - expenses; investorShare = netProfit * 0.5; }
-                        else { batchStatus = 'Profit Distributed'; sales = inv.amount * (1.55 + (idx * 0.05)); expenses = inv.amount * 0.6; netProfit = sales - expenses; investorShare = netProfit * 0.5; totalCredited += investorShare; }
+                        else { batchStatus = 'Profit Distributed'; sales = inv.amount * (1.55 + (idx * 0.05)); expenses = inv.amount * 0.6; netProfit = sales - expenses; investorShare = netProfit * 0.5; }
                         
-                        if(investorShare > 0 && batchStatus !== 'Profit Distributed') totalPending += investorShare;
                         const roi = investorShare !== 0 ? ((investorShare / inv.amount) * 100).toFixed(2) : '0.00';
                         const netProfitClass = netProfit < 0 ? 'loss-negative' : '';
                         const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
@@ -1806,7 +1817,12 @@
                     if(!existing?.length) {
                         await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', total_investment: 0, total_profit: 0, available_balance: 0, created_at: new Date().toISOString(), chat_enabled: true, voice_enabled: true, video_enabled: true }]);
                     }
-                    await loadInvestments(); await loadInvestmentRequests(); await loadProfits(); await loadWithdrawals(); await loadProfile(); await loadStatsAndBalance();
+                    await loadInvestments(); 
+                    await loadInvestmentRequests(); 
+                    await loadProfits(); 
+                    await loadWithdrawals(); 
+                    await loadProfile(); 
+                    await loadStatsAndBalance();
                     await refreshAnalyticsData();
                     await checkUserPermissions();
                     window.investorChat.init();
