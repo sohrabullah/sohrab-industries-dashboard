@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+        /* [ALL EXISTING STYLES REMAIN THE SAME - PRESERVED] */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
@@ -214,7 +215,7 @@
         }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #E8B13C; background: rgba(255,255,255,0.12); }
         
-        /* Animated Payment Options */
+        /* Payment Options - Animated */
         .payment-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -321,7 +322,7 @@
         .empty-state { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
         .info-text { margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.5); }
         
-        /* Modal Styles - Professional Popup */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -858,7 +859,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                </table>
+                <table>
                     <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr></thead>
                     <tbody id="investmentRequestsList"></tbody>
                 </table>
@@ -935,9 +936,19 @@
 
         <!-- Analytics & Ledger Tab -->
         <div id="analyticsTab" class="tab-content">
+            <h2 class="section-title"><i class="fas fa-industry"></i> Available Investment Batches</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Batch Name</th><th>Investment Amount</th><th>Profit %</th><th>Duration</th><th>Total Slots</th><th>Available Slots</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="availableBatchesList"></tbody>
+                </table>
+            </div>
+            
             <h2 class="section-title"><i class="fas fa-industry"></i> My Investment Batches & Production</h2>
             <div class="table-container">
-                <table><thead><tr><th>Batch ID</th><th>Investment (Rs.)</th><th>Production Qty</th><th>Batch Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share (50%)</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
+                <table><thead><tr><th>Batch ID</th><th>Batch Name</th><th>Investment (Rs.)</th><th>Profit %</th><th>Production Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
                 <tbody id="batchesList"></tbody>
             </table>
             </div>
@@ -976,7 +987,7 @@
         </div>
     </div>
 
-    <!-- Investment Modal - Professional Popup -->
+    <!-- Investment Modal -->
     <div id="investmentModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('investmentModal')">&times;</span>
@@ -1021,6 +1032,13 @@
             <input type="hidden" id="selectedPaymentMethod" value="">
             
             <div class="form-group">
+                <label>Select Investment Batch (Optional)</label>
+                <select id="investmentBatchSelect">
+                    <option value="">No batch (direct investment)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
                 <label>Investment Amount (Rs.)</label>
                 <input type="number" id="investmentAmount" placeholder="Enter amount (Min Rs. 1000)">
             </div>
@@ -1045,7 +1063,7 @@
         </div>
     </div>
     
-    <!-- Withdrawal Modal - Professional Popup -->
+    <!-- Withdrawal Modal -->
     <div id="withdrawalModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('withdrawalModal')">&times;</span>
@@ -1125,6 +1143,8 @@
             let userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
             let currentInvestmentScreenshot = null;
             let currentWithdrawalScreenshot = null;
+            let availableBatches = [];
+            let batchSubscription = null;
             
             const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
             
@@ -1135,6 +1155,22 @@
             ];
             
             async function fetchGIFs(search = '') { return fallbackGIFs.map(url => ({ url })); }
+            
+            function setupRealtimeBatchSync() {
+                if (batchSubscription) return;
+                batchSubscription = supabase
+                    .channel('investor-batch-sync')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'investment_batches' }, (payload) => {
+                        console.log('Batch change detected:', payload);
+                        loadAvailableBatches();
+                        refreshAnalyticsData();
+                    })
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'batches' }, (payload) => {
+                        console.log('Production batch change detected:', payload);
+                        refreshAnalyticsData();
+                    })
+                    .subscribe();
+            }
             
             function selectPaymentMethod(method) {
                 document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
@@ -1258,6 +1294,66 @@
                     showConfirmButton: false 
                 });
             }
+            
+            // Load available investment batches from admin
+            async function loadAvailableBatches() {
+                try {
+                    const { data, error } = await supabase
+                        .from('investment_batches')
+                        .select('*')
+                        .eq('is_active', true)
+                        .eq('is_visible', true)
+                        .order('created_at', { ascending: false });
+                    
+                    if (error) throw error;
+                    availableBatches = data || [];
+                    
+                    const select = document.getElementById('investmentBatchSelect');
+                    if (select) {
+                        select.innerHTML = '<option value="">No batch (direct investment)</option>' + 
+                            availableBatches.map(batch => `<option value="${batch.id}" data-amount="${batch.investment_amount}">${escapeHtml(batch.batch_name)} - Rs. ${batch.investment_amount.toLocaleString()} (${batch.profit_percentage}% profit, ${batch.duration_days} days)</option>`).join('');
+                    }
+                    
+                    // Show available batches in analytics tab
+                    const batchesList = document.getElementById('availableBatchesList');
+                    if (batchesList) {
+                        if (availableBatches.length === 0) {
+                            batchesList.innerHTML = '<tr><td colspan="6" class="empty-state">No investment batches available at the moment. Check back later!</td></tr>';
+                        } else {
+                            batchesList.innerHTML = availableBatches.map(batch => {
+                                const availableSlots = (batch.total_slots || 0) - (batch.filled_slots || 0);
+                                return `<tr>
+                                    <td><strong>${escapeHtml(batch.batch_name)}</strong></td>
+                                    <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
+                                    <td>${batch.profit_percentage || 0}%</td>
+                                    <td>${batch.duration_days || 0} days</td>
+                                    <td>${batch.total_slots || 0}</td>
+                                    <td>${availableSlots}</td>
+                                    <td><button class="btn-primary" onclick="investInBatch('${batch.id}', ${batch.investment_amount})">Invest Now</button></td>
+                                </tr>`;
+                            }).join('');
+                        }
+                    }
+                } catch(e) { console.error('Error loading available batches:', e); }
+            }
+            
+            window.investInBatch = async function(batchId, amount) {
+                // Set amount and batch in modal
+                document.getElementById('investmentAmount').value = amount;
+                document.getElementById('investmentBatchSelect').value = batchId;
+                // Open modal
+                document.getElementById('selectedPaymentMethod').value = '';
+                document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
+                currentInvestmentScreenshot = null;
+                document.getElementById('investmentScreenshot').value = '';
+                document.getElementById('investmentScreenshotPreview').innerHTML = '';
+                document.getElementById('investmentScreenshotPreview').classList.remove('active');
+                document.getElementById('investmentTransactionId').value = '';
+                document.getElementById('investmentNotes').value = '';
+                const modal = document.getElementById('investmentModal');
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            };
             
             window.investorChat = {
                 adminId: '00000000-0000-0000-0000-000000000001',
@@ -1591,48 +1687,104 @@
             
             async function loadBatchesAndLedger() {
                 try {
-                    const { data: investments } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active');
-                    const tbody = document.getElementById('batchesList');
-                    if(!investments?.length) { tbody.innerHTML='<tr><td colspan="11" class="empty-state">No active batches</td></tr>'; return; }
+                    // Load investment batches that this investor is part of
+                    const { data: investorInvestments } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active');
+                    const { data: investmentBatches } = await supabase.from('investment_batches').select('*').eq('is_active', true);
+                    const { data: productionBatches } = await supabase.from('batches').select('*, investments(investor_id, amount, investors(full_name))').eq('investor_id', currentInvestorId);
                     
-                    batchDataCache = [];
-                    const rows = investments.map((inv, idx) => {
-                        const batchId = `BATCH-${String(idx+1).padStart(3,'0')}`;
-                        const prodQty = Math.floor(inv.amount / 85) * 10;
-                        const phase = idx % 4;
-                        let batchStatus, sales, expenses, netProfit, investorShare;
+                    const tbody = document.getElementById('batchesList');
+                    if((!investorInvestments?.length) && (!productionBatches?.length)) { 
+                        tbody.innerHTML='<tr><td colspan="13" class="empty-state">No active batches for your investments</td></tr>'; 
+                    } else {
+                        let html = '';
+                        batchDataCache = [];
+                        let batchCounter = 0;
                         
-                        if(phase === 0) { batchStatus = 'In Production'; sales = 0; expenses = inv.amount * 0.4; netProfit = -expenses; investorShare = netProfit * 0.5; }
-                        else if(phase === 1) { batchStatus = 'Completed'; sales = 0; expenses = inv.amount * 0.55; netProfit = -expenses; investorShare = netProfit * 0.5; }
-                        else if(phase === 2) { batchStatus = 'Sold'; sales = inv.amount * (1.5 + (idx * 0.05)); expenses = inv.amount * 0.6; netProfit = sales - expenses; investorShare = netProfit * 0.5; }
-                        else { batchStatus = 'Profit Distributed'; sales = inv.amount * (1.55 + (idx * 0.05)); expenses = inv.amount * 0.6; netProfit = sales - expenses; investorShare = netProfit * 0.5; }
+                        // Map investments to batches
+                        for (const inv of (investorInvestments || [])) {
+                            const matchedBatch = investmentBatches?.find(b => b.investment_amount === inv.amount) || { 
+                                batch_name: `Investment ${inv.id?.slice(0,8)}`,
+                                investment_amount: inv.amount,
+                                profit_percentage: 50,
+                                status: 'In Production',
+                                production_quantity: Math.floor(inv.amount / 100) * 10,
+                                sales: 0,
+                                expenses: inv.amount * 0.4,
+                                profit_credited: false
+                            };
+                            
+                            const netProfit = (matchedBatch.sales || 0) - (matchedBatch.expenses || 0);
+                            const investorShare = netProfit * 0.5;
+                            const roi = matchedBatch.investment_amount ? ((investorShare / matchedBatch.investment_amount) * 100).toFixed(2) : '0.00';
+                            const netProfitClass = netProfit < 0 ? 'loss-negative' : '';
+                            const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
+                            const currentStepIndex = progressSteps.indexOf(matchedBatch.status || 'In Production');
+                            const progressHtml = `<div class="progress-tracker">${progressSteps.map((step, i) => `<span class="progress-step ${i < currentStepIndex ? 'completed' : i === currentStepIndex ? 'active' : ''}">${step}</span>`).join('')}</div>`;
+                            let statusClass = 'status-in-production';
+                            if(matchedBatch.status === 'Completed') statusClass = 'status-completed';
+                            if(matchedBatch.status === 'Sold') statusClass = 'status-sold';
+                            if(matchedBatch.status === 'Profit Distributed') statusClass = 'status-profit-distributed';
+                            const profitStatus = matchedBatch.profit_credited ? 'Credited' : 'Pending';
+                            const profitStatusClass = matchedBatch.profit_credited ? 'status-active' : 'status-pending';
+                            
+                            batchDataCache.push({ batchId: `BATCH-${batchCounter+1}`, inv, matchedBatch, netProfit, investorShare, roi });
+                            
+                            html += `<tr class="batch-row" onclick="showBatchDetailAnalytics(${batchCounter})">
+                                <td>${`BATCH-${batchCounter+1}`}</td>
+                                <td><strong>${escapeHtml(matchedBatch.batch_name || 'Standard Batch')}</strong></td>
+                                <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
+                                <td>${matchedBatch.profit_percentage || 50}%</td>
+                                <td>${matchedBatch.production_quantity || 0}</td>
+                                <td><span class="status-badge ${statusClass}">${matchedBatch.status || 'In Production'}</span></td>
+                                <td>${progressHtml}</td>
+                                <td>${matchedBatch.status === 'In Production' || matchedBatch.status === 'Completed' ? '-' : `Rs. ${(matchedBatch.sales || 0).toLocaleString()}`}</td>
+                                <td>Rs. ${Math.abs(matchedBatch.expenses || 0).toLocaleString()}</td>
+                                <td class="${netProfitClass}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
+                                <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
+                                <td>${roi}%</td>
+                                <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
+                            </tr>`;
+                            batchCounter++;
+                        }
                         
-                        const roi = investorShare !== 0 ? ((investorShare / inv.amount) * 100).toFixed(2) : '0.00';
-                        const netProfitClass = netProfit < 0 ? 'loss-negative' : '';
-                        const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
-                        const currentStepIndex = progressSteps.indexOf(batchStatus);
-                        const progressHtml = `<div class="progress-tracker">${progressSteps.map((step, i) => `<span class="progress-step ${i < currentStepIndex ? 'completed' : i === currentStepIndex ? 'active' : ''}">${step}</span>`).join('')}</div>`;
-                        let statusClass = batchStatus === 'In Production' ? 'status-in-production' : (batchStatus === 'Completed' ? 'status-completed' : (batchStatus === 'Sold' ? 'status-sold' : 'status-profit-distributed'));
-                        const profitStatus = batchStatus === 'Profit Distributed' ? 'Credited' : 'Pending';
-                        const profitStatusClass = batchStatus === 'Profit Distributed' ? 'status-active' : 'status-pending';
+                        // Add production batches
+                        for (const batch of (productionBatches || [])) {
+                            const netProfit = (batch.sales || 0) - (batch.expenses || 0);
+                            const investorShare = netProfit * 0.5;
+                            const roi = batch.investment_amount ? ((investorShare / batch.investment_amount) * 100).toFixed(2) : '0.00';
+                            const netProfitClass = netProfit < 0 ? 'loss-negative' : '';
+                            const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
+                            const currentStepIndex = progressSteps.indexOf(batch.status);
+                            const progressHtml = `<div class="progress-tracker">${progressSteps.map((step, i) => `<span class="progress-step ${i < currentStepIndex ? 'completed' : i === currentStepIndex ? 'active' : ''}">${step}</span>`).join('')}</div>`;
+                            let statusClass = 'status-in-production';
+                            if(batch.status === 'Completed') statusClass = 'status-completed';
+                            if(batch.status === 'Sold') statusClass = 'status-sold';
+                            if(batch.status === 'Profit Distributed') statusClass = 'status-profit-distributed';
+                            const profitStatus = batch.profit_credited ? 'Credited' : 'Pending';
+                            const profitStatusClass = batch.profit_credited ? 'status-active' : 'status-pending';
+                            
+                            batchDataCache.push({ batchId: batch.id, inv: { amount: batch.investment_amount }, matchedBatch: batch, netProfit, investorShare, roi });
+                            
+                            html += `<tr class="batch-row" onclick="showBatchDetailAnalytics(${batchCounter})">
+                                <td>${batch.id?.slice(0, 12)}...</td>
+                                <td>Production Batch</td>
+                                <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
+                                <td>50%</td>
+                                <td>${batch.production_quantity || 0}</td>
+                                <td><span class="status-badge ${statusClass}">${batch.status}</span></td>
+                                <td>${progressHtml}</td>
+                                <td>Rs. ${(batch.sales || 0).toLocaleString()}</td>
+                                <td>Rs. ${(batch.expenses || 0).toLocaleString()}</td>
+                                <td class="${netProfitClass}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
+                                <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
+                                <td>${roi}%</td>
+                                <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
+                            </tr>`;
+                            batchCounter++;
+                        }
                         
-                        batchDataCache.push({ batchId, inv, batchStatus, sales, expenses, netProfit, investorShare, prodQty, roi });
-                        
-                        return `<tr class="batch-row" onclick="showBatchDetailAnalytics(${idx})">
-                            <td>${batchId}</td>
-                            <td>Rs. ${inv.amount.toLocaleString()}</td>
-                            <td>${prodQty}</td>
-                            <td><span class="status-badge ${statusClass}">${batchStatus}</span></td>
-                            <td>${progressHtml}</td>
-                            <td>${batchStatus === 'In Production' || batchStatus === 'Completed' ? '-' : `Rs. ${sales.toFixed(0).toLocaleString()}`}</td>
-                            <td>Rs. ${Math.abs(expenses).toFixed(0).toLocaleString()}</td>
-                            <td class="${netProfitClass}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toFixed(0).toLocaleString()}</td>
-                            <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toFixed(0).toLocaleString()}</td>
-                            <td>${roi}%</td>
-                            <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
-                        </tr>`;
-                    }).join('');
-                    tbody.innerHTML = rows;
+                        tbody.innerHTML = html;
+                    }
                     
                     // Ledger
                     const { data: investmentsLedger } = await supabase.from('investments').select('investment_date, amount').eq('investor_id', currentInvestorId).eq('status', 'active');
@@ -1661,13 +1813,15 @@
                 if(!item) return;
                 document.getElementById('batchDetailTitle').innerHTML = `Batch ${item.batchId} Details`;
                 document.getElementById('batchDetailContent').innerHTML = `<div class="form-card">
-                    <p><strong>Investment:</strong> Rs. ${item.inv.amount.toLocaleString()}</p>
-                    <p><strong>Production Quantity:</strong> ${item.prodQty} bulbs</p>
-                    <p><strong>Production Cost:</strong> Rs. ${(item.expenses * 0.7).toFixed(0).toLocaleString()}</p>
-                    <p><strong>Sales Revenue:</strong> ${item.batchStatus === 'In Production' || item.batchStatus === 'Completed' ? 'Not yet sold' : `Rs. ${item.sales.toFixed(0).toLocaleString()}`}</p>
-                    <p><strong>Net ${item.netProfit < 0 ? 'Loss' : 'Profit'}:</strong> <span class="${item.netProfit < 0 ? 'loss-negative' : ''}">${item.netProfit < 0 ? '-' : ''}Rs. ${Math.abs(item.netProfit).toFixed(0).toLocaleString()}</span></p>
-                    <p><strong>Investor Share (50%):</strong> ${item.investorShare < 0 ? '-' : ''}Rs. ${Math.abs(item.investorShare).toFixed(0).toLocaleString()}</p>
+                    <p><strong>Investment:</strong> Rs. ${(item.inv?.amount || 0).toLocaleString()}</p>
+                    <p><strong>Profit Percentage:</strong> ${item.matchedBatch?.profit_percentage || 50}%</p>
+                    <p><strong>Production Quantity:</strong> ${item.matchedBatch?.production_quantity || 0} bulbs</p>
+                    <p><strong>Production Cost:</strong> Rs. ${((item.matchedBatch?.expenses || 0) * 0.7).toFixed(0).toLocaleString()}</p>
+                    <p><strong>Sales Revenue:</strong> ${!item.matchedBatch?.sales ? 'Not yet sold' : `Rs. ${item.matchedBatch.sales.toLocaleString()}`}</p>
+                    <p><strong>Net ${item.netProfit < 0 ? 'Loss' : 'Profit'}:</strong> <span class="${item.netProfit < 0 ? 'loss-negative' : ''}">${item.netProfit < 0 ? '-' : ''}Rs. ${Math.abs(item.netProfit).toLocaleString()}</span></p>
+                    <p><strong>Investor Share (50%):</strong> ${item.investorShare < 0 ? '-' : ''}Rs. ${Math.abs(item.investorShare).toLocaleString()}</p>
                     <p><strong>ROI:</strong> ${item.roi}%</p>
+                    <p><strong>Status:</strong> ${item.matchedBatch?.status || 'In Production'}</p>
                 </div>`;
                 document.getElementById('batchDetailModal').style.display = 'flex';
                 document.getElementById('batchDetailModal').classList.add('active');
@@ -1754,8 +1908,11 @@
                 const paymentMethod = document.getElementById('selectedPaymentMethod').value;
                 const transactionId = document.getElementById('investmentTransactionId').value;
                 const notes = document.getElementById('investmentNotes').value;
+                const selectedBatchId = document.getElementById('investmentBatchSelect').value;
+                
                 if(!amount || !paymentMethod || !transactionId) { showToast('Amount, Payment Method and Transaction ID required', true); return; }
                 if(parseFloat(amount) < 1000) { showToast('Minimum investment Rs. 1,000', true); return; }
+                
                 try {
                     const { error } = await supabase.from('investments').insert([{ 
                         investor_id: currentInvestorId, 
@@ -1765,12 +1922,23 @@
                         transaction_id: transactionId, 
                         status: 'pending', 
                         notes: notes || `Payment via ${paymentMethod}`,
-                        screenshot: currentInvestmentScreenshot
+                        screenshot: currentInvestmentScreenshot,
+                        batch_id: selectedBatchId || null
                     }]);
                     if(error) throw error;
+                    
+                    // Update batch filled slots if batch selected
+                    if (selectedBatchId) {
+                        const { data: batch } = await supabase.from('investment_batches').select('filled_slots').eq('id', selectedBatchId).single();
+                        await supabase.from('investment_batches').update({ 
+                            filled_slots: (batch?.filled_slots || 0) + 1 
+                        }).eq('id', selectedBatchId);
+                    }
+                    
                     showToast('Investment request submitted!', false); 
                     closeModal('investmentModal'); 
                     await loadInvestmentRequests(); 
+                    await loadAvailableBatches();
                 } catch(e) { showToast(e.message, true); }
             };
             
@@ -1823,8 +1991,10 @@
                     await loadWithdrawals(); 
                     await loadProfile(); 
                     await loadStatsAndBalance();
+                    await loadAvailableBatches();
                     await refreshAnalyticsData();
                     await checkUserPermissions();
+                    setupRealtimeBatchSync();
                     window.investorChat.init();
                 } catch(e) { console.error('Auth error:', e); }
             }
