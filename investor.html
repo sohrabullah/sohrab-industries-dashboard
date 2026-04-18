@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        /* [ALL EXISTING STYLES REMAIN THE SAME - PRESERVED] */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
@@ -181,6 +180,7 @@
         .status-active, .status-approved { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
         .status-pending { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
         .status-rejected { background: linear-gradient(135deg, #dc3545, #a71d2a); color: #fff; }
+        .slot-full-badge { background: linear-gradient(135deg, #dc3545, #c0392b); color: #fff; }
         
         .btn-primary {
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
@@ -193,6 +193,11 @@
             transition: all 0.3s;
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(232,177,60,0.4); }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
         
         .form-card {
             background: rgba(0,0,0,0.3);
@@ -215,7 +220,6 @@
         }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #E8B13C; background: rgba(255,255,255,0.12); }
         
-        /* Payment Options - Animated */
         .payment-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -270,6 +274,21 @@
         .payment-details p { margin: 5px 0; word-break: break-all; }
         .payment-details strong { color: #E8B13C; }
         
+        .payment-instruction {
+            background: linear-gradient(135deg, rgba(232,177,60,0.15), rgba(232,177,60,0.05));
+            border-left: 4px solid #E8B13C;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        .payment-instruction p {
+            margin: 5px 0;
+            font-size: 0.85rem;
+        }
+        .payment-instruction strong {
+            color: #E8B13C;
+        }
+        
         .screenshot-preview {
             margin-top: 10px;
             padding: 10px;
@@ -322,7 +341,6 @@
         .empty-state { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
         .info-text { margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.5); }
         
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -948,7 +966,7 @@
             
             <h2 class="section-title"><i class="fas fa-industry"></i> My Investment Batches & Production</h2>
             <div class="table-container">
-                <table><thead><tr><th>Batch ID</th><th>Batch Name</th><th>Investment (Rs.)</th><th>Profit %</th><th>Production Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
+                <table><thead><tr><th>Batch ID</th><th>Batch Name</th><th>Investment (Rs.)</th><th>Profit %</th><th>Production Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share (50%)</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
                 <tbody id="batchesList"></tbody>
             </table>
             </div>
@@ -992,6 +1010,14 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('investmentModal')">&times;</span>
             <h2><i class="fas fa-plus-circle"></i> New Investment Request</h2>
+            
+            <div class="payment-instruction">
+                <p><i class="fas fa-info-circle"></i> <strong>Important Payment Instructions:</strong></p>
+                <p>1️⃣ Send payment to any of the accounts below</p>
+                <p>2️⃣ Save your payment confirmation/screenshot</p>
+                <p>3️⃣ Upload the screenshot here (MANDATORY for approval)</p>
+                <p>4️⃣ Your request will be processed after admin verification</p>
+            </div>
             
             <div class="payment-options">
                 <div class="payment-card easypaisa" onclick="selectPaymentMethod('easypaisa')" id="card-easypaisa">
@@ -1039,23 +1065,24 @@
             </div>
             
             <div class="form-group">
-                <label>Investment Amount (Rs.)</label>
+                <label>Investment Amount (Rs.) *</label>
                 <input type="number" id="investmentAmount" placeholder="Enter amount (Min Rs. 1000)">
             </div>
             
             <div class="form-group">
-                <label>Transaction ID</label>
-                <input type="text" id="investmentTransactionId" placeholder="Enter transaction ID">
+                <label>Transaction ID *</label>
+                <input type="text" id="investmentTransactionId" placeholder="Enter transaction ID from payment">
             </div>
             
             <div class="form-group">
-                <label>Payment Screenshot (Optional)</label>
+                <label>Payment Screenshot <span style="color:#dc3545;">* (Required for approval)</span></label>
                 <input type="file" id="investmentScreenshot" accept="image/*" onchange="previewInvestmentScreenshot(this)">
+                <small style="color:rgba(255,255,255,0.5); display:block; margin-top:5px;">⚠️ Upload clear screenshot of your payment confirmation. Without screenshot, your request will be rejected.</small>
                 <div id="investmentScreenshotPreview" class="screenshot-preview"></div>
             </div>
             
             <div class="form-group">
-                <label>Notes</label>
+                <label>Notes (Optional)</label>
                 <textarea id="investmentNotes" rows="2" placeholder="Additional notes..."></textarea>
             </div>
             
@@ -1295,7 +1322,6 @@
                 });
             }
             
-            // Load available investment batches from admin
             async function loadAvailableBatches() {
                 try {
                     const { data, error } = await supabase
@@ -1311,25 +1337,31 @@
                     const select = document.getElementById('investmentBatchSelect');
                     if (select) {
                         select.innerHTML = '<option value="">No batch (direct investment)</option>' + 
-                            availableBatches.map(batch => `<option value="${batch.id}" data-amount="${batch.investment_amount}">${escapeHtml(batch.batch_name)} - Rs. ${batch.investment_amount.toLocaleString()} (${batch.profit_percentage}% profit, ${batch.duration_days} days)</option>`).join('');
+                            availableBatches.map(batch => {
+                                const availableSlots = (batch.total_slots || 0) - (batch.filled_slots || 0);
+                                const isFull = availableSlots <= 0;
+                                return `<option value="${batch.id}" data-amount="${batch.investment_amount}" ${isFull ? 'disabled' : ''}>
+                                    ${escapeHtml(batch.batch_name)} - Rs. ${batch.investment_amount.toLocaleString()} (${batch.profit_percentage}% profit, ${batch.duration_days} days) ${isFull ? ' - FULL' : ''}
+                                </option>`;
+                            }).join('');
                     }
                     
-                    // Show available batches in analytics tab
                     const batchesList = document.getElementById('availableBatchesList');
                     if (batchesList) {
                         if (availableBatches.length === 0) {
-                            batchesList.innerHTML = '<tr><td colspan="6" class="empty-state">No investment batches available at the moment. Check back later!</td></tr>';
+                            batchesList.innerHTML = '<tr><td colspan="7" class="empty-state">No investment batches available at the moment. Check back later!</td></tr>';
                         } else {
                             batchesList.innerHTML = availableBatches.map(batch => {
                                 const availableSlots = (batch.total_slots || 0) - (batch.filled_slots || 0);
+                                const isFull = availableSlots <= 0;
                                 return `<tr>
                                     <td><strong>${escapeHtml(batch.batch_name)}</strong></td>
                                     <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
                                     <td>${batch.profit_percentage || 0}%</td>
                                     <td>${batch.duration_days || 0} days</td>
                                     <td>${batch.total_slots || 0}</td>
-                                    <td>${availableSlots}</td>
-                                    <td><button class="btn-primary" onclick="investInBatch('${batch.id}', ${batch.investment_amount})">Invest Now</button></td>
+                                    <td>${isFull ? '<span class="status-badge slot-full-badge">FULL</span>' : availableSlots}</td>
+                                    <td>${!isFull ? `<button class="btn-primary" onclick="investInBatch('${batch.id}', ${batch.investment_amount})">Invest Now</button>` : '<button class="btn-primary" disabled style="opacity:0.5;">No Slots</button>'}</td>
                                 </tr>`;
                             }).join('');
                         }
@@ -1338,10 +1370,16 @@
             }
             
             window.investInBatch = async function(batchId, amount) {
-                // Set amount and batch in modal
+                const batch = availableBatches.find(b => b.id === batchId);
+                if (batch) {
+                    const availableSlots = (batch.total_slots || 0) - (batch.filled_slots || 0);
+                    if (availableSlots <= 0) {
+                        showToast('Sorry, this batch has no available slots left!', true);
+                        return;
+                    }
+                }
                 document.getElementById('investmentAmount').value = amount;
                 document.getElementById('investmentBatchSelect').value = batchId;
-                // Open modal
                 document.getElementById('selectedPaymentMethod').value = '';
                 document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
                 currentInvestmentScreenshot = null;
@@ -1589,7 +1627,7 @@
                         <td>${inv.transaction_id||'-'}</td>
                         <td><span class="status-badge status-pending">Pending</span></td>
                         <td>${inv.notes||'-'}</td>
-                        <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td>
+                        <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '<span class="status-badge status-pending">Awaiting Screenshot</span>'}</td>
                     </tr>`).join('');
                 } catch(e) { console.error('Load requests error:', e); tbody.innerHTML='<tr><td colspan="7">Error loading requests</td></tr>'; }
             }
@@ -1601,7 +1639,7 @@
                     const { data, error } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
                     if(error) throw error;
                     if(!data?.length) { 
-                        tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; 
+                                                tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; 
                         return; 
                     }
                     tbody.innerHTML = data.map(p => `<tr>
@@ -1702,7 +1740,7 @@
                         
                         // Map investments to batches
                         for (const inv of (investorInvestments || [])) {
-                            const matchedBatch = investmentBatches?.find(b => b.investment_amount === inv.amount) || { 
+                            const matchedBatch = investmentBatches?.find(b => b.id === inv.batch_id) || { 
                                 batch_name: `Investment ${inv.id?.slice(0,8)}`,
                                 investment_amount: inv.amount,
                                 profit_percentage: 50,
@@ -1743,7 +1781,7 @@
                                 <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
                                 <td>${roi}%</td>
                                 <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
-                            </tr>`;
+                             </tr>`;
                             batchCounter++;
                         }
                         
@@ -1779,7 +1817,7 @@
                                 <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
                                 <td>${roi}%</td>
                                 <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
-                            </tr>`;
+                             </tr>`;
                             batchCounter++;
                         }
                         
@@ -1804,13 +1842,14 @@
                         <td>${e.credit ? `Rs. ${e.credit.toLocaleString()}` : '-'}</td>
                         <td>${e.debit ? `Rs. ${e.debit.toLocaleString()}` : '-'}</td>
                         <td class="financial-highlight">Rs. ${e.balance.toLocaleString()}</td>
-                    </tr>`).join(''); }
+                     </tr>`).join(''); }
                 } catch(e) { console.error('Analytics error:', e); }
             }
             
             window.showBatchDetailAnalytics = function(idx) {
                 const item = batchDataCache[idx];
                 if(!item) return;
+                const sohrabShare = item.netProfit * 0.5;
                 document.getElementById('batchDetailTitle').innerHTML = `Batch ${item.batchId} Details`;
                 document.getElementById('batchDetailContent').innerHTML = `<div class="form-card">
                     <p><strong>Investment:</strong> Rs. ${(item.inv?.amount || 0).toLocaleString()}</p>
@@ -1819,9 +1858,11 @@
                     <p><strong>Production Cost:</strong> Rs. ${((item.matchedBatch?.expenses || 0) * 0.7).toFixed(0).toLocaleString()}</p>
                     <p><strong>Sales Revenue:</strong> ${!item.matchedBatch?.sales ? 'Not yet sold' : `Rs. ${item.matchedBatch.sales.toLocaleString()}`}</p>
                     <p><strong>Net ${item.netProfit < 0 ? 'Loss' : 'Profit'}:</strong> <span class="${item.netProfit < 0 ? 'loss-negative' : ''}">${item.netProfit < 0 ? '-' : ''}Rs. ${Math.abs(item.netProfit).toLocaleString()}</span></p>
-                    <p><strong>Investor Share (50%):</strong> ${item.investorShare < 0 ? '-' : ''}Rs. ${Math.abs(item.investorShare).toLocaleString()}</p>
+                    <p><strong>Your Share (50%):</strong> ${item.investorShare < 0 ? '-' : ''}Rs. ${Math.abs(item.investorShare).toLocaleString()}</p>
+                    <p><strong>Sohrab Industries Share (50%):</strong> ${sohrabShare < 0 ? '-' : ''}Rs. ${Math.abs(sohrabShare).toLocaleString()}</p>
                     <p><strong>ROI:</strong> ${item.roi}%</p>
                     <p><strong>Status:</strong> ${item.matchedBatch?.status || 'In Production'}</p>
+                    <p><strong>Profit Credited:</strong> ${item.matchedBatch?.profit_credited ? 'Yes' : 'No'}</p>
                 </div>`;
                 document.getElementById('batchDetailModal').style.display = 'flex';
                 document.getElementById('batchDetailModal').classList.add('active');
@@ -1913,6 +1954,40 @@
                 if(!amount || !paymentMethod || !transactionId) { showToast('Amount, Payment Method and Transaction ID required', true); return; }
                 if(parseFloat(amount) < 1000) { showToast('Minimum investment Rs. 1,000', true); return; }
                 
+                // Check if screenshot is uploaded (MANDATORY)
+                if (!currentInvestmentScreenshot) {
+                    const warningResult = await Swal.fire({
+                        title: '⚠️ Screenshot Required!',
+                        html: `<p><strong>Payment screenshot is MANDATORY for investment approval.</strong></p>
+                               <p>Please take a screenshot of your payment confirmation and upload it.</p>
+                               <p>Without a valid payment screenshot, your request will be rejected by admin.</p>`,
+                        icon: 'warning',
+                        confirmButtonText: 'Upload Screenshot',
+                        confirmButtonColor: '#E8B13C',
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancel',
+                        background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                        color: '#fff'
+                    });
+                    
+                    if (warningResult.isConfirmed) {
+                        document.getElementById('investmentScreenshot').click();
+                    }
+                    return;
+                }
+                
+                // Check if selected batch has available slots
+                if (selectedBatchId) {
+                    const batch = availableBatches.find(b => b.id === selectedBatchId);
+                    if (batch) {
+                        const availableSlots = (batch.total_slots || 0) - (batch.filled_slots || 0);
+                        if (availableSlots <= 0) {
+                            showToast('Sorry, this batch has no available slots left!', true);
+                            return;
+                        }
+                    }
+                }
+                
                 try {
                     const { error } = await supabase.from('investments').insert([{ 
                         investor_id: currentInvestorId, 
@@ -1935,7 +2010,7 @@
                         }).eq('id', selectedBatchId);
                     }
                     
-                    showToast('Investment request submitted!', false); 
+                    showToast('Investment request submitted successfully! Admin will review your payment proof.', false); 
                     closeModal('investmentModal'); 
                     await loadInvestmentRequests(); 
                     await loadAvailableBatches();
