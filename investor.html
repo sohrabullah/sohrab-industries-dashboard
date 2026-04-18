@@ -856,7 +856,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                <tr>
+                <table>
                     <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr></thead>
                     <tbody id="investmentRequestsList"></tbody>
                 </table>
@@ -866,7 +866,7 @@
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead>
                     <tbody id="profitsList"></tbody>
                 </table>
@@ -935,7 +935,7 @@
         <div id="analyticsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-industry"></i> My Investment Batches & Production</h2>
             <div class="table-container">
-                <table><thead><tr><th>Batch ID</th><th>Investment (Rs.)</th><th>Production Qty</th><th>Batch Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share (50%)</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
+                <tr><thead><tr><th>Batch ID</th><th>Investment (Rs.)</th><th>Production Qty</th><th>Batch Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share (50%)</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
                 <tbody id="batchesList"></tbody>
             </table>
             </div>
@@ -1036,7 +1036,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Investor Dashboard JavaScript
+        // Supabase Configuration - SINGLE DECLARATION
         const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1309,7 +1309,7 @@
             if(tabName === 'analytics') { refreshAnalyticsData(); }
         }
         
-        // Analytics Functions for Investor - Fetches batches linked to this investor only
+        // Analytics Functions for Investor
         let analyticsCharts = {};
         let batchDataCache = [];
         
@@ -1322,7 +1322,6 @@
         
         async function loadInvestorBatchesAndLedger() {
             try {
-                // Get batches linked to this investor's investments
                 const { data: investments } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
                 const investmentIds = investments?.map(inv => inv.id) || [];
                 
@@ -1367,7 +1366,7 @@
                 }).join('');
                 tbody.innerHTML = rows;
                 
-                // Load Ledger for this investor
+                // Load Ledger
                 const { data: investmentsLedger } = await supabase.from('investments').select('investment_date, amount').eq('investor_id', currentInvestorId).eq('status', 'active');
                 const { data: profitsLedger } = await supabase.from('profits').select('paid_date, amount').eq('investor_id', currentInvestorId).eq('paid', true);
                 const { data: withdrawalsLedger } = await supabase.from('withdrawals').select('processed_date, amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
@@ -1378,14 +1377,14 @@
                 withdrawalsLedger?.forEach(w => { balance -= w.amount; entries.push({ date: w.processed_date, desc: 'Withdrawal', credit: 0, debit: w.amount, balance: balance }); });
                 entries.sort((a,b) => new Date(a.date) - new Date(b.date));
                 const ledgerBody = document.getElementById('ledgerList');
-                if(entries.length === 0) { ledgerBody.innerHTML='<tr><td colspan="5" class="empty-state">No ledger entries yet</tr>'; }
+                if(entries.length === 0) { ledgerBody.innerHTML='<td><td colspan="5" class="empty-state">No ledger entries yet</td>'; }
                 else { ledgerBody.innerHTML = entries.map(e => `<tr>
                     <td>${new Date(e.date).toLocaleDateString()}</td>
                     <td>${e.desc}</td>
                     <td>${e.credit ? `Rs. ${e.credit.toLocaleString()}` : '-'}</td>
                     <td>${e.debit ? `Rs. ${e.debit.toLocaleString()}` : '-'}</td>
                     <td class="financial-highlight">Rs. ${e.balance.toLocaleString()}</td>
-                </tr>`).join(''); }
+                </table>`).join(''); }
             } catch(e) { console.error('Analytics error:', e); }
         }
         
