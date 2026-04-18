@@ -180,11 +180,6 @@
         .status-active, .status-approved { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
         .status-pending { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
         .status-rejected { background: linear-gradient(135deg, #dc3545, #a71d2a); color: #fff; }
-        .status-in-production { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
-        .status-completed { background: linear-gradient(135deg, #2c6e9e, #1f4d6e); color: #fff; }
-        .status-sold { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
-        .status-profit-distributed { background: linear-gradient(135deg, #0a5e3a, #0a4a2e); color: #fff; }
-        .loss-negative { color: #dc3545; }
         
         .btn-primary {
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
@@ -219,6 +214,7 @@
         }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #E8B13C; background: rgba(255,255,255,0.12); }
         
+        /* Animated Payment Options */
         .payment-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -325,6 +321,7 @@
         .empty-state { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
         .info-text { margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.5); }
         
+        /* Modal Styles - Professional Popup */
         .modal {
             display: none;
             position: fixed;
@@ -777,6 +774,11 @@
         .legal-card { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 20px; margin-top: 20px; border-left: 4px solid #E8B13C; }
         .legal-card h4 { color: #E8B13C; margin-bottom: 10px; }
         .legal-card p { font-size: 0.85rem; margin-bottom: 8px; color: rgba(255,255,255,0.7); }
+        .status-in-production { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
+        .status-completed { background: linear-gradient(135deg, #2c6e9e, #1f4d6e); color: #fff; }
+        .status-sold { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
+        .status-profit-distributed { background: linear-gradient(135deg, #0a5e3a, #0a4a2e); color: #fff; }
+        .loss-negative { color: #dc3545; }
         .batch-row { cursor: pointer; transition: background 0.2s; }
         .batch-row:hover { background: rgba(232,177,60,0.15); }
         .ledger-table { font-size: 0.8rem; }
@@ -856,7 +858,7 @@
         <div id="investmentRequestsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-clock"></i> Your Pending Investment Requests</h2>
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Transaction ID</th><th>Status</th><th>Notes</th><th>Screenshot</th></tr></thead>
                     <tbody id="investmentRequestsList"></tbody>
                 </table>
@@ -866,7 +868,7 @@
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
             <div class="table-container">
-                <tr>
+                <table>
                     <thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead>
                     <tbody id="profitsList"></tbody>
                 </table>
@@ -879,7 +881,7 @@
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
             <div class="table-container">
-                <tr>
+                <table>
                     <thead><tr><th>Request Date</th><th>Amount (Rs.)</th><th>Payment Method</th><th>Account Title</th><th>Account Details</th><th>Status</th><th>Processed Date</th><th>Approval Screenshot</th></tr></thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
@@ -935,7 +937,7 @@
         <div id="analyticsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-industry"></i> My Investment Batches & Production</h2>
             <div class="table-container">
-                <tr><thead><tr><th>Batch ID</th><th>Investment (Rs.)</th><th>Production Qty</th><th>Batch Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share (50%)</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
+                <table><thead><tr><th>Batch ID</th><th>Investment (Rs.)</th><th>Production Qty</th><th>Batch Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share (50%)</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
                 <tbody id="batchesList"></tbody>
             </table>
             </div>
@@ -974,44 +976,111 @@
         </div>
     </div>
 
-    <!-- Investment Modal -->
+    <!-- Investment Modal - Professional Popup -->
     <div id="investmentModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('investmentModal')">&times;</span>
             <h2><i class="fas fa-plus-circle"></i> New Investment Request</h2>
+            
             <div class="payment-options">
                 <div class="payment-card easypaisa" onclick="selectPaymentMethod('easypaisa')" id="card-easypaisa">
-                    <div class="payment-card-header"><i class="fas fa-mobile-alt"></i><h3>EasyPaisa</h3></div>
-                    <div class="payment-details"><p><strong>Account:</strong> 0317-3703413</p><p><strong>Title:</strong> Sohrab Ullah</p></div>
+                    <div class="payment-card-header">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>EasyPaisa</h3>
+                    </div>
+                    <div class="payment-details">
+                        <p><strong>Account:</strong> 0317-3703413</p>
+                        <p><strong>Title:</strong> Sohrab Ullah</p>
+                    </div>
                 </div>
+                
                 <div class="payment-card jazzcash" onclick="selectPaymentMethod('jazzcash')" id="card-jazzcash">
-                    <div class="payment-card-header"><i class="fas fa-mobile-alt"></i><h3>JazzCash</h3></div>
-                    <div class="payment-details"><p><strong>Account:</strong> 0317-3703413</p><p><strong>Title:</strong> Sohrab Ullah</p></div>
+                    <div class="payment-card-header">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>JazzCash</h3>
+                    </div>
+                    <div class="payment-details">
+                        <p><strong>Account:</strong> 0317-3703413</p>
+                        <p><strong>Title:</strong> Sohrab Ullah</p>
+                    </div>
                 </div>
+                
                 <div class="payment-card bank" onclick="selectPaymentMethod('bank')" id="card-bank">
-                    <div class="payment-card-header"><i class="fas fa-university"></i><h3>HBL Bank</h3></div>
-                    <div class="payment-details"><p><strong>Account:</strong> 00587902117403</p><p><strong>IBAN:</strong> PK76HABB0000587902117403</p></div>
+                    <div class="payment-card-header">
+                        <i class="fas fa-university"></i>
+                        <h3>HBL Bank</h3>
+                    </div>
+                    <div class="payment-details">
+                        <p><strong>Account:</strong> 00587902117403</p>
+                        <p><strong>IBAN:</strong> PK76HABB0000587902117403</p>
+                        <p><strong>Title:</strong> Sohrab Ullah</p>
+                    </div>
                 </div>
             </div>
+            
             <input type="hidden" id="selectedPaymentMethod" value="">
-            <div class="form-group"><label>Investment Amount (Rs.)</label><input type="number" id="investmentAmount" placeholder="Enter amount (Min Rs. 1000)"></div>
-            <div class="form-group"><label>Transaction ID</label><input type="text" id="investmentTransactionId" placeholder="Enter transaction ID"></div>
-            <div class="form-group"><label>Payment Screenshot (Optional)</label><input type="file" id="investmentScreenshot" accept="image/*" onchange="previewInvestmentScreenshot(this)"><div id="investmentScreenshotPreview" class="screenshot-preview"></div></div>
-            <div class="form-group"><label>Notes</label><textarea id="investmentNotes" rows="2" placeholder="Additional notes..."></textarea></div>
+            
+            <div class="form-group">
+                <label>Investment Amount (Rs.)</label>
+                <input type="number" id="investmentAmount" placeholder="Enter amount (Min Rs. 1000)">
+            </div>
+            
+            <div class="form-group">
+                <label>Transaction ID</label>
+                <input type="text" id="investmentTransactionId" placeholder="Enter transaction ID">
+            </div>
+            
+            <div class="form-group">
+                <label>Payment Screenshot (Optional)</label>
+                <input type="file" id="investmentScreenshot" accept="image/*" onchange="previewInvestmentScreenshot(this)">
+                <div id="investmentScreenshotPreview" class="screenshot-preview"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea id="investmentNotes" rows="2" placeholder="Additional notes..."></textarea>
+            </div>
+            
             <button id="submitInvestmentBtn" class="btn-primary" style="width:100%; margin-top:10px;">Submit Request</button>
         </div>
     </div>
     
-    <!-- Withdrawal Modal -->
+    <!-- Withdrawal Modal - Professional Popup -->
     <div id="withdrawalModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('withdrawalModal')">&times;</span>
             <h2><i class="fas fa-money-bill-wave"></i> Withdrawal Request</h2>
-            <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="withdrawAmount" placeholder="Enter amount (Min Rs. 1000)"></div>
-            <div class="form-group"><label>Payment Method</label><select id="withdrawMethod"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option><option value="Bank Transfer">Bank Transfer (HBL)</option></select></div>
-            <div class="form-group"><label>Account Title</label><input type="text" id="accountTitle" placeholder="Enter account holder name"></div>
-            <div class="form-group"><label>Account Details</label><input type="text" id="accountDetails" placeholder="Account number / Mobile number"></div>
-            <div class="form-group"><label>Screenshot (Optional)</label><input type="file" id="withdrawalScreenshot" accept="image/*" onchange="previewWithdrawalScreenshot(this)"><div id="withdrawalScreenshotPreview" class="screenshot-preview"></div></div>
+            
+            <div class="form-group">
+                <label>Amount (Rs.)</label>
+                <input type="number" id="withdrawAmount" placeholder="Enter amount (Min Rs. 1000)">
+            </div>
+            
+            <div class="form-group">
+                <label>Payment Method</label>
+                <select id="withdrawMethod">
+                    <option value="EasyPaisa">EasyPaisa</option>
+                    <option value="JazzCash">JazzCash</option>
+                    <option value="Bank Transfer">Bank Transfer (HBL)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Account Title</label>
+                <input type="text" id="accountTitle" placeholder="Enter account holder name">
+            </div>
+            
+            <div class="form-group">
+                <label>Account Details</label>
+                <input type="text" id="accountDetails" placeholder="Account number / Mobile number">
+            </div>
+            
+            <div class="form-group">
+                <label>Screenshot (Optional)</label>
+                <input type="file" id="withdrawalScreenshot" accept="image/*" onchange="previewWithdrawalScreenshot(this)">
+                <div id="withdrawalScreenshotPreview" class="screenshot-preview"></div>
+            </div>
+            
             <button id="submitWithdrawalBtn" class="btn-primary" style="width:100%; margin-top:10px;">Submit Request</button>
         </div>
     </div>
@@ -1023,7 +1092,10 @@
 
     <!-- GIF Picker Modal -->
     <div id="gifPickerModal" class="gif-picker-modal">
-        <div class="gif-search-header"><input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="window.investorChat.searchGIFs(this.value)"><button onclick="window.investorChat.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px;">&times;</button></div>
+        <div class="gif-search-header">
+            <input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="window.investorChat.searchGIFs(this.value)">
+            <button onclick="window.investorChat.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px;">&times;</button>
+        </div>
         <div id="gifGrid" class="gif-grid"><div style="padding:20px;text-align:center;">Loading GIFs...</div></div>
     </div>
 
@@ -1036,535 +1108,728 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase Configuration - SINGLE DECLARATION
-        const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let currentInvestorId = null;
-        let chatMessages = [];
-        let typingTimeout = null;
-        let pendingMedia = null;
-        let mediaRecorder = null;
-        let audioChunks = [];
-        let recordingStartTime = null;
-        let recordingTimerInterval = null;
-        let currentReplyingTo = null;
-        let currentOpenMenu = null;
-        let userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
-        let currentInvestmentScreenshot = null;
-        let currentWithdrawalScreenshot = null;
-        
-        const emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','💀','👻','👽','🤖','💩','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🙈','🙉','🙊'];
-        const fallbackGIFs = ['https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif','https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif','https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif'];
-        
-        async function fetchGIFs(search = '') { return fallbackGIFs.map(url => ({ url })); }
-        
-        function selectPaymentMethod(method) {
-            document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
-            document.getElementById(`card-${method}`).classList.add('selected');
-            document.getElementById('selectedPaymentMethod').value = method;
-        }
-        
-        function previewInvestmentScreenshot(input) {
-            const previewDiv = document.getElementById('investmentScreenshotPreview');
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                if (file.size > 2 * 1024 * 1024) { showToast('File too large (max 2MB)', true); input.value = ''; return; }
-                const reader = new FileReader();
-                reader.onload = function(e) { currentInvestmentScreenshot = e.target.result; previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`; previewDiv.classList.add('active'); };
-                reader.readAsDataURL(file);
+        (function() {
+            const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            let currentInvestorId = null;
+            let chatMessages = [];
+            let typingTimeout = null;
+            let pendingMedia = null;
+            let mediaRecorder = null;
+            let audioChunks = [];
+            let recordingStartTime = null;
+            let recordingTimerInterval = null;
+            let currentReplyingTo = null;
+            let currentOpenMenu = null;
+            let userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
+            let currentInvestmentScreenshot = null;
+            let currentWithdrawalScreenshot = null;
+            
+            const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
+            
+            const fallbackGIFs = [
+                'https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif',
+                'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif',
+                'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif'
+            ];
+            
+            async function fetchGIFs(search = '') { return fallbackGIFs.map(url => ({ url })); }
+            
+            function selectPaymentMethod(method) {
+                document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
+                document.getElementById(`card-${method}`).classList.add('selected');
+                document.getElementById('selectedPaymentMethod').value = method;
             }
-        }
-        
-        function previewWithdrawalScreenshot(input) {
-            const previewDiv = document.getElementById('withdrawalScreenshotPreview');
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                if (file.size > 2 * 1024 * 1024) { showToast('File too large (max 2MB)', true); input.value = ''; return; }
-                const reader = new FileReader();
-                reader.onload = function(e) { currentWithdrawalScreenshot = e.target.result; previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot"><button class="remove-screenshot" onclick="clearWithdrawalScreenshot()">×</button>`; previewDiv.classList.add('active'); };
-                reader.readAsDataURL(file);
+            
+            function previewInvestmentScreenshot(input) {
+                const previewDiv = document.getElementById('investmentScreenshotPreview');
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    if (file.size > 2 * 1024 * 1024) {
+                        showToast('File too large (max 2MB)', true);
+                        input.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        currentInvestmentScreenshot = e.target.result;
+                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot"><button class="remove-screenshot" onclick="clearInvestmentScreenshot()">×</button>`;
+                        previewDiv.classList.add('active');
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
-        }
-        
-        function clearInvestmentScreenshot() { currentInvestmentScreenshot = null; document.getElementById('investmentScreenshot').value = ''; document.getElementById('investmentScreenshotPreview').innerHTML = ''; document.getElementById('investmentScreenshotPreview').classList.remove('active'); }
-        function clearWithdrawalScreenshot() { currentWithdrawalScreenshot = null; document.getElementById('withdrawalScreenshot').value = ''; document.getElementById('withdrawalScreenshotPreview').innerHTML = ''; document.getElementById('withdrawalScreenshotPreview').classList.remove('active'); }
-        
-        window.clearInvestmentScreenshot = clearInvestmentScreenshot;
-        window.clearWithdrawalScreenshot = clearWithdrawalScreenshot;
-        window.selectPaymentMethod = selectPaymentMethod;
-        window.previewInvestmentScreenshot = previewInvestmentScreenshot;
-        window.previewWithdrawalScreenshot = previewWithdrawalScreenshot;
-        
-        async function checkUserPermissions() {
-            if (!currentInvestorId) return userPermissions;
-            try {
-                const { data, error } = await supabase.from('investors').select('chat_enabled, voice_enabled, video_enabled').eq('id', currentInvestorId).single();
-                if (error || !data) { userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true }; }
-                else { userPermissions = { chatEnabled: data.chat_enabled !== false, voiceEnabled: data.voice_enabled !== false, videoEnabled: data.video_enabled !== false }; }
-                updateUIForPermissions();
-                return userPermissions;
-            } catch (err) { return userPermissions; }
-        }
-        
-        function updateUIForPermissions() {
-            const warningDiv = document.getElementById('permissionWarning');
-            const chatInput = document.getElementById('chatInput');
-            const sendBtn = document.querySelector('.chat-send-btn');
-            const emojiBtn = document.querySelector('.emoji-btn');
-            const chatToolbar = document.querySelectorAll('.chat-tool-btn');
-            if (!userPermissions.chatEnabled) {
-                warningDiv.innerHTML = '<i class="fas fa-ban"></i> ⚠️ Chat has been disabled by admin. You cannot send messages.';
-                warningDiv.classList.add('show');
-                if (chatInput) { chatInput.disabled = true; chatInput.classList.add('disabled'); }
-                if (sendBtn) { sendBtn.disabled = true; sendBtn.classList.add('disabled'); }
-                if (emojiBtn) { emojiBtn.disabled = true; emojiBtn.classList.add('disabled'); }
-                chatToolbar.forEach(btn => { btn.disabled = true; btn.classList.add('disabled'); });
-            } else {
-                warningDiv.classList.remove('show');
-                if (chatInput) { chatInput.disabled = false; chatInput.classList.remove('disabled'); }
-                if (sendBtn) { sendBtn.disabled = false; sendBtn.classList.remove('disabled'); }
-                if (emojiBtn) { emojiBtn.disabled = false; emojiBtn.classList.remove('disabled'); }
-                chatToolbar.forEach(btn => {
-                    const btnText = btn.innerText.toLowerCase();
-                    if (!userPermissions.voiceEnabled && btnText.includes('voice')) { btn.disabled = true; btn.classList.add('disabled'); }
-                    else if (!userPermissions.videoEnabled && (btnText.includes('image') || btnText.includes('video') || btnText.includes('gif'))) { btn.disabled = true; btn.classList.add('disabled'); }
-                    else { btn.disabled = false; btn.classList.remove('disabled'); }
+            
+            function previewWithdrawalScreenshot(input) {
+                const previewDiv = document.getElementById('withdrawalScreenshotPreview');
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    if (file.size > 2 * 1024 * 1024) {
+                        showToast('File too large (max 2MB)', true);
+                        input.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        currentWithdrawalScreenshot = e.target.result;
+                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Screenshot"><button class="remove-screenshot" onclick="clearWithdrawalScreenshot()">×</button>`;
+                        previewDiv.classList.add('active');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            function clearInvestmentScreenshot() {
+                currentInvestmentScreenshot = null;
+                document.getElementById('investmentScreenshot').value = '';
+                const previewDiv = document.getElementById('investmentScreenshotPreview');
+                previewDiv.innerHTML = '';
+                previewDiv.classList.remove('active');
+            }
+            
+            function clearWithdrawalScreenshot() {
+                currentWithdrawalScreenshot = null;
+                document.getElementById('withdrawalScreenshot').value = '';
+                const previewDiv = document.getElementById('withdrawalScreenshotPreview');
+                previewDiv.innerHTML = '';
+                previewDiv.classList.remove('active');
+            }
+            
+            window.clearInvestmentScreenshot = clearInvestmentScreenshot;
+            window.clearWithdrawalScreenshot = clearWithdrawalScreenshot;
+            window.selectPaymentMethod = selectPaymentMethod;
+            window.previewInvestmentScreenshot = previewInvestmentScreenshot;
+            window.previewWithdrawalScreenshot = previewWithdrawalScreenshot;
+            
+            async function checkUserPermissions() {
+                if (!currentInvestorId) return userPermissions;
+                try {
+                    const { data, error } = await supabase.from('investors').select('chat_enabled, voice_enabled, video_enabled').eq('id', currentInvestorId).single();
+                    if (error || !data) { userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true }; }
+                    else { userPermissions = { chatEnabled: data.chat_enabled !== false, voiceEnabled: data.voice_enabled !== false, videoEnabled: data.video_enabled !== false }; }
+                    updateUIForPermissions();
+                    return userPermissions;
+                } catch (err) { console.error('Error checking permissions:', err); userPermissions = { chatEnabled: true, voiceEnabled: true, videoEnabled: true }; return userPermissions; }
+            }
+            
+            function updateUIForPermissions() {
+                const warningDiv = document.getElementById('permissionWarning');
+                const chatInput = document.getElementById('chatInput');
+                const sendBtn = document.querySelector('.chat-send-btn');
+                const emojiBtn = document.querySelector('.emoji-btn');
+                const chatToolbar = document.querySelectorAll('.chat-tool-btn');
+                if (!userPermissions.chatEnabled) {
+                    warningDiv.innerHTML = '<i class="fas fa-ban"></i> ⚠️ Chat has been disabled by admin. You cannot send messages.';
+                    warningDiv.classList.add('show');
+                    if (chatInput) { chatInput.disabled = true; chatInput.classList.add('disabled'); }
+                    if (sendBtn) { sendBtn.disabled = true; sendBtn.classList.add('disabled'); }
+                    if (emojiBtn) { emojiBtn.disabled = true; emojiBtn.classList.add('disabled'); }
+                    chatToolbar.forEach(btn => { btn.disabled = true; btn.classList.add('disabled'); });
+                } else {
+                    warningDiv.classList.remove('show');
+                    if (chatInput) { chatInput.disabled = false; chatInput.classList.remove('disabled'); }
+                    if (sendBtn) { sendBtn.disabled = false; sendBtn.classList.remove('disabled'); }
+                    if (emojiBtn) { emojiBtn.disabled = false; emojiBtn.classList.remove('disabled'); }
+                    chatToolbar.forEach(btn => {
+                        const btnText = btn.innerText.toLowerCase();
+                        if (!userPermissions.voiceEnabled && btnText.includes('voice')) { btn.disabled = true; btn.classList.add('disabled'); }
+                        else if (!userPermissions.videoEnabled && (btnText.includes('image') || btnText.includes('video') || btnText.includes('gif'))) { btn.disabled = true; btn.classList.add('disabled'); }
+                        else { btn.disabled = false; btn.classList.remove('disabled'); }
+                    });
+                }
+            }
+            
+            function closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+                document.getElementById(modalId).style.display = 'none';
+            }
+            
+            window.closeModal = closeModal;
+            
+            function showToast(message, isError) { 
+                Swal.fire({ 
+                    title: isError ? 'Error' : 'Success', 
+                    text: message, 
+                    icon: isError ? 'error' : 'success', 
+                    background: '#1a3d33', 
+                    color: '#fff', 
+                    timer: 3000, 
+                    showConfirmButton: false 
                 });
             }
-        }
-        
-        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); document.getElementById(modalId).style.display = 'none'; }
-        window.closeModal = closeModal;
-        
-        function showToast(message, isError) { Swal.fire({ title: isError ? 'Error' : 'Success', text: message, icon: isError ? 'error' : 'success', background: '#1a3d33', color: '#fff', timer: 3000, showConfirmButton: false }); }
-        
-        // Investor Chat System
-        window.investorChat = {
-            adminId: '00000000-0000-0000-0000-000000000001',
-            subscription: null,
-            init() { if (!currentInvestorId) return; this.subscribeToMessages(); this.loadMessages(); this.setupEmojiPicker(); this.setupDragAndDrop(); this.showOnlineStatus(); document.getElementById('chatInput').addEventListener('input', () => this.sendTyping()); document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); } }); setInterval(() => this.markMessagesRead(), 3000); document.addEventListener('click', (e) => { if (!e.target.closest('.emoji-picker') && !e.target.closest('.emoji-btn')) document.getElementById('emojiPicker').classList.remove('active'); if (!e.target.closest('.message-actions-menu') && !e.target.closest('.message-actions-trigger')) { if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; } } }); setInterval(() => checkUserPermissions(), 5000); },
-            async openGifPicker() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.videoEnabled) { showToast('Media/GIF sharing has been disabled by admin.', true); return; } const modal = document.getElementById('gifPickerModal'); modal.classList.toggle('active'); if (modal.classList.contains('active')) { document.getElementById('gifGrid').innerHTML = '<div style="padding:20px;text-align:center;">Loading GIFs...</div>'; const gifs = await fetchGIFs('trending'); this.renderGIFs(gifs); } },
-            async searchGIFs(query) { const gifs = await fetchGIFs(query); this.renderGIFs(gifs); },
-            renderGIFs(gifs) { const grid = document.getElementById('gifGrid'); if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found</div>'; return; } grid.innerHTML = gifs.map(g => `<img src="${g.url}" class="gif-item" onclick="window.investorChat.sendGIF('${g.url}')">`).join(''); },
-            sendGIF(url) { if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } pendingMedia = { url: url, type: 'image' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`; preview.classList.add('active'); this.closeGifPicker(); },
-            closeGifPicker() { document.getElementById('gifPickerModal').classList.remove('active'); },
-            showOnlineStatus() { const statusDiv = document.createElement('div'); statusDiv.className = 'online-status'; statusDiv.innerHTML = '<span class="status-dot"></span><span>Support Online</span>'; const container = document.getElementById('chatMessagesArea'); if (container && !container.querySelector('.online-status')) container.insertBefore(statusDiv, container.firstChild); },
-            setupDragAndDrop() { const dropZone = document.getElementById('chatMessagesArea'); const overlay = document.getElementById('dragOverlay'); ['dragenter','dragover','dragleave','drop'].forEach(eventName => { dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); }); ['dragenter','dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active'), false); }); ['dragleave','drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false); }); dropZone.addEventListener('drop', async (e) => { const files = e.dataTransfer.files; if (files.length > 0 && userPermissions.chatEnabled && userPermissions.videoEnabled) { const file = files[0]; if (file.size > 5 * 1024 * 1024) { showToast('File too large (max 5MB)', true); return; } if (file.type.startsWith('image/')) this.handleMediaUpload(file, 'image'); else if (file.type.startsWith('video/')) this.handleMediaUpload(file, 'video'); } }); },
-            setupEmojiPicker() { document.getElementById('emojiPicker').innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="window.investorChat.addEmoji('${emoji}')">${emoji}</div>`).join(''); },
-            toggleEmojiPicker() { if (userPermissions.chatEnabled) document.getElementById('emojiPicker').classList.toggle('active'); },
-            addEmoji(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.focus(); document.getElementById('emojiPicker').classList.remove('active'); },
-            async loadMessages() { if (!currentInvestorId) return; try { const { data, error } = await supabase.from('chat_messages').select('*').or(`and(sender_type.eq.investor,receiver_id.eq.${this.adminId},receiver_type.eq.admin),and(sender_id.eq.${this.adminId},sender_type.eq.admin,receiver_id.eq.${currentInvestorId},receiver_type.eq.investor)`).order('created_at', { ascending: true }); if (!error && data) { chatMessages = data; this.renderMessages(); this.markMessagesRead(); } } catch(e) { console.error('Failed to load messages:', e); } },
-            subscribeToMessages() { if (this.subscription) return; this.subscription = supabase.channel('investor-chat').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentInvestorId},receiver_type=eq.investor` }, (payload) => { chatMessages.push(payload.new); this.renderMessages(); this.markMessagesRead(); this.updateUnreadBadge(true); }).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_messages' }, (payload) => { const idx = chatMessages.findIndex(m => m.id === payload.new.id); if (idx !== -1) chatMessages[idx] = payload.new; this.renderMessages(); }).on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, (payload) => { chatMessages = chatMessages.filter(m => m.id !== payload.old.id); this.renderMessages(); }).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_typing', filter: `receiver_id=eq.${currentInvestorId},receiver_type=eq.investor` }, (payload) => { if (payload.new.sender_type === 'admin') this.showTypingIndicator(); }).subscribe(); },
-            async sendMessage() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } const input = document.getElementById('chatInput'); const text = input.value.trim(); if (!text && !pendingMedia && !currentReplyingTo) return; if (pendingMedia && pendingMedia.type === 'audio' && !userPermissions.voiceEnabled) { showToast('Voice messages have been disabled by admin.', true); this.clearPendingMedia(); return; } if (pendingMedia && (pendingMedia.type === 'image' || pendingMedia.type === 'video') && !userPermissions.videoEnabled) { showToast('Media messages have been disabled by admin.', true); this.clearPendingMedia(); return; } let messageData = { id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: text || null, read: false, created_at: new Date().toISOString() }; if (pendingMedia) { messageData.media_url = pendingMedia.url; messageData.media_type = pendingMedia.type; } if (currentReplyingTo) { messageData.reply_to = currentReplyingTo.id; } try { const { error } = await supabase.from('chat_messages').insert([messageData]); if (!error) { chatMessages.push(messageData); this.renderMessages(); input.value = ''; this.clearPendingMedia(); this.cancelReply(); this.scrollToBottom(); } else { showToast('Failed to send: ' + error.message, true); } } catch(e) { showToast('Failed to send message', true); } },
-            toggleMessageActions(messageId) { const menuId = `menu-${messageId.replace(/-/g, '')}`; const menu = document.getElementById(menuId); if (currentOpenMenu && currentOpenMenu !== menuId) { const prevMenu = document.getElementById(currentOpenMenu); if(prevMenu) prevMenu.classList.remove('show'); } if (menu) { menu.classList.toggle('show'); currentOpenMenu = menu.classList.contains('show') ? menuId : null; } },
-            async editMessage(messageId, oldText) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); if (newText && newText !== oldText) { await supabase.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); showToast('Message updated!', false); } this.closeMenu(); },
-            async deleteMessage(messageId, forEveryone = false) { const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); if (result.isConfirmed) { if (forEveryone) await supabase.from('chat_messages').delete().eq('id', messageId); else await supabase.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); showToast('Message deleted!', false); } this.closeMenu(); },
-            replyToMessage(message) { currentReplyingTo = message; document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50); document.getElementById('replyBar').classList.add('active'); document.getElementById('chatInput').focus(); this.closeMenu(); },
-            cancelReply() { currentReplyingTo = null; document.getElementById('replyBar').classList.remove('active'); },
-            async forwardMessage(message) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; await supabase.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); showToast('Message forwarded!', false); this.closeMenu(); },
-            closeMenu() { if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; } },
-            clearPendingMedia() { pendingMedia = null; const preview = document.getElementById('mediaPreview'); preview.classList.remove('active'); preview.innerHTML = ''; },
-            showAttachMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.videoEnabled) { showToast('Media messages have been disabled by admin.', true); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => { if(e.target.files[0] && e.target.files[0].size > 5 * 1024 * 1024) { showToast('File too large (max 5MB)', true); return; } this.handleMediaUpload(e.target.files[0], 'image'); }; input.click(); },
-            showVideoMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.videoEnabled) { showToast('Media messages have been disabled by admin.', true); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*'; input.onchange = (e) => { if(e.target.files[0] && e.target.files[0].size > 10 * 1024 * 1024) { showToast('Video too large (max 10MB)', true); return; } this.handleMediaUpload(e.target.files[0], 'video'); }; input.click(); },
-            handleMediaUpload(file, type) { if (!file) return; const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: type }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`; preview.classList.add('active'); }; reader.readAsDataURL(file); },
-            showVoiceRecorder: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.voiceEnabled) { showToast('Voice messages have been disabled by admin.', true); return; } document.getElementById('voiceRecordingOverlay').classList.add('active'); recordingStartTime = Date.now(); this.startRecordingTimer(); navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { mediaRecorder = new MediaRecorder(stream); audioChunks = []; mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); mediaRecorder.onstop = () => { const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: 'audio' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button></div>`; preview.classList.add('active'); }; reader.readAsDataURL(audioBlob); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); }).catch(() => { showToast('Microphone access denied', true); this.cancelVoiceRecording(); }); },
-            startRecordingTimer() { if (recordingTimerInterval) clearInterval(recordingTimerInterval); recordingTimerInterval = setInterval(() => { const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000); const minutes = Math.floor(elapsed / 60); const seconds = elapsed % 60; document.getElementById('recordingTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`; }, 1000); },
-            stopVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); } },
-            cancelVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.onstop = () => {}; mediaRecorder.stop(); } document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); },
-            sendTyping() { clearTimeout(typingTimeout); supabase.from('chat_typing').insert([{ sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', timestamp: new Date().toISOString() }]); typingTimeout = setTimeout(() => { const indicator = document.getElementById('typingIndicatorArea'); if(indicator) indicator.innerHTML = ''; }, 3000); },
-            showTypingIndicator() { const container = document.getElementById('typingIndicatorArea'); container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>'; setTimeout(() => { if(container.innerHTML.includes('typing')) container.innerHTML = ''; }, 5000); },
-            async markMessagesRead() { await supabase.from('chat_messages').update({ read: true }).eq('receiver_id', currentInvestorId).eq('receiver_type', 'investor').eq('read', false); this.updateUnreadBadge(false); },
-            updateUnreadBadge(hasNew) { const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]'); const livechatTab = document.getElementById('livechatTab'); if (hasNew && !livechatTab.classList.contains('active')) chatTab.classList.add('has-unread'); else if (livechatTab.classList.contains('active')) chatTab.classList.remove('has-unread'); },
-            renderMessages() {
-                const container = document.getElementById('chatMessagesArea');
-                if (!container) return;
-                let statusHtml = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div>';
-                if (chatMessages.length === 0) { container.innerHTML = statusHtml + '<div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div>'; return; }
-                let messagesHtml = chatMessages.map(msg => {
-                    if (msg.deleted_for_sender && msg.sender_type === 'investor') return `<div class="message sent"><div class="message-bubble"><div class="message-text" style="font-style:italic; opacity:0.6;">Message deleted</div><div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>`;
-                    const isSent = msg.sender_type === 'investor';
-                    const senderName = isSent ? 'You' : '🛡️ Sohrab Industries Support';
-                    let replyHtml = ''; if (msg.reply_to) { const repliedMsg = chatMessages.find(m => m.id === msg.reply_to); if (repliedMsg) replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${escapeHtml((repliedMsg.text || '[Media]').substring(0, 50))}</div>`; }
-                    let mediaHtml = ''; if (msg.media_url) { if (msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank')">`; else if (msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`; else if (msg.media_type === 'audio') mediaHtml = `<div class="voice-message-preview"><audio src="${msg.media_url}" controls></audio></div>`; }
-                    const editedMark = msg.edited ? ' <span style="font-size:0.6rem;">(edited)</span>' : '';
-                    const msgShortId = msg.id.replace(/-/g, '');
-                    const timeStr = new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-                    return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msgShortId}" style="position:relative;"><div class="message-actions-trigger" onclick="window.investorChat.toggleMessageActions('${msg.id}')"><i class="fas fa-ellipsis-v"></i></div><div class="message-bubble"><div class="sender-name">${senderName}</div>${replyHtml}<div class="message-text">${escapeHtml(msg.text || '')}${editedMark}</div>${mediaHtml}<div class="message-time">${timeStr} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#25D366;"></i>' : ''}</div></div><div class="message-actions-menu" id="menu-${msgShortId}"><button class="message-action-btn" onclick="window.investorChat.editMessage('${msg.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button><button class="message-action-btn" onclick="window.investorChat.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button><button class="message-action-btn danger" onclick="window.investorChat.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete for all</button><button class="message-action-btn" onclick="window.investorChat.forwardMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-share"></i> Forward</button><button class="message-action-btn" onclick="window.investorChat.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button></div></div>`;
-                }).join('');
-                container.innerHTML = statusHtml + messagesHtml;
-                this.scrollToBottom();
-            },
-            scrollToBottom() { const area = document.getElementById('chatMessagesArea'); if (area) area.scrollTop = area.scrollHeight; }
-        };
-        
-        function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-        
-        async function computeAvailableBalance() {
-            try {
-                const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-                const totalInvested = investments?.reduce((s,i)=> s + (i.amount || 0),0) || 0;
-                const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
-                const totalPaidProfit = profits?.reduce((s,p)=> s + (p.amount || 0),0) || 0;
-                const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
-                const totalWithdrawn = withdrawals?.reduce((s,w)=> s + (w.amount || 0),0) || 0;
-                return { available: totalInvested + totalPaidProfit - totalWithdrawn, totalInvested, totalPaidProfit };
-            } catch(e) { console.error('Balance calculation error:', e); return { available: 0, totalInvested: 0, totalPaidProfit: 0 }; }
-        }
-        
-        async function loadStatsAndBalance() {
-            try {
-                const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
-                document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
-                document.getElementById('totalProfit').innerHTML = `Rs. ${totalPaidProfit.toLocaleString()}`;
-                document.getElementById('availableBalance').innerHTML = `Rs. ${available.toLocaleString()}`;
-                const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
-                document.getElementById('activeInvestments').innerHTML = activeInv?.length || 0;
-                await supabase.from('investors').update({ available_balance: available }).eq('id', currentInvestorId);
-            } catch(e) { console.error('Stats loading error:', e); }
-        }
-        
-        async function loadInvestments() {
-            const tbody = document.getElementById('investmentsList');
-            if (!tbody) return;
-            try {
-                const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
-                if(error) throw error;
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments yet</td></tr>'; return; }
-                tbody.innerHTML = data.map(inv => `<tr><td>${new Date(inv.investment_date).toLocaleDateString()}</td><td>Rs. ${(inv.amount||0).toLocaleString()}</td><td>${inv.payment_method||'-'}</td><td>${inv.transaction_id||'-'}</td><td><span class="status-badge status-active">Approved</span></td><td>${inv.notes||'-'}</td><td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td></tr>`).join('');
-            } catch(e) { console.error('Load investments error:', e); tbody.innerHTML='<tr><td colspan="7">Error loading investments</td></tr>'; }
-        }
-        
-        async function loadInvestmentRequests() {
-            const tbody = document.getElementById('investmentRequestsList');
-            if (!tbody) return;
-            try {
-                const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
-                if(error) throw error;
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
-                tbody.innerHTML = data.map(inv => `<tr><td>${new Date(inv.created_at).toLocaleDateString()}</td><td>Rs. ${(inv.amount||0).toLocaleString()}</td><td>${inv.payment_method||'-'}</td><td>${inv.transaction_id||'-'}</td><td><span class="status-badge status-pending">Pending</span></td><td>${inv.notes||'-'}</td><td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td></tr>`).join('');
-            } catch(e) { console.error('Load requests error:', e); tbody.innerHTML='<tr><td colspan="7">Error loading requests</td></tr>'; }
-        }
-        
-        async function loadProfits() {
-            const tbody = document.getElementById('profitsList');
-            if (!tbody) return;
-            try {
-                const { data, error } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
-                if(error) throw error;
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; return; }
-                tbody.innerHTML = data.map(p => `<tr><td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td><td>Rs. ${(p.amount||0).toLocaleString()}</td><td>${p.profit_percentage||10}%</td><td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td><td>${p.paid_date?new Date(p.paid_date).toLocaleDateString():'-'}</td></tr>`).join('');
-            } catch(e) { console.error('Load profits error:', e); tbody.innerHTML='<tr><td colspan="5">Error loading profits</td></tr>'; }
-        }
-        
-        async function loadWithdrawals() {
-            const tbody = document.getElementById('withdrawalsList');
-            if (!tbody) return;
-            try {
-                const { data, error } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
-                if(error) throw error;
-                if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</td></tr>'; return; }
-                tbody.innerHTML = data.map(w => `<tr><td>${new Date(w.request_date).toLocaleDateString()}</td><td>Rs. ${(w.amount||0).toLocaleString()}</td><td>${w.payment_method||'-'}</td><td>${w.account_title||'-'}</td><td>${w.account_details||'-'}</td><td><span class="status-badge ${w.status==='approved'?'status-active':(w.status==='rejected'?'status-rejected':'status-pending')}">${w.status==='pending'?'Pending':(w.status==='approved'?'Approved':'Rejected')}</span></td><td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</td><td>${w.screenshot ? `<img src="${w.screenshot}" class="approval-screenshot" onclick="window.open('${w.screenshot}','_blank')">` : (w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="window.open('${w.approval_screenshot}','_blank')">` : '-')}</td></tr>`).join('');
-            } catch(e) { console.error('Load withdrawals error:', e); tbody.innerHTML='<tr><td colspan="8">Error loading withdrawals</td></tr>'; }
-        }
-        
-        async function loadProfile() {
-            try {
-                const { data, error } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
-                if(error) throw error;
-                if(data && data[0]){
-                    const i = data[0];
-                    document.getElementById('profileName').value = i.full_name || '';
-                    document.getElementById('profileEmail').value = i.email || '';
-                    document.getElementById('profilePhone').value = i.phone || '';
-                    document.getElementById('profileCity').value = i.city || '';
-                    const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
-                    document.getElementById('profileTotalInvestment').value = `Rs. ${totalInvested.toLocaleString()}`;
-                    document.getElementById('profileTotalProfit').value = `Rs. ${totalPaidProfit.toLocaleString()}`;
-                    document.getElementById('profileBalance').value = `Rs. ${available.toLocaleString()}`;
-                }
-            } catch(e) { console.error('Load profile error:', e); }
-        }
-        
-        window.editField = async function(inputId, dbField) {
-            const input = document.getElementById(inputId);
-            const newValue = prompt(`Enter new ${dbField.replace('_',' ')}:`, input.value);
-            if(newValue && newValue !== input.value){
+            
+            window.investorChat = {
+                adminId: '00000000-0000-0000-0000-000000000001',
+                subscription: null,
+                init() {
+                    if (!currentInvestorId) return;
+                    this.subscribeToMessages();
+                    this.loadMessages();
+                    this.setupEmojiPicker();
+                    this.setupDragAndDrop();
+                    this.showOnlineStatus();
+                    document.getElementById('chatInput').addEventListener('input', () => this.sendTyping());
+                    document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); } });
+                    setInterval(() => this.markMessagesRead(), 3000);
+                    document.addEventListener('click', (e) => {
+                        if (!e.target.closest('.emoji-picker') && !e.target.closest('.emoji-btn')) document.getElementById('emojiPicker').classList.remove('active');
+                        if (!e.target.closest('.message-actions-menu') && !e.target.closest('.message-actions-trigger')) {
+                            if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; }
+                        }
+                    });
+                    setInterval(() => checkUserPermissions(), 5000);
+                },
+                async openGifPicker() {
+                    await checkUserPermissions();
+                    if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; }
+                    if (!userPermissions.videoEnabled) { showToast('Media/GIF sharing has been disabled by admin.', true); return; }
+                    const modal = document.getElementById('gifPickerModal');
+                    modal.classList.toggle('active');
+                    if (modal.classList.contains('active')) {
+                        document.getElementById('gifGrid').innerHTML = '<div style="padding:20px;text-align:center;">Loading GIFs...</div>';
+                        const gifs = await fetchGIFs('trending');
+                        this.renderGIFs(gifs);
+                    }
+                },
+                async searchGIFs(query) { const gifs = await fetchGIFs(query); this.renderGIFs(gifs); },
+                renderGIFs(gifs) {
+                    const grid = document.getElementById('gifGrid');
+                    if (!gifs.length) { grid.innerHTML = '<div style="padding:20px;text-align:center;">No GIFs found</div>'; return; }
+                    grid.innerHTML = gifs.map(g => `<img src="${g.url}" class="gif-item" onclick="window.investorChat.sendGIF('${g.url}')">`).join('');
+                },
+                sendGIF(url) {
+                    if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; }
+                    pendingMedia = { url: url, type: 'image' };
+                    const preview = document.getElementById('mediaPreview');
+                    preview.innerHTML = `<img src="${url}" style="max-width:100%; max-height:150px; border-radius:8px;"><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`;
+                    preview.classList.add('active');
+                    this.closeGifPicker();
+                },
+                closeGifPicker() { document.getElementById('gifPickerModal').classList.remove('active'); },
+                showOnlineStatus() {
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = 'online-status';
+                    statusDiv.innerHTML = '<span class="status-dot"></span><span>Support Online</span>';
+                    const container = document.getElementById('chatMessagesArea');
+                    if (container && !container.querySelector('.online-status')) container.insertBefore(statusDiv, container.firstChild);
+                },
+                setupDragAndDrop() {
+                    const dropZone = document.getElementById('chatMessagesArea');
+                    const overlay = document.getElementById('dragOverlay');
+                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); document.body.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }); });
+                    ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.add('active'), false); });
+                    ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, () => overlay.classList.remove('active'), false); });
+                    dropZone.addEventListener('drop', async (e) => {
+                        const files = e.dataTransfer.files;
+                        if (files.length > 0 && userPermissions.chatEnabled && userPermissions.videoEnabled) {
+                            const file = files[0];
+                            if (file.size > 5 * 1024 * 1024) {
+                                showToast('File too large (max 5MB)', true);
+                                return;
+                            }
+                            if (file.type.startsWith('image/')) this.handleMediaUpload(file, 'image');
+                            else if (file.type.startsWith('video/')) this.handleMediaUpload(file, 'video');
+                        }
+                    });
+                },
+                setupEmojiPicker() { document.getElementById('emojiPicker').innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="window.investorChat.addEmoji('${emoji}')">${emoji}</div>`).join(''); },
+                toggleEmojiPicker() { if (userPermissions.chatEnabled) document.getElementById('emojiPicker').classList.toggle('active'); },
+                addEmoji(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.focus(); document.getElementById('emojiPicker').classList.remove('active'); },
+                async loadMessages() {
+                    if (!currentInvestorId) return;
+                    try {
+                        const { data, error } = await supabase.from('chat_messages').select('*').or(`and(sender_type.eq.investor,receiver_id.eq.${this.adminId},receiver_type.eq.admin),and(sender_id.eq.${this.adminId},sender_type.eq.admin,receiver_id.eq.${currentInvestorId},receiver_type.eq.investor)`).order('created_at', { ascending: true });
+                        if (!error && data) { chatMessages = data; this.renderMessages(); this.markMessagesRead(); }
+                    } catch(e) { console.error('Failed to load messages:', e); }
+                },
+                subscribeToMessages() {
+                    if (this.subscription) return;
+                    this.subscription = supabase.channel('investor-chat')
+                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `receiver_id=eq.${currentInvestorId},receiver_type=eq.investor` }, (payload) => { chatMessages.push(payload.new); this.renderMessages(); this.markMessagesRead(); this.updateUnreadBadge(true); })
+                        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_messages' }, (payload) => { const idx = chatMessages.findIndex(m => m.id === payload.new.id); if (idx !== -1) chatMessages[idx] = payload.new; this.renderMessages(); })
+                        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, (payload) => { chatMessages = chatMessages.filter(m => m.id !== payload.old.id); this.renderMessages(); })
+                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_typing', filter: `receiver_id=eq.${currentInvestorId},receiver_type=eq.investor` }, (payload) => { if (payload.new.sender_type === 'admin') this.showTypingIndicator(); })
+                        .subscribe();
+                },
+                async sendMessage() {
+                    await checkUserPermissions();
+                    if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; }
+                    const input = document.getElementById('chatInput');
+                    const text = input.value.trim();
+                    if (!text && !pendingMedia && !currentReplyingTo) return;
+                    if (pendingMedia && pendingMedia.type === 'audio' && !userPermissions.voiceEnabled) { showToast('Voice messages have been disabled by admin.', true); this.clearPendingMedia(); return; }
+                    if (pendingMedia && (pendingMedia.type === 'image' || pendingMedia.type === 'video') && !userPermissions.videoEnabled) { showToast('Media messages have been disabled by admin.', true); this.clearPendingMedia(); return; }
+                    let messageData = { id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: text || null, read: false, created_at: new Date().toISOString() };
+                    if (pendingMedia) { messageData.media_url = pendingMedia.url; messageData.media_type = pendingMedia.type; }
+                    if (currentReplyingTo) { messageData.reply_to = currentReplyingTo.id; }
+                    try {
+                        const { error } = await supabase.from('chat_messages').insert([messageData]);
+                        if (!error) { chatMessages.push(messageData); this.renderMessages(); input.value = ''; this.clearPendingMedia(); this.cancelReply(); this.scrollToBottom(); }
+                        else { showToast('Failed to send: ' + error.message, true); }
+                    } catch(e) { showToast('Failed to send message', true); }
+                },
+                toggleMessageActions(messageId) { 
+                    const menuId = `menu-${messageId.replace(/-/g, '')}`; 
+                    const menu = document.getElementById(menuId); 
+                    if (currentOpenMenu && currentOpenMenu !== menuId) { 
+                        const prevMenu = document.getElementById(currentOpenMenu);
+                        if(prevMenu) prevMenu.classList.remove('show');
+                    } 
+                    if (menu) { 
+                        menu.classList.toggle('show'); 
+                        currentOpenMenu = menu.classList.contains('show') ? menuId : null; 
+                    } 
+                },
+                async editMessage(messageId, oldText) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } const { value: newText } = await Swal.fire({ title: 'Edit Message', input: 'textarea', inputValue: oldText, showCancelButton: true, confirmButtonColor: '#E8B13C', background: '#1a3d33', color: '#fff' }); if (newText && newText !== oldText) { await supabase.from('chat_messages').update({ text: newText, edited: true }).eq('id', messageId); showToast('Message updated!', false); } this.closeMenu(); },
+                async deleteMessage(messageId, forEveryone = false) { const result = await Swal.fire({ title: 'Delete Message', text: forEveryone ? 'Delete for everyone?' : 'Delete only for you?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'Delete', background: '#1a3d33', color: '#fff' }); if (result.isConfirmed) { if (forEveryone) await supabase.from('chat_messages').delete().eq('id', messageId); else await supabase.from('chat_messages').update({ deleted_for_sender: true }).eq('id', messageId); showToast('Message deleted!', false); } this.closeMenu(); },
+                replyToMessage(message) { currentReplyingTo = message; document.getElementById('replyingToText').innerText = (message.text || '[Media]').substring(0, 50); document.getElementById('replyBar').classList.add('active'); document.getElementById('chatInput').focus(); this.closeMenu(); },
+                cancelReply() { currentReplyingTo = null; document.getElementById('replyBar').classList.remove('active'); },
+                async forwardMessage(message) { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } const { value: userInput } = await Swal.fire({ title: 'Forward Message', input: 'textarea', inputPlaceholder: 'Add a note (optional)', showCancelButton: true, confirmButtonText: 'Forward', background: '#1a3d33', color: '#fff' }); const forwardText = userInput ? `📨 Forwarded: "${message.text}"\n\n📝 Note: ${userInput}` : `📨 Forwarded: "${message.text}"`; await supabase.from('chat_messages').insert([{ id: crypto.randomUUID(), sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', text: forwardText, read: false, created_at: new Date().toISOString() }]); showToast('Message forwarded!', false); this.closeMenu(); },
+                closeMenu() { if (currentOpenMenu) { document.getElementById(currentOpenMenu)?.classList.remove('show'); currentOpenMenu = null; } },
+                clearPendingMedia() { pendingMedia = null; const preview = document.getElementById('mediaPreview'); preview.classList.remove('active'); preview.innerHTML = ''; },
+                showAttachMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.videoEnabled) { showToast('Media messages have been disabled by admin.', true); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => { if(e.target.files[0] && e.target.files[0].size > 5 * 1024 * 1024) { showToast('File too large (max 5MB)', true); return; } this.handleMediaUpload(e.target.files[0], 'image'); }; input.click(); },
+                showVideoMenu: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.videoEnabled) { showToast('Media messages have been disabled by admin.', true); return; } const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*'; input.onchange = (e) => { if(e.target.files[0] && e.target.files[0].size > 10 * 1024 * 1024) { showToast('Video too large (max 10MB)', true); return; } this.handleMediaUpload(e.target.files[0], 'video'); }; input.click(); },
+                handleMediaUpload(file, type) { if (!file) return; const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: type }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `${type === 'image' ? `<img src="${ev.target.result}" style="max-width:100%; max-height:150px; border-radius:8px;">` : `<video src="${ev.target.result}" controls style="max-width:100%; max-height:150px;"></video>`}<button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button>`; preview.classList.add('active'); }; reader.readAsDataURL(file); },
+                showVoiceRecorder: async function() { await checkUserPermissions(); if (!userPermissions.chatEnabled) { showToast('Chat has been disabled by admin.', true); return; } if (!userPermissions.voiceEnabled) { showToast('Voice messages have been disabled by admin.', true); return; } document.getElementById('voiceRecordingOverlay').classList.add('active'); recordingStartTime = Date.now(); this.startRecordingTimer(); navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { mediaRecorder = new MediaRecorder(stream); audioChunks = []; mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data); mediaRecorder.onstop = () => { const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); const reader = new FileReader(); reader.onload = (ev) => { pendingMedia = { url: ev.target.result, type: 'audio' }; const preview = document.getElementById('mediaPreview'); preview.innerHTML = `<div class="voice-message-preview"><i class="fas fa-microphone-alt"></i><span>Voice message ready</span><audio src="${ev.target.result}" controls></audio><button class="remove-media" onclick="window.investorChat.clearPendingMedia()">×</button></div>`; preview.classList.add('active'); }; reader.readAsDataURL(audioBlob); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); }).catch(() => { showToast('Microphone access denied', true); this.cancelVoiceRecording(); }); },
+                startRecordingTimer() { if (recordingTimerInterval) clearInterval(recordingTimerInterval); recordingTimerInterval = setInterval(() => { const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000); const minutes = Math.floor(elapsed / 60); const seconds = elapsed % 60; document.getElementById('recordingTimer').innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`; }, 1000); },
+                stopVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); } },
+                cancelVoiceRecording() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.onstop = () => {}; mediaRecorder.stop(); } document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (recordingTimerInterval) clearInterval(recordingTimerInterval); },
+                sendTyping() { 
+                    clearTimeout(typingTimeout); 
+                    supabase.from('chat_typing').insert([{ sender_id: currentInvestorId, sender_type: 'investor', receiver_id: this.adminId, receiver_type: 'admin', timestamp: new Date().toISOString() }]); 
+                    typingTimeout = setTimeout(() => { 
+                        const indicator = document.getElementById('typingIndicatorArea');
+                        if(indicator) indicator.innerHTML = '';
+                    }, 3000); 
+                },
+                showTypingIndicator() { 
+                    const container = document.getElementById('typingIndicatorArea'); 
+                    container.innerHTML = '<div class="typing-indicator"><span>Sohrab Industries Support is typing</span><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>'; 
+                    setTimeout(() => { 
+                        if(container.innerHTML.includes('typing')) container.innerHTML = ''; 
+                    }, 5000); 
+                },
+                async markMessagesRead() { await supabase.from('chat_messages').update({ read: true }).eq('receiver_id', currentInvestorId).eq('receiver_type', 'investor').eq('read', false); this.updateUnreadBadge(false); },
+                updateUnreadBadge(hasNew) { const chatTab = document.querySelector('.tab-btn[data-tab="livechat"]'); const livechatTab = document.getElementById('livechatTab'); if (hasNew && !livechatTab.classList.contains('active')) chatTab.classList.add('has-unread'); else if (livechatTab.classList.contains('active')) chatTab.classList.remove('has-unread'); },
+                renderMessages() {
+                    const container = document.getElementById('chatMessagesArea');
+                    if (!container) return;
+                    let statusHtml = '<div class="online-status"><span class="status-dot"></span><span>Support Online</span></div>';
+                    if (chatMessages.length === 0) { container.innerHTML = statusHtml + '<div class="empty-state"><i class="fas fa-headset" style="font-size: 48px;"></i><p>Chat with Sohrab Industries Support Team</p></div>'; return; }
+                    let messagesHtml = chatMessages.map(msg => {
+                        if (msg.deleted_for_sender && msg.sender_type === 'investor') return `<div class="message sent"><div class="message-bubble"><div class="message-text" style="font-style:italic; opacity:0.6;">Message deleted</div><div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>`;
+                        const isSent = msg.sender_type === 'investor';
+                        const senderName = isSent ? 'You' : '🛡️ Sohrab Industries Support';
+                        let replyHtml = ''; if (msg.reply_to) { const repliedMsg = chatMessages.find(m => m.id === msg.reply_to); if (repliedMsg) replyHtml = `<div class="reply-preview"><i class="fas fa-reply"></i> ${escapeHtml((repliedMsg.text || '[Media]').substring(0, 50))}</div>`; }
+                        let mediaHtml = ''; if (msg.media_url) { if (msg.media_type === 'image') mediaHtml = `<img src="${msg.media_url}" class="chat-media" onclick="window.open('${msg.media_url}','_blank')">`; else if (msg.media_type === 'video') mediaHtml = `<video src="${msg.media_url}" class="chat-media" controls></video>`; else if (msg.media_type === 'audio') mediaHtml = `<div class="voice-message-preview"><audio src="${msg.media_url}" controls></audio></div>`; }
+                        const editedMark = msg.edited ? ' <span style="font-size:0.6rem;">(edited)</span>' : '';
+                        const msgShortId = msg.id.replace(/-/g, '');
+                        const timeStr = new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                        return `<div class="message ${isSent ? 'sent' : 'received'}" id="msg-${msgShortId}" style="position:relative;"><div class="message-actions-trigger" onclick="window.investorChat.toggleMessageActions('${msg.id}')"><i class="fas fa-ellipsis-v"></i></div><div class="message-bubble"><div class="sender-name">${senderName}</div>${replyHtml}<div class="message-text">${escapeHtml(msg.text || '')}${editedMark}</div>${mediaHtml}<div class="message-time">${timeStr} ${msg.read && !isSent ? '<i class="fas fa-check-double" style="color:#25D366;"></i>' : ''}</div></div><div class="message-actions-menu" id="menu-${msgShortId}"><button class="message-action-btn" onclick="window.investorChat.editMessage('${msg.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i> Edit</button><button class="message-action-btn" onclick="window.investorChat.deleteMessage('${msg.id}', false)"><i class="fas fa-trash"></i> Delete for me</button><button class="message-action-btn danger" onclick="window.investorChat.deleteMessage('${msg.id}', true)"><i class="fas fa-trash-alt"></i> Delete for all</button><button class="message-action-btn" onclick="window.investorChat.forwardMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-share"></i> Forward</button><button class="message-action-btn" onclick="window.investorChat.replyToMessage(${JSON.stringify(msg).replace(/"/g, '&quot;')})"><i class="fas fa-reply"></i> Reply</button></div></div>`;
+                    }).join('');
+                    container.innerHTML = statusHtml + messagesHtml;
+                    this.scrollToBottom();
+                },
+                scrollToBottom() { const area = document.getElementById('chatMessagesArea'); if (area) area.scrollTop = area.scrollHeight; }
+            };
+            
+            function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+            
+            async function computeAvailableBalance() {
                 try {
-                    const { error } = await supabase.from('investors').update({ [dbField]: newValue }).eq('id', currentInvestorId);
-                    if(error) throw error;
-                    showToast(`${dbField} updated!`, false); 
-                    await loadProfile();
-                } catch(e) { showToast(e.message, true); }
+                    const { data: investments } = await supabase.from('investments').select('amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+                    const totalInvested = investments?.reduce((s,i)=> s + (i.amount || 0),0) || 0;
+                    const { data: profits } = await supabase.from('profits').select('amount').eq('investor_id', currentInvestorId).eq('paid', true);
+                    const totalPaidProfit = profits?.reduce((s,p)=> s + (p.amount || 0),0) || 0;
+                    const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
+                    const totalWithdrawn = withdrawals?.reduce((s,w)=> s + (w.amount || 0),0) || 0;
+                    return { available: totalInvested + totalPaidProfit - totalWithdrawn, totalInvested, totalPaidProfit };
+                } catch(e) { console.error('Balance calculation error:', e); return { available: 0, totalInvested: 0, totalPaidProfit: 0 }; }
             }
-        };
-        
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            const tabDiv = document.getElementById(`${tabName}Tab`); if(tabDiv) tabDiv.classList.add('active');
-            const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`); if(btn) btn.classList.add('active');
-            if(tabName === 'livechat') { window.investorChat.markMessagesRead(); window.investorChat.renderMessages(); checkUserPermissions(); }
-            if(tabName === 'analytics') { refreshAnalyticsData(); }
-        }
-        
-        // Analytics Functions for Investor
-        let analyticsCharts = {};
-        let batchDataCache = [];
-        
-        async function refreshAnalyticsData() {
-            await loadInvestorBatchesAndLedger();
-            await loadInvestorActivityLog();
-            await renderInvestorAnalyticsCharts();
-            await updateInvestorBalanceBreakdown();
-        }
-        
-        async function loadInvestorBatchesAndLedger() {
-            try {
-                const { data: investments } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
-                const investmentIds = investments?.map(inv => inv.id) || [];
-                
-                let batches = [];
-                if(investmentIds.length > 0) {
-                    const { data } = await supabase.from('batches').select('*, investments(amount)').in('investment_id', investmentIds).order('created_at', {ascending: false});
-                    batches = data || [];
+            
+            async function loadStatsAndBalance() {
+                try {
+                    const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
+                    document.getElementById('totalInvestment').innerHTML = `Rs. ${totalInvested.toLocaleString()}`;
+                    document.getElementById('totalProfit').innerHTML = `Rs. ${totalPaidProfit.toLocaleString()}`;
+                    document.getElementById('availableBalance').innerHTML = `Rs. ${available.toLocaleString()}`;
+                    const { data: activeInv } = await supabase.from('investments').select('id').eq('investor_id', currentInvestorId).eq('status', 'active');
+                    document.getElementById('activeInvestments').innerHTML = activeInv?.length || 0;
+                    await supabase.from('investors').update({ available_balance: available }).eq('id', currentInvestorId);
+                } catch(e) { console.error('Stats loading error:', e); }
+            }
+            
+            async function loadInvestments() {
+                const tbody = document.getElementById('investmentsList');
+                if (!tbody) return;
+                try {
+                    const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
+                    if(error) throw error;
+                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments yet</td></tr>'; return; }
+                    tbody.innerHTML = data.map(inv => `<tr>
+                        <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
+                        <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
+                        <td>${inv.payment_method||'-'}</td>
+                        <td>${inv.transaction_id||'-'}</td>
+                        <td><span class="status-badge status-active">Approved</span></td>
+                        <td>${inv.notes||'-'}</td>
+                        <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td>
+                    </tr>`).join('');
+                } catch(e) { console.error('Load investments error:', e); tbody.innerHTML='<tr><td colspan="7">Error loading investments</td></tr>'; }
+            }
+            
+            async function loadInvestmentRequests() {
+                const tbody = document.getElementById('investmentRequestsList');
+                if (!tbody) return;
+                try {
+                    const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
+                    if(error) throw error;
+                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
+                    tbody.innerHTML = data.map(inv => `<tr>
+                        <td>${new Date(inv.created_at).toLocaleDateString()}</td>
+                        <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
+                        <td>${inv.payment_method||'-'}</td>
+                        <td>${inv.transaction_id||'-'}</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>${inv.notes||'-'}</td>
+                        <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td>
+                    </tr>`).join('');
+                } catch(e) { console.error('Load requests error:', e); tbody.innerHTML='<tr><td colspan="7">Error loading requests</td></tr>'; }
+            }
+            
+            async function loadProfits() {
+                const tbody = document.getElementById('profitsList');
+                if (!tbody) return;
+                try {
+                    const { data, error } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
+                    if(error) throw error;
+                    if(!data?.length) { 
+                        tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; 
+                        return; 
+                    }
+                    tbody.innerHTML = data.map(p => `<tr>
+                        <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
+                        <td>Rs. ${(p.amount||0).toLocaleString()}</td>
+                        <td>${p.profit_percentage||10}%</td>
+                        <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td>
+                        <td>${p.paid_date?new Date(p.paid_date).toLocaleDateString():'-'}</td>
+                    </tr>`).join('');
+                } catch(e) { console.error('Load profits error:', e); tbody.innerHTML='<tr><td colspan="5">Error loading profits</td></tr>'; }
+            }
+            
+            async function loadWithdrawals() {
+                const tbody = document.getElementById('withdrawalsList');
+                if (!tbody) return;
+                try {
+                    const { data, error } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
+                    if(error) throw error;
+                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</td></tr>'; return; }
+                    tbody.innerHTML = data.map(w => `<tr>
+                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                        <td>Rs. ${(w.amount||0).toLocaleString()}</td>
+                        <td>${w.payment_method||'-'}</td>
+                        <td>${w.account_title||'-'}</td>
+                        <td>${w.account_details||'-'}</td>
+                        <td><span class="status-badge ${w.status==='approved'?'status-active':(w.status==='rejected'?'status-rejected':'status-pending')}">${w.status==='pending'?'Pending':(w.status==='approved'?'Approved':'Rejected')}</span></td>
+                        <td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</td>
+                        <td>${w.screenshot ? `<img src="${w.screenshot}" class="approval-screenshot" onclick="window.open('${w.screenshot}','_blank')">` : (w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="window.open('${w.approval_screenshot}','_blank')">` : '-')}</td>
+                    </tr>`).join('');
+                } catch(e) { console.error('Load withdrawals error:', e); tbody.innerHTML='<tr><td colspan="8">Error loading withdrawals</td></tr>'; }
+            }
+            
+            async function loadProfile() {
+                try {
+                    const { data, error } = await supabase.from('investors').select('*').eq('id', currentInvestorId);
+                    if(error) throw error;
+                    if(data && data[0]){
+                        const i = data[0];
+                        document.getElementById('profileName').value = i.full_name || '';
+                        document.getElementById('profileEmail').value = i.email || '';
+                        document.getElementById('profilePhone').value = i.phone || '';
+                        document.getElementById('profileCity').value = i.city || '';
+                        const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
+                        document.getElementById('profileTotalInvestment').value = `Rs. ${totalInvested.toLocaleString()}`;
+                        document.getElementById('profileTotalProfit').value = `Rs. ${totalPaidProfit.toLocaleString()}`;
+                        document.getElementById('profileBalance').value = `Rs. ${available.toLocaleString()}`;
+                    }
+                } catch(e) { console.error('Load profile error:', e); }
+            }
+            
+            window.editField = async function(inputId, dbField) {
+                const input = document.getElementById(inputId);
+                const newValue = prompt(`Enter new ${dbField.replace('_',' ')}:`, input.value);
+                if(newValue && newValue !== input.value){
+                    try {
+                        const { error } = await supabase.from('investors').update({ [dbField]: newValue }).eq('id', currentInvestorId);
+                        if(error) throw error;
+                        showToast(`${dbField} updated!`, false); 
+                        await loadProfile();
+                    } catch(e) { showToast(e.message, true); }
                 }
-                
-                const tbody = document.getElementById('batchesList');
-                if(!tbody) return;
-                if(batches.length === 0) { tbody.innerHTML='<tr><td colspan="11" class="empty-state">No batches linked to your investments yet</td></tr>'; return; }
-                
-                batchDataCache = batches;
-                const rows = batches.map((batch, idx) => {
-                    const netProfit = (batch.sales || 0) - (batch.expenses || 0);
-                    const investorShare = netProfit * 0.5;
-                    const roi = batch.investment_amount ? ((investorShare / batch.investment_amount) * 100).toFixed(2) : '0.00';
-                    const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
-                    const currentStepIndex = progressSteps.indexOf(batch.status);
-                    const progressHtml = `<div class="progress-tracker">${progressSteps.map((step, i) => `<span class="progress-step ${i < currentStepIndex ? 'completed' : i === currentStepIndex ? 'active' : ''}">${step}</span>`).join('')}</div>`;
-                    let statusClass = 'status-in-production';
-                    if(batch.status === 'Completed') statusClass = 'status-completed';
-                    if(batch.status === 'Sold') statusClass = 'status-sold';
-                    if(batch.status === 'Profit Distributed') statusClass = 'status-profit-distributed';
-                    const profitStatus = batch.profit_credited ? 'Credited' : 'Pending';
-                    const profitStatusClass = batch.profit_credited ? 'status-active' : 'status-pending';
+            };
+            
+            function switchTab(tabName) {
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                const tabDiv = document.getElementById(`${tabName}Tab`); if(tabDiv) tabDiv.classList.add('active');
+                const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`); if(btn) btn.classList.add('active');
+                if(tabName === 'livechat') { window.investorChat.markMessagesRead(); window.investorChat.renderMessages(); checkUserPermissions(); }
+                if(tabName === 'analytics') { refreshAnalyticsData(); }
+            }
+            
+            // Analytics Functions
+            let analyticsCharts = {};
+            let batchDataCache = [];
+            
+            async function refreshAnalyticsData() {
+                await loadBatchesAndLedger();
+                await loadActivityLogAnalytics();
+                await renderAnalyticsCharts();
+                await updateBalanceBreakdown();
+            }
+            
+            async function loadBatchesAndLedger() {
+                try {
+                    const { data: investments } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active');
+                    const tbody = document.getElementById('batchesList');
+                    if(!investments?.length) { tbody.innerHTML='<tr><td colspan="11" class="empty-state">No active batches</td></tr>'; return; }
                     
-                    return `<tr class="batch-row" onclick="showInvestorBatchDetail(${idx})">
-                        <td>${batch.id?.slice(0, 12)}...</td>
-                        <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
-                        <td>${batch.production_quantity || 0}</td>
-                        <td><span class="status-badge ${statusClass}">${batch.status}</span></td>
-                        <td>${progressHtml}</td>
-                        <td>${batch.status === 'In Production' || batch.status === 'Completed' ? '-' : `Rs. ${(batch.sales || 0).toLocaleString()}`}</td>
-                        <td>Rs. ${Math.abs(batch.expenses || 0).toLocaleString()}</td>
-                        <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
-                        <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
-                        <td>${roi}%</td>
-                        <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
-                    </tr>`;
-                }).join('');
-                tbody.innerHTML = rows;
-                
-                // Load Ledger
-                const { data: investmentsLedger } = await supabase.from('investments').select('investment_date, amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-                const { data: profitsLedger } = await supabase.from('profits').select('paid_date, amount').eq('investor_id', currentInvestorId).eq('paid', true);
-                const { data: withdrawalsLedger } = await supabase.from('withdrawals').select('processed_date, amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
-                let balance = 0;
-                const entries = [];
-                investmentsLedger?.forEach(i => { balance += i.amount; entries.push({ date: i.investment_date, desc: 'Investment Deposit', credit: i.amount, debit: 0, balance: balance }); });
-                profitsLedger?.forEach(p => { balance += p.amount; entries.push({ date: p.paid_date, desc: 'Profit Credit', credit: p.amount, debit: 0, balance: balance }); });
-                withdrawalsLedger?.forEach(w => { balance -= w.amount; entries.push({ date: w.processed_date, desc: 'Withdrawal', credit: 0, debit: w.amount, balance: balance }); });
-                entries.sort((a,b) => new Date(a.date) - new Date(b.date));
-                const ledgerBody = document.getElementById('ledgerList');
-                if(entries.length === 0) { ledgerBody.innerHTML='<td><td colspan="5" class="empty-state">No ledger entries yet</td>'; }
-                else { ledgerBody.innerHTML = entries.map(e => `<tr>
-                    <td>${new Date(e.date).toLocaleDateString()}</td>
-                    <td>${e.desc}</td>
-                    <td>${e.credit ? `Rs. ${e.credit.toLocaleString()}` : '-'}</td>
-                    <td>${e.debit ? `Rs. ${e.debit.toLocaleString()}` : '-'}</td>
-                    <td class="financial-highlight">Rs. ${e.balance.toLocaleString()}</td>
-                </table>`).join(''); }
-            } catch(e) { console.error('Analytics error:', e); }
-        }
-        
-        window.showInvestorBatchDetail = function(idx) {
-            const item = batchDataCache[idx];
-            if(!item) return;
-            const netProfit = (item.sales || 0) - (item.expenses || 0);
-            const investorShare = netProfit * 0.5;
-            document.getElementById('batchDetailTitle').innerHTML = `Batch ${item.id?.slice(0, 12)}... Details`;
-            document.getElementById('batchDetailContent').innerHTML = `<div class="form-card">
-                <p><strong>Investment Amount:</strong> Rs. ${(item.investment_amount || 0).toLocaleString()}</p>
-                <p><strong>Production Quantity:</strong> ${item.production_quantity || 0} bulbs</p>
-                <p><strong>Batch Status:</strong> ${item.status}</p>
-                <p><strong>Sales Revenue:</strong> ${item.status === 'In Production' || item.status === 'Completed' ? 'Not yet sold' : `Rs. ${(item.sales || 0).toLocaleString()}`}</p>
-                <p><strong>Expenses:</strong> Rs. ${Math.abs(item.expenses || 0).toLocaleString()}</p>
-                <p><strong>Net ${netProfit < 0 ? 'Loss' : 'Profit'}:</strong> <span class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</span></p>
-                <p><strong>Your Share (50%):</strong> ${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</p>
-                <p><strong>ROI:</strong> ${item.investment_amount ? ((investorShare / item.investment_amount) * 100).toFixed(2) : '0'}%</p>
-                <p><strong>Profit Credited:</strong> ${item.profit_credited ? 'Yes' : 'Pending'}</p>
-            </div>`;
-            document.getElementById('batchDetailModal').style.display = 'flex';
-            document.getElementById('batchDetailModal').classList.add('active');
-        };
-        
-        async function loadInvestorActivityLog() {
-            try {
-                const { data: investments } = await supabase.from('investments').select('created_at, amount, status').eq('investor_id', currentInvestorId);
-                const { data: profits } = await supabase.from('profits').select('paid_date, amount, paid').eq('investor_id', currentInvestorId).eq('paid', true);
-                const { data: withdrawals } = await supabase.from('withdrawals').select('request_date, amount, status').eq('investor_id', currentInvestorId);
-                const container = document.getElementById('activityLogList');
-                let html = '';
-                if(investments?.length) { html += `<div class="log-group"><div class="log-group-title"><i class="fas fa-chart-line"></i> Investments</div>`; investments.forEach(i => html += `<div class="log-item"><i class="fas fa-plus-circle log-icon"></i><span class="log-time">${new Date(i.created_at).toLocaleDateString()}</span><span class="log-text">Invested Rs. ${i.amount.toLocaleString()} - ${i.status}</span></div>`); html += `</div>`; }
-                if(profits?.length) { html += `<div class="log-group"><div class="log-group-title"><i class="fas fa-coins"></i> Profit Credits</div>`; profits.forEach(p => html += `<div class="log-item"><i class="fas fa-money-bill-wave log-icon"></i><span class="log-time">${new Date(p.paid_date).toLocaleDateString()}</span><span class="log-text">Credit Rs. ${p.amount.toLocaleString()} - Profit distributed</span></div>`); html += `</div>`; }
-                if(withdrawals?.length) { html += `<div class="log-group"><div class="log-group-title"><i class="fas fa-arrow-down"></i> Withdrawals</div>`; withdrawals.forEach(w => html += `<div class="log-item"><i class="fas fa-arrow-right-from-bracket log-icon"></i><span class="log-time">${new Date(w.request_date).toLocaleDateString()}</span><span class="log-text">Withdrawal request of Rs. ${w.amount.toLocaleString()} - ${w.status}</span></div>`); html += `</div>`; }
-                container.innerHTML = html || '<div class="empty-state">No activity logs</div>';
-            } catch(e) { console.error('Activity log error:', e); }
-        }
-        
-        async function renderInvestorAnalyticsCharts() {
-            try {
-                const { data: profits } = await supabase.from('profits').select('paid_date, amount').eq('investor_id', currentInvestorId).eq('paid', true);
-                const { data: investments } = await supabase.from('investments').select('investment_date, amount').eq('investor_id', currentInvestorId).eq('status', 'active');
-                const profitMonths = profits?.map(p => new Date(p.paid_date).toLocaleDateString('default',{month:'short'})) || ['Jan'];
-                const profitAmounts = profits?.map(p => p.amount) || [0];
-                const invAmounts = investments?.map(i => i.amount) || [0];
-                const invLabels = investments?.map((_,i) => `Inv ${i+1}`) || ['Start'];
-                const roiValues = investments?.map(inv => ((inv.amount * 0.4) / inv.amount * 100).toFixed(1)) || [0];
-                
-                if(analyticsCharts.investment) analyticsCharts.investment?.destroy();
-                if(analyticsCharts.profit) analyticsCharts.profit?.destroy();
-                if(analyticsCharts.roi) analyticsCharts.roi?.destroy();
-                
-                analyticsCharts.investment = new Chart(document.getElementById('investmentGrowthChart'), { type: 'line', data: { labels: invLabels, datasets: [{ label: 'Investment (Rs.)', data: invAmounts, borderColor: '#E8B13C', fill: true }] }, options: { responsive: true } });
-                analyticsCharts.profit = new Chart(document.getElementById('profitGrowthChart'), { type: 'bar', data: { labels: profitMonths, datasets: [{ label: 'Profit (Rs.)', data: profitAmounts, backgroundColor: '#1e7e5e' }] }, options: { responsive: true } });
-                analyticsCharts.roi = new Chart(document.getElementById('roiChart'), { type: 'doughnut', data: { labels: invLabels, datasets: [{ data: roiValues, backgroundColor: ['#E8B13C', '#1e7e5e', '#d4a017', '#2c6e9e'] }] }, options: { responsive: true } });
-            } catch(e) { console.error('Chart rendering error:', e); }
-        }
-        
-        async function updateInvestorBalanceBreakdown() {
-            try {
-                const { totalInvested, totalPaidProfit, available } = await computeAvailableBalance();
-                const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
-                const totalWithdrawn = withdrawals?.reduce((s,w)=>s+(w.amount||0),0) || 0;
-                document.getElementById('balanceBreakdown').innerHTML = `
-                    <div class="balance-item"><label>💰 Total Invested</label><div class="value">Rs. ${totalInvested.toLocaleString()}</div></div>
-                    <div class="balance-item"><label>✅ Credited Profit</label><div class="value">Rs. ${totalPaidProfit.toLocaleString()}</div></div>
-                    <div class="balance-item"><label>📤 Total Withdrawn</label><div class="value">Rs. ${totalWithdrawn.toLocaleString()}</div></div>
-                    <div class="balance-item"><label>💵 Available Balance</label><div class="value">Rs. ${available.toLocaleString()}</div></div>
-                `;
-            } catch(e) { console.error('Balance breakdown error:', e); }
-        }
-        
-        document.getElementById('openInvestmentModalBtn').onclick = () => {
-            document.getElementById('selectedPaymentMethod').value = '';
-            document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
-            currentInvestmentScreenshot = null;
-            document.getElementById('investmentScreenshot').value = '';
-            document.getElementById('investmentScreenshotPreview').innerHTML = '';
-            document.getElementById('investmentScreenshotPreview').classList.remove('active');
-            document.getElementById('investmentAmount').value = '';
-            document.getElementById('investmentTransactionId').value = '';
-            document.getElementById('investmentNotes').value = '';
-            const modal = document.getElementById('investmentModal');
-            modal.style.display = 'flex';
-            modal.classList.add('active');
-        };
-        
-        document.getElementById('openWithdrawalModalBtn').onclick = () => {
-            document.getElementById('withdrawAmount').value = '';
-            document.getElementById('accountTitle').value = '';
-            document.getElementById('accountDetails').value = '';
-            currentWithdrawalScreenshot = null;
-            document.getElementById('withdrawalScreenshot').value = '';
-            document.getElementById('withdrawalScreenshotPreview').innerHTML = '';
-            document.getElementById('withdrawalScreenshotPreview').classList.remove('active');
-            const modal = document.getElementById('withdrawalModal');
-            modal.style.display = 'flex';
-            modal.classList.add('active');
-        };
-        
-        document.getElementById('submitInvestmentBtn').onclick = async () => {
-            const amount = document.getElementById('investmentAmount').value;
-            const paymentMethod = document.getElementById('selectedPaymentMethod').value;
-            const transactionId = document.getElementById('investmentTransactionId').value;
-            const notes = document.getElementById('investmentNotes').value;
-            if(!amount || !paymentMethod || !transactionId) { showToast('Amount, Payment Method and Transaction ID required', true); return; }
-            if(parseFloat(amount) < 1000) { showToast('Minimum investment Rs. 1,000', true); return; }
-            try {
-                const { error } = await supabase.from('investments').insert([{ 
-                    investor_id: currentInvestorId, 
-                    amount: parseFloat(amount), 
-                    investment_date: new Date().toISOString().split('T')[0], 
-                    payment_method: paymentMethod, 
-                    transaction_id: transactionId, 
-                    status: 'pending', 
-                    notes: notes || `Payment via ${paymentMethod}`,
-                    screenshot: currentInvestmentScreenshot
-                }]);
-                if(error) throw error;
-                showToast('Investment request submitted!', false); 
-                closeModal('investmentModal'); 
-                await loadInvestmentRequests(); 
-            } catch(e) { showToast(e.message, true); }
-        };
-        
-        document.getElementById('submitWithdrawalBtn').onclick = async () => {
-            const amount = document.getElementById('withdrawAmount').value;
-            const method = document.getElementById('withdrawMethod').value;
-            const accountTitle = document.getElementById('accountTitle').value;
-            const accountDetails = document.getElementById('accountDetails').value;
-            if(!amount || !accountTitle || !accountDetails) { showToast('All fields required', true); return; }
-            if(parseFloat(amount) < 1000) { showToast('Minimum withdrawal Rs. 1,000', true); return; }
-            try {
-                const { available } = await computeAvailableBalance();
-                if(parseFloat(amount) > available) { showToast(`Insufficient balance! Available: Rs. ${available.toLocaleString()}`, true); return; }
-                const { error } = await supabase.from('withdrawals').insert([{ 
-                    investor_id: currentInvestorId, 
-                    amount: parseFloat(amount), 
-                    request_date: new Date().toISOString().split('T')[0], 
-                    payment_method: method, 
-                    account_title: accountTitle,
-                    account_details: accountDetails, 
-                    status: 'pending',
-                    screenshot: currentWithdrawalScreenshot
-                }]);
-                if(error) throw error;
-                showToast('Withdrawal request submitted!', false); 
-                closeModal('withdrawalModal'); 
-                await loadWithdrawals(); 
-                await loadStatsAndBalance(); 
-                await loadProfile(); 
-            } catch(e) { showToast(e.message, true); }
-        };
-        
-        document.getElementById('logoutBtn').onclick = async () => { await supabase.auth.signOut(); window.location.href='investor-auth.html'; };
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
-        document.querySelectorAll('.stat-card').forEach(card => card.addEventListener('click', () => switchTab(card.getAttribute('data-tab'))));
-        
-        async function checkAuth(){
-            try {
-                const { data: { user } } = await supabase.auth.getUser();
-                if(!user) { window.location.href='investor-auth.html'; return; }
-                currentInvestorId = user.id;
-                document.getElementById('userName').innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
-                const { data: existing } = await supabase.from('investors').select('id').eq('id', currentInvestorId);
-                if(!existing?.length) {
-                    await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', total_investment: 0, total_profit: 0, available_balance: 0, created_at: new Date().toISOString(), chat_enabled: true, voice_enabled: true, video_enabled: true }]);
-                }
-                await loadInvestments(); 
-                await loadInvestmentRequests(); 
-                await loadProfits(); 
-                await loadWithdrawals(); 
-                await loadProfile(); 
-                await loadStatsAndBalance();
-                await refreshAnalyticsData();
-                await checkUserPermissions();
-                window.investorChat.init();
-            } catch(e) { console.error('Auth error:', e); }
-        }
-        checkAuth();
+                    batchDataCache = [];
+                    const rows = investments.map((inv, idx) => {
+                        const batchId = `BATCH-${String(idx+1).padStart(3,'0')}`;
+                        const prodQty = Math.floor(inv.amount / 85) * 10;
+                        const phase = idx % 4;
+                        let batchStatus, sales, expenses, netProfit, investorShare;
+                        
+                        if(phase === 0) { batchStatus = 'In Production'; sales = 0; expenses = inv.amount * 0.4; netProfit = -expenses; investorShare = netProfit * 0.5; }
+                        else if(phase === 1) { batchStatus = 'Completed'; sales = 0; expenses = inv.amount * 0.55; netProfit = -expenses; investorShare = netProfit * 0.5; }
+                        else if(phase === 2) { batchStatus = 'Sold'; sales = inv.amount * (1.5 + (idx * 0.05)); expenses = inv.amount * 0.6; netProfit = sales - expenses; investorShare = netProfit * 0.5; }
+                        else { batchStatus = 'Profit Distributed'; sales = inv.amount * (1.55 + (idx * 0.05)); expenses = inv.amount * 0.6; netProfit = sales - expenses; investorShare = netProfit * 0.5; }
+                        
+                        const roi = investorShare !== 0 ? ((investorShare / inv.amount) * 100).toFixed(2) : '0.00';
+                        const netProfitClass = netProfit < 0 ? 'loss-negative' : '';
+                        const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
+                        const currentStepIndex = progressSteps.indexOf(batchStatus);
+                        const progressHtml = `<div class="progress-tracker">${progressSteps.map((step, i) => `<span class="progress-step ${i < currentStepIndex ? 'completed' : i === currentStepIndex ? 'active' : ''}">${step}</span>`).join('')}</div>`;
+                        let statusClass = batchStatus === 'In Production' ? 'status-in-production' : (batchStatus === 'Completed' ? 'status-completed' : (batchStatus === 'Sold' ? 'status-sold' : 'status-profit-distributed'));
+                        const profitStatus = batchStatus === 'Profit Distributed' ? 'Credited' : 'Pending';
+                        const profitStatusClass = batchStatus === 'Profit Distributed' ? 'status-active' : 'status-pending';
+                        
+                        batchDataCache.push({ batchId, inv, batchStatus, sales, expenses, netProfit, investorShare, prodQty, roi });
+                        
+                        return `<tr class="batch-row" onclick="showBatchDetailAnalytics(${idx})">
+                            <td>${batchId}</td>
+                            <td>Rs. ${inv.amount.toLocaleString()}</td>
+                            <td>${prodQty}</td>
+                            <td><span class="status-badge ${statusClass}">${batchStatus}</span></td>
+                            <td>${progressHtml}</td>
+                            <td>${batchStatus === 'In Production' || batchStatus === 'Completed' ? '-' : `Rs. ${sales.toFixed(0).toLocaleString()}`}</td>
+                            <td>Rs. ${Math.abs(expenses).toFixed(0).toLocaleString()}</td>
+                            <td class="${netProfitClass}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toFixed(0).toLocaleString()}</td>
+                            <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toFixed(0).toLocaleString()}</td>
+                            <td>${roi}%</td>
+                            <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
+                        </tr>`;
+                    }).join('');
+                    tbody.innerHTML = rows;
+                    
+                    // Ledger
+                    const { data: investmentsLedger } = await supabase.from('investments').select('investment_date, amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+                    const { data: profitsLedger } = await supabase.from('profits').select('paid_date, amount').eq('investor_id', currentInvestorId).eq('paid', true);
+                    const { data: withdrawalsLedger } = await supabase.from('withdrawals').select('processed_date, amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
+                    let balance = 0;
+                    const entries = [];
+                    investmentsLedger?.forEach(i => { balance += i.amount; entries.push({ date: i.investment_date, desc: 'Investment Deposit', credit: i.amount, debit: 0, balance: balance }); });
+                    profitsLedger?.forEach(p => { balance += p.amount; entries.push({ date: p.paid_date, desc: 'Profit Credit', credit: p.amount, debit: 0, balance: balance }); });
+                    withdrawalsLedger?.forEach(w => { balance -= w.amount; entries.push({ date: w.processed_date, desc: 'Withdrawal', credit: 0, debit: w.amount, balance: balance }); });
+                    entries.sort((a,b) => new Date(a.date) - new Date(b.date));
+                    const ledgerBody = document.getElementById('ledgerList');
+                    if(entries.length === 0) { ledgerBody.innerHTML='<tr><td colspan="5" class="empty-state">No ledger entries</td></tr>'; }
+                    else { ledgerBody.innerHTML = entries.map(e => `<tr>
+                        <td>${new Date(e.date).toLocaleDateString()}</td>
+                        <td>${e.desc}</td>
+                        <td>${e.credit ? `Rs. ${e.credit.toLocaleString()}` : '-'}</td>
+                        <td>${e.debit ? `Rs. ${e.debit.toLocaleString()}` : '-'}</td>
+                        <td class="financial-highlight">Rs. ${e.balance.toLocaleString()}</td>
+                    </tr>`).join(''); }
+                } catch(e) { console.error('Analytics error:', e); }
+            }
+            
+            window.showBatchDetailAnalytics = function(idx) {
+                const item = batchDataCache[idx];
+                if(!item) return;
+                document.getElementById('batchDetailTitle').innerHTML = `Batch ${item.batchId} Details`;
+                document.getElementById('batchDetailContent').innerHTML = `<div class="form-card">
+                    <p><strong>Investment:</strong> Rs. ${item.inv.amount.toLocaleString()}</p>
+                    <p><strong>Production Quantity:</strong> ${item.prodQty} bulbs</p>
+                    <p><strong>Production Cost:</strong> Rs. ${(item.expenses * 0.7).toFixed(0).toLocaleString()}</p>
+                    <p><strong>Sales Revenue:</strong> ${item.batchStatus === 'In Production' || item.batchStatus === 'Completed' ? 'Not yet sold' : `Rs. ${item.sales.toFixed(0).toLocaleString()}`}</p>
+                    <p><strong>Net ${item.netProfit < 0 ? 'Loss' : 'Profit'}:</strong> <span class="${item.netProfit < 0 ? 'loss-negative' : ''}">${item.netProfit < 0 ? '-' : ''}Rs. ${Math.abs(item.netProfit).toFixed(0).toLocaleString()}</span></p>
+                    <p><strong>Investor Share (50%):</strong> ${item.investorShare < 0 ? '-' : ''}Rs. ${Math.abs(item.investorShare).toFixed(0).toLocaleString()}</p>
+                    <p><strong>ROI:</strong> ${item.roi}%</p>
+                </div>`;
+                document.getElementById('batchDetailModal').style.display = 'flex';
+                document.getElementById('batchDetailModal').classList.add('active');
+            };
+            
+            async function loadActivityLogAnalytics() {
+                try {
+                    const { data: investments } = await supabase.from('investments').select('created_at, amount, status').eq('investor_id', currentInvestorId);
+                    const { data: profits } = await supabase.from('profits').select('paid_date, amount, paid').eq('investor_id', currentInvestorId).eq('paid', true);
+                    const { data: withdrawals } = await supabase.from('withdrawals').select('request_date, amount, status').eq('investor_id', currentInvestorId).eq('status', 'approved');
+                    const container = document.getElementById('activityLogList');
+                    let html = '';
+                    if(investments?.length) { html += `<div class="log-group"><div class="log-group-title"><i class="fas fa-chart-line"></i> Investments</div>`; investments.forEach(i => html += `<div class="log-item"><i class="fas fa-plus-circle log-icon"></i><span class="log-time">${new Date(i.created_at).toLocaleDateString()}</span><span class="log-text">Invested Rs. ${i.amount.toLocaleString()} - ${i.status}</span></div>`); html += `</div>`; }
+                    if(profits?.length) { html += `<div class="log-group"><div class="log-group-title"><i class="fas fa-coins"></i> Profit Credits</div>`; profits.forEach(p => html += `<div class="log-item"><i class="fas fa-money-bill-wave log-icon"></i><span class="log-time">${new Date(p.paid_date).toLocaleDateString()}</span><span class="log-text">Credit Rs. ${p.amount.toLocaleString()} - Profit distributed</span></div>`); html += `</div>`; }
+                    if(withdrawals?.length) { html += `<div class="log-group"><div class="log-group-title"><i class="fas fa-arrow-down"></i> Withdrawals</div>`; withdrawals.forEach(w => html += `<div class="log-item"><i class="fas fa-arrow-right-from-bracket log-icon"></i><span class="log-time">${new Date(w.request_date).toLocaleDateString()}</span><span class="log-text">Withdrew Rs. ${w.amount.toLocaleString()} - ${w.status}</span></div>`); html += `</div>`; }
+                    container.innerHTML = html || '<div class="empty-state">No activity logs</div>';
+                } catch(e) { console.error('Activity log error:', e); }
+            }
+            
+            async function renderAnalyticsCharts() {
+                try {
+                    const { data: profits } = await supabase.from('profits').select('paid_date, amount').eq('investor_id', currentInvestorId).eq('paid', true);
+                    const { data: investments } = await supabase.from('investments').select('investment_date, amount').eq('investor_id', currentInvestorId).eq('status', 'active');
+                    const profitMonths = profits?.map(p => new Date(p.paid_date).toLocaleDateString('default',{month:'short'})) || ['Jan'];
+                    const profitAmounts = profits?.map(p => p.amount) || [0];
+                    const invAmounts = investments?.map(i => i.amount) || [0];
+                    const invLabels = investments?.map((_,i) => `Inv ${i+1}`) || ['Start'];
+                    const roiValues = investments?.map(inv => ((inv.amount * 0.4) / inv.amount * 100).toFixed(1)) || [0];
+                    
+                    if(analyticsCharts.investment) analyticsCharts.investment?.destroy();
+                    if(analyticsCharts.profit) analyticsCharts.profit?.destroy();
+                    if(analyticsCharts.roi) analyticsCharts.roi?.destroy();
+                    
+                    analyticsCharts.investment = new Chart(document.getElementById('investmentGrowthChart'), { type: 'line', data: { labels: invLabels, datasets: [{ label: 'Investment (Rs.)', data: invAmounts, borderColor: '#E8B13C', fill: true }] }, options: { responsive: true } });
+                    analyticsCharts.profit = new Chart(document.getElementById('profitGrowthChart'), { type: 'bar', data: { labels: profitMonths, datasets: [{ label: 'Profit (Rs.)', data: profitAmounts, backgroundColor: '#1e7e5e' }] }, options: { responsive: true } });
+                    analyticsCharts.roi = new Chart(document.getElementById('roiChart'), { type: 'doughnut', data: { labels: invLabels, datasets: [{ data: roiValues, backgroundColor: ['#E8B13C', '#1e7e5e', '#d4a017', '#2c6e9e'] }] }, options: { responsive: true } });
+                } catch(e) { console.error('Chart rendering error:', e); }
+            }
+            
+            async function updateBalanceBreakdown() {
+                try {
+                    const { totalInvested, totalPaidProfit, available } = await computeAvailableBalance();
+                    const { data: withdrawals } = await supabase.from('withdrawals').select('amount').eq('investor_id', currentInvestorId).eq('status', 'approved');
+                    const totalWithdrawn = withdrawals?.reduce((s,w)=>s+(w.amount||0),0) || 0;
+                    document.getElementById('balanceBreakdown').innerHTML = `
+                        <div class="balance-item"><label>💰 Total Invested</label><div class="value">Rs. ${totalInvested.toLocaleString()}</div></div>
+                        <div class="balance-item"><label>✅ Credited Profit</label><div class="value">Rs. ${totalPaidProfit.toLocaleString()}</div></div>
+                        <div class="balance-item"><label>📤 Total Withdrawn</label><div class="value">Rs. ${totalWithdrawn.toLocaleString()}</div></div>
+                        <div class="balance-item"><label>💵 Available Balance</label><div class="value">Rs. ${available.toLocaleString()}</div></div>
+                    `;
+                } catch(e) { console.error('Balance breakdown error:', e); }
+            }
+            
+            document.getElementById('openInvestmentModalBtn').onclick = () => {
+                document.getElementById('selectedPaymentMethod').value = '';
+                document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
+                currentInvestmentScreenshot = null;
+                document.getElementById('investmentScreenshot').value = '';
+                document.getElementById('investmentScreenshotPreview').innerHTML = '';
+                document.getElementById('investmentScreenshotPreview').classList.remove('active');
+                document.getElementById('investmentAmount').value = '';
+                document.getElementById('investmentTransactionId').value = '';
+                document.getElementById('investmentNotes').value = '';
+                const modal = document.getElementById('investmentModal');
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            };
+            
+            document.getElementById('openWithdrawalModalBtn').onclick = () => {
+                document.getElementById('withdrawAmount').value = '';
+                document.getElementById('accountTitle').value = '';
+                document.getElementById('accountDetails').value = '';
+                currentWithdrawalScreenshot = null;
+                document.getElementById('withdrawalScreenshot').value = '';
+                document.getElementById('withdrawalScreenshotPreview').innerHTML = '';
+                document.getElementById('withdrawalScreenshotPreview').classList.remove('active');
+                const modal = document.getElementById('withdrawalModal');
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            };
+            
+            document.getElementById('submitInvestmentBtn').onclick = async () => {
+                const amount = document.getElementById('investmentAmount').value;
+                const paymentMethod = document.getElementById('selectedPaymentMethod').value;
+                const transactionId = document.getElementById('investmentTransactionId').value;
+                const notes = document.getElementById('investmentNotes').value;
+                if(!amount || !paymentMethod || !transactionId) { showToast('Amount, Payment Method and Transaction ID required', true); return; }
+                if(parseFloat(amount) < 1000) { showToast('Minimum investment Rs. 1,000', true); return; }
+                try {
+                    const { error } = await supabase.from('investments').insert([{ 
+                        investor_id: currentInvestorId, 
+                        amount: parseFloat(amount), 
+                        investment_date: new Date().toISOString().split('T')[0], 
+                        payment_method: paymentMethod, 
+                        transaction_id: transactionId, 
+                        status: 'pending', 
+                        notes: notes || `Payment via ${paymentMethod}`,
+                        screenshot: currentInvestmentScreenshot
+                    }]);
+                    if(error) throw error;
+                    showToast('Investment request submitted!', false); 
+                    closeModal('investmentModal'); 
+                    await loadInvestmentRequests(); 
+                } catch(e) { showToast(e.message, true); }
+            };
+            
+            document.getElementById('submitWithdrawalBtn').onclick = async () => {
+                const amount = document.getElementById('withdrawAmount').value;
+                const method = document.getElementById('withdrawMethod').value;
+                const accountTitle = document.getElementById('accountTitle').value;
+                const accountDetails = document.getElementById('accountDetails').value;
+                if(!amount || !accountTitle || !accountDetails) { showToast('All fields required', true); return; }
+                if(parseFloat(amount) < 1000) { showToast('Minimum withdrawal Rs. 1,000', true); return; }
+                try {
+                    const { available } = await computeAvailableBalance();
+                    if(parseFloat(amount) > available) { showToast(`Insufficient balance! Available: Rs. ${available.toLocaleString()}`, true); return; }
+                    const { error } = await supabase.from('withdrawals').insert([{ 
+                        investor_id: currentInvestorId, 
+                        amount: parseFloat(amount), 
+                        request_date: new Date().toISOString().split('T')[0], 
+                        payment_method: method, 
+                        account_title: accountTitle,
+                        account_details: accountDetails, 
+                        status: 'pending',
+                        screenshot: currentWithdrawalScreenshot
+                    }]);
+                    if(error) throw error;
+                    showToast('Withdrawal request submitted!', false); 
+                    closeModal('withdrawalModal'); 
+                    await loadWithdrawals(); 
+                    await loadStatsAndBalance(); 
+                    await loadProfile(); 
+                } catch(e) { showToast(e.message, true); }
+            };
+            
+            document.getElementById('logoutBtn').onclick = async () => { await supabase.auth.signOut(); window.location.href='investor-auth.html'; };
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
+            document.querySelectorAll('.stat-card').forEach(card => card.addEventListener('click', () => switchTab(card.getAttribute('data-tab'))));
+            
+            async function checkAuth(){
+                try {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if(!user) { window.location.href='investor-auth.html'; return; }
+                    currentInvestorId = user.id;
+                    document.getElementById('userName').innerHTML = `<i class="fas fa-user-astronaut"></i> ${user.email.split('@')[0]}`;
+                    const { data: existing } = await supabase.from('investors').select('id').eq('id', currentInvestorId);
+                    if(!existing?.length) {
+                        await supabase.from('investors').insert([{ id: currentInvestorId, email: user.email, full_name: user.email.split('@')[0], phone: '', city: '', total_investment: 0, total_profit: 0, available_balance: 0, created_at: new Date().toISOString(), chat_enabled: true, voice_enabled: true, video_enabled: true }]);
+                    }
+                    await loadInvestments(); 
+                    await loadInvestmentRequests(); 
+                    await loadProfits(); 
+                    await loadWithdrawals(); 
+                    await loadProfile(); 
+                    await loadStatsAndBalance();
+                    await refreshAnalyticsData();
+                    await checkUserPermissions();
+                    window.investorChat.init();
+                } catch(e) { console.error('Auth error:', e); }
+            }
+            checkAuth();
+        })();
     </script>
 </body>
 </html>
