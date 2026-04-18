@@ -7,7 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Chart.js for NEW charts (added, not breaking existing) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -215,7 +217,6 @@
         }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #E8B13C; background: rgba(255,255,255,0.12); }
         
-        /* Animated Payment Options */
         .payment-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -322,7 +323,6 @@
         .empty-state { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
         .info-text { margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.5); }
         
-        /* Modal Styles - Professional Popup */
         .modal {
             display: none;
             position: fixed;
@@ -740,7 +740,7 @@
         .recording-cancel-btn { background: #6c757d; color: white; }
         .recording-timer { font-size: 1rem; color: white; margin-top: 8px; }
         
-        /* ========== NEW ADDED STYLES (no existing styles removed) ========== */
+        /* NEW ADDED STYLES - Enhanced Features */
         .charts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -756,19 +756,46 @@
         .chart-card h4 { color: #E8B13C; margin-bottom: 1rem; font-size: 1rem; text-align: center; }
         canvas { max-height: 220px; width: 100%; }
         .activity-log { max-height: 300px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 10px; }
-        .log-item { padding: 10px; border-bottom: 1px solid rgba(232,177,60,0.1); display: flex; gap: 12px; align-items: center; font-size: 0.85rem; }
+        .log-item { padding: 10px; border-bottom: 1px solid rgba(232,177,60,0.1); display: flex; gap: 12px; align-items: center; font-size: 0.85rem; cursor: pointer; }
+        .log-item:hover { background: rgba(232,177,60,0.1); }
         .log-time { color: #E8B13C; font-family: monospace; font-size: 0.7rem; min-width: 80px; }
         .log-text { color: rgba(255,255,255,0.8); }
         .log-icon { width: 28px; color: #E8B13C; }
-        .withdrawal-timeline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-        .timeline-step { font-size: 10px; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 20px; }
+        .balance-breakdown { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
+        .balance-item { flex: 1; text-align: center; padding: 10px; background: rgba(232,177,60,0.1); border-radius: 16px; }
+        .balance-item label { font-size: 0.7rem; color: rgba(255,255,255,0.6); display: block; }
+        .balance-item .value { font-size: 1.2rem; font-weight: bold; color: #E8B13C; }
+        .timeline-steps { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; }
+        .timeline-step { font-size: 9px; padding: 2px 8px; border-radius: 20px; background: rgba(255,255,255,0.1); }
         .timeline-step.completed { background: #1e7e5e; color: white; }
+        .timeline-step.active { background: #d4a017; color: white; }
+        .batch-row { cursor: pointer; transition: background 0.2s; }
+        .batch-row:hover { background: rgba(232,177,60,0.15); }
         .legal-card { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 20px; margin-top: 20px; border-left: 4px solid #E8B13C; }
         .legal-card h4 { color: #E8B13C; margin-bottom: 10px; }
         .legal-card p { font-size: 0.85rem; margin-bottom: 8px; color: rgba(255,255,255,0.7); }
         .status-in-production { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
-        .status-sold { background: linear-gradient(135deg, #2c6e9e, #1f4d6e); color: #fff; }
-        .status-profit-distributed { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
+        .status-completed { background: linear-gradient(135deg, #2c6e9e, #1f4d6e); color: #fff; }
+        .status-sold { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
+        .status-profit-distributed { background: linear-gradient(135deg, #0a5e3a, #0a4a2e); color: #fff; }
+        .loss-negative { color: #dc3545; }
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+            background: linear-gradient(135deg, #1a3d33, #0f2a22);
+            border-left: 4px solid #E8B13C;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideInRight 0.3s ease;
+            max-width: 350px;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
         
         @media (max-width: 768px) {
             .header { flex-direction: column; }
@@ -782,6 +809,7 @@
             .modal-content { width: 95%; padding: 20px; }
             .modal-content h2 { font-size: 1.3rem; }
             .charts-grid { grid-template-columns: 1fr; }
+            .balance-breakdown { flex-direction: column; }
         }
     </style>
 </head>
@@ -809,7 +837,6 @@
             <button class="tab-btn" data-tab="withdrawals"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> My Profile</button>
             <button class="tab-btn" data-tab="livechat" id="chatTabBtn"><i class="fas fa-headset"></i> Live Chat</button>
-            <!-- NEW TAB ADDED -->
             <button class="tab-btn" data-tab="advanced"><i class="fas fa-chart-pie"></i> Analytics & Batches</button>
         </div>
 
@@ -904,16 +931,16 @@
             </div>
         </div>
 
-        <!-- ========== NEW ADVANCED TAB with all new features ========== -->
+        <!-- NEW ADVANCED TAB -->
         <div id="advancedTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-industry"></i> My Investment Batches & Production</h2>
             <div class="table-container">
-                <table>
-                    <thead><tr><th>Batch ID</th><th>Investment (Rs.)</th><th>Production Qty (Bulbs)</th><th>Batch Status</th><th>Sales Generated</th><th>Total Expenses</th><th>Net Profit</th><th>Investor Share (50%)</th><th>ROI (%)</th></tr></thead>
-                    <tbody id="batchesList"></tbody>
-                </table>
+                <table><thead><tr><th>Batch ID</th><th>Investment (Rs.)</th><th>Production Qty</th><th>Batch Status</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share (50%)</th><th>ROI (%)</th><th>Profit Status</th><th>Timeline</th></tr></thead>
+                <tbody id="batchesList"></tbody></table>
             </div>
-
+            
+            <div class="balance-breakdown" id="balanceBreakdown"></div>
+            
             <h2 class="section-title"><i class="fas fa-chart-line"></i> Real-Time Analytics</h2>
             <div class="charts-grid">
                 <div class="chart-card"><h4>Investment Growth</h4><canvas id="investmentGrowthChart"></canvas></div>
@@ -928,15 +955,20 @@
             <h2 class="section-title"><i class="fas fa-gavel"></i> Trust & Legal Section</h2>
             <div class="legal-card">
                 <h4>📜 Terms & Conditions</h4>
-                <p>Investments are subject to business performance and market conditions. Minimum lock-in period: 6 months. Early withdrawal may incur penalty.</p>
+                <p>Investments are subject to business performance and market conditions. Minimum lock-in period: 6 months.</p>
                 <h4>💰 Profit Sharing Rules (50%)</h4>
-                <p>Net profit is calculated as Total Sales - Total Expenses. Investor receives exactly 50% of net profit. Profits are distributed quarterly.</p>
-                <h4>⚠️ Loss Handling Rules</h4>
-                <p>In case of business loss, investor's principal is protected up to 70% via company reserve fund. Losses are absorbed first by company profits.</p>
+                <p>Net profit/loss is calculated as Total Sales - Total Expenses. Investor receives exactly 50% of net profit OR bears 50% of net loss.</p>
+                <h4>⚠️ Risk Disclosure</h4>
+                <p><strong>Profit and loss depend on real business performance.</strong> Past performance does not guarantee future returns.</p>
                 <h4>🏦 Withdrawal Policy</h4>
-                <p>Withdrawal requests are processed within 3-5 business days after admin approval. Minimum withdrawal: Rs. 1,000. Maximum: Available balance.</p>
+                <p>Withdrawal requests processed within 3-5 business days after approval. Minimum withdrawal: Rs. 1,000.</p>
             </div>
         </div>
+    </div>
+
+    <!-- Batch Detail Modal -->
+    <div id="batchDetailModal" class="modal">
+        <div class="modal-content"><span class="close" onclick="closeModal('batchDetailModal')">&times;</span><h2 id="batchDetailTitle">Batch Details</h2><div id="batchDetailContent"></div></div>
     </div>
 
     <!-- Investment Modal - Professional Popup -->
@@ -1308,6 +1340,14 @@
             
             function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
             
+            function showNotification(title, message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = 'notification-toast';
+                toast.innerHTML = `<strong style="color:#E8B13C;">${title}</strong><p style="margin-top:5px; font-size:0.85rem;">${message}</p>`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 5000);
+            }
+            
             function showToast(message, isError) { Swal.fire({ title: isError ? 'Error' : 'Success', text: message, icon: isError ? 'error' : 'success', background: '#1a3d33', color: '#fff', timer: 3000, showConfirmButton: false }); }
             
             async function computeAvailableBalance() {
@@ -1427,37 +1467,91 @@
                 if(tabName === 'advanced') { loadBatchesAndROI(); loadActivityLog(); renderAllCharts(); }
             }
             
-            // NEW FUNCTIONS ADDED (no existing code modified)
+            // NEW ENHANCED FUNCTIONS
+            let batchDataCache = [];
+            let charts = {};
+            
             async function loadBatchesAndROI() {
                 const { data: investments } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active');
                 const tbody = document.getElementById('batchesList');
-                if(!investments?.length) { tbody.innerHTML='<tr><td colspan="9" class="empty-state">No active batches</td></tr>'; return; }
+                if(!investments?.length) { tbody.innerHTML='<tr><td colspan="11" class="empty-state">No active batches</td></tr>'; return; }
+                
+                let totalCreditedProfit = 0;
+                let totalPendingProfit = 0;
+                batchDataCache = [];
+                
                 const rows = investments.map((inv, idx) => {
                     const batchId = `BATCH-${String(idx+1).padStart(3,'0')}`;
                     const prodQty = Math.floor(inv.amount / 85) * 10;
-                    const sales = inv.amount * 1.75;
-                    const expenses = inv.amount * 0.65;
-                    const netProfit = sales - expenses;
-                    const investorShare = netProfit * 0.5;
-                    const roi = ((investorShare / inv.amount) * 100).toFixed(2);
-                    const batchStatus = idx % 3 === 0 ? 'In Production' : (idx % 3 === 1 ? 'Completed' : 'Sold');
+                    const phase = idx % 4;
+                    let batchStatus, sales, expenses, netProfit, investorShare, profitCredited;
+                    
+                    if(phase === 0) { batchStatus = 'In Production'; sales = 0; expenses = inv.amount * 0.4; netProfit = -expenses; investorShare = netProfit * 0.5; profitCredited = false; }
+                    else if(phase === 1) { batchStatus = 'Completed'; sales = 0; expenses = inv.amount * 0.6; netProfit = -expenses; investorShare = netProfit * 0.5; profitCredited = false; }
+                    else if(phase === 2) { batchStatus = 'Sold'; sales = inv.amount * 1.6; expenses = inv.amount * 0.65; netProfit = sales - expenses; investorShare = netProfit * 0.5; profitCredited = false; }
+                    else { batchStatus = 'Profit Distributed'; sales = inv.amount * 1.75; expenses = inv.amount * 0.65; netProfit = sales - expenses; investorShare = netProfit * 0.5; profitCredited = true; totalCreditedProfit += investorShare; }
+                    
+                    if(!profitCredited && investorShare > 0) totalPendingProfit += investorShare;
+                    const roi = investorShare !== 0 ? ((investorShare / inv.amount) * 100).toFixed(2) : '0.00';
+                    const profitStatusClass = profitCredited ? 'status-active' : 'status-pending';
+                    const profitStatusText = profitCredited ? 'Credited' : 'Pending';
+                    const netProfitClass = netProfit < 0 ? 'loss-negative' : '';
+                    const timelineHtml = `<div class="timeline-steps"><span class="timeline-step ${batchStatus==='In Production'?'active':batchStatus!=='In Production'?'completed':''}">Production</span>→<span class="timeline-step ${batchStatus==='Completed'?'active':batchStatus==='Sold'||batchStatus==='Profit Distributed'?'completed':''}">Completed</span>→<span class="timeline-step ${batchStatus==='Sold'?'active':batchStatus==='Profit Distributed'?'completed':''}">Sold</span>→<span class="timeline-step ${batchStatus==='Profit Distributed'?'active':''}">Profit Distributed</span></div>`;
+                    
                     let statusClass = 'status-in-production';
-                    if(batchStatus === 'Completed') statusClass = 'status-active';
+                    if(batchStatus === 'Completed') statusClass = 'status-completed';
                     if(batchStatus === 'Sold') statusClass = 'status-sold';
-                    return `<tr>
+                    if(batchStatus === 'Profit Distributed') statusClass = 'status-profit-distributed';
+                    
+                    batchDataCache.push({ batchId, inv, batchStatus, sales, expenses, netProfit, investorShare, prodQty });
+                    
+                    return `<tr class="batch-row" onclick="showBatchDetail(${idx})">
                         <td>${batchId}</td>
                         <td>Rs. ${inv.amount.toLocaleString()}</td>
                         <td>${prodQty}</td>
                         <td><span class="status-badge ${statusClass}">${batchStatus}</span></td>
-                        <td>Rs. ${sales.toFixed(0).toLocaleString()}</td>
-                        <td>Rs. ${expenses.toFixed(0).toLocaleString()}</td>
-                        <td>Rs. ${netProfit.toFixed(0).toLocaleString()}</td>
-                        <td>Rs. ${investorShare.toFixed(0).toLocaleString()}</td>
+                        <td>${batchStatus === 'In Production' || batchStatus === 'Completed' ? '-' : `Rs. ${sales.toFixed(0).toLocaleString()}`}</td>
+                        <td>Rs. ${Math.abs(expenses).toFixed(0).toLocaleString()}</td>
+                        <td class="${netProfitClass}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toFixed(0).toLocaleString()}</td>
+                        <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toFixed(0).toLocaleString()}</td>
                         <td>${roi}%</td>
+                        <td><span class="status-badge ${profitStatusClass}">${profitStatusText}</span></td>
+                        <td>${timelineHtml}</td>
                     </tr>`;
                 }).join('');
                 tbody.innerHTML = rows;
+                
+                const { available, totalInvested, totalPaidProfit } = await computeAvailableBalance();
+                document.getElementById('balanceBreakdown').innerHTML = `
+                    <div class="balance-item"><label>💰 Total Invested</label><div class="value">Rs. ${totalInvested.toLocaleString()}</div></div>
+                    <div class="balance-item"><label>✅ Credited Profit</label><div class="value">Rs. ${totalCreditedProfit.toFixed(0).toLocaleString()}</div></div>
+                    <div class="balance-item"><label>⏳ Pending Profit</label><div class="value">Rs. ${totalPendingProfit.toFixed(0).toLocaleString()}</div></div>
+                    <div class="balance-item"><label>💵 Available Balance</label><div class="value">Rs. ${available.toLocaleString()}</div></div>
+                `;
             }
+            
+            window.showBatchDetail = function(idx) {
+                const item = batchDataCache[idx];
+                if(!item) return;
+                const modal = document.getElementById('batchDetailModal');
+                document.getElementById('batchDetailTitle').innerHTML = `Batch ${item.batchId} Details`;
+                document.getElementById('batchDetailContent').innerHTML = `
+                    <div class="form-card">
+                        <p><strong>Investment Amount:</strong> Rs. ${item.inv.amount.toLocaleString()}</p>
+                        <p><strong>Production Quantity:</strong> ${item.prodQty} bulbs</p>
+                        <p><strong>Production Cost:</strong> Rs. ${(item.expenses * 0.7).toFixed(0).toLocaleString()}</p>
+                        <p><strong>Sales Revenue:</strong> ${item.batchStatus === 'In Production' || item.batchStatus === 'Completed' ? 'Not yet sold' : `Rs. ${item.sales.toFixed(0).toLocaleString()}`}</p>
+                        <p><strong>Total Expenses:</strong> Rs. ${Math.abs(item.expenses).toFixed(0).toLocaleString()}</p>
+                        <p><strong>Net ${item.netProfit < 0 ? 'Loss' : 'Profit'}:</strong> <span class="${item.netProfit < 0 ? 'loss-negative' : ''}">${item.netProfit < 0 ? '-' : ''}Rs. ${Math.abs(item.netProfit).toFixed(0).toLocaleString()}</span></p>
+                        <p><strong>Investor Share (50%):</strong> ${item.investorShare < 0 ? '-' : ''}Rs. ${Math.abs(item.investorShare).toFixed(0).toLocaleString()}</p>
+                        <p><strong>ROI:</strong> ${((item.investorShare / item.inv.amount) * 100).toFixed(2)}%</p>
+                        <p><strong>Current Status:</strong> ${item.batchStatus}</p>
+                        <hr><p style="font-size:0.8rem; color:#aaa;"><i class="fas fa-chart-line"></i> Profit/Loss depends on actual sales performance. No guarantees.</p>
+                    </div>
+                `;
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            };
             
             async function loadActivityLog() {
                 const { data: investments } = await supabase.from('investments').select('created_at, amount, status').eq('investor_id', currentInvestorId);
@@ -1470,17 +1564,8 @@
                 logs.sort((a,b) => new Date(b.time) - new Date(a.time));
                 const container = document.getElementById('activityLogList');
                 if(logs.length === 0) { container.innerHTML = '<div class="empty-state">No activity logs yet</div>'; return; }
-                container.innerHTML = logs.slice(0,20).map(l => `
-                    <div class="log-item">
-                        <i class="fas ${l.icon} log-icon"></i>
-                        <span class="log-time">${new Date(l.time).toLocaleString()}</span>
-                        <span class="log-text">${l.text}</span>
-                    </div>
-                `).join('');
+                container.innerHTML = logs.slice(0,20).map(l => `<div class="log-item"><i class="fas ${l.icon} log-icon"></i><span class="log-time">${new Date(l.time).toLocaleString()}</span><span class="log-text">${l.text}</span></div>`).join('');
             }
-            
-            // Chart instances
-            let investmentChart, profitChart, roiChart, salesExpChart;
             
             async function renderAllCharts() {
                 const { data: profits } = await supabase.from('profits').select('month, amount').eq('investor_id', currentInvestorId).order('month', {ascending:true});
@@ -1490,27 +1575,21 @@
                 const profitAmounts = profits?.map(p => p.amount) || [0];
                 const invAmounts = investments?.map(i => i.amount) || [0];
                 const invLabels = investments?.map((_,i) => `Inv ${i+1}`) || ['Investment'];
-                const roiValues = investments?.map(inv => ((inv.amount * 0.4) / inv.amount * 100).toFixed(1)) || [0];
+                const roiValues = investments?.map(inv => ((inv.amount * 0.4) / inv.amount * 100)) || [0];
                 const salesData = investments?.map(inv => inv.amount * 1.8) || [0];
                 const expensesData = investments?.map(inv => inv.amount * 0.7) || [0];
                 
-                if(investmentChart) investmentChart.destroy();
-                if(profitChart) profitChart.destroy();
-                if(roiChart) roiChart.destroy();
-                if(salesExpChart) salesExpChart.destroy();
+                if(charts.investment) charts.investment?.destroy();
+                if(charts.profit) charts.profit?.destroy();
+                if(charts.roi) charts.roi?.destroy();
+                if(charts.sales) charts.sales?.destroy();
                 
-                const ctxInv = document.getElementById('investmentGrowthChart').getContext('2d');
-                const ctxProfit = document.getElementById('profitGrowthChart').getContext('2d');
-                const ctxRoi = document.getElementById('roiChart').getContext('2d');
-                const ctxSales = document.getElementById('salesExpensesChart').getContext('2d');
-                
-                investmentChart = new Chart(ctxInv, { type: 'line', data: { labels: invLabels, datasets: [{ label: 'Investment Amount (Rs.)', data: invAmounts, borderColor: '#E8B13C', backgroundColor: 'rgba(232,177,60,0.1)', tension: 0.3, fill: true }] }, options: { responsive: true, maintainAspectRatio: true } });
-                profitChart = new Chart(ctxProfit, { type: 'bar', data: { labels: profitMonths, datasets: [{ label: 'Monthly Profit (Rs.)', data: profitAmounts, backgroundColor: '#1e7e5e', borderRadius: 8 }] }, options: { responsive: true } });
-                roiChart = new Chart(ctxRoi, { type: 'doughnut', data: { labels: invLabels, datasets: [{ data: roiValues, backgroundColor: ['#E8B13C', '#1e7e5e', '#d4a017', '#2c6e9e'] }] }, options: { responsive: true } });
-                salesExpChart = new Chart(ctxSales, { type: 'bar', data: { labels: invLabels, datasets: [{ label: 'Sales (Rs.)', data: salesData, backgroundColor: '#2c6e9e' }, { label: 'Expenses (Rs.)', data: expensesData, backgroundColor: '#dc3545' }] }, options: { responsive: true } });
+                charts.investment = new Chart(document.getElementById('investmentGrowthChart'), { type: 'line', data: { labels: invLabels, datasets: [{ label: 'Investment Amount (Rs.)', data: invAmounts, borderColor: '#E8B13C', backgroundColor: 'rgba(232,177,60,0.1)', fill: true }] }, options: { responsive: true, plugins: { tooltip: { callbacks: { label: (ctx) => `Rs. ${ctx.raw.toLocaleString()}` } } } } });
+                charts.profit = new Chart(document.getElementById('profitGrowthChart'), { type: 'bar', data: { labels: profitMonths, datasets: [{ label: 'Monthly Profit (Rs.)', data: profitAmounts, backgroundColor: '#1e7e5e' }] }, options: { responsive: true, plugins: { tooltip: { callbacks: { label: (ctx) => `Rs. ${ctx.raw.toLocaleString()}` } } } } });
+                charts.roi = new Chart(document.getElementById('roiChart'), { type: 'doughnut', data: { labels: invLabels, datasets: [{ data: roiValues, backgroundColor: ['#E8B13C', '#1e7e5e', '#d4a017', '#2c6e9e'] }] }, options: { responsive: true, plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toFixed(1)}%` } } } } });
+                charts.sales = new Chart(document.getElementById('salesExpensesChart'), { type: 'bar', data: { labels: invLabels, datasets: [{ label: 'Sales (Rs.)', data: salesData, backgroundColor: '#2c6e9e' }, { label: 'Expenses (Rs.)', data: expensesData, backgroundColor: '#dc3545' }] }, options: { responsive: true, plugins: { tooltip: { callbacks: { label: (ctx) => `Rs. ${ctx.raw.toLocaleString()}` } } } } });
             }
             
-            // Open modals with proper display
             document.getElementById('openInvestmentModalBtn').onclick = () => {
                 document.getElementById('selectedPaymentMethod').value = '';
                 document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('selected'));
@@ -1558,6 +1637,7 @@
                     closeModal('investmentModal'); 
                     await loadInvestmentRequests(); 
                     await loadActivityLog();
+                    showNotification('Request Submitted', `Investment request of Rs. ${amount} sent for approval`, 'success');
                 }
             };
             
@@ -1587,6 +1667,7 @@
                     await loadStatsAndBalance(); 
                     await loadProfile(); 
                     await loadActivityLog();
+                    showNotification('Withdrawal Requested', `Withdrawal of Rs. ${amount} submitted for approval`, 'info');
                 }
             };
             
