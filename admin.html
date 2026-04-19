@@ -1578,40 +1578,41 @@
         
         // Check Auth Function (FIXED)
         async function checkAuth() {
-            try {
-                const { data: { session }, error } = await supabaseClient.auth.getSession();
-                if (error || !session) {
-                    console.log('No active session, redirecting to login...');
-                    window.location.href = 'admin-auth.html';
-                    return false;
-                }
-                
-                // Verify admin role
-                const { data: adminData, error: adminError } = await supabaseClient
-                    .from('admin_users')
-                    .select('role, is_active')
-                    .eq('id', session.user.id)
-                    .single();
-                
-                if (adminError || !adminData || !adminData.is_active) {
-                    console.log('Not an admin or account inactive');
-                    await supabaseClient.auth.signOut();
-                    window.location.href = 'admin-auth.html';
-                    return false;
-                }
-                
-                currentAdminUser = session.user;
-                currentAdminRole = adminData.role;
-                document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
-                document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
-                
-                return true;
-            } catch (error) {
-                console.error('Auth check error:', error);
-                window.location.href = 'admin-auth.html';
+    try {
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        if (error || !session) {
+            console.log('No active session');
+            return false;
+        }
+        
+        // Verify admin role - but don't redirect immediately
+        try {
+            const { data: adminData, error: adminError } = await supabaseClient
+                .from('admin_users')
+                .select('role, is_active')
+                .eq('id', session.user.id)
+                .single();
+            
+            if (adminError || !adminData || !adminData.is_active) {
+                console.log('Not an admin or account inactive');
                 return false;
             }
+            
+            currentAdminUser = session.user;
+            currentAdminRole = adminData.role;
+            document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
+            document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
+            
+            return true;
+        } catch(e) {
+            console.log('Admin verification error:', e);
+            return false;
         }
+    } catch (error) {
+        console.error('Auth check error:', error);
+        return false;
+    }
+}
         
         // Real-time subscription for batch updates
         let batchSubscription = null;
