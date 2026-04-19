@@ -142,8 +142,13 @@
         }
         .tab-btn:hover { background: rgba(232,177,60,0.2); color: #E8B13C; }
         .tab-btn.active { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
-        .tab-btn.has-unread { background: linear-gradient(135deg, #dc3545, #c0392b); color: white; animation: pulseRed 0.8s ease-in-out infinite; }
-        @keyframes pulseRed { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .tab-btn.has-unread { background: linear-gradient(135deg, #dc3545, #c0392b); color: white; animation: ambulanceBlink 0.8s ease-in-out infinite; }
+        @keyframes ambulanceBlink {
+            0%, 100% { opacity: 1; background: linear-gradient(135deg, #dc3545, #c0392b); box-shadow: 0 0 0px #dc3545; }
+            25% { opacity: 0.8; background: linear-gradient(135deg, #ff4757, #e74c3c); box-shadow: 0 0 15px #ff4757; }
+            50% { opacity: 1; background: linear-gradient(135deg, #dc3545, #c0392b); box-shadow: 0 0 25px #ff4757; }
+            75% { opacity: 0.8; background: linear-gradient(135deg, #ff4757, #e74c3c); box-shadow: 0 0 15px #ff4757; }
+        }
         
         .tab-content {
             display: none;
@@ -405,6 +410,98 @@
             color: #E8B13C;
             transform: rotate(90deg);
         }
+        
+        /* NEW - Referral Styles */
+        .referral-card {
+            background: linear-gradient(145deg, rgba(20,45,38,0.95), rgba(15,35,28,0.95));
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(232,177,60,0.3);
+        }
+        .referral-code-box {
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .referral-code {
+            font-family: monospace;
+            font-size: 1.2rem;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 16px;
+            border-radius: 12px;
+            letter-spacing: 1px;
+        }
+        .referral-progress {
+            background: rgba(0,0,0,0.3);
+            border-radius: 30px;
+            height: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .referral-progress-fill {
+            background: linear-gradient(135deg, #E8B13C, #ffd966);
+            height: 100%;
+            width: 0%;
+            border-radius: 30px;
+            transition: width 0.5s;
+        }
+        .referral-team-list { max-height: 300px; overflow-y: auto; }
+        .referral-team-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid rgba(232,177,60,0.1);
+        }
+        
+        /* NEW - How To Use Section */
+        .howto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .howto-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 18px;
+            border-left: 4px solid #E8B13C;
+        }
+        .howto-card h4 { color: #E8B13C; margin-bottom: 12px; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+        .howto-card .example { background: rgba(232,177,60,0.1); padding: 10px; border-radius: 12px; margin: 10px 0; }
+        .howto-card .strategy { background: rgba(30,126,94,0.15); padding: 10px; border-radius: 12px; margin: 10px 0; border-left: 3px solid #1e7e5e; }
+        .howto-card code { background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 6px; font-size: 11px; }
+        
+        /* NEW - Marketing Hub Styles for Investor */
+        .marketing-banner {
+            background: linear-gradient(135deg, rgba(155,89,182,0.2), rgba(142,68,173,0.1));
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(155,89,182,0.3);
+        }
+        .promo-image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .promo-image-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .promo-image-item:hover { transform: scale(1.02); border: 1px solid #E8B13C; }
+        .promo-image-item img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
         
         /* Chat Styles */
         .chat-panel {
@@ -818,6 +915,18 @@
         }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         
+        /* NEW - Order ID Badge */
+        .order-id-badge {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 11px;
+            display: inline-block;
+        }
+        
         @media (max-width: 768px) {
             .header { flex-direction: column; }
             .tabs { justify-content: center; }
@@ -831,6 +940,8 @@
             .modal-content h2 { font-size: 1.3rem; }
             .charts-grid { grid-template-columns: 1fr; }
             .balance-breakdown { flex-direction: column; }
+            .howto-grid { grid-template-columns: 1fr; }
+            .promo-image-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
         }
     </style>
 </head>
@@ -849,6 +960,7 @@
             <div class="stat-card" data-tab="profits"><h3><i class="fas fa-coins"></i> Total Profit Earned</h3><div class="stat-number" id="totalProfit">Rs. 0</div></div>
             <div class="stat-card" data-tab="withdrawals"><h3><i class="fas fa-wallet"></i> Available Balance</h3><div class="stat-number" id="availableBalance">Rs. 0</div></div>
             <div class="stat-card" data-tab="investments"><h3><i class="fas fa-chart-simple"></i> Active Investments</h3><div class="stat-number" id="activeInvestments">0</div></div>
+            <div class="stat-card" data-tab="referrals"><h3><i class="fas fa-users"></i> Referral Earnings</h3><div class="stat-number" id="referralEarnings">Rs. 0</div></div>
         </div>
 
         <div class="tabs">
@@ -857,6 +969,9 @@
             <button class="tab-btn" data-tab="profits"><i class="fas fa-coins"></i> Profit History</button>
             <button class="tab-btn" data-tab="withdrawals"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> My Profile</button>
+            <button class="tab-btn" data-tab="referrals"><i class="fas fa-users"></i> Referrals</button>
+            <button class="tab-btn" data-tab="promotions"><i class="fas fa-bullhorn"></i> Promotions</button>
+            <button class="tab-btn" data-tab="howto"><i class="fas fa-question-circle"></i> How to Use</button>
             <button class="tab-btn" data-tab="livechat" id="chatTabBtn"><i class="fas fa-headset"></i> Live Chat</button>
             <button class="tab-btn" data-tab="analytics"><i class="fas fa-chart-pie"></i> Analytics & Ledger</button>
         </div>
@@ -887,7 +1002,7 @@
         <div id="profitsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-gift"></i> Your Profit Earnings</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Month</th><th>Amount (Rs.)</th><th>Percentage</th><th>Status</th><th>Paid Date</th></tr></thead>
                     <tbody id="profitsList"></tbody>
                 </table>
@@ -922,6 +1037,134 @@
                     <div class="form-group"><label>💰 Total Investment</label><input type="text" id="profileTotalInvestment" readonly></div>
                     <div class="form-group"><label>📈 Total Profit Earned</label><input type="text" id="profileTotalProfit" readonly></div>
                     <div class="form-group"><label>💵 Available Balance</label><input type="text" id="profileBalance" readonly></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>🔗 Your Referral Code</label><div class="profile-field"><input type="text" id="profileReferralCode" readonly><i class="fas fa-copy edit-icon" onclick="copyReferralCode()"></i></div></div>
+                    <div class="form-group"><label>📊 Referral Link</label><div class="profile-field"><input type="text" id="profileReferralLink" readonly><i class="fas fa-copy edit-icon" onclick="copyReferralLink()"></i></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW - Referrals Tab -->
+        <div id="referralsTab" class="tab-content">
+            <h2 class="section-title"><i class="fas fa-users"></i> Referral Program</h2>
+            
+            <div class="referral-card">
+                <h3><i class="fas fa-gift"></i> Earn 10% Commission</h3>
+                <p>Invite friends and family to invest in Sohrab Industries. When they invest using your referral link, you earn 10% of their investment amount as commission!</p>
+                
+                <div class="referral-code-box">
+                    <div>
+                        <strong>Your Referral Code:</strong>
+                        <div class="referral-code" id="userReferralCode">Loading...</div>
+                    </div>
+                    <button class="btn-primary" onclick="copyReferralCode()"><i class="fas fa-copy"></i> Copy Code</button>
+                </div>
+                
+                <div class="referral-code-box">
+                    <div>
+                        <strong>Your Referral Link:</strong>
+                        <div class="referral-code" id="userReferralLink" style="font-size:0.9rem;">Loading...</div>
+                    </div>
+                    <button class="btn-primary" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copy Link</button>
+                </div>
+                
+                <div class="referral-progress">
+                    <div class="referral-progress-fill" id="referralProgressFill" style="width: 0%;"></div>
+                </div>
+                <p id="referralProgressText">Invite 5 investors to unlock next level benefits!</p>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> My Referral Team</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Referred Person</th><th>Investment Amount</th><th>Commission Earned</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody id="referralTeamList"></tbody>
+                </table>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-coins"></i> Referral Commission History</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Date</th><th>Referred Person</th><th>Investment Amount</th><th>Commission (10%)</th><th>Status</th></tr></thead>
+                    <tbody id="referralCommissionList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- NEW - Promotions Tab (Marketing Hub for Investors) -->
+        <div id="promotionsTab" class="tab-content">
+            <h2 class="section-title"><i class="fas fa-bullhorn"></i> Promotions & Offers</h2>
+            
+            <div class="marketing-banner">
+                <h3><i class="fas fa-megaphone"></i> Active Campaigns</h3>
+                <div id="activeCampaignsList"></div>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-images"></i> Share & Earn More</h2>
+            <p style="margin-bottom: 15px;">Share these promotional images on social media to attract more investors and earn referral commissions!</p>
+            <div id="promoImagesGrid" class="promo-image-grid"></div>
+            
+            <div class="legal-card" style="margin-top: 20px;">
+                <h4><i class="fas fa-share-alt"></i> Social Media Sharing Tips</h4>
+                <p>📌 Share your referral link on WhatsApp, Facebook, and Instagram groups</p>
+                <p>📌 Post about your investment success stories to build trust</p>
+                <p>📌 Explain the 50% profit sharing model clearly to potential investors</p>
+                <p>📌 Share promotional images above to attract attention</p>
+            </div>
+        </div>
+
+        <!-- NEW - How to Use Tab -->
+        <div id="howtoTab" class="tab-content">
+            <h2 class="section-title"><i class="fas fa-question-circle"></i> How to Use - Complete Investor Guide</h2>
+            
+            <div class="howto-grid">
+                <div class="howto-card">
+                    <h4><i class="fas fa-chart-line"></i> Making an Investment</h4>
+                    <p><strong>What it does:</strong> Invest money in our LED bulb production batches and earn 50% profit share.</p>
+                    <div class="example"><strong>📌 Example 1:</strong> You invest Rs. 50,000 in Summer Batch. Batch generates Rs. 80,000 sales with Rs. 20,000 expenses. Net profit = Rs. 60,000. You get Rs. 30,000 (50%). ROI = 60%</div>
+                    <div class="example"><strong>📌 Example 2:</strong> You invest Rs. 100,000 in Winter Batch. Batch sales Rs. 150,000, expenses Rs. 40,000. Net profit = Rs. 110,000. You get Rs. 55,000. ROI = 55%</div>
+                    <div class="strategy"><strong>🎯 Best Strategy:</strong> Invest in multiple batches to diversify risk. Start with smaller amounts, track batch performance, then increase investment in high-performing batches.</div>
+                </div>
+                
+                <div class="howto-card">
+                    <h4><i class="fas fa-users"></i> Referral System</h4>
+                    <p><strong>What it does:</strong> Earn 10% commission when someone joins using your referral link and invests.</p>
+                    <div class="example"><strong>📌 Example 1:</strong> You refer 5 friends. Each invests Rs. 10,000. You earn Rs. 5,000 (10% of 50,000).</div>
+                    <div class="example"><strong>📌 Example 2:</strong> You refer a large investor who puts Rs. 500,000. Your commission = Rs. 50,000.</div>
+                    <div class="strategy"><strong>🎯 Best Strategy:</strong> Share your referral link on social media, WhatsApp groups, and with family. Explain the profit sharing model to attract serious investors.</div>
+                </div>
+                
+                <div class="howto-card">
+                    <h4><i class="fas fa-coins"></i> Withdrawing Profits</h4>
+                    <p><strong>What it does:</strong> Withdraw your earned profits anytime via EasyPaisa, JazzCash, or Bank Transfer.</p>
+                    <div class="example"><strong>📌 Example 1:</strong> You have Rs. 25,000 available balance. Request withdrawal via EasyPaisa. Approved within 3-5 business days.</div>
+                    <div class="example"><strong>📌 Example 2:</strong> Monthly profit of Rs. 15,000 credited. You withdraw Rs. 10,000 and reinvest Rs. 5,000.</div>
+                    <div class="strategy"><strong>🎯 Best Strategy:</strong> Reinvest 50% of profits to compound growth. Keep a portion for regular withdrawals to maintain cash flow.</div>
+                </div>
+                
+                <div class="howto-card">
+                    <h4><i class="fas fa-headset"></i> Live Chat Support</h4>
+                    <p><strong>What it does:</strong> Direct messaging with Sohrab Industries support team for any queries.</p>
+                    <div class="example"><strong>📌 Example 1:</strong> You have a question about batch status. Send a message and get real-time response.</div>
+                    <div class="example"><strong>📌 Example 2:</strong> Need help with withdrawal? Chat with support to resolve issues quickly.</div>
+                    <div class="strategy"><strong>🎯 Best Strategy:</strong> Use chat for urgent matters. For complex issues, provide screenshots and transaction IDs for faster resolution.</div>
+                </div>
+                
+                <div class="howto-card">
+                    <h4><i class="fas fa-chart-pie"></i> Analytics & Ledger</h4>
+                    <p><strong>What it does:</strong> Track your investment growth, profit trends, and complete financial statement.</p>
+                    <div class="example"><strong>📌 Example 1:</strong> View chart showing your investment growth over time. See which batches performed best.</div>
+                    <div class="example"><strong>📌 Example 2:</strong> Check ledger statement showing all credits (investments, profits) and debits (withdrawals).</div>
+                    <div class="strategy"><strong>🎯 Best Strategy:</strong> Review analytics monthly. Identify top-performing batches and increase investment there. Track ROI to optimize portfolio.</div>
+                </div>
+                
+                <div class="howto-card">
+                    <h4><i class="fas fa-chart-simple"></i> Batch Progress Tracking</h4>
+                    <p><strong>What it does:</strong> Track your investment batches through Production → Completed → Sold → Profit Distributed stages.</p>
+                    <div class="example"><strong>📌 Example 1:</strong> Your batch shows "In Production" - bulbs are being manufactured.</div>
+                    <div class="example"><strong>📌 Example 2:</strong> Batch status "Sold" - all products sold, profit calculation in progress.</div>
+                    <div class="strategy"><strong>🎯 Best Strategy:</strong> Monitor batch progress regularly. When batch reaches "Sold", expect profit distribution within 7-10 days.</div>
                 </div>
             </div>
         </div>
@@ -966,7 +1209,7 @@
             
             <h2 class="section-title"><i class="fas fa-industry"></i> My Investment Batches & Production</h2>
             <div class="table-container">
-                <table><thead><tr><th>Batch ID</th><th>Batch Name</th><th>Investment (Rs.)</th><th>Profit %</th><th>Production Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Investor Share (50%)</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
+                <table><thead><tr><th>Batch ID</th><th>Batch Name</th><th>Investment (Rs.)</th><th>Profit %</th><th>Production Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit/Loss</th><th>Your Share (50%)</th><th>ROI (%)</th><th>Profit Status</th></tr></thead>
                 <tbody id="batchesList"></tbody>
             </table>
             </div>
@@ -1001,6 +1244,8 @@
                 <p><strong>Profit and loss depend on real business performance.</strong> Past performance does not guarantee future returns.</p>
                 <h4>🏦 Withdrawal Policy</h4>
                 <p>Withdrawal requests processed within 3-5 business days after approval. Minimum withdrawal: Rs. 1,000.</p>
+                <h4>🔗 Referral Program</h4>
+                <p>Earn 10% commission on investments made by people you refer. Commission released after the referred investor's investment is approved.</p>
             </div>
         </div>
     </div>
@@ -1172,6 +1417,9 @@
             let currentWithdrawalScreenshot = null;
             let availableBatches = [];
             let batchSubscription = null;
+            let referralData = { code: '', link: '', referrals: [], commissions: [] };
+            let promoImages = [];
+            let campaigns = [];
             
             const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊'];
             
@@ -1195,6 +1443,10 @@
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'batches' }, (payload) => {
                         console.log('Production batch change detected:', payload);
                         refreshAnalyticsData();
+                    })
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'referrals' }, (payload) => {
+                        console.log('Referral change detected:', payload);
+                        loadReferralData();
                     })
                     .subscribe();
             }
@@ -1264,6 +1516,123 @@
             window.selectPaymentMethod = selectPaymentMethod;
             window.previewInvestmentScreenshot = previewInvestmentScreenshot;
             window.previewWithdrawalScreenshot = previewWithdrawalScreenshot;
+            
+            // NEW - Referral Functions
+            async function loadReferralData() {
+                if (!currentInvestorId) return;
+                try {
+                    const { data: investor } = await supabase.from('investors').select('referral_code, referral_link').eq('id', currentInvestorId).single();
+                    if (investor) {
+                        referralData.code = investor.referral_code || 'Loading...';
+                        referralData.link = investor.referral_link || '#';
+                        document.getElementById('userReferralCode').innerText = referralData.code;
+                        document.getElementById('userReferralLink').innerText = referralData.link;
+                        document.getElementById('profileReferralCode').value = referralData.code;
+                        document.getElementById('profileReferralLink').value = referralData.link;
+                    }
+                    
+                    const { data: referrals } = await supabase.from('referrals').select('*, referred:referred_id(full_name)').eq('investor_id', currentInvestorId);
+                    referralData.referrals = referrals || [];
+                    
+                    const teamList = document.getElementById('referralTeamList');
+                    if (teamList) {
+                        if (referralData.referrals.length === 0) {
+                            teamList.innerHTML = '<tr><td colspan="5" class="empty-state">No referrals yet. Share your referral code to earn commission!</td></tr>';
+                        } else {
+                            teamList.innerHTML = referralData.referrals.map(ref => `
+                                <tr>
+                                    <td>${escapeHtml(ref.referred?.full_name || 'Unknown')}</td>
+                                    <td>Rs. ${(ref.investment_amount || 0).toLocaleString()}</td>
+                                    <td>Rs. ${(ref.commission_earned || 0).toLocaleString()}</td>
+                                    <td><span class="status-badge ${ref.commission_status === 'paid' ? 'status-active' : 'status-pending'}">${ref.commission_status || 'pending'}</span></td>
+                                    <td>${new Date(ref.created_at).toLocaleDateString()}</td>
+                                </tr>
+                            `).join('');
+                        }
+                    }
+                    
+                    const totalEarned = referralData.referrals.reduce((sum, r) => sum + (r.commission_earned || 0), 0);
+                    document.getElementById('referralEarnings').innerHTML = `Rs. ${totalEarned.toLocaleString()}`;
+                    
+                    const progressFill = document.getElementById('referralProgressFill');
+                    const progressText = document.getElementById('referralProgressText');
+                    const referralCount = referralData.referrals.length;
+                    const progressPercent = Math.min(referralCount * 20, 100);
+                    if (progressFill) progressFill.style.width = `${progressPercent}%`;
+                    if (progressText) {
+                        if (referralCount >= 5) progressText.innerHTML = '🎉 Amazing! You\'ve reached the top tier! Keep inviting more!';
+                        else progressText.innerHTML = `Invite ${5 - referralCount} more investors to unlock the next level! Current referrals: ${referralCount}`;
+                    }
+                    
+                } catch(e) { console.error('Referral load error:', e); }
+            }
+            
+            window.copyReferralCode = function() {
+                navigator.clipboard.writeText(referralData.code);
+                showToast('Referral code copied!', false);
+            };
+            
+            window.copyReferralLink = function() {
+                navigator.clipboard.writeText(referralData.link);
+                showToast('Referral link copied! Share it with friends!', false);
+            };
+            
+            // NEW - Promotions Functions
+            function loadPromoImages() {
+                const stored = localStorage.getItem('shareImages');
+                if (stored) promoImages = JSON.parse(stored);
+                const grid = document.getElementById('promoImagesGrid');
+                if (grid) {
+                    if (promoImages.length === 0) {
+                        grid.innerHTML = '<p style="color:rgba(255,255,255,0.5); text-align:center; padding:20px;">No promotional images available yet. Check back soon!</p>';
+                    } else {
+                        grid.innerHTML = promoImages.map(img => `
+                            <div class="promo-image-item" onclick="sharePromoImage('${img.url}', '${escapeHtml(img.title)}')">
+                                <img src="${img.url}" alt="${escapeHtml(img.title)}">
+                                <div class="image-title">${escapeHtml(img.title.substring(0, 20))}</div>
+                                <div style="display:flex; gap:5px; justify-content:center; margin-top:5px;">
+                                    <button class="share-btn whatsapp" onclick="event.stopPropagation();sharePromoImageWhatsApp('${img.url}', '${escapeHtml(img.title)}')"><i class="fab fa-whatsapp"></i></button>
+                                    <button class="share-btn facebook" onclick="event.stopPropagation();sharePromoImageFacebook('${img.url}')"><i class="fab fa-facebook-f"></i></button>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            }
+            
+            window.sharePromoImage = function(url, title) {
+                const text = `🌟 Check out this from Sohrab Industries! 🌟\n\n${title}\n\nInvest with us and earn 50% profit sharing! Use my referral code: ${referralData.code}\n\n${url}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+            };
+            
+            window.sharePromoImageWhatsApp = function(url, title) {
+                const text = `🌟 Sohrab Industries - ${title}\n\nInvest with us and earn 50% profit sharing!\nUse my referral code: ${referralData.code}\n\n${url}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+            };
+            
+            window.sharePromoImageFacebook = function(url) {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+            };
+            
+            function loadCampaignsForInvestor() {
+                const stored = localStorage.getItem('campaigns');
+                if (stored) campaigns = JSON.parse(stored);
+                const container = document.getElementById('activeCampaignsList');
+                if (container) {
+                    const activeCampaigns = campaigns.filter(c => !c.validUntil || new Date(c.validUntil) > new Date());
+                    if (activeCampaigns.length === 0) {
+                        container.innerHTML = '<p style="color:rgba(255,255,255,0.5); padding:15px;">No active campaigns at the moment.</p>';
+                    } else {
+                        container.innerHTML = activeCampaigns.map(c => `
+                            <div style="background:rgba(0,0,0,0.3); border-radius:12px; padding:12px; margin-bottom:10px;">
+                                <strong style="color:#E8B13C;">🎯 ${escapeHtml(c.title)}</strong>
+                                <p style="margin-top:5px; font-size:0.8rem;">${escapeHtml(c.desc)}</p>
+                                ${c.validUntil ? `<small style="color:rgba(255,255,255,0.5);">Valid until: ${new Date(c.validUntil).toLocaleDateString()}</small>` : ''}
+                            </div>
+                        `).join('');
+                    }
+                }
+            }
             
             async function checkUserPermissions() {
                 if (!currentInvestorId) return userPermissions;
@@ -1638,10 +2007,7 @@
                 try {
                     const { data, error } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
                     if(error) throw error;
-                    if(!data?.length) { 
-                                                tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; 
-                        return; 
-                    }
+                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; return; }
                     tbody.innerHTML = data.map(p => `<tr>
                         <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
                         <td>Rs. ${(p.amount||0).toLocaleString()}</td>
@@ -1710,6 +2076,7 @@
                 const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`); if(btn) btn.classList.add('active');
                 if(tabName === 'livechat') { window.investorChat.markMessagesRead(); window.investorChat.renderMessages(); checkUserPermissions(); }
                 if(tabName === 'analytics') { refreshAnalyticsData(); }
+                if(tabName === 'referrals') { loadReferralData(); }
             }
             
             // Analytics Functions
@@ -1725,7 +2092,6 @@
             
             async function loadBatchesAndLedger() {
                 try {
-                    // Load investment batches that this investor is part of
                     const { data: investorInvestments } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active');
                     const { data: investmentBatches } = await supabase.from('investment_batches').select('*').eq('is_active', true);
                     const { data: productionBatches } = await supabase.from('batches').select('*, investments(investor_id, amount, investors(full_name))').eq('investor_id', currentInvestorId);
@@ -1738,7 +2104,6 @@
                         batchDataCache = [];
                         let batchCounter = 0;
                         
-                        // Map investments to batches
                         for (const inv of (investorInvestments || [])) {
                             const matchedBatch = investmentBatches?.find(b => b.id === inv.batch_id) || { 
                                 batch_name: `Investment ${inv.id?.slice(0,8)}`,
@@ -1781,11 +2146,10 @@
                                 <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
                                 <td>${roi}%</td>
                                 <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
-                             </tr>`;
+                              </tr>`;
                             batchCounter++;
                         }
                         
-                        // Add production batches
                         for (const batch of (productionBatches || [])) {
                             const netProfit = (batch.sales || 0) - (batch.expenses || 0);
                             const investorShare = netProfit * 0.5;
@@ -1817,7 +2181,7 @@
                                 <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
                                 <td>${roi}%</td>
                                 <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
-                             </tr>`;
+                              </tr>`;
                             batchCounter++;
                         }
                         
@@ -1835,14 +2199,17 @@
                     withdrawalsLedger?.forEach(w => { balance -= w.amount; entries.push({ date: w.processed_date, desc: 'Withdrawal', credit: 0, debit: w.amount, balance: balance }); });
                     entries.sort((a,b) => new Date(a.date) - new Date(b.date));
                     const ledgerBody = document.getElementById('ledgerList');
-                    if(entries.length === 0) { ledgerBody.innerHTML='<tr><td colspan="5" class="empty-state">No ledger entries</td></tr>'; }
-                    else { ledgerBody.innerHTML = entries.map(e => `<tr>
-                        <td>${new Date(e.date).toLocaleDateString()}</td>
-                        <td>${e.desc}</td>
-                        <td>${e.credit ? `Rs. ${e.credit.toLocaleString()}` : '-'}</td>
-                        <td>${e.debit ? `Rs. ${e.debit.toLocaleString()}` : '-'}</td>
-                        <td class="financial-highlight">Rs. ${e.balance.toLocaleString()}</td>
-                     </tr>`).join(''); }
+                                       if(entries.length === 0) { 
+                        ledgerBody.innerHTML='<tr><td colspan="5" class="empty-state">No ledger entries</td></tr>'; 
+                    } else { 
+                        ledgerBody.innerHTML = entries.map(e => `<tr>
+                            <td>${new Date(e.date).toLocaleDateString()}</td>
+                            <td>${e.desc}</td>
+                            <td>${e.credit ? `Rs. ${e.credit.toLocaleString()}` : '-'}</td>
+                            <td>${e.debit ? `Rs. ${e.debit.toLocaleString()}` : '-'}</td>
+                            <td class="financial-highlight">Rs. ${e.balance.toLocaleString()}</td>
+                        </tr>`).join(''); 
+                    }
                 } catch(e) { console.error('Analytics error:', e); }
             }
             
@@ -1954,7 +2321,6 @@
                 if(!amount || !paymentMethod || !transactionId) { showToast('Amount, Payment Method and Transaction ID required', true); return; }
                 if(parseFloat(amount) < 1000) { showToast('Minimum investment Rs. 1,000', true); return; }
                 
-                // Check if screenshot is uploaded (MANDATORY)
                 if (!currentInvestmentScreenshot) {
                     const warningResult = await Swal.fire({
                         title: '⚠️ Screenshot Required!',
@@ -1976,7 +2342,6 @@
                     return;
                 }
                 
-                // Check if selected batch has available slots
                 if (selectedBatchId) {
                     const batch = availableBatches.find(b => b.id === selectedBatchId);
                     if (batch) {
@@ -2002,7 +2367,6 @@
                     }]);
                     if(error) throw error;
                     
-                    // Update batch filled slots if batch selected
                     if (selectedBatchId) {
                         const { data: batch } = await supabase.from('investment_batches').select('filled_slots').eq('id', selectedBatchId).single();
                         await supabase.from('investment_batches').update({ 
@@ -2069,6 +2433,9 @@
                     await loadAvailableBatches();
                     await refreshAnalyticsData();
                     await checkUserPermissions();
+                    await loadReferralData();
+                    loadPromoImages();
+                    loadCampaignsForInvestor();
                     setupRealtimeBatchSync();
                     window.investorChat.init();
                 } catch(e) { console.error('Auth error:', e); }
