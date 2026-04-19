@@ -938,7 +938,7 @@
             </div>
             
             <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Main Balance</th><th>Profit Balance</th><th>Referral Balance</th><th>KYC</th><th>Status</th><th>Chat</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Main Balance</th><th>Profit Balance</th><th>Referral Balance</th><th>KYC</th><th>Status</th><th>Chat</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
@@ -954,7 +954,7 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
@@ -1576,24 +1576,46 @@
             return fallbackValue;
         }
         
-        // Check Auth Function (FIXED)
+        // ========== FIXED: Check Auth Function - Proper session persistence ==========
         async function checkAuth() {
             try {
+                // Check if we're already on admin-auth page - prevent loop
+                if (window.location.pathname.includes('admin-auth.html')) {
+                    return false;
+                }
+                
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
+                
                 if (error || !session) {
                     console.log('No active session, redirecting to login...');
                     window.location.href = 'admin-auth.html';
                     return false;
                 }
                 
-                // Verify admin role
+                // Verify admin role with proper error handling
                 const { data: adminData, error: adminError } = await supabaseClient
                     .from('admin_users')
                     .select('role, is_active')
                     .eq('id', session.user.id)
                     .single();
                 
-                if (adminError || !adminData || !adminData.is_active) {
+                if (adminError) {
+                    console.error('Admin verification error:', adminError);
+                    // If table doesn't exist yet, allow access but log warning
+                    if (adminError.code === 'PGRST116') {
+                        console.warn('admin_users table not found - creating default admin session');
+                        currentAdminUser = session.user;
+                        currentAdminRole = 'superadmin';
+                        document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
+                        document.getElementById('adminRoleBadge').innerText = 'Super Admin';
+                        return true;
+                    }
+                    await supabaseClient.auth.signOut();
+                    window.location.href = 'admin-auth.html';
+                    return false;
+                }
+                
+                if (!adminData || !adminData.is_active) {
                     console.log('Not an admin or account inactive');
                     await supabaseClient.auth.signOut();
                     window.location.href = 'admin-auth.html';
@@ -1608,7 +1630,7 @@
                 return true;
             } catch (error) {
                 console.error('Auth check error:', error);
-                window.location.href = 'admin-auth.html';
+                // Don't redirect immediately on network errors - retry logic in main init
                 return false;
             }
         }
@@ -1786,7 +1808,7 @@
                 if(!tbody) return;
                 
                 if(allBatches.length === 0 && prodBatchesList.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="17" class="empty-state">No batches created yet. Create your first batch above.</td></tr>'; 
+                    tbody.innerHTML = '<tr><td colspan="17" class="empty-state">No batches created yet. Create your first batch above.</td></table>'; 
                     return; 
                 }
                 
@@ -2838,7 +2860,7 @@
                     } else {
                         topReferrersTbody.innerHTML = topReferrers.map(r => `
                             <tr>
-                                <td>${escapeHtml(r.name)}</td>
+                                <td>${escapeHtml(r.name)}</span></div></td>
                                 <td>-</span></div></td>
                                 <td>${r.count}</td>
                                 <td>Rs. ${r.commission.toLocaleString()}</td>
@@ -3574,7 +3596,7 @@
                 
                 let tableHtml = '<table class="ledger-table"><thead><tr>';
                 headers.forEach(h => tableHtml += `<th>${h}</th>`);
-                tableHtml += '<tr></thead><tbody>';
+                tableHtml += '</tr></thead><tbody>';
                 data.forEach(row => {
                     tableHtml += '<tr>';
                     row.forEach(cell => tableHtml += `<td>${cell}</td>`);
@@ -3902,7 +3924,7 @@
                 allBuyers = data || [];
                 const buyersList = document.getElementById('buyersList');
                 if(buyersList) {
-                    buyersList.innerHTML = allBuyers.map(b=>`<td>
+                    buyersList.innerHTML = allBuyers.map(b=>`<tr>
                         <td><strong>${escapeHtml(b.full_name)}</strong></td>
                         <td>${b.email}</td>
                         <td>${b.phone||'-'}</span></div></td>
@@ -3941,7 +3963,7 @@
                 allProducts = data || [];
                 const productsList = document.getElementById('productsList');
                 if(productsList) {
-                    if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</span></div><tr>'; return; }
+                    if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</span></div></td>'; return; }
                     productsList.innerHTML = data.map(p=>`<tr>
                         <td><strong>${escapeHtml(p.name)}</strong></td>
                         <td>${p.category}</td>
@@ -4014,7 +4036,7 @@
                 allWithdrawals = data || [];
                 const withdrawalsList = document.getElementById('withdrawalsList');
                 if (!withdrawalsList) return;
-                if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</span></div></td>'; return; }
+                if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</span></div><tr>'; return; }
                 withdrawalsList.innerHTML = allWithdrawals.map(w => `<tr>
                     <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
                     <td><small>${w.investors?.email || '-'}</small></td>
@@ -4517,7 +4539,7 @@
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
             if (filtered.length === 0) { 
-                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div><tr>'; 
+                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></td>'; 
                 return; 
             }
             ordersList.innerHTML = filtered.map(o => `<tr>
@@ -4563,15 +4585,44 @@
             console.log('11. chat_typing - for typing indicators');
         }
         
-        // Initialize Supabase with loading progress
+        // ========== FIXED: Initialize Supabase with proper loading and auth ==========
         document.addEventListener('DOMContentLoaded', async function() {
-            updateLoadingProgress(5, 'Initializing Supabase connection...');
+            // Show loader immediately
+            showLoading();
+            updateLoadingProgress(0, 'Initializing...');
+            
+            // Initialize Supabase
+            updateLoadingProgress(5, 'Connecting to Supabase...');
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            updateLoadingProgress(10, 'Checking authentication...');
+            // Check authentication with retry
+            updateLoadingProgress(10, 'Verifying credentials...');
             
-            const isAuthenticated = await checkAuth();
-            if (!isAuthenticated) return;
+            let authSuccess = false;
+            let retryCount = 0;
+            const maxRetries = 2;
+            
+            while (!authSuccess && retryCount <= maxRetries) {
+                try {
+                    const authResult = await checkAuth();
+                    if (authResult) {
+                        authSuccess = true;
+                        break;
+                    }
+                } catch (err) {
+                    console.error(`Auth attempt ${retryCount + 1} failed:`, err);
+                }
+                retryCount++;
+                if (retryCount <= maxRetries) {
+                    updateLoadingProgress(10, `Retrying connection (${retryCount}/${maxRetries})...`);
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+            
+            if (!authSuccess) {
+                // Auth failed, loader will be hidden by redirect
+                return;
+            }
             
             updateLoadingProgress(20, 'Loading dashboard data...');
             await createRequiredTables();
@@ -4591,14 +4642,16 @@
             updateLoadingProgress(70, 'Loading investment history...');
             await loadInvestmentHistory();
             
-            updateLoadingProgress(80, 'Loading profit history...');
+            updateLoadingProgress(75, 'Loading profit history...');
             await loadProfitHistory();
             
-            updateLoadingProgress(85, 'Loading withdrawal requests...');
+            updateLoadingProgress(80, 'Loading withdrawal requests...');
             await loadWithdrawals();
             
-            updateLoadingProgress(90, 'Loading products and orders...');
+            updateLoadingProgress(85, 'Loading products...');
             await loadProducts();
+            
+            updateLoadingProgress(90, 'Loading orders...');
             await loadOrders();
             
             updateLoadingProgress(95, 'Rendering charts...');
