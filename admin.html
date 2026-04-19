@@ -4568,11 +4568,18 @@
         
     
         let batchSubscription = null;
-    // FIXED: Check auth without redirecting immediately
+            // Initialize Supabase with loading progress
+document.addEventListener('DOMContentLoaded', async function() {
+    updateLoadingProgress(5, 'Initializing Supabase connection...');
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    updateLoadingProgress(10, 'Checking authentication...');
+    
+    // Check authentication properly
     const { data: { session }, error } = await supabaseClient.auth.getSession();
     
     if (error || !session) {
-        console.log('No active session, showing login redirect...');
+        console.log('No active session, redirecting to login...');
         updateLoadingProgress(100, 'Redirecting to login...');
         setTimeout(() => {
             window.location.href = 'admin-auth.html';
@@ -4600,8 +4607,7 @@
         }
         adminData = data;
     } catch(e) {
-        console.log('Admin verification table may not exist yet');
-        // If table doesn't exist, allow access (first admin setup)
+        console.log('Admin verification table may not exist yet - allowing access for setup');
         adminData = { role: 'superadmin', is_active: true };
     }
     
@@ -4610,82 +4616,79 @@
     document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
     document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
     
-    // Update the checkAuth function to be safe
-    window.checkAuth = async function() {
-        return true; // Already authenticated
-    };
- 
-            updateLoadingProgress(20, 'Loading dashboard data...');
-            await createRequiredTables();
-            
-            updateLoadingProgress(30, 'Loading statistics...');
-            await loadStats();
-            
-            updateLoadingProgress(40, 'Loading investors...');
-            await loadInvestors();
-            
-            updateLoadingProgress(50, 'Loading buyers...');
-            await loadBuyers();
-            
-            updateLoadingProgress(60, 'Loading batches...');
-            await loadBatches();
-            
-            updateLoadingProgress(70, 'Loading investment history...');
-            await loadInvestmentHistory();
-            
-            updateLoadingProgress(80, 'Loading profit history...');
-            await loadProfitHistory();
-            
-            updateLoadingProgress(85, 'Loading withdrawal requests...');
-            await loadWithdrawals();
-            
-            updateLoadingProgress(90, 'Loading products and orders...');
-            await loadProducts();
-            await loadOrders();
-            
-            updateLoadingProgress(95, 'Rendering charts...');
-            await renderAllCharts();
-            
-            updateLoadingProgress(100, 'Ready!');
-            
-            // Load active announcement banner
-            const now = new Date().toISOString();
-            try {
-                const { data: bannerAnnouncement } = await supabaseClient
-                    .from('announcements')
-                    .select('*')
-                    .eq('is_active', true)
-                    .eq('type', 'banner')
-                    .or(`schedule_date.is.null,schedule_date.lte.${now}`)
-                    .or(`expiry_date.is.null,expiry_date.gte.${now}`)
-                    .limit(1);
-                
-                if (bannerAnnouncement && bannerAnnouncement.length > 0) {
-                    document.getElementById('announcementText').innerHTML = `<i class="fas fa-bullhorn"></i> ${escapeHtml(bannerAnnouncement[0].title)}: ${escapeHtml(bannerAnnouncement[0].message)}`;
-                    document.getElementById('announcementBanner').classList.add('active');
-                }
-            } catch(e) { console.log('Announcement banner not available'); }
-            
-            // Check for popup announcements
-            setTimeout(() => showActivePopup(), 2000);
-            
-            // Log admin login
-            await logActivity('admin_login', 'Admin logged in');
-            
-            // Hide loading after a short delay to show completion
-            setTimeout(() => hideLoading(), 1000);
-            
-            // Setup realtime sync
-            setupRealtimeSync();
-            
-            // Initialize chat system
-            setTimeout(() => {
-                if (window.adminChatSystem) {
-                    window.adminChatSystem.init(supabaseClient);
-                }
-            }, 2000);
-        });
+    // Set safe checkAuth for other functions
+    window.checkAuth = async function() { return true; };
+    
+    updateLoadingProgress(20, 'Loading dashboard data...');
+    await createRequiredTables();
+    
+    updateLoadingProgress(30, 'Loading statistics...');
+    await loadStats();
+    
+    updateLoadingProgress(40, 'Loading investors...');
+    await loadInvestors();
+    
+    updateLoadingProgress(50, 'Loading buyers...');
+    await loadBuyers();
+    
+    updateLoadingProgress(60, 'Loading batches...');
+    await loadBatches();
+    
+    updateLoadingProgress(70, 'Loading investment history...');
+    await loadInvestmentHistory();
+    
+    updateLoadingProgress(80, 'Loading profit history...');
+    await loadProfitHistory();
+    
+    updateLoadingProgress(85, 'Loading withdrawal requests...');
+    await loadWithdrawals();
+    
+    updateLoadingProgress(90, 'Loading products and orders...');
+    await loadProducts();
+    await loadOrders();
+    
+    updateLoadingProgress(95, 'Rendering charts...');
+    await renderAllCharts();
+    
+    updateLoadingProgress(100, 'Ready!');
+    
+    // Load active announcement banner
+    const now = new Date().toISOString();
+    try {
+        const { data: bannerAnnouncement } = await supabaseClient
+            .from('announcements')
+            .select('*')
+            .eq('is_active', true)
+            .eq('type', 'banner')
+            .or(`schedule_date.is.null,schedule_date.lte.${now}`)
+            .or(`expiry_date.is.null,expiry_date.gte.${now}`)
+            .limit(1);
         
+        if (bannerAnnouncement && bannerAnnouncement.length > 0) {
+            document.getElementById('announcementText').innerHTML = `<i class="fas fa-bullhorn"></i> ${escapeHtml(bannerAnnouncement[0].title)}: ${escapeHtml(bannerAnnouncement[0].message)}`;
+            document.getElementById('announcementBanner').classList.add('active');
+        }
+    } catch(e) { console.log('Announcement banner not available'); }
+    
+    // Check for popup announcements
+    setTimeout(() => showActivePopup(), 2000);
+    
+    // Log admin login
+    await logActivity('admin_login', 'Admin logged in');
+    
+    // Hide loading after a short delay to show completion
+    setTimeout(() => hideLoading(), 1000);
+    
+    // Setup realtime sync
+    setupRealtimeSync();
+    
+    // Initialize chat system
+    setTimeout(() => {
+        if (window.adminChatSystem) {
+            window.adminChatSystem.init(supabaseClient);
+        }
+    }, 2000);
+});
         // ========== ADMIN CHAT SYSTEM (Preserved from original) ==========
         (function() {
             window.adminChatSystem = {
