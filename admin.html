@@ -1577,45 +1577,42 @@
         }
         
         // Check Auth Function (FIXED)
-                // Check Auth Function
         async function checkAuth() {
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
                 if (error || !session) {
-                    console.log('No active session');
+                    console.log('No active session, redirecting to login...');
+                    window.location.href = 'admin-auth.html';
                     return false;
                 }
                 
-                // Verify admin role - but don't redirect immediately
-                try {
-                    const { data: adminData, error: adminError } = await supabaseClient
-                        .from('admin_users')
-                        .select('role, is_active')
-                        .eq('id', session.user.id)
-                        .single();
-                    
-                    if (adminError || !adminData || !adminData.is_active) {
-                        console.log('Not an admin or account inactive');
-                        return false;
-                    }
-                    
-                    currentAdminUser = session.user;
-                    currentAdminRole = adminData.role;
-                    document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
-                    document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
-                    
-                    return true;
-                } catch(e) {
-                    console.log('Admin verification error:', e);
+                // Verify admin role
+                const { data: adminData, error: adminError } = await supabaseClient
+                    .from('admin_users')
+                    .select('role, is_active')
+                    .eq('id', session.user.id)
+                    .single();
+                
+                if (adminError || !adminData || !adminData.is_active) {
+                    console.log('Not an admin or account inactive');
+                    await supabaseClient.auth.signOut();
+                    window.location.href = 'admin-auth.html';
                     return false;
                 }
+                
+                currentAdminUser = session.user;
+                currentAdminRole = adminData.role;
+                document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
+                document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
+                
+                return true;
             } catch (error) {
                 console.error('Auth check error:', error);
+                window.location.href = 'admin-auth.html';
                 return false;
             }
         }
         
-       
         // Real-time subscription for batch updates
         let batchSubscription = null;
         
@@ -4415,7 +4412,7 @@
                 
                 showNotification('Investment added successfully!', false, 'Added'); 
                 document.getElementById('invAmount').value = ''; 
-                await loadInvestmentHistory();     
+                await loadInvestmentHistory(); 
                 await loadInvestors(); 
                 await loadStats(); 
                 await renderAllCharts();
@@ -4566,129 +4563,87 @@
             console.log('11. chat_typing - for typing indicators');
         }
         
-    
-        let batchSubscription = null;
-            // Initialize Supabase with loading progress
-document.addEventListener('DOMContentLoaded', async function() {
-    updateLoadingProgress(5, 'Initializing Supabase connection...');
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    updateLoadingProgress(10, 'Checking authentication...');
-    
-    // Check authentication properly
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
-    
-    if (error || !session) {
-        console.log('No active session, redirecting to login...');
-        updateLoadingProgress(100, 'Redirecting to login...');
-        setTimeout(() => {
-            window.location.href = 'admin-auth.html';
-        }, 1500);
-        return;
-    }
-    
-    // Verify admin role
-    updateLoadingProgress(15, 'Verifying admin privileges...');
-    let adminData = null;
-    try {
-        const { data, error: adminError } = await supabaseClient
-            .from('admin_users')
-            .select('role, is_active')
-            .eq('id', session.user.id)
-            .single();
-        
-        if (adminError || !data || !data.is_active) {
-            console.log('Not an admin or account inactive');
-            updateLoadingProgress(100, 'Access denied. Redirecting...');
+        // Initialize Supabase with loading progress
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateLoadingProgress(5, 'Initializing Supabase connection...');
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            updateLoadingProgress(10, 'Checking authentication...');
+            
+            const isAuthenticated = await checkAuth();
+            if (!isAuthenticated) return;
+            
+            updateLoadingProgress(20, 'Loading dashboard data...');
+            await createRequiredTables();
+            
+            updateLoadingProgress(30, 'Loading statistics...');
+            await loadStats();
+            
+            updateLoadingProgress(40, 'Loading investors...');
+            await loadInvestors();
+            
+            updateLoadingProgress(50, 'Loading buyers...');
+            await loadBuyers();
+            
+            updateLoadingProgress(60, 'Loading batches...');
+            await loadBatches();
+            
+            updateLoadingProgress(70, 'Loading investment history...');
+            await loadInvestmentHistory();
+            
+            updateLoadingProgress(80, 'Loading profit history...');
+            await loadProfitHistory();
+            
+            updateLoadingProgress(85, 'Loading withdrawal requests...');
+            await loadWithdrawals();
+            
+            updateLoadingProgress(90, 'Loading products and orders...');
+            await loadProducts();
+            await loadOrders();
+            
+            updateLoadingProgress(95, 'Rendering charts...');
+            await renderAllCharts();
+            
+            updateLoadingProgress(100, 'Ready!');
+            
+            // Load active announcement banner
+            const now = new Date().toISOString();
+            try {
+                const { data: bannerAnnouncement } = await supabaseClient
+                    .from('announcements')
+                    .select('*')
+                    .eq('is_active', true)
+                    .eq('type', 'banner')
+                    .or(`schedule_date.is.null,schedule_date.lte.${now}`)
+                    .or(`expiry_date.is.null,expiry_date.gte.${now}`)
+                    .limit(1);
+                
+                if (bannerAnnouncement && bannerAnnouncement.length > 0) {
+                    document.getElementById('announcementText').innerHTML = `<i class="fas fa-bullhorn"></i> ${escapeHtml(bannerAnnouncement[0].title)}: ${escapeHtml(bannerAnnouncement[0].message)}`;
+                    document.getElementById('announcementBanner').classList.add('active');
+                }
+            } catch(e) { console.log('Announcement banner not available'); }
+            
+            // Check for popup announcements
+            setTimeout(() => showActivePopup(), 2000);
+            
+            // Log admin login
+            await logActivity('admin_login', 'Admin logged in');
+            
+            // Hide loading after a short delay to show completion
+            setTimeout(() => hideLoading(), 1000);
+            
+            // Setup realtime sync
+            setupRealtimeSync();
+            
+            // Initialize chat system
             setTimeout(() => {
-                window.location.href = 'admin-auth.html';
-            }, 1500);
-            return;
-        }
-        adminData = data;
-    } catch(e) {
-        console.log('Admin verification table may not exist yet - allowing access for setup');
-        adminData = { role: 'superadmin', is_active: true };
-    }
-    
-    currentAdminUser = session.user;
-    currentAdminRole = adminData.role;
-    document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
-    document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
-    
-    // Set safe checkAuth for other functions
-    window.checkAuth = async function() { return true; };
-    
-    updateLoadingProgress(20, 'Loading dashboard data...');
-    await createRequiredTables();
-    
-    updateLoadingProgress(30, 'Loading statistics...');
-    await loadStats();
-    
-    updateLoadingProgress(40, 'Loading investors...');
-    await loadInvestors();
-    
-    updateLoadingProgress(50, 'Loading buyers...');
-    await loadBuyers();
-    
-    updateLoadingProgress(60, 'Loading batches...');
-    await loadBatches();
-    
-    updateLoadingProgress(70, 'Loading investment history...');
-    await loadInvestmentHistory();
-    
-    updateLoadingProgress(80, 'Loading profit history...');
-    await loadProfitHistory();
-    
-    updateLoadingProgress(85, 'Loading withdrawal requests...');
-    await loadWithdrawals();
-    
-    updateLoadingProgress(90, 'Loading products and orders...');
-    await loadProducts();
-    await loadOrders();
-    
-    updateLoadingProgress(95, 'Rendering charts...');
-    await renderAllCharts();
-    
-    updateLoadingProgress(100, 'Ready!');
-    
-    // Load active announcement banner
-    const now = new Date().toISOString();
-    try {
-        const { data: bannerAnnouncement } = await supabaseClient
-            .from('announcements')
-            .select('*')
-            .eq('is_active', true)
-            .eq('type', 'banner')
-            .or(`schedule_date.is.null,schedule_date.lte.${now}`)
-            .or(`expiry_date.is.null,expiry_date.gte.${now}`)
-            .limit(1);
+                if (window.adminChatSystem) {
+                    window.adminChatSystem.init(supabaseClient);
+                }
+            }, 2000);
+        });
         
-        if (bannerAnnouncement && bannerAnnouncement.length > 0) {
-            document.getElementById('announcementText').innerHTML = `<i class="fas fa-bullhorn"></i> ${escapeHtml(bannerAnnouncement[0].title)}: ${escapeHtml(bannerAnnouncement[0].message)}`;
-            document.getElementById('announcementBanner').classList.add('active');
-        }
-    } catch(e) { console.log('Announcement banner not available'); }
-    
-    // Check for popup announcements
-    setTimeout(() => showActivePopup(), 2000);
-    
-    // Log admin login
-    await logActivity('admin_login', 'Admin logged in');
-    
-    // Hide loading after a short delay to show completion
-    setTimeout(() => hideLoading(), 1000);
-    
-    // Setup realtime sync
-    setupRealtimeSync();
-    
-    // Initialize chat system
-    setTimeout(() => {
-        if (window.adminChatSystem) {
-            window.adminChatSystem.init(supabaseClient);
-        }
-    }, 2000);
-});
         // ========== ADMIN CHAT SYSTEM (Preserved from original) ==========
         (function() {
             window.adminChatSystem = {
