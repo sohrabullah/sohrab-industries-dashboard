@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -62,16 +61,11 @@
             to { transform: rotate(360deg); }
         }
         
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-        
         ::-webkit-scrollbar { width: 10px; height: 10px; }
         ::-webkit-scrollbar-track { background: #1a2a24; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #E8B13C, #c99b2e); border-radius: 10px; }
         
-        /* SIPK Loader */
+        /* ========== SIPK LOADER SYSTEM ========== */
         .sipk-loader-overlay {
             position: fixed;
             top: 0;
@@ -117,17 +111,43 @@
         /* Main Content - Initially Hidden */
         #mainAppContent { display: none; }
         
-        /* Section Loader */
-        .section-loader {
+        /* Referral Link Styles */
+        .referral-link-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 60px;
-            text-align: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .section-loader i { font-size: 48px; color: #E8B13C; margin-bottom: 20px; animation: spin 1s linear infinite; }
-        .section-loader p { color: rgba(255,255,255,0.7); }
+        .referral-link-box input {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(232,177,60,0.3);
+            border-radius: 30px;
+            padding: 10px 15px;
+            color: #E8B13C;
+            font-family: monospace;
+        }
+        .copy-link-btn {
+            background: #1e7e5e;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .referral-code-badge {
+            background: rgba(232,177,60,0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #E8B13C;
+        }
         
         .admin-container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
         
@@ -313,7 +333,6 @@
         .status-completed { background: linear-gradient(135deg, #2c6e9e, #1f4d6e); color: #fff; }
         .status-sold { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
         .status-profit-distributed { background: linear-gradient(135deg, #0a5e3a, #0a4a2e); color: #fff; }
-        .status-blocked { background: linear-gradient(135deg, #dc3545, #a71d2a); color: #fff; }
         
         .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 10px 24px; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; transition: all 0.3s; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(232,177,60,0.4); }
@@ -470,59 +489,6 @@
         }
         .required-star { color: #dc3545; margin-left: 4px; }
         
-        /* Referral Link Styles */
-        .referral-link-box {
-            background: rgba(0,0,0,0.3);
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .referral-link-box input {
-            flex: 1;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(232,177,60,0.3);
-            border-radius: 30px;
-            padding: 10px 15px;
-            color: #E8B13C;
-            font-family: monospace;
-        }
-        .copy-link-btn {
-            background: #1e7e5e;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-        }
-        
-        .filter-bar {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .filter-bar select, .filter-bar input {
-            padding: 8px 16px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(232,177,60,0.3);
-            border-radius: 30px;
-            color: white;
-        }
-        
-        .report-actions {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        /* Chat System Styles (Preserved) */
         .chat-container { display: flex; height: calc(100vh - 320px); min-height: 600px; background: rgba(0,0,0,0.2); border-radius: 24px; overflow: hidden; border: 1px solid rgba(232,177,60,0.2); }
         .chat-user-list { width: 450px; background: linear-gradient(145deg, rgba(10,35,28,0.95), rgba(5,25,18,0.95)); border-right: 1px solid rgba(232,177,60,0.2); display: flex; flex-direction: column; overflow: hidden; }
         .chat-user-list-header { padding: 20px; border-bottom: 1px solid rgba(232,177,60,0.2); background: rgba(0,0,0,0.2); }
@@ -717,10 +683,6 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
-            <button class="nav-tab" onclick="showSection('affiliates')"><i class="fas fa-link"></i> Affiliates</button>
-            <button class="nav-tab" onclick="showSection('announcements')"><i class="fas fa-bullhorn"></i> Announcements</button>
-            <button class="nav-tab" onclick="showSection('kyc')"><i class="fas fa-id-card"></i> KYC</button>
-            <button class="nav-tab" onclick="showSection('reports')"><i class="fas fa-chart-bar"></i> Reports</button>
             <button class="nav-tab live-chat-tab" onclick="showSection('livechat')" id="liveChatTabBtn"><i class="fas fa-comments"></i> Live Chat</button>
         </div>
 
@@ -753,85 +715,184 @@
             </div>
         </div>
 
-        <!-- INVESTMENT BATCHES Section -->
+        <!-- INVESTMENT BATCHES Section - ENHANCED -->
         <div id="batchesSection" class="admin-section">
-            <div class="section-loader" id="batchesSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading batches...</p></div>
-            <div id="batchesSectionContent" style="display: none;"></div>
+            <h2 class="section-title"><i class="fas fa-industry"></i> Investment Batches Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Create New Investment Batch</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Batch Name *</label><input type="text" id="newBatchName" placeholder="e.g., Summer 2025 Batch"></div>
+                    <div class="form-group"><label>Investment Amount (Rs.) *</label><input type="number" id="newBatchAmount" placeholder="Enter amount per investor"></div>
+                    <div class="form-group"><label>Profit Percentage (%) *</label><input type="number" id="newBatchProfitPercent" placeholder="Expected profit %" value="50"></div>
+                    <div class="form-group"><label>Duration (Days) *</label><input type="number" id="newBatchDuration" placeholder="Investment duration in days"></div>
+                    <div class="form-group"><label>Total Slots / Investors Limit *</label><input type="number" id="newBatchSlots" placeholder="Max investors"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Production Quantity (Bulbs)</label><input type="number" id="batchProdQty" placeholder="Quantity"></div>
+                    <div class="form-group"><label>Batch Status</label><select id="batchStatusSelect">
+                        <option value="In Production">In Production</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Sold">Sold</option>
+                        <option value="Profit Distributed">Profit Distributed</option>
+                    </select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Sales Amount (Rs.)</label><input type="number" id="batchSales" placeholder="0"></div>
+                    <div class="form-group"><label>Expenses (Rs.)</label><input type="number" id="batchExpenses" placeholder="0"></div>
+                    <div class="form-group"><label>Returned Units</label><input type="number" id="batchReturns" placeholder="0"></div>
+                    <div class="form-group"><label>Damaged Units</label><input type="number" id="batchDamaged" placeholder="0"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Visibility Status</label><select id="batchVisibility">
+                        <option value="true">Visible to all investors</option>
+                        <option value="false">Hidden from investors</option>
+                    </select></div>
+                </div>
+                <button onclick="createInvestmentBatch()" class="btn-primary"><i class="fas fa-save"></i> Create Investment Batch</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-list"></i> All Batches</h2>
+            <div class="search-box"><input type="text" id="batchSearch" placeholder="🔍 Search batches..."><button onclick="searchBatches()" class="btn-primary">Search</button></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Batch ID</th><th>Batch Name</th><th>Investment</th><th>Profit %</th><th>Duration</th><th>Slots</th><th>Filled</th><th>Prod Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit</th><th>Investor Share (50%)</th><th>ROI</th><th>Visibility</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="batchesList"></tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- Investors Section -->
+        <!-- Investors Section (UPDATED with Referral Code column) -->
         <div id="investorsSection" class="admin-section">
-            <div class="section-loader" id="investorsSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading investors...</p></div>
-            <div id="investorsSectionContent" style="display: none;"></div>
+            <h2 class="section-title"><i class="fas fa-users"></i> Investors Management</h2>
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Add New Investor</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name *</label><input type="text" id="newInvestorName" placeholder="Enter full name"></div>
+                    <div class="form-group"><label>Email *</label><input type="email" id="newInvestorEmail" placeholder="Enter email"></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="newInvestorPhone" placeholder="Enter phone"></div>
+                    <div class="form-group"><label>City</label><input type="text" id="newInvestorCity" placeholder="Enter city"></div>
+                    <div class="form-group"><label>Initial Investment (Rs.)</label><input type="number" id="newInvestorInvestment" placeholder="0" value="0"></div>
+                </div>
+                <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
+            </div>
+            <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Referral Code</th><th>Referral Link</th><th>Chat</th><th>Voice</th><th>Video</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="investorsList"></tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- Buyers Section -->
+        <!-- Buyers Section (UPDATED with Referral Code column) -->
         <div id="buyersSection" class="admin-section">
-            <div class="section-loader" id="buyersSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading buyers...</p></div>
-            <div id="buyersSectionContent" style="display: none;"></div>
+            <h2 class="section-title"><i class="fas fa-user-friends"></i> Buyers Management</h2>
+            <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Buyer</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name *</label><input type="text" id="newBuyerName" placeholder="Enter full name"></div>
+                    <div class="form-group"><label>Email *</label><input type="email" id="newBuyerEmail" placeholder="Enter email"></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="newBuyerPhone" placeholder="Enter phone"></div>
+                    <div class="form-group"><label>Address</label><textarea id="newBuyerAddress" rows="2" placeholder="Enter address"></textarea></div>
+                </div>
+                <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
+            </div>
+            <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Referral Code</th><th>Referral Link</th><th>Actions</th></tr></thead>
+                    <tbody id="buyersList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
-            <div class="section-loader" id="investmentRequestsSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading requests...</p></div>
-            <div id="investmentRequestsSectionContent" style="display: none;"></div>
+            <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Actions</th></tr></thead>
+                    <tbody id="investmentRequestsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Investments Section -->
         <div id="investmentsSection" class="admin-section">
-            <div class="section-loader" id="investmentsSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading investments...</p></div>
-            <div id="investmentsSectionContent" style="display: none;"></div>
+            <h2 class="section-title"><i class="fas fa-plus-circle"></i> Manually Add Investment</h2>
+            <div class="form-card">
+                <div class="form-row">
+                    <div class="form-group"><label>Select Investor</label><select id="investorSelect"></select></div>
+                    <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="invAmount" placeholder="Enter amount"></div>
+                    <div class="form-group"><label>Investment Date</label><input type="date" id="invDate"></div>
+                    <div class="form-group"><label>Payment Method</label><select id="invPaymentMethod"><option>Bank Transfer</option><option>EasyPaisa</option><option>JazzCash</option></select></div>
+                    <div class="form-group"><label>Transaction ID</label><input type="text" id="invTransactionId" placeholder="Transaction ID"></div>
+                </div>
+                <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
+            </div>
+            <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
         <div id="profitsSection" class="admin-section">
-            <div class="section-loader" id="profitsSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading profits...</p></div>
-            <div id="profitsSectionContent" style="display: none;"></div>
+            <h2 class="section-title"><i class="fas fa-gift"></i> Manually Add Profit</h2>
+            <div class="form-card">
+                <div class="form-row">
+                    <div class="form-group"><label>Select Investor</label><select id="profitInvestorSelect"></select></div>
+                    <div class="form-group"><label>Profit Amount (Rs.)</label><input type="number" id="profitAmount" placeholder="Enter profit amount"></div>
+                    <div class="form-group"><label>Month</label><input type="month" id="profitMonth"></div>
+                    <div class="form-group"><label>Profit Percentage</label><input type="number" id="profitPercentage" placeholder="%" value="10"></div>
+                </div>
+                <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
+            </div>
+            <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
         <!-- Withdrawals Section -->
         <div id="withdrawalsSection" class="admin-section">
-            <div class="section-loader" id="withdrawalsSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading withdrawals...</p></div>
-            <div id="withdrawalsSectionContent" style="display: none;"></div>
+            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
+            <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary">Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Approval Screenshot</th><th>Actions</th></tr></thead>
+                    <tbody id="withdrawalsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Products Section -->
         <div id="productsSection" class="admin-section">
-            <div class="section-loader" id="productsSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading products...</p></div>
-            <div id="productsSectionContent" style="display: none;"></div>
+            <h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2>
+            <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Product Name *</label><input type="text" id="newProductName" placeholder="Enter product name"></div>
+                    <div class="form-group"><label>Category *</label><select id="newProductCategory"><option>LED Bulbs</option><option>Energy Saving</option><option>Decorative</option><option>Street Light</option><option>Solar</option></select></div>
+                    <div class="form-group"><label>Wattage</label><input type="text" id="newProductWattage" placeholder="e.g., 9W"></div>
+                    <div class="form-group"><label>Price (Rs.) *</label><input type="number" id="newProductPrice" placeholder="Enter price"></div>
+                    <div class="form-group"><label>Stock Quantity</label><input type="number" id="newProductStock" placeholder="0" value="0"></div>
+                </div>
+                <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
+            </div>
+            <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
         <!-- Orders Section -->
         <div id="ordersSection" class="admin-section">
-            <div class="section-loader" id="ordersSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading orders...</p></div>
-            <div id="ordersSectionContent" style="display: none;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
+                <div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="🔍 Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div>
+            </div>
+            <div class="table-container"><tr><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
         </div>
 
-        <!-- Affiliates Section -->
-        <div id="affiliatesSection" class="admin-section">
-            <div class="section-loader" id="affiliatesSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading affiliate data...</p></div>
-            <div id="affiliatesSectionContent" style="display: none;"></div>
-        </div>
-
-        <!-- Announcements Section -->
-        <div id="announcementsSection" class="admin-section">
-            <div class="section-loader" id="announcementsSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading announcements...</p></div>
-            <div id="announcementsSectionContent" style="display: none;"></div>
-        </div>
-
-        <!-- KYC Section -->
-        <div id="kycSection" class="admin-section">
-            <div class="section-loader" id="kycSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading KYC requests...</p></div>
-            <div id="kycSectionContent" style="display: none;"></div>
-        </div>
-
-        <!-- Reports Section -->
-        <div id="reportsSection" class="admin-section">
-            <div class="section-loader" id="reportsSectionLoader"><i class="fas fa-spinner fa-spin"></i><p>Loading reports...</p></div>
-            <div id="reportsSectionContent" style="display: none;"></div>
-        </div>
-
-        <!-- Live Chat Section (COMPLETELY PRESERVED) -->
+        <!-- Live Chat Section -->
         <div id="livechatSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat Control Center</h2>
             <div class="chat-system-toggle">
@@ -912,7 +973,7 @@
         </div>
     </div>
 
-    <!-- Referral Link Modal -->
+    <!-- Referral Link Modal (NEW) -->
     <div id="referralLinkModal" class="modal">
         <div class="modal-content">
             <h2><i class="fas fa-link"></i> Referral Link</h2>
@@ -921,47 +982,54 @@
         </div>
     </div>
 
-    <!-- KYC Modal -->
-    <div id="kycModal" class="modal">
-        <div class="modal-content">
-            <h2><i class="fas fa-id-card"></i> KYC Details</h2>
-            <div id="kycModalContent"></div>
-            <div style="margin-top:20px; display:flex; gap:10px;" id="kycModalActions"></div>
-        </div>
+    <!-- Voice Recording Overlay -->
+    <div id="voiceRecordingOverlay" class="voice-recording-overlay">
+        <div class="recording-wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
+        <div class="recording-timer" id="recordingTimer">0:00</div>
+        <div class="recording-controls"><button class="recording-cancel-btn" onclick="adminChatSystem.cancelVoiceRecording()"><i class="fas fa-times"></i></button><button class="recording-stop-btn" onclick="adminChatSystem.stopVoiceRecording()"><i class="fas fa-stop"></i></button></div>
+    </div>
+    
+    <!-- Product Selector Modal -->
+    <div id="productSelectorModal" class="product-selector-modal">
+        <div class="product-selector-header"><h3 style="color:#E8B13C;">Select Product to Share</h3><button onclick="adminChatSystem.closeProductSelector()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div>
+        <div id="productSelectorList"></div>
     </div>
 
-    <!-- Announcement Modal -->
-    <div id="announcementModal" class="modal">
-        <div class="modal-content">
-            <h2><i class="fas fa-bullhorn"></i> Create Announcement</h2>
-            <div class="form-group"><label>Title</label><input type="text" id="annTitle" placeholder="Announcement title"></div>
-            <div class="form-group"><label>Message</label><textarea id="annMessage" rows="4" placeholder="Announcement content..."></textarea></div>
-            <div class="form-group"><label>Target Audience</label><select id="annTarget"><option value="all">All Users</option><option value="investors">Investors Only</option><option value="buyers">Buyers Only</option></select></div>
-            <div class="form-group"><label>Display Type</label><select id="annType"><option value="banner">Dashboard Banner</option><option value="popup">Popup</option><option value="notification">Notification</option></select></div>
-            <div style="display:flex; gap:10px; margin-top:20px;"><button onclick="publishAnnouncement()" class="btn-primary">Publish</button><button onclick="closeModal('announcementModal')" class="btn-danger">Cancel</button></div>
+    <!-- GIF Picker Modal -->
+    <div id="gifPickerModal" class="gif-picker-modal">
+        <div class="gif-search-header"><input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="adminChatSystem.searchGIFs(this.value)"><button onclick="adminChatSystem.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px; cursor:pointer;">&times;</button></div>
+        <div id="gifGrid" class="gif-grid"><div style="padding:20px;text-align:center;">Loading GIFs...</div></div>
+    </div>
+
+    <!-- Poll Creator Modal -->
+    <div id="pollModal" class="poll-modal">
+        <div class="product-selector-header"><h3 style="color:#E8B13C;">Create a Poll</h3><button onclick="adminChatSystem.closePollModal()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div>
+        <div style="padding:20px;">
+            <div class="form-group"><label>Poll Question</label><input type="text" id="pollQuestion" placeholder="Ask a question..."></div>
+            <div class="form-group"><label>Options</label>
+                <div id="pollOptionsList"><div class="poll-option-row"><input type="text" placeholder="Option 1" style="flex:1;"></div><div class="poll-option-row"><input type="text" placeholder="Option 2" style="flex:1;"></div></div>
+                <button onclick="adminChatSystem.addPollOption()" class="btn-primary" style="margin-top:10px; padding:6px 12px; font-size:0.8rem;">+ Add Option</button>
+            </div>
+            <button onclick="adminChatSystem.sendPoll()" class="btn-primary" style="margin-top:15px; width:100%;">Send Poll</button>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ========== CONFIGURATION ==========
+        // Supabase Configuration
         const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
         
         let supabaseClient = null;
         let allInvestors = [], allBuyers = [], allOrders = [], allWithdrawals = [], allProducts = [], allBatches = [];
-        let allAnnouncements = [], allKYC = [], allLogs = [];
         let pendingWithdrawalId = null, pendingWithdrawalAmount = null, pendingWithdrawalInvestorId = null;
         let tempScreenshotData = null;
         let charts = {};
+        
+        // Real-time subscription for batch updates
         let batchSubscription = null;
-        let sectionDataLoaded = {
-            batches: false, investors: false, buyers: false, investmentRequests: false,
-            investments: false, profits: false, withdrawals: false, products: false,
-            orders: false, affiliates: false, announcements: false, kyc: false, reports: false
-        };
-
-        // ========== SIPK LOADER ==========
+        
+        // ========== SIPK LOADER SYSTEM ==========
         class SIPKLoader {
             constructor() {
                 this.progress = 0;
@@ -1010,28 +1078,8 @@
                 }, 500);
             }
         }
-
-        // ========== HELPER FUNCTIONS ==========
-        function showNotification(msg, isError = false, title = "") { 
-            Swal.fire({ icon: isError ? 'error' : 'success', title: title || (isError ? 'Error!' : 'Success!'), text: msg, background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff', confirmButtonColor: '#E8B13C', timer: isError ? 3000 : 2000 });
-        }
         
-        async function confirmAction(message, title = "Confirm Action") {
-            const result = await Swal.fire({ title: title, text: message, icon: 'question', showCancelButton: true, confirmButtonColor: '#E8B13C', cancelButtonColor: '#dc3545', confirmButtonText: 'Yes, proceed!', cancelButtonText: 'Cancel', background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff' });
-            return result.isConfirmed;
-        }
-        
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            document.getElementById(modalId).style.display = 'none';
-        }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-        }
-        
-        // ========== REFERRAL LINK FUNCTIONS ==========
+        // ========== REFERRAL LINK FUNCTIONS (NEW) ==========
         function generateReferralLink(userId, userType, referralCode) {
             const baseUrl = window.location.origin;
             return `${baseUrl}/register.html?ref=${referralCode}&type=${userType}`;
@@ -1043,7 +1091,7 @@
             modalContent.innerHTML = `
                 <div class="form-card">
                     <p><strong>User:</strong> ${escapeHtml(userName)}</p>
-                    <p><strong>Referral Code:</strong> <code style="background:rgba(0,0,0,0.3); padding:5px 10px; border-radius:8px;">${referralCode}</code></p>
+                    <p><strong>Referral Code:</strong> <code class="referral-code-badge">${referralCode}</code></p>
                     <div class="referral-link-box">
                         <input type="text" id="referralLinkInput" value="${link}" readonly>
                         <button class="copy-link-btn" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copy Link</button>
@@ -1062,413 +1110,804 @@
             showNotification('Referral link copied to clipboard!', false);
         }
         
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text);
-            showNotification('Link copied!', false);
+        // Helper Functions
+        function showNotification(msg, isError = false, title = "") { 
+            Swal.fire({ icon: isError ? 'error' : 'success', title: title || (isError ? 'Error!' : 'Success!'), text: msg, background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff', confirmButtonColor: '#E8B13C', timer: isError ? 3000 : 2000 });
         }
         
-        // ========== ANNOUNCEMENT FUNCTIONS ==========
-        async function publishAnnouncement() {
-            const title = document.getElementById('annTitle').value;
-            const message = document.getElementById('annMessage').value;
-            const target = document.getElementById('annTarget').value;
-            const type = document.getElementById('annType').value;
-            
-            if (!title || !message) { showNotification('Title and message required', true); return; }
-            
-            const { error } = await supabaseClient.from('announcements').insert([{
-                id: crypto.randomUUID(),
-                title: title,
-                message: message,
-                target_audience: target,
-                type: type,
-                created_at: new Date().toISOString()
-            }]);
-            
-            if (error) { showNotification(error.message, true); return; }
-            
-            showNotification('Announcement published!', false);
-            document.getElementById('annTitle').value = '';
-            document.getElementById('annMessage').value = '';
-            closeModal('announcementModal');
-            if (sectionDataLoaded.announcements) await loadAnnouncements();
+        async function confirmAction(message, title = "Confirm Action") {
+            const result = await Swal.fire({ title: title, text: message, icon: 'question', showCancelButton: true, confirmButtonColor: '#E8B13C', cancelButtonColor: '#dc3545', confirmButtonText: 'Yes, proceed!', cancelButtonText: 'Cancel', background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff' });
+            return result.isConfirmed;
         }
         
-        async function loadAnnouncements() {
-            const { data } = await supabaseClient.from('announcements').select('*').order('created_at', { ascending: false });
-            allAnnouncements = data || [];
-            const tbody = document.getElementById('announcementsList');
-            if (tbody) {
-                tbody.innerHTML = allAnnouncements.map(a => `
-                    <tr>
-                        <td><strong>${escapeHtml(a.title)}</strong></td>
-                        <td>${escapeHtml(a.message.substring(0, 50))}...</td>
-                        <td>${a.target_audience}</td>
-                        <td>${a.type}</td>
-                        <td>${new Date(a.created_at).toLocaleDateString()}</td>
-                        <td><button onclick="deleteAnnouncement('${a.id}')" class="btn-danger">Delete</button></td>
-                    </tr>
-                `).join('');
-            }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.getElementById(modalId).style.display = 'none';
         }
         
-        async function deleteAnnouncement(id) {
-            if (await confirmAction('Delete this announcement?')) {
-                await supabaseClient.from('announcements').delete().eq('id', id);
-                await loadAnnouncements();
-                showNotification('Announcement deleted', false);
-            }
-        }
-        
-        // ========== KYC FUNCTIONS ==========
-        async function loadKYC() {
-            const { data } = await supabaseClient.from('kyc_requests').select('*, investors(full_name, email)').order('submitted_at', { ascending: false });
-            allKYC = data || [];
-            filterKYC();
-        }
-        
-        function filterKYC() {
-            const statusFilter = document.getElementById('kycStatusFilter')?.value || 'all';
-            const filtered = allKYC.filter(k => statusFilter === 'all' || k.status === statusFilter);
-            const tbody = document.getElementById('kycList');
-            if (tbody) {
-                tbody.innerHTML = filtered.map(k => `
-                    <tr>
-                        <td><strong>${escapeHtml(k.investors?.full_name || 'Unknown')}</strong></td>
-                        <td>${k.cnic_image ? `<img src="${k.cnic_image}" class="screenshot-thumb" onclick="window.open('${k.cnic_image}','_blank')">` : '-'}</td>
-                        <td>${k.selfie_image ? `<img src="${k.selfie_image}" class="screenshot-thumb" onclick="window.open('${k.selfie_image}','_blank')">` : '-'}</td>
-                        <td><span class="status-badge ${k.status === 'approved' ? 'status-active' : k.status === 'rejected' ? 'status-blocked' : 'status-pending'}">${k.status || 'pending'}</span></td>
-                        <td>${k.rejection_reason || '-'}</td>
-                        <td>
-                            ${k.status === 'pending' ? `<button onclick="approveKYC('${k.id}')" class="btn-success">Approve</button>
-                            <button onclick="rejectKYC('${k.id}')" class="btn-danger">Reject</button>` : ''}
-                        </td>
-                    </tr>
-                `).join('');
-            }
-        }
-        
-        async function approveKYC(id) {
-            await supabaseClient.from('kyc_requests').update({ status: 'approved' }).eq('id', id);
-            showNotification('KYC approved', false);
-            await loadKYC();
-        }
-        
-        async function rejectKYC(id) {
-            const { value: reason } = await Swal.fire({
-                title: 'Rejection Reason',
-                input: 'text',
-                inputPlaceholder: 'Enter reason for rejection',
-                showCancelButton: true,
-                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff'
-            });
-            if (reason) {
-                await supabaseClient.from('kyc_requests').update({ status: 'rejected', rejection_reason: reason }).eq('id', id);
-                showNotification('KYC rejected', false);
-                await loadKYC();
-            }
-        }
-        
-        // ========== REFERRAL FUNCTIONS ==========
-        async function loadReferrals() {
-            const { data: investors } = await supabaseClient.from('investors').select('id, full_name, referral_code, referral_count, referral_earnings');
-            const { data: buyers } = await supabaseClient.from('buyers').select('id, full_name, referral_code, referral_count, referral_earnings');
-            
-            const allReferrals = [...(investors || []), ...(buyers || [])];
-            const tbody = document.getElementById('referralsList');
-            if (tbody) {
-                tbody.innerHTML = allReferrals.map(r => `
-                    <tr>
-                        <td><strong>${escapeHtml(r.full_name)}</strong></td>
-                        <td><code>${r.referral_code || '-'}</code></td>
-                        <td>
-                            <div style="display:flex; gap:5px; align-items:center;">
-                                <input type="text" value="${generateReferralLink(r.id, r.full_name.includes('@') ? 'investor' : 'buyer', r.referral_code)}" readonly style="background:rgba(0,0,0,0.3); border:none; border-radius:8px; padding:5px; width:200px; font-size:11px;">
-                                <button onclick="copyToClipboard('${generateReferralLink(r.id, r.full_name.includes('@') ? 'investor' : 'buyer', r.referral_code)}')" class="btn-info" style="padding:4px 10px;">Copy</button>
-                            </div>
-                        </td>
-                        <td>${r.referral_count || 0}</td>
-                        <td>Rs. ${(r.referral_earnings || 0).toLocaleString()}</td>
-                        <td><button onclick="showReferralLink('${r.id}', '${r.full_name.includes('@') ? 'investor' : 'buyer'}', '${r.referral_code}', '${escapeHtml(r.full_name)}')" class="btn-primary">Get Link</button></td>
-                    </tr>
-                `).join('');
-            }
-        }
-        
-        async function saveReferralSettings() {
-            const commission = document.getElementById('referralCommission').value;
-            const multiLevel = document.getElementById('multiLevelEnabled').value;
-            const levels = document.getElementById('levelsCount').value;
-            
-            await supabaseClient.from('system_settings').upsert([
-                { key: 'referral_commission', value: commission },
-                { key: 'multi_level_enabled', value: multiLevel },
-                { key: 'referral_levels', value: levels }
-            ]);
-            showNotification('Referral settings saved', false);
-        }
-        
-        // ========== REPORT GENERATION ==========
-        async function generateReport(type) {
-            const startDate = document.getElementById('reportStartDate').value;
-            const endDate = document.getElementById('reportEndDate').value;
-            
-            let data = [];
-            let filename = '';
-            
-            switch(type) {
-                case 'deposits':
-                    const { data: d } = await supabaseClient.from('investments').select('*, investors(full_name)').eq('status', 'active');
-                    if (startDate) data = d?.filter(item => item.investment_date >= startDate && item.investment_date <= (endDate || startDate));
-                    else data = d;
-                    filename = 'deposits_report.xlsx';
-                    break;
-                case 'withdrawals':
-                    const { data: w } = await supabaseClient.from('withdrawals').select('*, investors(full_name)');
-                    if (startDate) data = w?.filter(item => item.request_date >= startDate && item.request_date <= (endDate || startDate));
-                    else data = w;
-                    filename = 'withdrawals_report.xlsx';
-                    break;
-                case 'profits':
-                    const { data: p } = await supabaseClient.from('profits').select('*, investors(full_name)');
-                    data = p;
-                    filename = 'profits_report.xlsx';
-                    break;
-                case 'investors':
-                    data = allInvestors;
-                    filename = 'investors_report.xlsx';
-                    break;
-            }
-            
-            const ws = XLSX.utils.json_to_sheet(data || []);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Report');
-            XLSX.writeFile(wb, filename);
-            showNotification('Report generated and downloaded', false);
-        }
-        
-        // ========== LAZY LOAD SECTION HANDLER ==========
-        async function loadSectionIfNeeded(sectionName) {
-            if (sectionDataLoaded[sectionName]) return;
-            
-            const contentDiv = document.getElementById(`${sectionName}SectionContent`);
-            const loaderDiv = document.getElementById(`${sectionName}SectionLoader`);
-            
-            if (loaderDiv) loaderDiv.style.display = 'flex';
-            if (contentDiv) contentDiv.style.display = 'none';
-            
-            try {
-                switch(sectionName) {
-                    case 'batches': 
-                        await loadBatches();
-                        const batchesContent = document.getElementById('batchesSectionContent');
-                        if (batchesContent) {
-                            batchesContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-industry"></i> Investment Batches Management</h2>
-                                <div class="form-card">...</div>
-                                <div class="table-container"><table><thead>...</thead><tbody id="batchesList"></tbody></table></div>
-                            `;
-                            await loadBatches();
-                        }
-                        break;
-                    case 'investors':
-                        await loadInvestors();
-                        const investorsContent = document.getElementById('investorsSectionContent');
-                        if (investorsContent) {
-                            investorsContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-users"></i> Investors Management</h2>
-                                <div class="form-card">...</div>
-                                <div class="table-container"><table><thead>...</thead><tbody id="investorsList"></tbody></table></div>
-                            `;
-                            await loadInvestors();
-                        }
-                        break;
-                    case 'buyers':
-                        await loadBuyers();
-                        const buyersContent = document.getElementById('buyersSectionContent');
-                        if (buyersContent) {
-                            buyersContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-user-friends"></i> Buyers Management</h2>
-                                <div class="form-card">...</div>
-                                <div class="table-container"><table><thead>...</thead><tbody id="buyersList"></tbody></table></div>
-                            `;
-                            await loadBuyers();
-                        }
-                        break;
-                    case 'investmentRequests':
-                        await loadInvestmentRequests();
-                        const requestsContent = document.getElementById('investmentRequestsSectionContent');
-                        if (requestsContent) {
-                            requestsContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
-                                <div class="table-container"><table><thead>...</thead><tbody id="investmentRequestsList"></tbody></table></div>
-                            `;
-                            await loadInvestmentRequests();
-                        }
-                        break;
-                    case 'investments':
-                        await loadInvestmentHistory();
-                        const investmentsContent = document.getElementById('investmentsSectionContent');
-                        if (investmentsContent) {
-                            investmentsContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-plus-circle"></i> Manually Add Investment</h2>
-                                <div class="form-card">...</div>
-                                <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-                                <div class="table-container"><table><thead>...</thead><tbody id="investmentHistory"></tbody></table></div>
-                            `;
-                            await loadInvestmentHistory();
-                        }
-                        break;
-                    case 'profits':
-                        await loadProfitHistory();
-                        const profitsContent = document.getElementById('profitsSectionContent');
-                        if (profitsContent) {
-                            profitsContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-gift"></i> Manually Add Profit</h2>
-                                <div class="form-card">...</div>
-                                <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-                                <div class="table-container"><table><thead>...</thead><tbody id="profitHistory"></tbody></table></div>
-                            `;
-                            await loadProfitHistory();
-                        }
-                        break;
-                    case 'withdrawals':
-                        await loadWithdrawals();
-                        const withdrawalsContent = document.getElementById('withdrawalsSectionContent');
-                        if (withdrawalsContent) {
-                            withdrawalsContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
-                                <div class="search-box">...</div>
-                                <div class="table-container"><table><thead>...</thead><tbody id="withdrawalsList"></tbody></table></div>
-                            `;
-                            await loadWithdrawals();
-                        }
-                        break;
-                    case 'products':
-                        await loadProducts();
-                        const productsContent = document.getElementById('productsSectionContent');
-                        if (productsContent) {
-                            productsContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2>
-                                <div class="form-card">...</div>
-                                <div class="table-container"><table><thead>...</thead><tbody id="productsList"></tbody></table></div>
-                            `;
-                            await loadProducts();
-                        }
-                        break;
-                    case 'orders':
-                        await loadOrders();
-                        const ordersContent = document.getElementById('ordersSectionContent');
-                        if (ordersContent) {
-                            ordersContent.innerHTML = `
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                                    <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
-                                    <div class="search-box"><input type="text" id="orderSearch" placeholder="🔍 Search..."></div>
-                                </div>
-                                <div class="table-container"><table><thead>...</thead><tbody id="ordersList"></tbody></table></div>
-                            `;
-                            await loadOrders();
-                        }
-                        break;
-                    case 'affiliates':
-                        await loadReferrals();
-                        const affiliatesContent = document.getElementById('affiliatesSectionContent');
-                        if (affiliatesContent) {
-                            affiliatesContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-link"></i> Affiliate / Referral System</h2>
-                                <div class="form-card">...</div>
-                                <div class="table-container"><table><thead>...</thead><tbody id="referralsList"></tbody></table></div>
-                            `;
-                            await loadReferrals();
-                        }
-                        break;
-                    case 'announcements':
-                        await loadAnnouncements();
-                        const announcementsContent = document.getElementById('announcementsSectionContent');
-                        if (announcementsContent) {
-                            announcementsContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-bullhorn"></i> Announcements</h2>
-                                <div class="form-card">...</div>
-                                <div class="table-container"><table><thead>...</thead><tbody id="announcementsList"></tbody></table></div>
-                            `;
-                            await loadAnnouncements();
-                        }
-                        break;
-                    case 'kyc':
-                        await loadKYC();
-                        const kycContent = document.getElementById('kycSectionContent');
-                        if (kycContent) {
-                            kycContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-id-card"></i> KYC Verification</h2>
-                                <div class="filter-bar"><select id="kycStatusFilter" onchange="filterKYC()">...</select></div>
-                                <div class="table-container"><table><thead>...</thead><tbody id="kycList"></tbody></table></div>
-                            `;
-                            await loadKYC();
-                        }
-                        break;
-                    case 'reports':
-                        const reportsContent = document.getElementById('reportsSectionContent');
-                        if (reportsContent) {
-                            reportsContent.innerHTML = `
-                                <h2 class="section-title"><i class="fas fa-chart-bar"></i> Reports & Analytics</h2>
-                                <div class="report-actions">
-                                    <input type="date" id="reportStartDate"><input type="date" id="reportEndDate">
-                                    <button onclick="generateReport('deposits')" class="btn-primary">Deposits Report</button>
-                                    <button onclick="generateReport('withdrawals')" class="btn-primary">Withdrawals Report</button>
-                                    <button onclick="generateReport('profits')" class="btn-primary">Profits Report</button>
-                                    <button onclick="generateReport('investors')" class="btn-primary">Investors Report</button>
-                                </div>
-                            `;
-                        }
-                        break;
-                }
-                sectionDataLoaded[sectionName] = true;
-            } catch(e) { console.error(`Error loading ${sectionName}:`, e); }
-            
-            if (loaderDiv) loaderDiv.style.display = 'none';
-            if (contentDiv) contentDiv.style.display = 'block';
-        }
-        
-        window.showSection = async function(section) {
+        window.showSection = function(section) {
             document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            
             const targetSection = document.getElementById(`${section}Section`);
             if (targetSection) targetSection.classList.add('active');
-            
             const btns = document.querySelectorAll('.nav-tab');
-            for(let btn of btns) { 
-                if(btn.innerText.toLowerCase().includes(section.toLowerCase())) { 
-                    btn.classList.add('active'); 
-                    break; 
-                } 
-            }
-            
+            for(let btn of btns) { if(btn.innerText.toLowerCase().includes(section.toLowerCase())) { btn.classList.add('active'); break; } }
             if (section === 'livechat' && window.adminChatSystem) { 
                 setTimeout(() => { 
                     window.adminChatSystem.loadUsers(); 
                     window.adminChatSystem.updateUnreadIndicator(); 
                 }, 100); 
             }
-            
-            const sectionMap = {
-                'batches': 'batches', 'investors': 'investors', 'buyers': 'buyers',
-                'investmentRequests': 'investmentRequests', 'investments': 'investments',
-                'profits': 'profits', 'withdrawals': 'withdrawals', 'products': 'products',
-                'orders': 'orders', 'affiliates': 'affiliates', 'announcements': 'announcements',
-                'kyc': 'kyc', 'reports': 'reports'
-            };
-            
-            if (sectionMap[section]) {
-                await loadSectionIfNeeded(sectionMap[section]);
-            }
+            if (section === 'batches') { loadBatches(); loadBatchSelect(); }
+            if (section === 'dashboard') { renderAllCharts(); }
         };
 
-        // ========== ORIGINAL FUNCTIONS FROM YOUR FILE (PRESERVED) ==========
-        // These are placeholder references - in the actual implementation,
-        // all your original functions like loadInvestors, loadBatches, createInvestmentBatch,
-        // addNewInvestor, etc. remain EXACTLY as they were in your original file
+        // ========== ENHANCED INVESTMENT BATCH SYSTEM ==========
+        async function createInvestmentBatch() {
+            const batchName = document.getElementById('newBatchName').value.trim();
+            const amount = parseFloat(document.getElementById('newBatchAmount').value);
+            const profitPercent = parseFloat(document.getElementById('newBatchProfitPercent').value);
+            const duration = parseInt(document.getElementById('newBatchDuration').value);
+            const totalSlots = parseInt(document.getElementById('newBatchSlots').value);
+            const isVisible = document.getElementById('batchVisibility').value === 'true';
+            const prodQty = parseInt(document.getElementById('batchProdQty').value) || 0;
+            const status = document.getElementById('batchStatusSelect').value;
+            const sales = parseFloat(document.getElementById('batchSales').value) || 0;
+            const expenses = parseFloat(document.getElementById('batchExpenses').value) || 0;
+            const returns = parseInt(document.getElementById('batchReturns').value) || 0;
+            const damaged = parseInt(document.getElementById('batchDamaged').value) || 0;
+            
+            if (!batchName || !amount || !profitPercent || !duration || !totalSlots) {
+                showNotification('Please fill all required fields', true);
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabaseClient.from('investment_batches').insert([{
+                    id: crypto.randomUUID(),
+                    batch_name: batchName,
+                    investment_amount: amount,
+                    profit_percentage: profitPercent,
+                    duration_days: duration,
+                    total_slots: totalSlots,
+                    filled_slots: 0,
+                    production_quantity: prodQty,
+                    status: status,
+                    sales: sales,
+                    expenses: expenses,
+                    returns: returns,
+                    damaged: damaged,
+                    profit_credited: false,
+                    is_active: true,
+                    is_visible: isVisible,
+                    created_by: (await supabaseClient.auth.getUser()).data.user?.id,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                }]);
+                
+                if (error) throw error;
+                showNotification('Investment batch created successfully!', false);
+                
+                document.getElementById('newBatchName').value = '';
+                document.getElementById('newBatchAmount').value = '';
+                document.getElementById('newBatchProfitPercent').value = '50';
+                document.getElementById('newBatchDuration').value = '';
+                document.getElementById('newBatchSlots').value = '';
+                document.getElementById('batchProdQty').value = '';
+                document.getElementById('batchSales').value = '';
+                document.getElementById('batchExpenses').value = '';
+                document.getElementById('batchReturns').value = '';
+                document.getElementById('batchDamaged').value = '';
+                
+                loadBatches();
+                renderAllCharts();
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
         
+        async function loadBatches() {
+            if(!supabaseClient) return;
+            try {
+                const { data: batches, error: batchesError } = await supabaseClient
+                    .from('investment_batches')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (batchesError) throw batchesError;
+                
+                const { data: prodBatches } = await supabaseClient
+                    .from('batches')
+                    .select('*, investments(investor_id, amount, investors(full_name))')
+                    .order('created_at', {ascending: false});
+                
+                allBatches = batches || [];
+                const prodBatchesList = prodBatches || [];
+                
+                const tbody = document.getElementById('batchesList');
+                if(!tbody) return;
+                
+                if(allBatches.length === 0 && prodBatchesList.length === 0) { 
+                    tbody.innerHTML = '<tr><td colspan="17" class="empty-state">No batches created yet. Create your first batch above.</td></tr>'; 
+                    return; 
+                }
+                
+                let totalProd = 0, totalSales = 0, totalReturns = 0, totalDamaged = 0, totalRoi = 0;
+                let html = '';
+                
+                for (const batch of allBatches) {
+                    const netProfit = (batch.sales || 0) - (batch.expenses || 0);
+                    const investorShare = netProfit * 0.5;
+                    const roi = batch.investment_amount ? ((investorShare / batch.investment_amount) * 100).toFixed(2) : '0.00';
+                    let statusClass = 'status-in-production';
+                    if(batch.status === 'Completed') statusClass = 'status-completed';
+                    if(batch.status === 'Sold') statusClass = 'status-sold';
+                    if(batch.status === 'Profit Distributed') statusClass = 'status-profit-distributed';
+                    
+                    totalProd += batch.production_quantity || 0;
+                    totalSales += batch.sales || 0;
+                    totalReturns += batch.returns || 0;
+                    totalDamaged += batch.damaged || 0;
+                    totalRoi += parseFloat(roi);
+                    
+                    const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
+                    const currentStepIndex = progressSteps.indexOf(batch.status || 'In Production');
+                    const progressHtml = `<div class="progress-tracker">${progressSteps.map((step, i) => `<span class="progress-step ${i < currentStepIndex ? 'completed' : i === currentStepIndex ? 'active' : ''}">${step}</span>`).join('')}</div>`;
+                    
+                    const availableSlots = (batch.total_slots || 0) - (batch.filled_slots || 0);
+                    const slotWarning = availableSlots <= 0 ? '<span class="status-badge status-pending" style="background:#dc3545;">FULL</span>' : `${batch.filled_slots || 0}/${batch.total_slots || 0}`;
+                    
+                    html += `<tr class="batch-row" onclick="showBatchDetail('${batch.id}', 'investment')">
+                        <td>${batch.id?.slice(0, 12)}...</td>
+                        <td><strong>${escapeHtml(batch.batch_name || 'N/A')}</strong></td>
+                        <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
+                        <td>${batch.profit_percentage || 0}%</td>
+                        <td>${batch.duration_days || 0} days</td>
+                        <td>${batch.total_slots || 0}</td>
+                        <td>${slotWarning}</td>
+                        <td>${batch.production_quantity || 0}</td>
+                        <td><span class="status-badge ${statusClass}">${batch.status || 'In Production'}</span></td>
+                        <td>${progressHtml}</td>
+                        <td>Rs. ${(batch.sales || 0).toLocaleString()}</td>
+                        <td>Rs. ${(batch.expenses || 0).toLocaleString()}</td>
+                        <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
+                        <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
+                        <td>${roi}%</td>
+                        <td><span class="status-badge ${batch.is_visible ? 'status-active' : 'status-pending'}">${batch.is_visible ? 'Visible' : 'Hidden'}</span></td>
+                        <td class="action-buttons">
+                            <button onclick="event.stopPropagation();updateInvestmentBatch('${batch.id}')" class="btn-warning">Edit</button>
+                            <button onclick="event.stopPropagation();toggleBatchVisibility('${batch.id}', ${!batch.is_visible})" class="btn-info">${batch.is_visible ? 'Hide' : 'Show'}</button>
+                            ${batch.status === 'Sold' && !batch.profit_credited ? `<button onclick="event.stopPropagation();distributeBatchProfit('${batch.id}', ${investorShare})" class="btn-success">Distribute Profit</button>` : ''}
+                            <button onclick="event.stopPropagation();deleteInvestmentBatch('${batch.id}')" class="btn-danger">Delete</button>
+                        </td>
+                    </tr>`;
+                }
+                
+                for (const batch of prodBatchesList) {
+                    const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
+                    const currentStepIndex = progressSteps.indexOf(batch.status);
+                    const progressHtml = `<div class="progress-tracker">${progressSteps.map((step, i) => `<span class="progress-step ${i < currentStepIndex ? 'completed' : i === currentStepIndex ? 'active' : ''}">${step}</span>`).join('')}</div>`;
+                    const netProfit = (batch.sales || 0) - (batch.expenses || 0);
+                    const investorShare = netProfit * 0.5;
+                    const roi = batch.investment_amount ? ((investorShare / batch.investment_amount) * 100).toFixed(2) : '0.00';
+                    let statusClass = 'status-in-production';
+                    if(batch.status === 'Completed') statusClass = 'status-completed';
+                    if(batch.status === 'Sold') statusClass = 'status-sold';
+                    if(batch.status === 'Profit Distributed') statusClass = 'status-profit-distributed';
+                    
+                    totalProd += batch.production_quantity || 0;
+                    totalSales += batch.sales || 0;
+                    totalReturns += batch.returns || 0;
+                    totalDamaged += batch.damaged || 0;
+                    totalRoi += parseFloat(roi);
+                    
+                    html += `<tr class="batch-row" onclick="showBatchDetail('${batch.id}', 'production')">
+                        <td>${batch.id?.slice(0, 12)}...</td>
+                        <td>Production Batch</td>
+                        <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
+                        <td>50%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>${batch.production_quantity || 0}</td>
+                        <td><span class="status-badge ${statusClass}">${batch.status}</span></td>
+                        <td>${progressHtml}</td>
+                        <td>Rs. ${(batch.sales || 0).toLocaleString()}</td>
+                        <td>Rs. ${(batch.expenses || 0).toLocaleString()}</td>
+                        <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
+                        <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
+                        <td>${roi}%</td>
+                        <td><span class="status-badge status-active">Visible</span></td>
+                        <td class="action-buttons">
+                            <button onclick="event.stopPropagation();updateBatchStatus('${batch.id}')" class="btn-warning">Update Status</button>
+                            ${!batch.profit_credited && batch.status === 'Sold' ? `<button onclick="event.stopPropagation();creditProfitToInvestor('${batch.id}', ${investorShare}, '${batch.investments?.investor_id}')" class="btn-success">Credit Profit</button>` : ''}
+                            <button onclick="event.stopPropagation();deleteBatch('${batch.id}')" class="btn-danger">Delete</button>
+                        </td>
+                    </tr>`;
+                }
+                
+                tbody.innerHTML = html;
+                
+                document.getElementById('totalBatches').innerHTML = allBatches.length + prodBatchesList.length;
+                document.getElementById('totalProduction').innerHTML = totalProd;
+                document.getElementById('totalSales').innerHTML = `Rs. ${totalSales.toLocaleString()}`;
+                document.getElementById('totalReturns').innerHTML = totalReturns;
+                document.getElementById('totalDamaged').innerHTML = totalDamaged;
+                document.getElementById('avgROI').innerHTML = (allBatches.length + prodBatchesList.length) ? (totalRoi / (allBatches.length + prodBatchesList.length)).toFixed(1) + '%' : '0%';
+            } catch(e) { console.error('Error loading batches:', e); }
+        }
+        
+        async function distributeBatchProfit(batchId, profitAmount) {
+            if (profitAmount <= 0) {
+                showNotification('No profit to distribute. Net profit is negative or zero.', true);
+                return;
+            }
+            
+            const { data: batch } = await supabaseClient.from('investment_batches').select('*').eq('id', batchId).single();
+            if (!batch) {
+                showNotification('Batch not found', true);
+                return;
+            }
+            
+            const { data: investments } = await supabaseClient
+                .from('investments')
+                .select('*, investors(id, full_name, email, available_balance, total_profit)')
+                .eq('batch_id', batchId)
+                .eq('status', 'active');
+            
+            if (!investments || investments.length === 0) {
+                showNotification('No investors found for this batch', true);
+                return;
+            }
+            
+            const totalInvested = investments.reduce((sum, inv) => sum + (inv.amount || 0), 0);
+            
+            let distributionHtml = '<div style="max-height: 400px; overflow-y: auto;">';
+            distributionHtml += '<h3>Profit Distribution Summary</h3>';
+            distributionHtml += `<p><strong>Total Batch Profit:</strong> Rs. ${profitAmount.toLocaleString()}</p>`;
+            distributionHtml += `<p><strong>Total Invested:</strong> Rs. ${totalInvested.toLocaleString()}</p>`;
+            distributionHtml += `<p><strong>Profit Sharing Ratio:</strong> 50% to Investors, 50% to Sohrab Industries</p>`;
+            distributionHtml += '<hr><table style="width:100%; font-size:0.8rem;"><thead><tr><th>Investor</th><th>Investment</th><th>Profit Share (50%)</th></tr></thead><tbody>';
+            
+            const distributions = [];
+            for (const inv of investments) {
+                const investorProfit = (inv.amount / totalInvested) * profitAmount;
+                distributions.push({
+                    investorId: inv.investor_id,
+                    investorName: inv.investors?.full_name || 'Unknown',
+                    amount: inv.amount,
+                    profitShare: investorProfit
+                });
+                distributionHtml += `<tr><td>${escapeHtml(inv.investors?.full_name || 'Unknown')}</td><td>Rs. ${inv.amount.toLocaleString()}</td><td>Rs. ${investorProfit.toLocaleString()}</td></tr>`;
+            }
+            distributionHtml += '</tbody></table><hr>';
+            distributionHtml += `<p><strong>Sohrab Industries Share (50%):</strong> Rs. ${profitAmount.toLocaleString()}</p>`;
+            distributionHtml += '</div>';
+            
+            const result = await Swal.fire({
+                title: 'Distribute Batch Profit',
+                html: distributionHtml,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm Distribution',
+                confirmButtonColor: '#1e7e5e',
+                cancelButtonText: 'Cancel',
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                color: '#fff',
+                width: '700px'
+            });
+            
+            if (result.isConfirmed) {
+                try {
+                    for (const dist of distributions) {
+                        const txId = `PROFIT-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+                        
+                        await supabaseClient.from('profit_ledger').insert([{
+                            investor_id: dist.investorId,
+                            amount: dist.profitShare,
+                            batch_id: batchId,
+                            transaction_id: txId,
+                            type: 'credit',
+                            created_at: new Date().toISOString()
+                        }]);
+                        
+                        await supabaseClient.from('profits').insert([{
+                            investor_id: dist.investorId,
+                            amount: dist.profitShare,
+                            month: new Date().toISOString().split('T')[0] + '-01',
+                            profit_percentage: batch.profit_percentage || 50,
+                            paid: true,
+                            paid_date: new Date().toISOString().split('T')[0],
+                            batch_id: batchId,
+                            transaction_id: txId,
+                            notes: `Profit from batch: ${batch.batch_name}`
+                        }]);
+                        
+                        const { data: investor } = await supabaseClient.from('investors').select('total_profit, available_balance').eq('id', dist.investorId).single();
+                        await supabaseClient.from('investors').update({ 
+                            total_profit: (investor?.total_profit || 0) + dist.profitShare,
+                            available_balance: (investor?.available_balance || 0) + dist.profitShare
+                        }).eq('id', dist.investorId);
+                    }
+                    
+                    await supabaseClient.from('investment_batches').update({ 
+                        profit_credited: true, 
+                        status: 'Profit Distributed',
+                        updated_at: new Date().toISOString()
+                    }).eq('id', batchId);
+                    
+                    showNotification(`Profit of Rs. ${profitAmount.toLocaleString()} distributed to ${distributions.length} investors!`, false);
+                    loadBatches();
+                    loadInvestors();
+                    loadStats();
+                    renderAllCharts();
+                } catch(e) { 
+                    showNotification(e.message, true);
+                    console.error('Distribution error:', e);
+                }
+            }
+        }
+        
+        async function updateInvestmentBatch(batchId) {
+            const batch = allBatches.find(b => b.id === batchId);
+            if (!batch) return;
+            
+            const { value: formData } = await Swal.fire({
+                title: 'Edit Investment Batch',
+                html: `
+                    <input id="editName" class="swal2-input" placeholder="Batch Name" value="${escapeHtml(batch.batch_name || '')}">
+                    <input id="editAmount" class="swal2-input" placeholder="Investment Amount" value="${batch.investment_amount}">
+                    <input id="editProfit" class="swal2-input" placeholder="Profit Percentage" value="${batch.profit_percentage}">
+                    <input id="editDuration" class="swal2-input" placeholder="Duration (Days)" value="${batch.duration_days}">
+                    <input id="editSlots" class="swal2-input" placeholder="Total Slots" value="${batch.total_slots}">
+                    <input id="editProdQty" class="swal2-input" placeholder="Production Quantity" value="${batch.production_quantity || 0}">
+                    <input id="editSales" class="swal2-input" placeholder="Sales Amount" value="${batch.sales || 0}">
+                    <input id="editExpenses" class="swal2-input" placeholder="Expenses" value="${batch.expenses || 0}">
+                    <select id="editStatus" class="swal2-select">
+                        <option value="In Production" ${batch.status === 'In Production' ? 'selected' : ''}>In Production</option>
+                        <option value="Completed" ${batch.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                        <option value="Sold" ${batch.status === 'Sold' ? 'selected' : ''}>Sold</option>
+                        <option value="Profit Distributed" ${batch.status === 'Profit Distributed' ? 'selected' : ''}>Profit Distributed</option>
+                    </select>
+                `,
+                focusConfirm: false,
+                preConfirm: () => ({
+                    name: document.getElementById('editName').value,
+                    amount: parseFloat(document.getElementById('editAmount').value),
+                    profit: parseFloat(document.getElementById('editProfit').value),
+                    duration: parseInt(document.getElementById('editDuration').value),
+                    slots: parseInt(document.getElementById('editSlots').value),
+                    prodQty: parseInt(document.getElementById('editProdQty').value) || 0,
+                    sales: parseFloat(document.getElementById('editSales').value) || 0,
+                    expenses: parseFloat(document.getElementById('editExpenses').value) || 0,
+                    status: document.getElementById('editStatus').value
+                }),
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                color: '#fff',
+                confirmButtonColor: '#E8B13C'
+            });
+            
+            if (formData) {
+                try {
+                    const netProfit = formData.sales - formData.expenses;
+                    const investorShare = netProfit * 0.5;
+                    
+                    const { error } = await supabaseClient
+                        .from('investment_batches')
+                        .update({
+                            batch_name: formData.name,
+                            investment_amount: formData.amount,
+                            profit_percentage: formData.profit,
+                            duration_days: formData.duration,
+                            total_slots: formData.slots,
+                            production_quantity: formData.prodQty,
+                            sales: formData.sales,
+                            expenses: formData.expenses,
+                            status: formData.status,
+                            profit_credited: formData.status === 'Profit Distributed' ? true : false,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', batchId);
+                    
+                    if (error) throw error;
+                    showNotification('Batch updated successfully!', false);
+                    loadBatches();
+                    renderAllCharts();
+                } catch(e) { showNotification(e.message, true); }
+            }
+        }
+        
+        async function toggleBatchVisibility(batchId, isVisible) {
+            try {
+                const { error } = await supabaseClient
+                    .from('investment_batches')
+                    .update({ is_visible: isVisible, updated_at: new Date().toISOString() })
+                    .eq('id', batchId);
+                
+                if (error) throw error;
+                showNotification(`Batch is now ${isVisible ? 'visible' : 'hidden'} to investors`, false);
+                loadBatches();
+            } catch(e) { showNotification(e.message, true); }
+        }
+        
+        async function deleteInvestmentBatch(batchId) {
+            const { data: linkedInvestments } = await supabaseClient
+                .from('investments')
+                .select('id')
+                .eq('batch_id', batchId)
+                .eq('status', 'active');
+            
+            if (linkedInvestments && linkedInvestments.length > 0) {
+                showNotification(`Cannot delete batch with ${linkedInvestments.length} active investments. Please handle investments first.`, true);
+                return;
+            }
+            
+            if (await confirmAction('Delete this investment batch? This action cannot be undone.', 'Delete Batch')) {
+                try {
+                    const { error } = await supabaseClient.from('investment_batches').delete().eq('id', batchId);
+                    if (error) throw error;
+                    showNotification('Batch deleted', false);
+                    loadBatches();
+                    renderAllCharts();
+                } catch(e) { showNotification(e.message, true); }
+            }
+        }
+        
+        async function loadBatchSelect() {
+            if(!supabaseClient) return;
+            try {
+                const { data } = await supabaseClient.from('investments').select('id, amount, investors(full_name)').eq('status', 'active');
+                const select = document.getElementById('batchInvestmentSelect');
+                if(select) {
+                    select.innerHTML = '<option value="">Select Investment</option>' + (data || []).map(inv => `<option value="${inv.id}" data-amount="${inv.amount}">${inv.investors?.full_name || 'Unknown'} - Rs. ${inv.amount}</option>`).join('');
+                }
+            } catch(e) { console.error('Error loading batch select:', e); }
+        }
+        
+        async function createBatch() {
+            const investmentId = document.getElementById('batchInvestmentSelect').value;
+            const prodQty = parseInt(document.getElementById('batchProdQty').value) || 0;
+            const status = document.getElementById('batchStatusSelect').value;
+            const sales = parseFloat(document.getElementById('batchSales').value) || 0;
+            const expenses = parseFloat(document.getElementById('batchExpenses').value) || 0;
+            const returns = parseInt(document.getElementById('batchReturns').value) || 0;
+            const damaged = parseInt(document.getElementById('batchDamaged').value) || 0;
+            
+            if(!investmentId) { showNotification('Please select an investment', true); return; }
+            
+            try {
+                const { data: invData } = await supabaseClient.from('investments').select('amount, investor_id').eq('id', investmentId).single();
+                
+                const { error } = await supabaseClient.from('batches').insert([{
+                    id: crypto.randomUUID(),
+                    investment_id: investmentId,
+                    investor_id: invData?.investor_id,
+                    investment_amount: invData?.amount,
+                    production_quantity: prodQty,
+                    status: status,
+                    sales: sales,
+                    expenses: expenses,
+                    returns: returns,
+                    damaged: damaged,
+                    profit_credited: false,
+                    created_at: new Date().toISOString()
+                }]);
+                
+                if(error) throw error;
+                showNotification('Batch created successfully!', false);
+                document.getElementById('batchProdQty').value = '';
+                document.getElementById('batchSales').value = '';
+                document.getElementById('batchExpenses').value = '';
+                document.getElementById('batchReturns').value = '';
+                document.getElementById('batchDamaged').value = '';
+                loadBatches();
+                renderAllCharts();
+            } catch(e) { showNotification(e.message, true); }
+        }
+        
+        async function updateBatchStatus(batchId) {
+            const { value: newStatus } = await Swal.fire({
+                title: 'Update Batch Status',
+                input: 'select',
+                inputOptions: {
+                    'In Production': 'In Production',
+                    'Completed': 'Completed',
+                    'Sold': 'Sold',
+                    'Profit Distributed': 'Profit Distributed'
+                },
+                inputPlaceholder: 'Select status',
+                showCancelButton: true,
+                confirmButtonColor: '#E8B13C',
+                background: '#1a3d33', color: '#fff'
+            });
+            
+            if(newStatus) {
+                try {
+                    const { error } = await supabaseClient.from('batches').update({ status: newStatus }).eq('id', batchId);
+                    if(error) throw error;
+                    showNotification(`Batch status updated to ${newStatus}!`, false);
+                    loadBatches();
+                    renderAllCharts();
+                } catch(e) { showNotification(e.message, true); }
+            }
+        }
+        
+        async function creditProfitToInvestor(batchId, profitAmount, investorId) {
+            if(!investorId || profitAmount <= 0) { showNotification('No profit to credit', true); return; }
+            
+            const result = await Swal.fire({
+                title: 'Credit Profit to Investor',
+                html: `<p><strong>Profit Amount:</strong> Rs. ${profitAmount.toLocaleString()}</p><p><strong>Note:</strong> This is 50% of the net profit. The remaining 50% goes to Sohrab Industries.</p><p>This will be added to investor's balance and ledger.</p>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Credit',
+                confirmButtonColor: '#1e7e5e',
+                background: '#1a3d33', color: '#fff'
+            });
+            
+            if(result.isConfirmed) {
+                const txId = `PROFIT-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+                
+                try {
+                    await supabaseClient.from('profit_ledger').insert([{
+                        investor_id: investorId,
+                        amount: profitAmount,
+                        batch_id: batchId,
+                        transaction_id: txId,
+                        type: 'credit',
+                        created_at: new Date().toISOString()
+                    }]);
+                    
+                    await supabaseClient.from('profits').insert([{
+                        investor_id: investorId,
+                        amount: profitAmount,
+                        month: new Date().toISOString().split('T')[0] + '-01',
+                        profit_percentage: 50,
+                        paid: true,
+                        paid_date: new Date().toISOString().split('T')[0],
+                        batch_id: batchId,
+                        transaction_id: txId
+                    }]);
+                    
+                    await supabaseClient.from('batches').update({ profit_credited: true, status: 'Profit Distributed' }).eq('id', batchId);
+                    
+                    const { data: investor } = await supabaseClient.from('investors').select('total_profit, available_balance').eq('id', investorId).single();
+                    await supabaseClient.from('investors').update({ 
+                        total_profit: (investor?.total_profit || 0) + profitAmount,
+                        available_balance: (investor?.available_balance || 0) + profitAmount
+                    }).eq('id', investorId);
+                    
+                    showNotification(`Rs. ${profitAmount.toLocaleString()} credited to investor!`, false);
+                    loadBatches();
+                    loadInvestors();
+                    loadStats();
+                    renderAllCharts();
+                } catch(e) { showNotification(e.message, true); }
+            }
+        }
+        
+        async function deleteBatch(batchId) {
+            if(await confirmAction('Delete this batch? This action cannot be undone.', 'Delete Batch')) {
+                try {
+                    await supabaseClient.from('batches').delete().eq('id', batchId);
+                    showNotification('Batch deleted', false);
+                    loadBatches();
+                    renderAllCharts();
+                } catch(e) { showNotification(e.message, true); }
+            }
+        }
+        
+        function searchBatches() {
+            const term = document.getElementById('batchSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#batchesList tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        }
+        
+        window.showBatchDetail = async function(batchId, type) {
+            let batch;
+            if (type === 'investment') {
+                batch = allBatches.find(b => b.id === batchId);
+            } else {
+                const { data } = await supabaseClient.from('batches').select('*, investments(investor_id, amount, investors(full_name))').eq('id', batchId).single();
+                batch = data;
+            }
+            if(!batch) return;
+            
+            const netProfit = (batch.sales || 0) - (batch.expenses || 0);
+            const investorShare = netProfit * 0.5;
+            const sohrabShare = netProfit * 0.5;
+            
+            document.getElementById('batchDetailTitle').innerHTML = `Batch ${batch.batch_name || batch.id?.slice(0, 12)}... Details`;
+            document.getElementById('batchDetailContent').innerHTML = `
+                <div class="form-card">
+                    <p><strong>Batch Name:</strong> ${batch.batch_name || 'Production Batch'}</p>
+                    <p><strong>Investment Amount:</strong> Rs. ${(batch.investment_amount || 0).toLocaleString()}</p>
+                    <p><strong>Profit Percentage:</strong> ${batch.profit_percentage || 50}%</p>
+                    <p><strong>Duration:</strong> ${batch.duration_days || 'N/A'} days</p>
+                    <p><strong>Total Slots:</strong> ${batch.total_slots || 'N/A'}</p>
+                    <p><strong>Filled Slots:</strong> ${batch.filled_slots || 0}</p>
+                    <p><strong>Production Quantity:</strong> ${batch.production_quantity || 0} bulbs</p>
+                    <p><strong>Status:</strong> ${batch.status || 'In Production'}</p>
+                    <p><strong>Sales Revenue:</strong> Rs. ${(batch.sales || 0).toLocaleString()}</p>
+                    <p><strong>Expenses:</strong> Rs. ${(batch.expenses || 0).toLocaleString()}</p>
+                    <p><strong>Returns:</strong> ${batch.returns || 0} units</p>
+                    <p><strong>Damaged:</strong> ${batch.damaged || 0} units</p>
+                    <p><strong>Net Profit/Loss:</strong> <span class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</span></p>
+                    <p><strong>Investor Share (50%):</strong> ${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</p>
+                    <p><strong>Sohrab Industries Share (50%):</strong> ${sohrabShare < 0 ? '-' : ''}Rs. ${Math.abs(sohrabShare).toLocaleString()}</p>
+                    <p><strong>ROI:</strong> ${batch.investment_amount ? ((investorShare / batch.investment_amount) * 100).toFixed(2) : '0'}%</p>
+                    <p><strong>Visibility:</strong> ${batch.is_visible !== undefined ? (batch.is_visible ? 'Visible to investors' : 'Hidden from investors') : 'N/A'}</p>
+                    <p><strong>Profit Credited:</strong> ${batch.profit_credited ? 'Yes' : 'No'}</p>
+                </div>
+            `;
+            document.getElementById('batchDetailModal').style.display = 'flex';
+            document.getElementById('batchDetailModal').classList.add('active');
+        };
+
+        // ========== ENHANCED CHARTS FUNCTIONS ==========
+        async function renderAllCharts() {
+            if(!supabaseClient) return;
+            
+            try {
+                const { data: investors } = await supabaseClient.from('investors').select('created_at, total_investment').order('created_at', {ascending: true});
+                const { data: buyers } = await supabaseClient.from('buyers').select('created_at').order('created_at', {ascending: true});
+                const { data: investments } = await supabaseClient.from('investments').select('amount, investment_date').eq('status', 'active');
+                const { data: profits } = await supabaseClient.from('profits').select('amount, paid_date').eq('paid', true);
+                const { data: batches } = await supabaseClient.from('batches').select('status, production_quantity, sales');
+                const { data: investmentBatches } = await supabaseClient.from('investment_batches').select('status, production_quantity, sales');
+                const { data: orders } = await supabaseClient.from('orders').select('total_amount, order_date');
+                const { data: products } = await supabaseClient.from('products').select('category');
+                
+                const allBatchesData = [...(batches || []), ...(investmentBatches || [])];
+                
+                const investorMonths = investors?.map(i => new Date(i.created_at).toLocaleDateString('default',{month:'short'})) || [];
+                let count = 0;
+                const investorCounts = investors?.map(() => ++count) || [0];
+                
+                if(charts.investors) charts.investors?.destroy();
+                if(charts.buyers) charts.buyers?.destroy();
+                if(charts.production) charts.production?.destroy();
+                if(charts.investment) charts.investment?.destroy();
+                if(charts.profit) charts.profit?.destroy();
+                if(charts.batchStatus) charts.batchStatus?.destroy();
+                if(charts.orders) charts.orders?.destroy();
+                if(charts.productCategory) charts.productCategory?.destroy();
+                
+                charts.investors = new Chart(document.getElementById('investorsGrowthChart'), { type: 'line', data: { labels: investorMonths.length ? investorMonths : ['Jan'], datasets: [{ label: 'Total Investors', data: investorCounts.length ? investorCounts : [0], borderColor: '#E8B13C', fill: true }] }, options: { responsive: true } });
+                
+                const buyerMonths = buyers?.map(b => new Date(b.created_at).toLocaleDateString('default',{month:'short'})) || [];
+                let buyerCount = 0;
+                const buyerCounts = buyers?.map(() => ++buyerCount) || [0];
+                charts.buyers = new Chart(document.getElementById('buyersGrowthChart'), { type: 'line', data: { labels: buyerMonths.length ? buyerMonths : ['Jan'], datasets: [{ label: 'Total Buyers', data: buyerCounts.length ? buyerCounts : [0], borderColor: '#1e7e5e', fill: true }] }, options: { responsive: true } });
+                
+                const totalProduction = allBatchesData.reduce((sum, b) => sum + (b.production_quantity || 0), 0);
+                const totalSalesValue = allBatchesData.reduce((sum, b) => sum + (b.sales || 0), 0);
+                charts.production = new Chart(document.getElementById('productionChart'), { type: 'bar', data: { labels: ['Production', 'Sales Value'], datasets: [{ label: 'Amount', data: [totalProduction, totalSalesValue], backgroundColor: ['#d4a017', '#1e7e5e'] }] }, options: { responsive: true } });
+                
+                const invAmounts = investments?.map(i => i.amount) || [0];
+                const invLabels = investments?.map((_,i) => `Inv ${i+1}`) || ['Start'];
+                charts.investment = new Chart(document.getElementById('investmentGrowthChart'), { type: 'line', data: { labels: invLabels, datasets: [{ label: 'Investment (Rs.)', data: invAmounts, borderColor: '#E8B13C', fill: true }] }, options: { responsive: true } });
+                
+                const profitAmounts = profits?.map(p => p.amount) || [0];
+                const profitLabels = profits?.map(p => new Date(p.paid_date).toLocaleDateString('default',{month:'short'})) || ['Jan'];
+                charts.profit = new Chart(document.getElementById('profitChart'), { type: 'bar', data: { labels: profitLabels, datasets: [{ label: 'Profit (Rs.)', data: profitAmounts, backgroundColor: '#1e7e5e' }] }, options: { responsive: true } });
+                
+                const statusCounts = { 'In Production': 0, 'Completed': 0, 'Sold': 0, 'Profit Distributed': 0 };
+                allBatchesData.forEach(b => { if(statusCounts[b.status] !== undefined) statusCounts[b.status]++; });
+                charts.batchStatus = new Chart(document.getElementById('batchStatusChart'), { type: 'doughnut', data: { labels: Object.keys(statusCounts), datasets: [{ data: Object.values(statusCounts), backgroundColor: ['#d4a017', '#2c6e9e', '#1e7e5e', '#0a5e3a'] }] }, options: { responsive: true } });
+                
+                const orderAmounts = orders?.map(o => o.total_amount) || [0];
+                const orderLabels = orders?.map((_,i) => `Order ${i+1}`) || ['Start'];
+                charts.orders = new Chart(document.getElementById('ordersChart'), { type: 'line', data: { labels: orderLabels, datasets: [{ label: 'Order Amount (Rs.)', data: orderAmounts, borderColor: '#17a2b8', fill: true }] }, options: { responsive: true } });
+                
+                const categoryCounts = {};
+                products?.forEach(p => { categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1; });
+                charts.productCategory = new Chart(document.getElementById('productCategoryChart'), { type: 'pie', data: { labels: Object.keys(categoryCounts), datasets: [{ data: Object.values(categoryCounts), backgroundColor: ['#E8B13C', '#1e7e5e', '#d4a017', '#2c6e9e', '#0a5e3a'] }] }, options: { responsive: true } });
+                
+            } catch(e) { console.error('Chart rendering error:', e); }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+        }
+
+        // Screenshot Modal Functions
+        function openWithdrawalScreenshotModal(id, amount, investorId) { 
+            pendingWithdrawalId = id; pendingWithdrawalAmount = amount; pendingWithdrawalInvestorId = investorId;
+            tempScreenshotData = null; document.getElementById('withdrawalScreenshotInput').value = ''; 
+            document.getElementById('withdrawalScreenshotPreview').innerHTML = ''; 
+            document.getElementById('withdrawalScreenshotPreview').classList.remove('active'); 
+            document.getElementById('withdrawalScreenshotModal').style.display = 'flex';
+            document.getElementById('withdrawalScreenshotModal').classList.add('active');
+        }
+        
+        function closeWithdrawalScreenshotModal() { 
+            document.getElementById('withdrawalScreenshotModal').style.display = 'none';
+            document.getElementById('withdrawalScreenshotModal').classList.remove('active');
+            pendingWithdrawalId = null; tempScreenshotData = null; 
+        }
+        
+        window.previewWithdrawalScreenshot = function(input) { 
+            if(input.files && input.files[0]) { 
+                const reader = new FileReader(); 
+                reader.onload = function(e) { 
+                    tempScreenshotData = e.target.result; 
+                    const preview = document.getElementById('withdrawalScreenshotPreview'); 
+                    preview.innerHTML = `<img src="${e.target.result}" style="max-width:150px; border-radius:12px;"><button class="remove-screenshot-btn" onclick="clearWithdrawalScreenshot()" style="margin-left:10px;">×</button>`; 
+                    preview.classList.add('active'); 
+                }; 
+                reader.readAsDataURL(input.files[0]); 
+            } 
+        };
+        
+        async function submitWithdrawalApprovalWithScreenshot() { 
+            if (!tempScreenshotData) { showNotification('Please upload a screenshot proof before approving!', true, 'Screenshot Required'); return; }
+            if (!pendingWithdrawalId) return;
+            try {
+                const { error } = await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0], approval_screenshot: tempScreenshotData }).eq('id', pendingWithdrawalId);
+                if (error) throw error;
+                showNotification('Withdrawal approved with screenshot!', false, 'Approved'); 
+                closeWithdrawalScreenshotModal(); 
+                loadWithdrawals(); loadInvestors(); loadStats(); 
+            } catch(e) { showNotification(e.message, true); }
+        }
+        
+        window.clearWithdrawalScreenshot = function() { 
+            tempScreenshotData = null; 
+            document.getElementById('withdrawalScreenshotInput').value = ''; 
+            document.getElementById('withdrawalScreenshotPreview').innerHTML = ''; 
+            document.getElementById('withdrawalScreenshotPreview').classList.remove('active'); 
+        };
+        
+        window.handleLogout = async function(){ await supabaseClient.auth.signOut(); localStorage.clear(); window.location.href = 'index.html'; };
+        
+        async function refreshAllData() {
+            await loadStats(); await loadInvestors(); await loadBuyers(); await loadInvestmentRequests();
+            await loadInvestmentHistory(); await loadProfitHistory(); await loadWithdrawals();
+            await loadProducts(); await loadOrders(); await loadRecentActivities(); await loadBatches(); await renderAllCharts();
+        }
+        
+        async function checkAuth() {
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                if (error || !user) { window.location.href = 'admin-auth.html'; return null; }
+                const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
+                if (!adminEmails.includes(user.email)) { showNotification('Unauthorized access!', true, 'Access Denied'); window.location.href = 'index.html'; return null; }
+                document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
+                await refreshAllData();
+                setupRealtimeSync();
+                return user;
+            } catch(e) { console.error('Auth error:', e); }
+        }
+        
+        function setupRealtimeSync() {
+            if (batchSubscription) return;
+            batchSubscription = supabaseClient
+                .channel('admin-batch-sync')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'investment_batches' }, (payload) => {
+                    console.log('Batch change detected:', payload);
+                    loadBatches();
+                    loadBatchSelect();
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'investor_investments' }, (payload) => {
+                    console.log('Investment change detected:', payload);
+                    loadInvestmentHistory();
+                    loadInvestmentRequests();
+                    loadStats();
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'withdrawals' }, (payload) => {
+                    console.log('Withdrawal change detected:', payload);
+                    loadWithdrawals();
+                    loadStats();
+                })
+                .subscribe();
+        }
+        
+        // Existing Functions (Preserved)
         async function loadStats() {
             if(!supabaseClient) return;
             const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
@@ -1506,53 +1945,18 @@
                     <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
                     <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                     <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                    <td>${i.referral_code || '-'}</td>
-                    <td><button onclick="showReferralLink('${i.id}', 'investor', '${i.referral_code}', '${escapeHtml(i.full_name)}')" class="btn-info">Get Link</button></td>
+                    <td><span class="referral-code-badge">${i.referral_code || 'N/A'}</span></td>
+                    <td><button onclick="showReferralLink('${i.id}', 'investor', '${i.referral_code || 'N/A'}', '${escapeHtml(i.full_name)}')" class="btn-info btn-sm">Get Link</button></td>
                     <td><span class="perm-badge ${i.chat_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.chat_enabled !== false ? 'ON' : 'OFF'}</span></td>
                     <td><span class="perm-badge ${i.voice_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.voice_enabled !== false ? 'ON' : 'OFF'}</span></td>
                     <td><span class="perm-badge ${i.video_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.video_enabled !== false ? 'ON' : 'OFF'}</span></td>
                     <td class="action-buttons">
                         <button onclick="toggleInvestorPermission('${i.id}', 'chat', ${i.chat_enabled !== false})" class="btn-warning">Toggle Chat</button>
                         <button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
-                    </td>
-                </tr>`).join('');
+                                        </table>
+                `).join('');
             }
         }
-        
-        async function loadBuyers() {
-            if(!supabaseClient) return;
-            const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
-            allBuyers = data || [];
-            const buyersList = document.getElementById('buyersList');
-            if(buyersList) {
-                buyersList.innerHTML = allBuyers.map(b=>`<tr>
-                    <td><strong>${escapeHtml(b.full_name)}</strong></td>
-                    <td>${b.email}</td>
-                    <td>${b.phone||'-'}</td>
-                    <td>${b.address||'-'}</td>
-                    <td>${b.referral_code || '-'}</td>
-                    <td><button onclick="showReferralLink('${b.id}', 'buyer', '${b.referral_code}', '${escapeHtml(b.full_name)}')" class="btn-info">Get Link</button></td>
-                    <td><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td>
-                </tr>`).join('');
-            }
-        }
-        
-        async function loadBatches() { /* Original implementation - kept intact */ }
-        async function loadProducts() { /* Original implementation - kept intact */ }
-        async function loadOrders() { /* Original implementation - kept intact */ }
-        async function loadWithdrawals() { /* Original implementation - kept intact */ }
-        async function loadInvestmentRequests() { /* Original implementation - kept intact */ }
-        async function loadInvestmentHistory() { /* Original implementation - kept intact */ }
-        async function loadProfitHistory() { /* Original implementation - kept intact */ }
-        async function loadRecentActivities() { /* Original implementation - kept intact */ }
-        async function renderAllCharts() { /* Original implementation - kept intact */ }
-        
-        function createInvestmentBatch() { /* Original implementation - kept intact */ }
-        function addNewInvestor() { /* Original implementation - kept intact */ }
-        function addNewBuyer() { /* Original implementation - kept intact */ }
-        function addNewProduct() { /* Original implementation - kept intact */ }
-        function addInvestment() { /* Original implementation - kept intact */ }
-        function addProfit() { /* Original implementation - kept intact */ }
         
         window.toggleInvestorPermission = async function(investorId, permission, currentValue) {
             const update = {};
@@ -1565,53 +1969,685 @@
             } catch(e) { showNotification(e.message, true); }
         };
         
-        function setupRealtimeSync() {
-            if (batchSubscription) return;
-            batchSubscription = supabaseClient
-                .channel('admin-batch-sync')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'investment_batches' }, () => { loadBatches(); })
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'investments' }, () => { loadInvestmentHistory(); loadInvestmentRequests(); loadStats(); })
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'withdrawals' }, () => { loadWithdrawals(); loadStats(); })
-                .subscribe();
+        async function loadBuyers() {
+            if(!supabaseClient) return;
+            const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
+            allBuyers = data || [];
+            const buyersList = document.getElementById('buyersList');
+            if(buyersList) {
+                buyersList.innerHTML = allBuyers.map(b=>`<tr>
+                    <td><strong>${escapeHtml(b.full_name)}</strong></td>
+                    <td>${b.email}</td>
+                    <td>${b.phone||'-'}</td>
+                    <td>${b.address||'-'}</td>
+                    <td><span class="referral-code-badge">${b.referral_code || 'N/A'}</span></td>
+                    <td><button onclick="showReferralLink('${b.id}', 'buyer', '${b.referral_code || 'N/A'}', '${escapeHtml(b.full_name)}')" class="btn-info btn-sm">Get Link</button></td>
+                    <td><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
+            }
         }
         
-        // ========== INITIALIZATION ==========
-        async function initSystem() {
+        async function loadProducts() {
+            if(!supabaseClient) return;
+            const { data } = await supabaseClient.from('products').select('*').order('created_at',{ascending:false});
+            allProducts = data || [];
+            const productsList = document.getElementById('productsList');
+            if(productsList) {
+                if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>'; return; }
+                productsList.innerHTML = data.map(p=>`<tr>
+                    <td><strong>${escapeHtml(p.name)}</strong></td>
+                    <td>${p.category}</td>
+                    <td>Rs.${(p.price||0).toLocaleString()}</td>
+                    <td>${p.stock_quantity||0}</td>
+                    <td><button onclick="editProduct('${p.id}')" class="btn-warning">Edit</button><button onclick="deleteProduct('${p.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
+            }
+        }
+        
+        async function loadInvestmentHistory() { 
+            if(!supabaseClient) return;
+            const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
+            const investmentHistory = document.getElementById('investmentHistory');
+            if(investmentHistory) {
+                investmentHistory.innerHTML = (data||[]).map(i=>`<tr>
+                    <td>${i.investors?.full_name||'-'}</td>
+                    <td>Rs.${(i.amount||0).toLocaleString()}</td>
+                    <td>${new Date(i.investment_date).toLocaleDateString()}</td>
+                    <td>${i.payment_method||'-'}</td>
+                    <td><span class="status-badge status-active">${i.status}</span></td>
+                    <td><button onclick="deleteInvestment('${i.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
+            }
+        }
+        
+        async function loadProfitHistory() { 
+            if(!supabaseClient) return;
+            const { data } = await supabaseClient.from('profits').select('*,investors(full_name)').order('month',{ascending:false}); 
+            const profitHistory = document.getElementById('profitHistory');
+            if(profitHistory) {
+                profitHistory.innerHTML = (data||[]).map(p=>`<tr>
+                    <td>${p.investors?.full_name||'-'}</td>
+                    <td>Rs.${(p.amount||0).toLocaleString()}</td>
+                    <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
+                    <td>${p.profit_percentage||10}%</td>
+                    <td><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
+            }
+        }
+        
+        async function loadInvestmentRequests() { 
+            if(!supabaseClient) return;
+            const { data } = await supabaseClient.from('investments').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }); 
+            const requestsList = document.getElementById('investmentRequestsList');
+            if(requestsList) {
+                requestsList.innerHTML = (data || []).map(req => `<tr>
+                    <td><strong>${escapeHtml(req.investors?.full_name || '-')}</strong><br><small>${req.investors?.email || '-'}</small></td>
+                    <td>Rs. ${(req.amount || 0).toLocaleString()}</td>
+                    <td>${new Date(req.created_at).toLocaleDateString()}</td>
+                    <td>${req.payment_method || '-'}</td>
+                    <td>${req.transaction_id || '-'}</td>
+                    <td>${req.screenshot ? `<img src="${req.screenshot}" class="screenshot-thumb" onclick="window.open('${req.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</td>
+                    <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></td>
+                </tr>`).join('');
+            }
+        }
+        
+        async function loadWithdrawals() { 
+            if(!supabaseClient) return;
+            const { data } = await supabaseClient.from('withdrawals').select('*, investors(full_name, email)').order('request_date', { ascending: false });
+            allWithdrawals = data || [];
+            const withdrawalsList = document.getElementById('withdrawalsList');
+            if (!withdrawalsList) return;
+            if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; return; }
+            withdrawalsList.innerHTML = allWithdrawals.map(w => `<tr>
+                <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
+                <td><small>${w.investors?.email || '-'}</small></td>
+                <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                <td>${w.payment_method || '-'}</td>
+                <td><small>${w.account_details || '-'}</small></td>
+                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
+                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
+                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
+            </tr>`).join('');
+        }
+        
+        async function loadOrders() { 
+            if(!supabaseClient) return;
+            const { data } = await supabaseClient.from('orders').select('*').order('order_date', { ascending: false });
+            allOrders = data || [];
+            const ordersList = document.getElementById('ordersList');
+            if (!ordersList) return;
+            if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; return; }
+            ordersList.innerHTML = allOrders.map(o => `<tr>
+                <td><strong>${o.id?.slice(0, 12)}...</strong></td>
+                <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
+                <td>${o.products ? 'View' : '-'}</td>
+                <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
+                <td>${new Date(o.order_date).toLocaleDateString()}</td>
+                <td>${o.payment_method || '-'}</td>
+                <td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></td>
+                <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
+                <td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td>
+                <td class="action-buttons"><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td>
+            </tr>`).join('');
+        }
+        
+        async function loadRecentActivities() { 
+            const activities = []; 
+            if(!supabaseClient) return;
+            const { data: inv } = await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); 
+            if(inv) inv.forEach(i=>activities.push({action:'Investment',details:`${i.investors?.full_name} invested Rs.${i.amount}`,time:new Date(i.created_at).toLocaleString()})); 
+            const { data: ord } = await supabaseClient.from('orders').select('*').order('created_at',{ascending:false}).limit(5); 
+            if(ord) ord.forEach(o=>activities.push({action:'Order',details:`Order #${o.id?.slice(0,8)} - Rs.${o.total_amount}`,time:new Date(o.created_at).toLocaleString()})); 
+            activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); 
+            const recentActivities = document.getElementById('recentActivities');
+            if(recentActivities) {
+                recentActivities.innerHTML = activities.slice(0,10).map(a=>`<tr>
+                    <td>${a.action}</td>
+                    <td>${a.details}</td>
+                    <td>${a.time}</td>
+                    <td><button class="btn-info">View</button></td>
+                </tr>`).join('');
+            }
+        }
+        
+        window.addNewInvestor = async function() {
+            const name = document.getElementById('newInvestorName').value.trim();
+            const email = document.getElementById('newInvestorEmail').value.trim();
+            const phone = document.getElementById('newInvestorPhone').value;
+            const city = document.getElementById('newInvestorCity').value;
+            const investment = parseFloat(document.getElementById('newInvestorInvestment').value) || 0;
+            if(!name || !email){ showNotification('Name and email are required!', true, 'Missing Fields'); return; }
+            
+            // Generate unique referral code
+            const referralCode = 'REF' + Math.random().toString(36).substring(2, 10).toUpperCase();
+            
+            try {
+                const { error } = await supabaseClient.from('investors').insert([{ 
+                    id: crypto.randomUUID(), 
+                    full_name: name, 
+                    email, 
+                    phone, 
+                    city, 
+                    total_investment: investment, 
+                    total_profit: 0, 
+                    available_balance: investment,
+                    referral_code: referralCode,
+                    referral_count: 0,
+                    referral_earnings: 0,
+                    chat_enabled: true, 
+                    voice_enabled: true, 
+                    video_enabled: true,
+                    created_at: new Date().toISOString() 
+                }]);
+                if(error) throw error;
+                showNotification(`Investor added successfully! Referral Code: ${referralCode}`, false, 'Added');
+                document.getElementById('newInvestorName').value = ''; 
+                document.getElementById('newInvestorEmail').value = ''; 
+                document.getElementById('newInvestorInvestment').value = '0';
+                await loadInvestors(); 
+                await loadStats();
+                await renderAllCharts();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } catch(e) { showNotification(e.message, true); }
+        };
+        
+        window.addNewBuyer = async function() {
+            const name = document.getElementById('newBuyerName').value.trim();
+            const email = document.getElementById('newBuyerEmail').value.trim();
+            const phone = document.getElementById('newBuyerPhone').value;
+            const address = document.getElementById('newBuyerAddress').value;
+            if(!name || !email){ showNotification('Name and email required!', true, 'Missing Fields'); return; }
+            
+            // Generate unique referral code
+            const referralCode = 'BUY' + Math.random().toString(36).substring(2, 10).toUpperCase();
+            
+            try {
+                const { error } = await supabaseClient.from('buyers').insert([{ 
+                    id: crypto.randomUUID(), 
+                    full_name: name, 
+                    email, 
+                    phone, 
+                    address,
+                    referral_code: referralCode,
+                    referral_count: 0,
+                    referral_earnings: 0,
+                    chat_enabled: true, 
+                    voice_enabled: true, 
+                    video_enabled: true,
+                    created_at: new Date().toISOString() 
+                }]);
+                if(error) throw error;
+                showNotification(`Buyer added successfully! Referral Code: ${referralCode}`, false, 'Added');
+                document.getElementById('newBuyerName').value = ''; 
+                document.getElementById('newBuyerEmail').value = ''; 
+                document.getElementById('newBuyerAddress').value = '';
+                await loadBuyers(); 
+                await loadStats();
+                await renderAllCharts();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } catch(e) { showNotification(e.message, true); }
+        };
+        
+        window.addNewProduct = async function() {
+            const name = document.getElementById('newProductName').value.trim();
+            const category = document.getElementById('newProductCategory').value;
+            const price = parseFloat(document.getElementById('newProductPrice').value);
+            const stock = parseInt(document.getElementById('newProductStock').value) || 0;
+            if(!name || !category || !price){ showNotification('Name, category and price required', true, 'Missing Fields'); return; }
+            try {
+                const { error } = await supabaseClient.from('products').insert([{ 
+                    id: crypto.randomUUID(), 
+                    name, 
+                    category, 
+                    price, 
+                    stock_quantity: stock, 
+                    is_active: true, 
+                    created_at: new Date().toISOString() 
+                }]);
+                if(error) throw error;
+                showNotification('Product added successfully!', false, 'Added');
+                document.getElementById('newProductName').value = '';
+                document.getElementById('newProductPrice').value = '';
+                document.getElementById('newProductStock').value = '0';
+                await loadProducts(); 
+                await loadStats();
+                await renderAllCharts();
+            } catch(e) { showNotification(e.message, true); }
+        };
+        
+        window.deleteInvestor = async function(id){ 
+            if(await confirmAction('Delete this investor?', 'Delete Investor')){ 
+                await supabaseClient.from('investments').delete().eq('investor_id',id); 
+                await supabaseClient.from('profits').delete().eq('investor_id',id); 
+                await supabaseClient.from('withdrawals').delete().eq('investor_id',id); 
+                await supabaseClient.from('investors').delete().eq('id',id); 
+                showNotification('Investor deleted', false, 'Deleted'); 
+                await loadInvestors(); 
+                await loadStats();
+                await renderAllCharts();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } 
+        };
+        
+        window.deleteBuyer = async function(id){ 
+            if(await confirmAction('Delete this buyer?', 'Delete Buyer')){ 
+                await supabaseClient.from('buyers').delete().eq('id',id); 
+                showNotification('Buyer deleted', false, 'Deleted'); 
+                await loadBuyers(); 
+                await loadStats();
+                await renderAllCharts();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } 
+        };
+        
+        window.deleteProduct = async function(id){ 
+            if(await confirmAction('Delete this product?', 'Delete Product')){ 
+                await supabaseClient.from('products').update({is_active:false}).eq('id',id); 
+                showNotification('Product deleted', false, 'Deleted'); 
+                await loadProducts(); 
+                await loadStats();
+                await renderAllCharts();
+            } 
+        };
+        
+        window.approveInvestment = async function(id, amount, investorId) { 
+            const { data: invReq } = await supabaseClient.from('investments').select('screenshot, notes, payment_method, transaction_id').eq('id', id).single();
+            
+            if (!invReq?.screenshot) {
+                const result = await Swal.fire({
+                    title: '⚠️ Screenshot Required!',
+                    html: `<p><strong>This investment request does not have a payment screenshot.</strong></p>
+                           <p>Please ask the investor to provide payment proof before approving.</p>
+                           <p>Payment Method: ${invReq?.payment_method || 'N/A'}</p>
+                           <p>Transaction ID: ${invReq?.transaction_id || 'N/A'}</p>
+                           <p>Amount: Rs. ${amount.toLocaleString()}</p>`,
+                    icon: 'warning',
+                    confirmButtonText: 'Reject Request',
+                    confirmButtonColor: '#dc3545',
+                    showCancelButton: true,
+                    cancelButtonText: 'Contact Investor',
+                    cancelButtonColor: '#E8B13C',
+                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                    color: '#fff'
+                });
+                
+                if (result.isConfirmed) {
+                    await supabaseClient.from('investments').update({ status: 'rejected', notes: 'Rejected: Payment proof screenshot required' }).eq('id', id);
+                    showNotification('Investment rejected - screenshot required', false, 'Rejected');
+                } else {
+                    showNotification('Please contact investor to upload payment screenshot', false, 'Action Required');
+                }
+                await loadInvestmentRequests();
+                await loadStats();
+                return;
+            }
+            
+            let screenshotHtml = `<div style="margin:15px 0; padding:10px; background:rgba(0,0,0,0.3); border-radius:12px;">
+                <strong>Payment Screenshot:</strong><br>
+                <img src="${invReq.screenshot}" style="max-width:200px; border-radius:12px; margin-top:8px; cursor:pointer;" onclick="window.open('${invReq.screenshot}','_blank')">
+            </div>`;
+            
+            const result = await Swal.fire({ 
+                title: 'Approve Investment', 
+                html: `<p><strong>Amount:</strong> Rs. ${amount.toLocaleString()}</p>
+                       <p><strong>Payment Method:</strong> ${invReq?.payment_method || 'N/A'}</p>
+                       <p><strong>Transaction ID:</strong> ${invReq?.transaction_id || 'N/A'}</p>
+                       <p><strong>Notes:</strong> ${invReq?.notes || 'No notes'}</p>
+                       ${screenshotHtml}
+                       <p><strong>Confirm approval of this investment?</strong></p>
+                       <p style="color:#E8B13C; font-size:0.8rem;">Note: Investor will receive 50% profit share on returns</p>`, 
+                icon: 'question', 
+                showCancelButton: true, 
+                confirmButtonColor: '#1e7e5e', 
+                confirmButtonText: 'Yes, Approve', 
+                cancelButtonText: 'Reject',
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', 
+                color: '#fff' 
+            });
+            
+            if(result.isConfirmed) { 
+                await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
+                showNotification('Investment approved! Payment screenshot verified.', false, 'Approved'); 
+                await loadInvestmentRequests(); 
+                await loadInvestmentHistory(); 
+                await loadInvestors(); 
+                await loadStats(); 
+                await renderAllCharts();
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                const { value: rejectReason } = await Swal.fire({
+                    title: 'Reject Investment',
+                    input: 'textarea',
+                    inputPlaceholder: 'Reason for rejection...',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'Reject',
+                    background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                    color: '#fff'
+                });
+                await supabaseClient.from('investments').update({ status: 'rejected', notes: rejectReason || 'Rejected by admin' }).eq('id', id);
+                showNotification('Investment rejected', false, 'Rejected');
+                await loadInvestmentRequests();
+                await loadStats();
+            }
+        };
+        
+        window.rejectInvestment = async function(id){ 
+            if(!await confirmAction('Reject this investment request?', 'Reject Investment')) return; 
+            await supabaseClient.from('investments').update({ status: 'rejected' }).eq('id', id); 
+            showNotification('Investment rejected', false, 'Rejected'); 
+            await loadInvestmentRequests(); 
+            await loadStats(); 
+        };
+        
+        window.approveWithdrawal = async function(id, amount, investorId){ 
+            openWithdrawalScreenshotModal(id, amount, investorId);
+        };
+        
+        window.rejectWithdrawal = async function(id){ 
+            if(!await confirmAction('Reject this withdrawal request?', 'Reject Withdrawal')) return;
+            await supabaseClient.from('withdrawals').update({ status: 'rejected' }).eq('id', id); 
+            showNotification('Withdrawal rejected', false, 'Rejected'); 
+            await loadWithdrawals(); 
+        };
+        
+        window.deleteInvestment = async function(id){ 
+            if(await confirmAction('Delete this investment record?', 'Delete Investment')){ 
+                await supabaseClient.from('investments').delete().eq('id',id); 
+                await loadInvestmentHistory(); 
+                await loadInvestors(); 
+                await loadStats(); 
+                await renderAllCharts();
+                showNotification('Investment deleted', false, 'Deleted'); 
+            } 
+        };
+        
+        window.deleteProfit = async function(id){ 
+            if(await confirmAction('Delete this profit record?', 'Delete Profit')){ 
+                await supabaseClient.from('profits').delete().eq('id',id); 
+                await loadProfitHistory(); 
+                await loadInvestors(); 
+                await loadStats(); 
+                await renderAllCharts();
+                showNotification('Profit deleted', false, 'Deleted'); 
+            } 
+        };
+        
+        window.deleteWithdrawal = async function(id) {
+            if(await confirmAction('Delete this withdrawal request?', 'Delete Withdrawal')) {
+                await supabaseClient.from('withdrawals').delete().eq('id', id);
+                showNotification('Withdrawal deleted', false, 'Deleted');
+                await loadWithdrawals(); 
+                await loadStats();
+            }
+        };
+        
+        window.updatePaymentStatus = async function(id, status) { 
+            await supabaseClient.from('orders').update({ payment_status: status }).eq('id', id); 
+            showNotification(`Payment status updated to ${status}!`, false, 'Updated'); 
+            await loadOrders(); 
+        };
+        
+        window.updateOrderStatus = async function(id, status) { 
+            await supabaseClient.from('orders').update({ status: status }).eq('id', id); 
+            showNotification(`Order status updated to ${status}!`, false, 'Updated'); 
+            await loadOrders(); 
+        };
+        
+        window.deleteOrder = async function(id) { 
+            if(await confirmAction('Delete this order?', 'Delete Order')) { 
+                await supabaseClient.from('orders').delete().eq('id', id); 
+                showNotification('Order deleted!', false, 'Deleted'); 
+                await loadOrders(); 
+                await loadStats(); 
+            } 
+        };
+        
+        window.editOrder = async function(id) {
+            const order = allOrders.find(o => o.id === id);
+            if(!order) return;
+            const { value: formData } = await Swal.fire({
+                title: 'Edit Order',
+                html: `<input id="editAmount" class="swal2-input" placeholder="Amount" value="${order.total_amount}"><input id="editAddress" class="swal2-input" placeholder="Address" value="${order.delivery_address || ''}">`,
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', 
+                color: '#fff', 
+                confirmButtonColor: '#E8B13C',
+                preConfirm: () => ({ amount: parseFloat(document.getElementById('editAmount').value), address: document.getElementById('editAddress').value })
+            });
+            if (formData) {
+                await supabaseClient.from('orders').update({ total_amount: formData.amount, delivery_address: formData.address }).eq('id', id);
+                showNotification('Order updated!', false, 'Updated');
+                await loadOrders();
+            }
+        };
+        
+        window.editProduct = async function(id) {
+            const product = allProducts.find(p => p.id === id);
+            if(!product) return;
+            const { value: formData } = await Swal.fire({
+                title: 'Edit Product',
+                html: `<input id="editName" class="swal2-input" placeholder="Name" value="${product.name}"><input id="editPrice" class="swal2-input" placeholder="Price" value="${product.price}"><input id="editStock" class="swal2-input" placeholder="Stock" value="${product.stock_quantity}">`,
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', 
+                color: '#fff', 
+                confirmButtonColor: '#E8B13C',
+                preConfirm: () => ({ name: document.getElementById('editName').value, price: parseFloat(document.getElementById('editPrice').value), stock: parseInt(document.getElementById('editStock').value) || 0 })
+            });
+            if (formData) {
+                await supabaseClient.from('products').update({ name: formData.name, price: formData.price, stock_quantity: formData.stock }).eq('id', id);
+                showNotification('Product updated!', false, 'Updated');
+                await loadProducts();
+            }
+        };
+        
+        window.uploadProductImage = async function(id) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async (ev) => {
+                        await supabaseClient.from('products').update({ image_url: ev.target.result }).eq('id', id);
+                        showNotification('Image uploaded!', false, 'Uploaded');
+                        await loadProducts();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        };
+        
+        window.addInvestment = async function() { 
+            const investorId = document.getElementById('investorSelect').value;
+            const amount = parseFloat(document.getElementById('invAmount').value);
+            const date = document.getElementById('invDate').value;
+            const paymentMethod = document.getElementById('invPaymentMethod').value;
+            const transactionId = document.getElementById('invTransactionId').value; 
+            if(!investorId || !amount || !date){ 
+                showNotification('Please fill all required fields', true, 'Missing Fields'); 
+                return; 
+            } 
+            try {
+                const { error } = await supabaseClient.from('investments').insert([{ 
+                    investor_id: investorId, 
+                    amount, 
+                    investment_date: date, 
+                    payment_method: paymentMethod, 
+                    transaction_id: transactionId, 
+                    status: 'active' 
+                }]); 
+                if(error) throw error;
+                showNotification('Investment added successfully!', false, 'Added'); 
+                document.getElementById('invAmount').value = ''; 
+                await loadInvestmentHistory(); 
+                await loadInvestors(); 
+                await loadStats(); 
+                await renderAllCharts();
+            } catch(e) { showNotification(e.message, true); }
+        };
+        
+        window.addProfit = async function() { 
+            const investorId = document.getElementById('profitInvestorSelect').value;
+            const amount = parseFloat(document.getElementById('profitAmount').value);
+            const month = document.getElementById('profitMonth').value;
+            const percentage = parseFloat(document.getElementById('profitPercentage').value) || 10; 
+            if(!investorId || !amount || !month){ 
+                showNotification('Please fill all fields', true, 'Missing Fields'); 
+                return; 
+            } 
+            try {
+                const { error } = await supabaseClient.from('profits').insert([{ 
+                    investor_id: investorId, 
+                    amount, 
+                    month: month + '-01', 
+                    profit_percentage: percentage, 
+                    paid: true, 
+                    paid_date: new Date().toISOString().split('T')[0] 
+                }]); 
+                if(error) throw error;
+                showNotification('Profit added successfully!', false, 'Added'); 
+                document.getElementById('profitAmount').value = ''; 
+                await loadProfitHistory(); 
+                await loadInvestors(); 
+                await loadStats(); 
+                await renderAllCharts();
+            } catch(e) { showNotification(e.message, true); }
+        };
+        
+        window.searchInvestors = function() { 
+            const term = document.getElementById('investorSearch').value.toLowerCase(); 
+            const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
+            const investorsList = document.getElementById('investorsList');
+            if(investorsList) {
+                investorsList.innerHTML = filtered.map(i=>`<tr>
+                    <td><strong>${escapeHtml(i.full_name)}</strong></td>
+                    <td>${i.email}</td>
+                    <td>${i.phone||'-'}</td>
+                    <td>${i.city||'-'}</td>
+                    <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
+                    <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
+                    <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
+                    <td><span class="referral-code-badge">${i.referral_code || 'N/A'}</span></td>
+                    <td><button onclick="showReferralLink('${i.id}', 'investor', '${i.referral_code || 'N/A'}', '${escapeHtml(i.full_name)}')" class="btn-info btn-sm">Get Link</button></td>
+                    <td><span class="perm-badge ${i.chat_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.chat_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                    <td><span class="perm-badge ${i.voice_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.voice_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                    <td><span class="perm-badge ${i.video_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.video_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                    <td class="action-buttons">
+                        <button onclick="toggleInvestorPermission('${i.id}', 'chat', ${i.chat_enabled !== false})" class="btn-warning">Toggle Chat</button>
+                        <button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
+                    </td>
+                </tr>`).join('');
+            }
+        };
+        
+        window.resetInvestorSearch = function() { 
+            document.getElementById('investorSearch').value = ''; 
+            loadInvestors(); 
+        };
+        
+        window.searchBuyers = function() { 
+            const term = document.getElementById('buyerSearch').value.toLowerCase(); 
+            const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
+            const buyersList = document.getElementById('buyersList');
+            if(buyersList) {
+                buyersList.innerHTML = filtered.map(b=>`<tr>
+                    <td><strong>${escapeHtml(b.full_name)}</strong></td>
+                    <td>${b.email}</td>
+                    <td>${b.phone||'-'}</td>
+                    <td>${b.address||'-'}</td>
+                    <td><span class="referral-code-badge">${b.referral_code || 'N/A'}</span></td>
+                    <td><button onclick="showReferralLink('${b.id}', 'buyer', '${b.referral_code || 'N/A'}', '${escapeHtml(b.full_name)}')" class="btn-info btn-sm">Get Link</button></td>
+                    <td><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td>
+                </tr>`).join('');
+            }
+        };
+        
+        window.resetBuyerSearch = function() { 
+            document.getElementById('buyerSearch').value = ''; 
+            loadBuyers(); 
+        };
+        
+        window.searchWithdrawals = function() {
+            const term = document.getElementById('withdrawalSearch').value.toLowerCase();
+            const filtered = allWithdrawals.filter(w => w.investors?.full_name?.toLowerCase().includes(term) || w.investors?.email?.toLowerCase().includes(term));
+            const withdrawalsList = document.getElementById('withdrawalsList');
+            if (!withdrawalsList) return;
+            if (filtered.length === 0) { 
+                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; 
+                return; 
+            }
+            withdrawalsList.innerHTML = filtered.map(w => `<tr>
+                <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
+                <td><small>${w.investors?.email || '-'}</small></td>
+                <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                <td>${w.payment_method || '-'}</td>
+                <td><small>${w.account_details || '-'}</small></td>
+                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
+                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
+                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
+            </tr>`).join('');
+        };
+        
+        window.resetWithdrawalSearch = function() { 
+            document.getElementById('withdrawalSearch').value = ''; 
+            loadWithdrawals(); 
+        };
+        
+        window.searchOrders = function() { 
+            const term = document.getElementById('orderSearch').value.toLowerCase(); 
+            const filtered = allOrders.filter(o => o.id?.toLowerCase().includes(term) || (o.customer_name || o.user_type)?.toLowerCase().includes(term));
+            const ordersList = document.getElementById('ordersList');
+            if (!ordersList) return;
+            if (filtered.length === 0) { 
+                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; 
+                return; 
+            }
+            ordersList.innerHTML = filtered.map(o => `<tr>
+                <td><strong>${o.id?.slice(0, 12)}...</strong></td>
+                <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
+                <td>${o.products ? 'View' : '-'}</td>
+                <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
+                <td>${new Date(o.order_date).toLocaleDateString()}</td>
+                <td>${o.payment_method || '-'}</td>
+                <td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></td>
+                <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
+                <td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td>
+                <td class="action-buttons"><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td>
+            </tr>`).join('');
+        };
+        
+        window.resetOrderSearch = function() { 
+            document.getElementById('orderSearch').value = ''; 
+            loadOrders(); 
+        };
+        
+        window.searchProducts = function() { 
+            const term = document.getElementById('productSearch').value.toLowerCase(); 
+            const rows = document.querySelectorAll('#productsList tr'); 
+            rows.forEach(row=>{ 
+                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; 
+            }); 
+        };
+        
+        // Initialize Supabase with SIPK Loader
+        document.addEventListener('DOMContentLoaded', function() {
             const loader = new SIPKLoader();
             loader.start();
             
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            checkAuth();
             
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) {
-                window.location.href = 'admin-auth.html';
-                return;
-            }
-            
-            document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
-            
-            // Load initial data for dashboard
-            await loadStats();
-            await loadRecentActivities();
-            await renderAllCharts();
-            
-            setupRealtimeSync();
-            
-            // Initialize chat system after everything loads
             setTimeout(() => {
-                if (window.adminChatSystem && supabaseClient) {
+                if (window.adminChatSystem) {
                     window.adminChatSystem.init(supabaseClient);
                 }
             }, 2000);
-        }
+        });
         
-        function handleLogout() { supabaseClient.auth.signOut(); window.location.href = 'admin-auth.html'; }
-        
-        initSystem();
-    </script>
-    
-    <!-- Original Chat System Script (PRESERVED COMPLETELY) -->
-    <script>
+        // ========== ADMIN CHAT SYSTEM (FULLY PRESERVED) ==========
         (function() {
             window.adminChatSystem = {
                 supabaseClient: null,
@@ -1717,6 +2753,7 @@
                 },
                 
                 escapeHtml: function(text) { if (!text) return ''; return text.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); },
+                
                 filterUsers: function() { this.renderUserList(); },
                 
                 selectUser: async function(userId, userType, userName) {
