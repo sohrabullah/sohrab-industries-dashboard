@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -245,6 +248,9 @@
         .status-completed { background: linear-gradient(135deg, #2c6e9e, #1f4d6e); color: #fff; }
         .status-sold { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
         .status-profit-distributed { background: linear-gradient(135deg, #0a5e3a, #0a4a2e); color: #fff; }
+        .status-kyc-pending { background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff; }
+        .status-kyc-approved { background: linear-gradient(135deg, #1e7e5e, #155a44); color: #fff; }
+        .status-kyc-rejected { background: linear-gradient(135deg, #dc3545, #a71d2a); color: #fff; }
         
         .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 10px 24px; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; transition: all 0.3s; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(232,177,60,0.4); }
@@ -402,6 +408,108 @@
         }
         .required-star { color: #dc3545; margin-left: 4px; }
         
+        /* 2FA Modal Styles */
+        .twofa-container {
+            text-align: center;
+        }
+        .twofa-qr {
+            background: white;
+            padding: 15px;
+            border-radius: 16px;
+            display: inline-block;
+            margin: 15px 0;
+        }
+        .twofa-code-input {
+            font-size: 24px;
+            letter-spacing: 8px;
+            text-align: center;
+            font-family: monospace;
+        }
+        
+        /* Announcement Banner */
+        .announcement-banner {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+            padding: 12px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .announcement-banner.active { display: flex; }
+        .announcement-close {
+            background: rgba(0,0,0,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            color: #0a1f1a;
+        }
+        
+        /* Popup Styles */
+        .custom-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 28px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            z-index: 3000;
+            display: none;
+            border: 2px solid #E8B13C;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .custom-popup.active { display: block; animation: slideInModal 0.3s ease; }
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2999;
+            display: none;
+        }
+        .popup-overlay.active { display: block; }
+        
+        /* KYC Upload */
+        .kyc-doc-preview {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .kyc-doc-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        .kyc-doc-item img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+        }
+        
+        /* Role Badges */
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .role-superadmin { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
+        .role-admin { background: linear-gradient(135deg, #17a2b8, #0f7a8a); color: white; }
+        .role-staff { background: linear-gradient(135deg, #6c757d, #495057); color: white; }
+        
         .chat-container { display: flex; height: calc(100vh - 320px); min-height: 600px; background: rgba(0,0,0,0.2); border-radius: 24px; overflow: hidden; border: 1px solid rgba(232,177,60,0.2); }
         .chat-user-list { width: 450px; background: linear-gradient(145deg, rgba(10,35,28,0.95), rgba(5,25,18,0.95)); border-right: 1px solid rgba(232,177,60,0.2); display: flex; flex-direction: column; overflow: hidden; }
         .chat-user-list-header { padding: 20px; border-bottom: 1px solid rgba(232,177,60,0.2); background: rgba(0,0,0,0.2); }
@@ -553,10 +661,27 @@
     </style>
 </head>
 <body>
+    <!-- Popup Overlay -->
+    <div id="popupOverlay" class="popup-overlay"></div>
+    <div id="customPopup" class="custom-popup">
+        <div id="popupContent"></div>
+        <button onclick="closePopup()" class="btn-primary" style="margin-top: 20px; width: 100%;">Close</button>
+    </div>
+    
     <div class="admin-container">
+        <!-- Announcement Banner -->
+        <div id="announcementBanner" class="announcement-banner">
+            <span id="announcementText"><i class="fas fa-bullhorn"></i> Welcome to Sohrab Industries Admin Panel</span>
+            <button class="announcement-close" onclick="closeAnnouncement()">×</button>
+        </div>
+        
         <div class="admin-header">
-            <h1><i class="fas fa-shield-alt"></i> Sohrab Industries - Admin Control Panel</h1>
-            <div><span id="adminEmail"></span> <button onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+            <h1><i class="fas fa-shield-alt"></i> <span id="websiteName">Sohrab Industries</span> - Admin Control Panel</h1>
+            <div>
+                <span id="adminEmail"></span>
+                <span id="adminRoleBadge" class="role-badge role-superadmin" style="margin:0 10px;">Super Admin</span>
+                <button onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -581,6 +706,16 @@
             <button class="nav-tab" onclick="showSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</button>
             <button class="nav-tab" onclick="showSection('products')"><i class="fas fa-box"></i> Products</button>
             <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
+            <button class="nav-tab" onclick="showSection('wallets')"><i class="fas fa-wallet"></i> Wallets</button>
+            <button class="nav-tab" onclick="showSection('affiliates')"><i class="fas fa-link"></i> Referrals</button>
+            <button class="nav-tab" onclick="showSection('kyc')"><i class="fas fa-id-card"></i> KYC</button>
+            <button class="nav-tab" onclick="showSection('announcements')"><i class="fas fa-bullhorn"></i> Announcements</button>
+            <button class="nav-tab" onclick="showSection('notifications')"><i class="fas fa-bell"></i> Notifications</button>
+            <button class="nav-tab" onclick="showSection('paymentMethods')"><i class="fas fa-credit-card"></i> Payments</button>
+            <button class="nav-tab" onclick="showSection('reports')"><i class="fas fa-chart-bar"></i> Reports</button>
+            <button class="nav-tab" onclick="showSection('settings')"><i class="fas fa-cog"></i> Settings</button>
+            <button class="nav-tab" onclick="showSection('adminUsers')"><i class="fas fa-user-shield"></i> Admin Users</button>
+            <button class="nav-tab" onclick="showSection('activityLogs')"><i class="fas fa-history"></i> Activity Logs</button>
             <button class="nav-tab live-chat-tab" onclick="showSection('livechat')" id="liveChatTabBtn"><i class="fas fa-comments"></i> Live Chat</button>
         </div>
 
@@ -609,11 +744,14 @@
             
             <div class="table-container">
                 <h3 style="color:#E8B13C; margin-bottom:15px;">Recent Activities <i class="fas fa-history"></i></h3>
-                <table><thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead><tbody id="recentActivities"></tbody></table>
+                <table>
+                    <thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead>
+                    <tbody id="recentActivities"></tbody>
+                </table>
             </div>
         </div>
 
-        <!-- INVESTMENT BATCHES Section - ENHANCED -->
+        <!-- INVESTMENT BATCHES Section -->
         <div id="batchesSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-industry"></i> Investment Batches Management</h2>
             
@@ -676,8 +814,29 @@
                 </div>
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
+            
+            <!-- Wallet Balance Control for Investors -->
+            <div class="form-card">
+                <h3><i class="fas fa-wallet"></i> Manual Balance Adjustment</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Select Investor</label><select id="balanceInvestorSelect"></select></div>
+                    <div class="form-group"><label>Wallet Type</label><select id="walletTypeSelect">
+                        <option value="available_balance">Main Balance</option>
+                        <option value="profit_balance">Profit Balance</option>
+                        <option value="referral_balance">Referral Earnings</option>
+                    </select></div>
+                    <div class="form-group"><label>Action</label><select id="balanceActionSelect">
+                        <option value="add">Add (+) Credit</option>
+                        <option value="deduct">Deduct (-) Debit</option>
+                    </select></div>
+                    <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="balanceAmount" placeholder="Enter amount"></div>
+                    <div class="form-group"><label>Reason / Notes</label><input type="text" id="balanceReason" placeholder="Reason for adjustment"></div>
+                </div>
+                <button onclick="adjustBalance()" class="btn-primary"><i class="fas fa-exchange-alt"></i> Apply Balance Adjustment</button>
+            </div>
+            
             <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Chat</th><th>Voice</th><th>Video</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Main Balance</th><th>Profit Balance</th><th>Referral Balance</th><th>KYC</th><th>Status</th><th>Chat</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
@@ -693,10 +852,10 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
-        <!-- Investment Requests Section - WITH MANDATORY SCREENSHOT -->
+        <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
             <div class="table-container">
@@ -721,7 +880,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -737,7 +896,7 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
         <!-- Withdrawals Section -->
@@ -766,7 +925,7 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
         <!-- Orders Section -->
@@ -776,6 +935,338 @@
                 <div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="🔍 Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div>
             </div>
             <div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
+        </div>
+
+        <!-- WALLET MANAGEMENT Section (NEW) -->
+        <div id="walletsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-wallet"></i> Wallet Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-exchange-alt"></i> Balance Adjustment (with Audit Trail)</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Select Investor</label><select id="walletInvestorSelect"></select></div>
+                    <div class="form-group"><label>Wallet Type</label><select id="walletTypeSelect2">
+                        <option value="available_balance">💰 Main Balance</option>
+                        <option value="profit_balance">📈 Profit Balance</option>
+                        <option value="referral_balance">🤝 Referral Earnings</option>
+                    </select></div>
+                    <div class="form-group"><label>Operation</label><select id="walletOperation">
+                        <option value="credit">➕ Credit (Add)</option>
+                        <option value="debit">➖ Debit (Subtract)</option>
+                    </select></div>
+                    <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="walletAmount" placeholder="Enter amount"></div>
+                    <div class="form-group"><label>Reason *</label><input type="text" id="walletReason" placeholder="Reason for adjustment"></div>
+                </div>
+                <button onclick="adjustWalletBalance()" class="btn-primary"><i class="fas fa-save"></i> Apply Adjustment</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-list"></i> Balance Adjustment History (Audit Trail)</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Date</th><th>Investor</th><th>Wallet Type</th><th>Type</th><th>Amount</th><th>Previous Balance</th><th>New Balance</th><th>Reason</th><th>Adjusted By</th></tr>
+                    </thead>
+                    <tbody id="balanceAuditTrail"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- AFFILIATE/REFERRAL SYSTEM Section (NEW) -->
+        <div id="affiliatesSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-link"></i> Referral & Affiliate System</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-sliders-h"></i> Referral Settings</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Referral Commission (%)</label><input type="number" id="referralCommission" value="5" step="0.5"></div>
+                    <div class="form-group"><label>Minimum Withdrawal (Rs.)</label><input type="number" id="referralMinWithdraw" value="500"></div>
+                    <div class="form-group"><label>Enable Multi-Level</label><select id="multiLevelEnabled">
+                        <option value="false">Disabled</option>
+                        <option value="true">Enabled (2 Levels)</option>
+                    </select></div>
+                </div>
+                <button onclick="saveReferralSettings()" class="btn-primary"><i class="fas fa-save"></i> Save Settings</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> Referral Dashboard</h2>
+            <div class="stats-row">
+                <div class="stat-box"><div class="stat-label">Total Referrals</div><div class="stat-value" id="totalReferrals">0</div></div>
+                <div class="stat-box"><div class="stat-label">Total Commission Paid</div><div class="stat-value" id="totalCommission">Rs. 0</div></div>
+                <div class="stat-box"><div class="stat-label">Pending Commission</div><div class="stat-value" id="pendingCommission">Rs. 0</div></div>
+            </div>
+            
+            <div class="table-container">
+                <h3 style="color:#E8B13C; margin:15px 0;">Top Referrers</h3>
+                <table>
+                    <thead><tr><th>Investor</th><th>Referral Code</th><th>Total Referrals</th><th>Total Commission</th><th>Actions</th></tr></thead>
+                    <tbody id="topReferrersList"></tbody>
+                </table>
+            </div>
+            
+            <div class="table-container">
+                <h3 style="color:#E8B13C; margin:15px 0;">Referral Transactions</h3>
+                <table>
+                    <thead><tr><th>Date</th><th>Referrer</th><th>Referred User</th><th>Amount</th><th>Commission</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="referralTransactionsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- KYC VERIFICATION Section (NEW) -->
+        <div id="kycSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-id-card"></i> KYC Verification System</h2>
+            
+            <div class="search-box">
+                <input type="text" id="kycSearch" placeholder="Search by name or email...">
+                <select id="kycStatusFilter">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="not_submitted">Not Submitted</option>
+                </select>
+                <button onclick="loadKYCRequests()" class="btn-primary">Filter</button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Investor</th><th>CNIC Front</th><th>CNIC Back</th><th>Selfie</th><th>Status</th><th>Submitted Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="kycRequestsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ANNOUNCEMENT SYSTEM Section (NEW) -->
+        <div id="announcementsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-bullhorn"></i> Announcement Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Create New Announcement</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Title *</label><input type="text" id="announcementTitle" placeholder="Announcement title"></div>
+                    <div class="form-group"><label>Message *</label><textarea id="announcementMessage" rows="3" placeholder="Announcement content"></textarea></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Display Type</label><select id="announcementType">
+                        <option value="banner">Dashboard Banner</option>
+                        <option value="popup">Popup</option>
+                        <option value="notification">Notification Only</option>
+                    </select></div>
+                    <div class="form-group"><label>Target Audience</label><select id="announcementTarget">
+                        <option value="all">All Users</option>
+                        <option value="investors">Investors Only</option>
+                        <option value="buyers">Buyers Only</option>
+                    </select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Schedule Date (Optional)</label><input type="datetime-local" id="announcementSchedule"></div>
+                    <div class="form-group"><label>Expiry Date (Optional)</label><input type="datetime-local" id="announcementExpiry"></div>
+                </div>
+                <button onclick="createAnnouncement()" class="btn-primary"><i class="fas fa-save"></i> Create Announcement</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-list"></i> All Announcements</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Title</th><th>Message</th><th>Type</th><th>Target</th><th>Status</th><th>Schedule</th><th>Actions</th></tr></thead>
+                    <tbody id="announcementsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION SYSTEM Section (NEW) -->
+        <div id="notificationsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-bell"></i> Notification System</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-paper-plane"></i> Send Notification</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Send To</label><select id="notificationTarget">
+                        <option value="all">All Users</option>
+                        <option value="investors">All Investors</option>
+                        <option value="buyers">All Buyers</option>
+                        <option value="selected">Selected Users</option>
+                    </select></div>
+                    <div class="form-group" id="selectedUsersGroup" style="display:none;"><label>Select Users</label><select id="selectedUsersList" multiple style="height:100px;"></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Notification Type</label><select id="notificationType">
+                        <option value="general">📢 General Alert</option>
+                        <option value="investment">💰 Investment Update</option>
+                        <option value="withdrawal">💸 Withdrawal Update</option>
+                        <option value="profit">📈 Profit Distribution</option>
+                        <option value="kyc">🪪 KYC Update</option>
+                    </select></div>
+                    <div class="form-group"><label>Title *</label><input type="text" id="notificationTitle" placeholder="Notification title"></div>
+                </div>
+                <div class="form-group"><label>Message *</label><textarea id="notificationMessage" rows="3" placeholder="Notification content"></textarea></div>
+                <button onclick="sendNotification()" class="btn-primary"><i class="fas fa-paper-plane"></i> Send Notification</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-history"></i> Notification History</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Date</th><th>Type</th><th>Title</th><th>Message</th><th>Target</th><th>Sent By</th></tr>
+                    </thead>
+                    <tbody id="notificationHistoryList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PAYMENT METHOD MANAGEMENT Section (NEW) -->
+        <div id="paymentMethodsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-credit-card"></i> Payment Methods Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Add Payment Method</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Method Name</label><input type="text" id="newPaymentMethod" placeholder="e.g., JazzCash, EasyPaisa, Bank Transfer"></div>
+                    <div class="form-group"><label>Account/Number</label><input type="text" id="paymentAccount" placeholder="Account number or mobile number"></div>
+                    <div class="form-group"><label>Account Holder Name</label><input type="text" id="paymentHolderName" placeholder="Account holder name"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Minimum Deposit</label><input type="number" id="paymentMinDeposit" placeholder="0"></div>
+                    <div class="form-group"><label>Maximum Deposit</label><input type="number" id="paymentMaxDeposit" placeholder="0"></div>
+                    <div class="form-group"><label>Status</label><select id="paymentStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+                </div>
+                <button onclick="addPaymentMethod()" class="btn-primary"><i class="fas fa-save"></i> Add Payment Method</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-list"></i> Active Payment Methods</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Method</th><th>Account Details</th><th>Min Deposit</th><th>Max Deposit</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="paymentMethodsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REPORTS & ANALYTICS Section (NEW) -->
+        <div id="reportsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-chart-bar"></i> Reports & Analytics</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-download"></i> Generate Report</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Report Type</label><select id="reportType">
+                        <option value="deposits">Deposits Report</option>
+                        <option value="withdrawals">Withdrawals Report</option>
+                        <option value="profits">Profits Report</option>
+                        <option value="investments">Investments Report</option>
+                        <option value="investors">Investors List</option>
+                    </select></div>
+                    <div class="form-group"><label>Start Date</label><input type="date" id="reportStartDate"></div>
+                    <div class="form-group"><label>End Date</label><input type="date" id="reportEndDate"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Export Format</label><select id="exportFormat">
+                        <option value="excel">Excel (XLSX)</option>
+                        <option value="pdf">PDF</option>
+                        <option value="csv">CSV</option>
+                    </select></div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button onclick="generateReport()" class="btn-primary"><i class="fas fa-chart-line"></i> Generate & Export</button>
+                    <button onclick="previewReport()" class="btn-info"><i class="fas fa-eye"></i> Preview</button>
+                </div>
+            </div>
+            
+            <div id="reportPreview" class="table-container" style="display:none;">
+                <h3 style="color:#E8B13C;">Report Preview</h3>
+                <div id="reportPreviewContent"></div>
+            </div>
+        </div>
+
+        <!-- SYSTEM SETTINGS Section (NEW) -->
+        <div id="settingsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-cog"></i> System Settings</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-globe"></i> General Settings</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Website Name</label><input type="text" id="settingWebsiteName" placeholder="Sohrab Industries"></div>
+                    <div class="form-group"><label>Website Logo URL</label><input type="text" id="settingLogoUrl" placeholder="Logo URL or upload"></div>
+                    <div class="form-group"><label>Currency Symbol</label><input type="text" id="settingCurrency" value="Rs."></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Timezone</label><select id="settingTimezone">
+                        <option value="Asia/Karachi">Asia/Karachi (PKT)</option>
+                        <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+                        <option value="UTC">UTC</option>
+                    </select></div>
+                    <div class="form-group"><label>Maintenance Mode</label><select id="settingMaintenance">
+                        <option value="false">Disabled (Normal Operation)</option>
+                        <option value="true">Enabled (Maintenance Mode)</option>
+                    </select></div>
+                </div>
+                <div class="form-group"><label>Terms & Conditions</label><textarea id="settingTerms" rows="6" placeholder="Terms and conditions for investors and buyers..."></textarea></div>
+                <button onclick="saveSystemSettings()" class="btn-primary"><i class="fas fa-save"></i> Save Settings</button>
+            </div>
+        </div>
+
+        <!-- ADMIN USERS MANAGEMENT Section (NEW) -->
+        <div id="adminUsersSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-user-shield"></i> Admin Users Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Add New Admin</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name</label><input type="text" id="newAdminName" placeholder="Full name"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="newAdminEmail" placeholder="Email address"></div>
+                    <div class="form-group"><label>Role</label><select id="newAdminRole">
+                        <option value="admin">Sub Admin</option>
+                        <option value="staff">Staff</option>
+                    </select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Temporary Password</label><input type="text" id="newAdminPassword" placeholder="Auto-generated if empty"></div>
+                </div>
+                <button onclick="addAdminUser()" class="btn-primary"><i class="fas fa-user-plus"></i> Add Admin User</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-users"></i> Admin Users List</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>2FA Enabled</th><th>Last Login</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="adminUsersList"></tbody>
+                </table>
+            </div>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-shield-alt"></i> Session Management</h3>
+                <button onclick="logoutAllDevices()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout From All Devices</button>
+                <button onclick="showLoginHistory()" class="btn-info"><i class="fas fa-history"></i> View Login History</button>
+            </div>
+        </div>
+
+        <!-- ACTIVITY LOGS Section (NEW) -->
+        <div id="activityLogsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-history"></i> Activity Logs</h2>
+            
+            <div class="search-box">
+                <input type="text" id="logSearch" placeholder="Search logs...">
+                <select id="logTypeFilter">
+                    <option value="all">All Types</option>
+                    <option value="admin_login">Admin Login</option>
+                    <option value="balance_adjust">Balance Adjustment</option>
+                    <option value="investment_approve">Investment Approval</option>
+                    <option value="withdrawal_approve">Withdrawal Approval</option>
+                    <option value="user_block">User Block/Unblock</option>
+                    <option value="settings_change">Settings Change</option>
+                </select>
+                <button onclick="loadActivityLogs()" class="btn-primary">Search</button>
+                <button onclick="exportLogs()" class="btn-success">Export Logs</button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Timestamp</th><th>Admin Email</th><th>Action Type</th><th>Description</th><th>IP Address</th><th>Device Info</th></tr>
+                    </thead>
+                    <tbody id="activityLogsList"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Live Chat Section -->
@@ -844,6 +1335,14 @@
         </div>
     </div>
 
+    <!-- 2FA Setup Modal -->
+    <div id="twofaModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-shield-alt"></i> Two-Factor Authentication Setup</h2>
+            <div class="twofa-container" id="twofaContent"></div>
+        </div>
+    </div>
+
     <!-- Batch Detail Modal -->
     <div id="batchDetailModal" class="modal">
         <div class="modal-content"><span class="close" onclick="closeModal('batchDetailModal')">&times;</span><h2 id="batchDetailTitle">Batch Details</h2><div id="batchDetailContent"></div></div>
@@ -856,6 +1355,19 @@
             <div class="form-group"><label>Payment Proof Screenshot <span class="required-star">*</span></label><input type="file" id="withdrawalScreenshotInput" accept="image/*" onchange="previewWithdrawalScreenshot(this)"></div>
             <div id="withdrawalScreenshotPreview" class="screenshot-preview"></div>
             <div style="display:flex; gap:12px; margin-top:20px;"><button onclick="submitWithdrawalApprovalWithScreenshot()" class="btn-primary" style="flex:1;">Confirm & Approve</button><button onclick="closeWithdrawalScreenshotModal()" class="btn-danger" style="flex:1;">Cancel</button></div>
+        </div>
+    </div>
+
+    <!-- KYC Detail Modal -->
+    <div id="kycDetailModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-id-card"></i> KYC Document Verification</h2>
+            <div id="kycDetailContent"></div>
+            <div style="display:flex; gap:12px; margin-top:20px;">
+                <button onclick="approveKYC()" class="btn-success">Approve KYC</button>
+                <button onclick="rejectKYC()" class="btn-danger">Reject KYC</button>
+                <button onclick="closeModal('kycDetailModal')" class="btn-info">Close</button>
+            </div>
         </div>
     </div>
 
@@ -902,6 +1414,9 @@
         let pendingWithdrawalId = null, pendingWithdrawalAmount = null, pendingWithdrawalInvestorId = null;
         let tempScreenshotData = null;
         let charts = {};
+        let currentAdminUser = null;
+        let currentAdminRole = 'superadmin';
+        let pendingKYCId = null;
         
         // Real-time subscription for batch updates
         let batchSubscription = null;
@@ -959,9 +1474,19 @@
             }
             if (section === 'batches') { loadBatches(); loadBatchSelect(); }
             if (section === 'dashboard') { renderAllCharts(); }
+            if (section === 'wallets') { loadBalanceAuditTrail(); loadWalletInvestorSelect(); }
+            if (section === 'affiliates') { loadReferralData(); }
+            if (section === 'kyc') { loadKYCRequests(); }
+            if (section === 'announcements') { loadAnnouncements(); }
+            if (section === 'notifications') { loadNotificationHistory(); loadUsersForNotification(); }
+            if (section === 'paymentMethods') { loadPaymentMethods(); }
+            if (section === 'reports') { setDefaultReportDates(); }
+            if (section === 'settings') { loadSystemSettings(); }
+            if (section === 'adminUsers') { loadAdminUsers(); }
+            if (section === 'activityLogs') { loadActivityLogs(); }
         };
 
-        // ========== ENHANCED INVESTMENT BATCH SYSTEM WITH SLOT VALIDATION ==========
+        // ========== ENHANCED INVESTMENT BATCH SYSTEM ==========
         async function createInvestmentBatch() {
             const batchName = document.getElementById('newBatchName').value.trim();
             const amount = parseFloat(document.getElementById('newBatchAmount').value);
@@ -1005,6 +1530,10 @@
                 }]);
                 
                 if (error) throw error;
+                
+                // Log activity
+                await logActivity('batch_create', `Created new batch: ${batchName}`);
+                
                 showNotification('Investment batch created successfully!', false);
                 
                 // Reset form
@@ -1048,18 +1577,16 @@
                 if(!tbody) return;
                 
                 if(allBatches.length === 0 && prodBatchesList.length === 0) { 
-                                       tbody.innerHTML = '<tr><td colspan="17" class="empty-state">No batches created yet. Create your first batch above.</td></tr>'; 
+                    tbody.innerHTML = '<tr><td colspan="17" class="empty-state">No batches created yet. Create your first batch above.</td></tr>'; 
                     return; 
                 }
                 
                 let totalProd = 0, totalSales = 0, totalReturns = 0, totalDamaged = 0, totalRoi = 0;
                 
-                // Render Investment Batches first
                 let html = '';
                 
                 for (const batch of allBatches) {
                     const netProfit = (batch.sales || 0) - (batch.expenses || 0);
-                    // Investor gets 50% of net profit
                     const investorShare = netProfit * 0.5;
                     const roi = batch.investment_amount ? ((investorShare / batch.investment_amount) * 100).toFixed(2) : '0.00';
                     let statusClass = 'status-in-production';
@@ -1102,11 +1629,10 @@
                             <button onclick="event.stopPropagation();toggleBatchVisibility('${batch.id}', ${!batch.is_visible})" class="btn-info">${batch.is_visible ? 'Hide' : 'Show'}</button>
                             ${batch.status === 'Sold' && !batch.profit_credited ? `<button onclick="event.stopPropagation();distributeBatchProfit('${batch.id}', ${investorShare})" class="btn-success">Distribute Profit</button>` : ''}
                             <button onclick="event.stopPropagation();deleteInvestmentBatch('${batch.id}')" class="btn-danger">Delete</button>
-                        </td>
+                         </div>
                     </tr>`;
                 }
                 
-                // Add production batches (legacy)
                 for (const batch of prodBatchesList) {
                     const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
                     const currentStepIndex = progressSteps.indexOf(batch.status);
@@ -1127,12 +1653,12 @@
                     
                     html += `<tr class="batch-row" onclick="showBatchDetail('${batch.id}', 'production')">
                         <td>${batch.id?.slice(0, 12)}...</td>
-                        <td>Production Batch</td>
+                        <td>Production Batch</span></div></td>
                         <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
-                        <td>50%</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td>50%</span></div></td>
+                        <td>-</span></div></td>
+                        <td>-</span></div></td>
+                        <td>-</span></div></td>
                         <td>${batch.production_quantity || 0}</td>
                         <td><span class="status-badge ${statusClass}">${batch.status}</span></td>
                         <td>${progressHtml}</td>
@@ -1140,13 +1666,13 @@
                         <td>Rs. ${(batch.expenses || 0).toLocaleString()}</td>
                         <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
                         <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
-                        <td>${roi}%</td>
+                        <td>${roi}%</span></div></td>
                         <td><span class="status-badge status-active">Visible</span></td>
                         <td class="action-buttons">
                             <button onclick="event.stopPropagation();updateBatchStatus('${batch.id}')" class="btn-warning">Update Status</button>
                             ${!batch.profit_credited && batch.status === 'Sold' ? `<button onclick="event.stopPropagation();creditProfitToInvestor('${batch.id}', ${investorShare}, '${batch.investments?.investor_id}')" class="btn-success">Credit Profit</button>` : ''}
                             <button onclick="event.stopPropagation();deleteBatch('${batch.id}')" class="btn-danger">Delete</button>
-                        </td>
+                         </div>
                     </tr>`;
                 }
                 
@@ -1161,24 +1687,21 @@
             } catch(e) { console.error('Error loading batches:', e); }
         }
         
-        // NEW FUNCTION: Distribute profit from batch to investor (50% profit sharing)
         async function distributeBatchProfit(batchId, profitAmount) {
             if (profitAmount <= 0) {
                 showNotification('No profit to distribute. Net profit is negative or zero.', true);
                 return;
             }
             
-            // Get the batch details
             const { data: batch } = await supabaseClient.from('investment_batches').select('*').eq('id', batchId).single();
             if (!batch) {
                 showNotification('Batch not found', true);
                 return;
             }
             
-            // Get all investments in this batch
             const { data: investments } = await supabaseClient
                 .from('investments')
-                .select('*, investors(id, full_name, email, available_balance, total_profit)')
+                .select('*, investors(id, full_name, email, available_balance, profit_balance, total_profit)')
                 .eq('batch_id', batchId)
                 .eq('status', 'active');
             
@@ -1187,10 +1710,8 @@
                 return;
             }
             
-            // Calculate total investment amount in this batch
             const totalInvested = investments.reduce((sum, inv) => sum + (inv.amount || 0), 0);
             
-            // Prepare distribution summary
             let distributionHtml = '<div style="max-height: 400px; overflow-y: auto;">';
             distributionHtml += '<h3>Profit Distribution Summary</h3>';
             distributionHtml += `<p><strong>Total Batch Profit:</strong> Rs. ${profitAmount.toLocaleString()}</p>`;
@@ -1228,11 +1749,9 @@
             
             if (result.isConfirmed) {
                 try {
-                    // Process each investor's profit
                     for (const dist of distributions) {
                         const txId = `PROFIT-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
                         
-                        // Add to profit_ledger
                         await supabaseClient.from('profit_ledger').insert([{
                             investor_id: dist.investorId,
                             amount: dist.profitShare,
@@ -1242,7 +1761,6 @@
                             created_at: new Date().toISOString()
                         }]);
                         
-                        // Add to profits table
                         await supabaseClient.from('profits').insert([{
                             investor_id: dist.investorId,
                             amount: dist.profitShare,
@@ -1255,20 +1773,20 @@
                             notes: `Profit from batch: ${batch.batch_name}`
                         }]);
                         
-                        // Update investor balance
-                        const { data: investor } = await supabaseClient.from('investors').select('total_profit, available_balance').eq('id', dist.investorId).single();
+                        const { data: investor } = await supabaseClient.from('investors').select('total_profit, profit_balance').eq('id', dist.investorId).single();
                         await supabaseClient.from('investors').update({ 
                             total_profit: (investor?.total_profit || 0) + dist.profitShare,
-                            available_balance: (investor?.available_balance || 0) + dist.profitShare
+                            profit_balance: (investor?.profit_balance || 0) + dist.profitShare
                         }).eq('id', dist.investorId);
                     }
                     
-                    // Mark batch as profit distributed
                     await supabaseClient.from('investment_batches').update({ 
                         profit_credited: true, 
                         status: 'Profit Distributed',
                         updated_at: new Date().toISOString()
                     }).eq('id', batchId);
+                    
+                    await logActivity('profit_distribute', `Distributed Rs. ${profitAmount.toLocaleString()} profit from batch ${batch.batch_name}`);
                     
                     showNotification(`Profit of Rs. ${profitAmount.toLocaleString()} distributed to ${distributions.length} investors!`, false);
                     loadBatches();
@@ -1344,6 +1862,9 @@
                         .eq('id', batchId);
                     
                     if (error) throw error;
+                    
+                    await logActivity('batch_update', `Updated batch: ${formData.name}`);
+                    
                     showNotification('Batch updated successfully!', false);
                     loadBatches();
                     renderAllCharts();
@@ -1365,7 +1886,6 @@
         }
         
         async function deleteInvestmentBatch(batchId) {
-            // Check if there are any investments linked to this batch
             const { data: linkedInvestments } = await supabaseClient
                 .from('investments')
                 .select('id')
@@ -1381,6 +1901,9 @@
                 try {
                     const { error } = await supabaseClient.from('investment_batches').delete().eq('id', batchId);
                     if (error) throw error;
+                    
+                    await logActivity('batch_delete', `Deleted batch ID: ${batchId}`);
+                    
                     showNotification('Batch deleted', false);
                     loadBatches();
                     renderAllCharts();
@@ -1429,6 +1952,9 @@
                 }]);
                 
                 if(error) throw error;
+                
+                await logActivity('batch_create', `Created production batch for investment ${investmentId}`);
+                
                 showNotification('Batch created successfully!', false);
                 document.getElementById('batchProdQty').value = '';
                 document.getElementById('batchSales').value = '';
@@ -1460,6 +1986,9 @@
                 try {
                     const { error } = await supabaseClient.from('batches').update({ status: newStatus }).eq('id', batchId);
                     if(error) throw error;
+                    
+                    await logActivity('batch_status_update', `Updated batch ${batchId} status to ${newStatus}`);
+                    
                     showNotification(`Batch status updated to ${newStatus}!`, false);
                     loadBatches();
                     renderAllCharts();
@@ -1506,11 +2035,13 @@
                     
                     await supabaseClient.from('batches').update({ profit_credited: true, status: 'Profit Distributed' }).eq('id', batchId);
                     
-                    const { data: investor } = await supabaseClient.from('investors').select('total_profit, available_balance').eq('id', investorId).single();
+                    const { data: investor } = await supabaseClient.from('investors').select('total_profit, profit_balance').eq('id', investorId).single();
                     await supabaseClient.from('investors').update({ 
                         total_profit: (investor?.total_profit || 0) + profitAmount,
-                        available_balance: (investor?.available_balance || 0) + profitAmount
+                        profit_balance: (investor?.profit_balance || 0) + profitAmount
                     }).eq('id', investorId);
+                    
+                    await logActivity('profit_credit', `Credited Rs. ${profitAmount.toLocaleString()} profit to investor ${investorId}`);
                     
                     showNotification(`Rs. ${profitAmount.toLocaleString()} credited to investor!`, false);
                     loadBatches();
@@ -1525,6 +2056,9 @@
             if(await confirmAction('Delete this batch? This action cannot be undone.', 'Delete Batch')) {
                 try {
                     await supabaseClient.from('batches').delete().eq('id', batchId);
+                    
+                    await logActivity('batch_delete', `Deleted batch ${batchId}`);
+                    
                     showNotification('Batch deleted', false);
                     loadBatches();
                     renderAllCharts();
@@ -1685,6 +2219,9 @@
             try {
                 const { error } = await supabaseClient.from('withdrawals').update({ status: 'approved', processed_date: new Date().toISOString().split('T')[0], approval_screenshot: tempScreenshotData }).eq('id', pendingWithdrawalId);
                 if (error) throw error;
+                
+                await logActivity('withdrawal_approve', `Approved withdrawal #${pendingWithdrawalId} for Rs. ${pendingWithdrawalAmount}`);
+                
                 showNotification('Withdrawal approved with screenshot!', false, 'Approved'); 
                 closeWithdrawalScreenshotModal(); 
                 loadWithdrawals(); loadInvestors(); loadStats(); 
@@ -1698,7 +2235,12 @@
             document.getElementById('withdrawalScreenshotPreview').classList.remove('active'); 
         };
         
-        window.handleLogout = async function(){ await supabaseClient.auth.signOut(); localStorage.clear(); window.location.href = 'index.html'; };
+        window.handleLogout = async function(){ 
+            await logActivity('admin_logout', 'Admin logged out');
+            await supabaseClient.auth.signOut(); 
+            localStorage.clear(); 
+            window.location.href = 'index.html'; 
+        };
         
         async function refreshAllData() {
             await loadStats(); await loadInvestors(); await loadBuyers(); await loadInvestmentRequests();
@@ -1706,20 +2248,1195 @@
             await loadProducts(); await loadOrders(); await loadRecentActivities(); await loadBatches(); await renderAllCharts();
         }
         
-        async function checkAuth() {
+        // ========== ACTIVITY LOGGING SYSTEM ==========
+        async function logActivity(actionType, description) {
+            if (!supabaseClient || !currentAdminUser) return;
             try {
-                const { data: { user }, error } = await supabaseClient.auth.getUser();
-                if (error || !user) { window.location.href = 'admin-auth.html'; return null; }
-                const adminEmails = ['admin@sohrab.com', 'sohrabullahkn687@gmail.com'];
-                if (!adminEmails.includes(user.email)) { showNotification('Unauthorized access!', true, 'Access Denied'); window.location.href = 'index.html'; return null; }
-                document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
-                await refreshAllData();
-                setupRealtimeSync();
-                return user;
-            } catch(e) { console.error('Auth error:', e); }
+                // Get IP and device info
+                let ipAddress = 'Unknown';
+                try {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipRes.json();
+                    ipAddress = ipData.ip;
+                } catch(e) { console.log('IP fetch failed'); }
+                
+                const deviceInfo = `${navigator.userAgent.substring(0, 200)}`;
+                
+                await supabaseClient.from('admin_activity_logs').insert([{
+                    admin_id: currentAdminUser.id,
+                    admin_email: currentAdminUser.email,
+                    action_type: actionType,
+                    description: description,
+                    ip_address: ipAddress,
+                    device_info: deviceInfo,
+                    created_at: new Date().toISOString()
+                }]);
+            } catch(e) { console.error('Failed to log activity:', e); }
         }
         
-        // Existing Functions (Preserved)
+        async function loadActivityLogs() {
+            if (!supabaseClient) return;
+            const searchTerm = document.getElementById('logSearch')?.value.toLowerCase() || '';
+            const typeFilter = document.getElementById('logTypeFilter')?.value || 'all';
+            
+            let query = supabaseClient.from('admin_activity_logs').select('*').order('created_at', { ascending: false });
+            
+            if (typeFilter !== 'all') {
+                query = query.eq('action_type', typeFilter);
+            }
+            
+            const { data } = await query.limit(200);
+            
+            let filtered = data || [];
+            if (searchTerm) {
+                filtered = filtered.filter(log => 
+                    log.description?.toLowerCase().includes(searchTerm) || 
+                    log.admin_email?.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            const tbody = document.getElementById('activityLogsList');
+            if (!tbody) return;
+            
+            tbody.innerHTML = filtered.map(log => `
+                <tr>
+                    <td>${new Date(log.created_at).toLocaleString()}</td>
+                    <td>${escapeHtml(log.admin_email || 'Unknown')}</td>
+                    <td><span class="status-badge status-active">${log.action_type}</span></td>
+                    <td>${escapeHtml(log.description || '')}</td>
+                    <td><small>${log.ip_address || '-'}</small></td>
+                    <td><small>${escapeHtml((log.device_info || '-').substring(0, 50))}</small></td>
+                </tr>
+            `).join('');
+        }
+        
+        async function exportLogs() {
+            const { data } = await supabaseClient.from('admin_activity_logs').select('*').order('created_at', { ascending: false });
+            if (!data || data.length === 0) {
+                showNotification('No logs to export', true);
+                return;
+            }
+            
+            const csvRows = [['Timestamp', 'Admin Email', 'Action Type', 'Description', 'IP Address', 'Device Info']];
+            for (const log of data) {
+                csvRows.push([
+                    new Date(log.created_at).toLocaleString(),
+                    log.admin_email,
+                    log.action_type,
+                    log.description,
+                    log.ip_address || '',
+                    (log.device_info || '').substring(0, 200)
+                ]);
+            }
+            
+            const csvContent = csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `activity_logs_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('Logs exported successfully!', false);
+        }
+        
+        // ========== WALLET & BALANCE CONTROL ==========
+        async function adjustBalance() {
+            const investorId = document.getElementById('balanceInvestorSelect').value;
+            const walletType = document.getElementById('walletTypeSelect').value;
+            const action = document.getElementById('balanceActionSelect').value;
+            const amount = parseFloat(document.getElementById('balanceAmount').value);
+            const reason = document.getElementById('balanceReason').value;
+            
+            if (!investorId || !amount || amount <= 0) {
+                showNotification('Please select investor and enter valid amount', true);
+                return;
+            }
+            
+            if (!reason) {
+                showNotification('Please provide a reason for balance adjustment', true);
+                return;
+            }
+            
+            const { data: investor } = await supabaseClient.from('investors').select(walletType).eq('id', investorId).single();
+            if (!investor) {
+                showNotification('Investor not found', true);
+                return;
+            }
+            
+            const currentBalance = investor[walletType] || 0;
+            let newBalance;
+            
+            if (action === 'add') {
+                newBalance = currentBalance + amount;
+            } else {
+                if (currentBalance < amount) {
+                    showNotification(`Insufficient balance! Current ${walletType}: Rs. ${currentBalance.toLocaleString()}`, true);
+                    return;
+                }
+                newBalance = currentBalance - amount;
+            }
+            
+            const result = await Swal.fire({
+                title: 'Confirm Balance Adjustment',
+                html: `<p><strong>Investor:</strong> ${investorId}</p>
+                       <p><strong>Wallet Type:</strong> ${walletType}</p>
+                       <p><strong>Action:</strong> ${action === 'add' ? 'Credit (+)' : 'Debit (-)'}</p>
+                       <p><strong>Amount:</strong> Rs. ${amount.toLocaleString()}</p>
+                       <p><strong>Current Balance:</strong> Rs. ${currentBalance.toLocaleString()}</p>
+                       <p><strong>New Balance:</strong> Rs. ${newBalance.toLocaleString()}</p>
+                       <p><strong>Reason:</strong> ${reason}</p>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Confirm',
+                background: '#1a3d33', color: '#fff'
+            });
+            
+            if (result.isConfirmed) {
+                try {
+                    const updateObj = {};
+                    updateObj[walletType] = newBalance;
+                    
+                    await supabaseClient.from('investors').update(updateObj).eq('id', investorId);
+                    
+                    // Record in balance audit trail
+                    await supabaseClient.from('balance_audit_trail').insert([{
+                        investor_id: investorId,
+                        wallet_type: walletType,
+                        transaction_type: action === 'add' ? 'credit' : 'debit',
+                        amount: amount,
+                        previous_balance: currentBalance,
+                        new_balance: newBalance,
+                        reason: reason,
+                        adjusted_by: currentAdminUser?.email || 'admin',
+                        created_at: new Date().toISOString()
+                    }]);
+                    
+                    await logActivity('balance_adjust', `${action === 'add' ? 'Added' : 'Deducted'} Rs. ${amount} to/from ${walletType} for investor ${investorId}. Reason: ${reason}`);
+                    
+                    showNotification(`Balance ${action === 'add' ? 'added' : 'deducted'} successfully!`, false);
+                    loadInvestors();
+                    loadBalanceAuditTrail();
+                } catch(e) {
+                    showNotification(e.message, true);
+                }
+            }
+        }
+        
+        async function adjustWalletBalance() {
+            const investorId = document.getElementById('walletInvestorSelect').value;
+            const walletType = document.getElementById('walletTypeSelect2').value;
+            const operation = document.getElementById('walletOperation').value;
+            const amount = parseFloat(document.getElementById('walletAmount').value);
+            const reason = document.getElementById('walletReason').value;
+            
+            if (!investorId || !amount || amount <= 0 || !reason) {
+                showNotification('Please fill all fields', true);
+                return;
+            }
+            
+            const { data: investor } = await supabaseClient.from('investors').select(walletType).eq('id', investorId).single();
+            if (!investor) {
+                showNotification('Investor not found', true);
+                return;
+            }
+            
+            const currentBalance = investor[walletType] || 0;
+            let newBalance;
+            
+            if (operation === 'credit') {
+                newBalance = currentBalance + amount;
+            } else {
+                if (currentBalance < amount) {
+                    showNotification(`Insufficient balance! Current: Rs. ${currentBalance.toLocaleString()}`, true);
+                    return;
+                }
+                newBalance = currentBalance - amount;
+            }
+            
+            try {
+                const updateObj = {};
+                updateObj[walletType] = newBalance;
+                
+                await supabaseClient.from('investors').update(updateObj).eq('id', investorId);
+                
+                await supabaseClient.from('balance_audit_trail').insert([{
+                    investor_id: investorId,
+                    wallet_type: walletType,
+                    transaction_type: operation,
+                    amount: amount,
+                    previous_balance: currentBalance,
+                    new_balance: newBalance,
+                    reason: reason,
+                    adjusted_by: currentAdminUser?.email || 'admin',
+                    created_at: new Date().toISOString()
+                }]);
+                
+                await logActivity('balance_adjust', `${operation === 'credit' ? 'Credited' : 'Debited'} Rs. ${amount} to/from ${walletType}. Reason: ${reason}`);
+                
+                showNotification('Balance adjusted successfully!', false);
+                loadInvestors();
+                loadBalanceAuditTrail();
+                
+                document.getElementById('walletAmount').value = '';
+                document.getElementById('walletReason').value = '';
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function loadBalanceAuditTrail() {
+            if (!supabaseClient) return;
+            const { data } = await supabaseClient
+                .from('balance_audit_trail')
+                .select('*, investors(full_name)')
+                .order('created_at', { ascending: false })
+                .limit(100);
+            
+            const tbody = document.getElementById('balanceAuditTrail');
+            if (!tbody) return;
+            
+            tbody.innerHTML = (data || []).map(record => `
+                <tr>
+                    <td>${new Date(record.created_at).toLocaleString()}</td>
+                    <td>${escapeHtml(record.investors?.full_name || record.investor_id)}</td>
+                    <td>${record.wallet_type}</td>
+                    <td><span class="status-badge ${record.transaction_type === 'credit' ? 'status-active' : 'status-pending'}">${record.transaction_type}</span></td>
+                    <td>Rs. ${(record.amount || 0).toLocaleString()}</td>
+                    <td>Rs. ${(record.previous_balance || 0).toLocaleString()}</td>
+                    <td>Rs. ${(record.new_balance || 0).toLocaleString()}</td>
+                    <td><small>${escapeHtml(record.reason || '-')}</small></td>
+                    <td><small>${record.adjusted_by || '-'}</small></td>
+                </tr>
+            `).join('');
+        }
+        
+        async function loadWalletInvestorSelect() {
+            if (!supabaseClient) return;
+            const { data } = await supabaseClient.from('investors').select('id, full_name').order('full_name');
+            const select = document.getElementById('walletInvestorSelect');
+            if (select) {
+                select.innerHTML = '<option value="">Select Investor</option>' + (data || []).map(i => `<option value="${i.id}">${escapeHtml(i.full_name)}</option>`).join('');
+            }
+        }
+        
+        // ========== REFERRAL / AFFILIATE SYSTEM ==========
+        async function loadReferralData() {
+            if (!supabaseClient) return;
+            
+            // Load referral settings
+            const { data: settings } = await supabaseClient.from('system_settings').select('value').eq('key', 'referral_settings').single();
+            if (settings) {
+                const refSettings = JSON.parse(settings.value || '{"commission":5,"min_withdraw":500,"multi_level":false}');
+                document.getElementById('referralCommission').value = refSettings.commission || 5;
+                document.getElementById('referralMinWithdraw').value = refSettings.min_withdraw || 500;
+                document.getElementById('multiLevelEnabled').value = refSettings.multi_level ? 'true' : 'false';
+            }
+            
+            // Load referral stats
+            const { data: referrals } = await supabaseClient.from('referrals').select('*, referrer:referrer_id(full_name), referred:referred_id(full_name)').order('created_at', { ascending: false });
+            
+            // Calculate totals
+            const totalReferrals = referrals?.length || 0;
+            const totalCommission = referrals?.reduce((sum, r) => sum + (r.commission_paid || 0), 0) || 0;
+            const pendingCommission = referrals?.reduce((sum, r) => sum + ((r.commission_earned || 0) - (r.commission_paid || 0)), 0) || 0;
+            
+            document.getElementById('totalReferrals').innerHTML = totalReferrals;
+            document.getElementById('totalCommission').innerHTML = `Rs. ${totalCommission.toLocaleString()}`;
+            document.getElementById('pendingCommission').innerHTML = `Rs. ${pendingCommission.toLocaleString()}`;
+            
+            // Top referrers
+            const referrerMap = new Map();
+            referrals?.forEach(r => {
+                const referrerName = r.referrer?.full_name || r.referrer_id;
+                if (!referrerMap.has(referrerName)) {
+                    referrerMap.set(referrerName, { count: 0, commission: 0 });
+                }
+                const stats = referrerMap.get(referrerName);
+                stats.count++;
+                stats.commission += (r.commission_earned || 0);
+            });
+            
+            const topReferrers = Array.from(referrerMap.entries()).map(([name, stats]) => ({ name, ...stats })).sort((a, b) => b.commission - a.commission).slice(0, 10);
+            
+            const topReferrersTbody = document.getElementById('topReferrersList');
+            if (topReferrersTbody) {
+                topReferrersTbody.innerHTML = topReferrers.map(r => `
+                    <tr>
+                        <td>${escapeHtml(r.name)}</td>
+                        <td>-</td>
+                        <td>${r.count}</td>
+                        <td>Rs. ${r.commission.toLocaleString()}</td>
+                        <td><button class="btn-info" onclick="viewReferrerDetails('${r.name}')">View</button></td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Referral transactions
+            const transactionsTbody = document.getElementById('referralTransactionsList');
+            if (transactionsTbody) {
+                transactionsTbody.innerHTML = (referrals || []).map(r => `
+                    <tr>
+                        <td>${new Date(r.created_at).toLocaleDateString()}</td>
+                        <td>${escapeHtml(r.referrer?.full_name || r.referrer_id)}</td>
+                        <td>${escapeHtml(r.referred?.full_name || r.referred_id)}</td>
+                        <td>Rs. ${(r.investment_amount || 0).toLocaleString()}</td>
+                        <td>Rs. ${(r.commission_earned || 0).toLocaleString()}</td>
+                        <td><span class="status-badge ${r.commission_paid ? 'status-active' : 'status-pending'}">${r.commission_paid ? 'Paid' : 'Pending'}</span></td>
+                    </tr>
+                `).join('');
+            }
+        }
+        
+        async function saveReferralSettings() {
+            const commission = parseFloat(document.getElementById('referralCommission').value);
+            const minWithdraw = parseFloat(document.getElementById('referralMinWithdraw').value);
+            const multiLevel = document.getElementById('multiLevelEnabled').value === 'true';
+            
+            const settings = {
+                commission: commission,
+                min_withdraw: minWithdraw,
+                multi_level: multiLevel
+            };
+            
+            try {
+                const { error } = await supabaseClient.from('system_settings').upsert({
+                    key: 'referral_settings',
+                    value: JSON.stringify(settings),
+                    updated_at: new Date().toISOString()
+                });
+                
+                if (error) throw error;
+                
+                await logActivity('settings_change', 'Updated referral settings');
+                
+                showNotification('Referral settings saved!', false);
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        // ========== KYC VERIFICATION SYSTEM ==========
+        async function loadKYCRequests() {
+            if (!supabaseClient) return;
+            const searchTerm = document.getElementById('kycSearch')?.value.toLowerCase() || '';
+            const statusFilter = document.getElementById('kycStatusFilter')?.value || 'all';
+            
+            let query = supabaseClient.from('kyc_requests').select('*, investors(full_name, email)').order('submitted_at', { ascending: false });
+            
+            if (statusFilter !== 'all') {
+                query = query.eq('status', statusFilter);
+            }
+            
+            const { data } = await query;
+            
+            let filtered = data || [];
+            if (searchTerm) {
+                filtered = filtered.filter(k => 
+                    k.investors?.full_name?.toLowerCase().includes(searchTerm) || 
+                    k.investors?.email?.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            const tbody = document.getElementById('kycRequestsList');
+            if (!tbody) return;
+            
+            tbody.innerHTML = filtered.map(kyc => `
+                <tr>
+                    <td><strong>${escapeHtml(kyc.investors?.full_name || 'Unknown')}</strong><br><small>${kyc.investors?.email || ''}</small></td>
+                    <td>${kyc.cnic_front ? `<img src="${kyc.cnic_front}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_front}')">` : '-'}</td>
+                    <td>${kyc.cnic_back ? `<img src="${kyc.cnic_back}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_back}')">` : '-'}</td>
+                    <td>${kyc.selfie ? `<img src="${kyc.selfie}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.selfie}')">` : '-'}</td>
+                    <td><span class="status-badge ${kyc.status === 'approved' ? 'status-active' : kyc.status === 'rejected' ? 'status-pending' : 'status-kyc-pending'}">${kyc.status || 'pending'}</span></td>
+                    <td>${kyc.submitted_at ? new Date(kyc.submitted_at).toLocaleDateString() : '-'}</td>
+                    <td>
+                        <button onclick="viewKYCDetail('${kyc.id}')" class="btn-info">Review</button>
+                        ${kyc.status === 'pending' ? `<button onclick="approveKYCRequest('${kyc.id}')" class="btn-success">Approve</button><button onclick="rejectKYCRequest('${kyc.id}')" class="btn-danger">Reject</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        async function viewKYCDetail(kycId) {
+            pendingKYCId = kycId;
+            const { data: kyc } = await supabaseClient.from('kyc_requests').select('*, investors(full_name, email)').eq('id', kycId).single();
+            if (!kyc) return;
+            
+            const content = document.getElementById('kycDetailContent');
+            content.innerHTML = `
+                <div class="form-card">
+                    <p><strong>Investor:</strong> ${escapeHtml(kyc.investors?.full_name || 'Unknown')}</p>
+                    <p><strong>Email:</strong> ${kyc.investors?.email || '-'}</p>
+                    <hr>
+                    <div class="kyc-doc-preview">
+                        <div class="kyc-doc-item"><strong>CNIC Front</strong><br>${kyc.cnic_front ? `<img src="${kyc.cnic_front}" onclick="window.open('${kyc.cnic_front}','_blank')">` : 'Not uploaded'}</div>
+                        <div class="kyc-doc-item"><strong>CNIC Back</strong><br>${kyc.cnic_back ? `<img src="${kyc.cnic_back}" onclick="window.open('${kyc.cnic_back}','_blank')">` : 'Not uploaded'}</div>
+                        <div class="kyc-doc-item"><strong>Selfie</strong><br>${kyc.selfie ? `<img src="${kyc.selfie}" onclick="window.open('${kyc.selfie}','_blank')">` : 'Not uploaded'}</div>
+                    </div>
+                    <hr>
+                    <p><strong>Status:</strong> ${kyc.status || 'pending'}</p>
+                    ${kyc.rejection_reason ? `<p><strong>Rejection Reason:</strong> ${escapeHtml(kyc.rejection_reason)}</p>` : ''}
+                </div>
+            `;
+            document.getElementById('kycDetailModal').style.display = 'flex';
+            document.getElementById('kycDetailModal').classList.add('active');
+        }
+        
+        async function approveKYC() {
+            if (!pendingKYCId) return;
+            
+            try {
+                await supabaseClient.from('kyc_requests').update({ 
+                    status: 'approved', 
+                    reviewed_at: new Date().toISOString(),
+                    reviewed_by: currentAdminUser?.email || 'admin'
+                }).eq('id', pendingKYCId);
+                
+                // Update investor's KYC status
+                const { data: kyc } = await supabaseClient.from('kyc_requests').select('investor_id').eq('id', pendingKYCId).single();
+                await supabaseClient.from('investors').update({ kyc_status: 'approved' }).eq('id', kyc.investor_id);
+                
+                await logActivity('kyc_approve', `Approved KYC for investor ${kyc.investor_id}`);
+                
+                showNotification('KYC approved successfully!', false);
+                closeModal('kycDetailModal');
+                loadKYCRequests();
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function rejectKYC() {
+            if (!pendingKYCId) return;
+            
+            const { value: reason } = await Swal.fire({
+                title: 'Rejection Reason',
+                input: 'textarea',
+                inputPlaceholder: 'Please provide reason for rejection...',
+                inputValidator: (value) => {
+                    if (!value) return 'Please provide a reason';
+                    return null;
+                },
+                background: '#1a3d33', color: '#fff'
+            });
+            
+            if (reason) {
+                try {
+                    await supabaseClient.from('kyc_requests').update({ 
+                        status: 'rejected', 
+                        rejection_reason: reason,
+                        reviewed_at: new Date().toISOString(),
+                        reviewed_by: currentAdminUser?.email || 'admin'
+                    }).eq('id', pendingKYCId);
+                    
+                    const { data: kyc } = await supabaseClient.from('kyc_requests').select('investor_id').eq('id', pendingKYCId).single();
+                    await supabaseClient.from('investors').update({ kyc_status: 'rejected' }).eq('id', kyc.investor_id);
+                    
+                    await logActivity('kyc_reject', `Rejected KYC for investor ${kyc.investor_id}. Reason: ${reason}`);
+                    
+                    showNotification('KYC rejected', false);
+                    closeModal('kycDetailModal');
+                    loadKYCRequests();
+                } catch(e) {
+                    showNotification(e.message, true);
+                }
+            }
+        }
+        
+        function viewKYCDocument(url) {
+            window.open(url, '_blank');
+        }
+        
+        // ========== ANNOUNCEMENT SYSTEM ==========
+        async function createAnnouncement() {
+            const title = document.getElementById('announcementTitle').value.trim();
+            const message = document.getElementById('announcementMessage').value.trim();
+            const type = document.getElementById('announcementType').value;
+            const target = document.getElementById('announcementTarget').value;
+            const scheduleDate = document.getElementById('announcementSchedule').value;
+            const expiryDate = document.getElementById('announcementExpiry').value;
+            
+            if (!title || !message) {
+                showNotification('Please enter title and message', true);
+                return;
+            }
+            
+            try {
+                const { error } = await supabaseClient.from('announcements').insert([{
+                    id: crypto.randomUUID(),
+                    title: title,
+                    message: message,
+                    type: type,
+                    target: target,
+                    schedule_date: scheduleDate || null,
+                    expiry_date: expiryDate || null,
+                    is_active: true,
+                    created_by: currentAdminUser?.email || 'admin',
+                    created_at: new Date().toISOString()
+                }]);
+                
+                if (error) throw error;
+                
+                await logActivity('announcement_create', `Created announcement: ${title}`);
+                
+                showNotification('Announcement created successfully!', false);
+                
+                document.getElementById('announcementTitle').value = '';
+                document.getElementById('announcementMessage').value = '';
+                document.getElementById('announcementSchedule').value = '';
+                document.getElementById('announcementExpiry').value = '';
+                
+                loadAnnouncements();
+                
+                // Show popup immediately if scheduled for now
+                if (!scheduleDate || new Date(scheduleDate) <= new Date()) {
+                    showActivePopup();
+                }
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function loadAnnouncements() {
+            if (!supabaseClient) return;
+            const { data } = await supabaseClient.from('announcements').select('*').order('created_at', { ascending: false });
+            
+            const tbody = document.getElementById('announcementsList');
+            if (!tbody) return;
+            
+            tbody.innerHTML = (data || []).map(a => `
+                <tr>
+                    <td><strong>${escapeHtml(a.title)}</strong></td>
+                    <td><small>${escapeHtml(a.message.substring(0, 100))}...</small></td>
+                    <td>${a.type}</td>
+                    <td>${a.target}</td>
+                    <td><span class="status-badge ${a.is_active ? 'status-active' : 'status-pending'}">${a.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td>${a.schedule_date ? new Date(a.schedule_date).toLocaleString() : '-'}</td>
+                    <td>
+                        <button onclick="toggleAnnouncement('${a.id}', ${!a.is_active})" class="btn-warning">${a.is_active ? 'Disable' : 'Enable'}</button>
+                        <button onclick="deleteAnnouncement('${a.id}')" class="btn-danger">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        async function toggleAnnouncement(id, active) {
+            try {
+                await supabaseClient.from('announcements').update({ is_active: active }).eq('id', id);
+                showNotification(`Announcement ${active ? 'activated' : 'deactivated'}`, false);
+                loadAnnouncements();
+                showActivePopup();
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function deleteAnnouncement(id) {
+            if (await confirmAction('Delete this announcement?', 'Delete')) {
+                try {
+                    await supabaseClient.from('announcements').delete().eq('id', id);
+                    showNotification('Announcement deleted', false);
+                    loadAnnouncements();
+                } catch(e) {
+                    showNotification(e.message, true);
+                }
+            }
+        }
+        
+        async function showActivePopup() {
+            const now = new Date().toISOString();
+            const { data } = await supabaseClient
+                .from('announcements')
+                .select('*')
+                .eq('is_active', true)
+                .eq('type', 'popup')
+                .or(`schedule_date.is.null,schedule_date.lte.${now}`)
+                .or(`expiry_date.is.null,expiry_date.gte.${now}`);
+            
+            if (data && data.length > 0 && !localStorage.getItem('popup_closed')) {
+                const popup = data[0];
+                document.getElementById('popupContent').innerHTML = `
+                    <h3 style="color:#E8B13C;">${escapeHtml(popup.title)}</h3>
+                    <p style="margin-top:15px;">${escapeHtml(popup.message)}</p>
+                `;
+                document.getElementById('customPopup').classList.add('active');
+                document.getElementById('popupOverlay').classList.add('active');
+            }
+        }
+        
+        function closePopup() {
+            document.getElementById('customPopup').classList.remove('active');
+            document.getElementById('popupOverlay').classList.remove('active');
+            localStorage.setItem('popup_closed', 'true');
+            setTimeout(() => localStorage.removeItem('popup_closed'), 3600000);
+        }
+        
+        function closeAnnouncement() {
+            document.getElementById('announcementBanner').classList.remove('active');
+        }
+        
+        // ========== NOTIFICATION SYSTEM ==========
+        async function loadUsersForNotification() {
+            if (!supabaseClient) return;
+            const { data: investors } = await supabaseClient.from('investors').select('id, full_name');
+            const { data: buyers } = await supabaseClient.from('buyers').select('id, full_name');
+            
+            const select = document.getElementById('selectedUsersList');
+            if (select) {
+                let options = '';
+                (investors || []).forEach(i => options += `<option value="investor_${i.id}">💰 ${escapeHtml(i.full_name)} (Investor)</option>`);
+                (buyers || []).forEach(b => options += `<option value="buyer_${b.id}">🛒 ${escapeHtml(b.full_name)} (Buyer)</option>`);
+                select.innerHTML = options;
+            }
+            
+            document.getElementById('notificationTarget').addEventListener('change', function() {
+                document.getElementById('selectedUsersGroup').style.display = this.value === 'selected' ? 'block' : 'none';
+            });
+        }
+        
+        async function sendNotification() {
+            const target = document.getElementById('notificationTarget').value;
+            const type = document.getElementById('notificationType').value;
+            const title = document.getElementById('notificationTitle').value.trim();
+            const message = document.getElementById('notificationMessage').value.trim();
+            
+            if (!title || !message) {
+                showNotification('Please enter title and message', true);
+                return;
+            }
+            
+            let recipients = [];
+            
+            if (target === 'all') {
+                const { data: investors } = await supabaseClient.from('investors').select('id');
+                const { data: buyers } = await supabaseClient.from('buyers').select('id');
+                recipients = [
+                    ...(investors || []).map(i => ({ id: i.id, type: 'investor' })),
+                    ...(buyers || []).map(b => ({ id: b.id, type: 'buyer' }))
+                ];
+            } else if (target === 'investors') {
+                const { data: investors } = await supabaseClient.from('investors').select('id');
+                recipients = (investors || []).map(i => ({ id: i.id, type: 'investor' }));
+            } else if (target === 'buyers') {
+                const { data: buyers } = await supabaseClient.from('buyers').select('id');
+                recipients = (buyers || []).map(b => ({ id: b.id, type: 'buyer' }));
+            } else if (target === 'selected') {
+                const selected = Array.from(document.getElementById('selectedUsersList').selectedOptions).map(opt => {
+                    const [userType, userId] = opt.value.split('_');
+                    return { id: userId, type: userType };
+                });
+                recipients = selected;
+            }
+            
+            if (recipients.length === 0) {
+                showNotification('No recipients selected', true);
+                return;
+            }
+            
+            try {
+                for (const recipient of recipients) {
+                    await supabaseClient.from('notifications').insert([{
+                        id: crypto.randomUUID(),
+                        user_id: recipient.id,
+                        user_type: recipient.type,
+                        type: type,
+                        title: title,
+                        message: message,
+                        is_read: false,
+                        created_at: new Date().toISOString()
+                    }]);
+                }
+                
+                await logActivity('notification_send', `Sent ${type} notification to ${recipients.length} users: ${title}`);
+                
+                showNotification(`Notification sent to ${recipients.length} users!`, false);
+                
+                document.getElementById('notificationTitle').value = '';
+                document.getElementById('notificationMessage').value = '';
+                
+                loadNotificationHistory();
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function loadNotificationHistory() {
+            if (!supabaseClient) return;
+            const { data } = await supabaseClient.from('notifications').select('*').order('created_at', { ascending: false }).limit(50);
+            
+            const tbody = document.getElementById('notificationHistoryList');
+            if (!tbody) return;
+            
+            tbody.innerHTML = (data || []).map(n => `
+                <tr>
+                    <td>${new Date(n.created_at).toLocaleString()}</td>
+                    <td>${n.type}</td>
+                    <td><strong>${escapeHtml(n.title)}</strong></td>
+                    <td><small>${escapeHtml(n.message.substring(0, 80))}...</small></td>
+                    <td>${n.user_type}/${n.user_id?.slice(0, 8)}</td>
+                    <td>${currentAdminUser?.email || 'admin'}</td>
+                </tr>
+            `).join('');
+        }
+        
+        // ========== PAYMENT METHOD MANAGEMENT ==========
+        async function addPaymentMethod() {
+            const methodName = document.getElementById('newPaymentMethod').value.trim();
+            const account = document.getElementById('paymentAccount').value.trim();
+            const holderName = document.getElementById('paymentHolderName').value.trim();
+            const minDeposit = parseFloat(document.getElementById('paymentMinDeposit').value) || 0;
+            const maxDeposit = parseFloat(document.getElementById('paymentMaxDeposit').value) || 0;
+            const status = document.getElementById('paymentStatus').value;
+            
+            if (!methodName || !account) {
+                showNotification('Please enter method name and account details', true);
+                return;
+            }
+            
+            try {
+                const { error } = await supabaseClient.from('payment_methods').insert([{
+                    id: crypto.randomUUID(),
+                    method_name: methodName,
+                    account_details: account,
+                    holder_name: holderName,
+                    min_deposit: minDeposit,
+                    max_deposit: maxDeposit,
+                    status: status,
+                    is_active: status === 'active',
+                    created_at: new Date().toISOString()
+                }]);
+                
+                if (error) throw error;
+                
+                await logActivity('payment_method_add', `Added payment method: ${methodName}`);
+                
+                showNotification('Payment method added!', false);
+                
+                document.getElementById('newPaymentMethod').value = '';
+                document.getElementById('paymentAccount').value = '';
+                document.getElementById('paymentHolderName').value = '';
+                document.getElementById('paymentMinDeposit').value = '';
+                document.getElementById('paymentMaxDeposit').value = '';
+                
+                loadPaymentMethods();
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function loadPaymentMethods() {
+            if (!supabaseClient) return;
+            const { data } = await supabaseClient.from('payment_methods').select('*').order('created_at', { ascending: false });
+            
+            const tbody = document.getElementById('paymentMethodsList');
+            if (!tbody) return;
+            
+            tbody.innerHTML = (data || []).map(p => `
+                <tr>
+                    <td><strong>${escapeHtml(p.method_name)}</strong></td>
+                    <td>${escapeHtml(p.account_details)}<br><small>${escapeHtml(p.holder_name || '')}</small></td>
+                    <td>Rs. ${(p.min_deposit || 0).toLocaleString()}</td>
+                    <td>Rs. ${(p.max_deposit || 0).toLocaleString()}</td>
+                    <td><span class="status-badge ${p.status === 'active' ? 'status-active' : 'status-pending'}">${p.status}</span></td>
+                    <td>
+                        <button onclick="togglePaymentMethod('${p.id}', '${p.status === 'active' ? 'inactive' : 'active'}')" class="btn-warning">${p.status === 'active' ? 'Disable' : 'Enable'}</button>
+                        <button onclick="deletePaymentMethod('${p.id}')" class="btn-danger">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        async function togglePaymentMethod(id, newStatus) {
+            try {
+                await supabaseClient.from('payment_methods').update({ status: newStatus, is_active: newStatus === 'active' }).eq('id', id);
+                showNotification(`Payment method ${newStatus === 'active' ? 'enabled' : 'disabled'}`, false);
+                loadPaymentMethods();
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function deletePaymentMethod(id) {
+            if (await confirmAction('Delete this payment method?', 'Delete')) {
+                try {
+                    await supabaseClient.from('payment_methods').delete().eq('id', id);
+                    showNotification('Payment method deleted', false);
+                    loadPaymentMethods();
+                } catch(e) {
+                    showNotification(e.message, true);
+                }
+            }
+        }
+        
+        // ========== REPORTS & EXPORTS ==========
+        function setDefaultReportDates() {
+            const endDate = new Date().toISOString().split('T')[0];
+            const startDate = new Date();
+            startDate.setMonth(startDate.getMonth() - 1);
+            document.getElementById('reportStartDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('reportEndDate').value = endDate;
+        }
+        
+        async function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            const format = document.getElementById('exportFormat').value;
+            
+            let data = [];
+            let headers = [];
+            
+            if (reportType === 'deposits') {
+                const { data: investments } = await supabaseClient
+                    .from('investments')
+                    .select('*, investors(full_name, email)')
+                    .eq('status', 'active')
+                    .gte('investment_date', startDate)
+                    .lte('investment_date', endDate);
+                data = investments || [];
+                headers = ['Date', 'Investor Name', 'Email', 'Amount', 'Payment Method', 'Transaction ID'];
+                data = data.map(d => [d.investment_date, d.investors?.full_name, d.investors?.email, d.amount, d.payment_method, d.transaction_id]);
+            } else if (reportType === 'withdrawals') {
+                const { data: withdrawals } = await supabaseClient
+                    .from('withdrawals')
+                    .select('*, investors(full_name, email)')
+                    .gte('request_date', startDate)
+                    .lte('request_date', endDate);
+                data = withdrawals || [];
+                headers = ['Request Date', 'Investor Name', 'Email', 'Amount', 'Status', 'Payment Method'];
+                data = data.map(d => [d.request_date, d.investors?.full_name, d.investors?.email, d.amount, d.status, d.payment_method]);
+            } else if (reportType === 'profits') {
+                const { data: profits } = await supabaseClient
+                    .from('profits')
+                    .select('*, investors(full_name, email)')
+                    .gte('paid_date', startDate)
+                    .lte('paid_date', endDate);
+                data = profits || [];
+                headers = ['Date', 'Investor Name', 'Email', 'Amount', 'Profit %', 'Month'];
+                data = data.map(d => [d.paid_date, d.investors?.full_name, d.investors?.email, d.amount, d.profit_percentage, d.month]);
+            } else if (reportType === 'investments') {
+                const { data: investments } = await supabaseClient
+                    .from('investments')
+                    .select('*, investors(full_name, email)')
+                    .gte('investment_date', startDate)
+                    .lte('investment_date', endDate);
+                data = investments || [];
+                headers = ['Date', 'Investor Name', 'Email', 'Amount', 'Status', 'Payment Method'];
+                data = data.map(d => [d.investment_date, d.investors?.full_name, d.investors?.email, d.amount, d.status, d.payment_method]);
+            } else if (reportType === 'investors') {
+                const { data: investors } = await supabaseClient.from('investors').select('*');
+                data = investors || [];
+                headers = ['Name', 'Email', 'Phone', 'City', 'Total Investment', 'Total Profit', 'Balance', 'Created At'];
+                data = data.map(d => [d.full_name, d.email, d.phone, d.city, d.total_investment, d.total_profit, d.available_balance, d.created_at]);
+            }
+            
+            if (format === 'excel') {
+                const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Report');
+                XLSX.writeFile(wb, `${reportType}_report_${new Date().toISOString().split('T')[0]}.xlsx`);
+                showNotification('Report exported as Excel!', false);
+            } else if (format === 'csv') {
+                const csvRows = [headers.join(','), ...data.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))];
+                const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${reportType}_report_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showNotification('Report exported as CSV!', false);
+            } else if (format === 'pdf') {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.text(`${reportType.toUpperCase()} Report`, 14, 10);
+                doc.text(`Period: ${startDate} to ${endDate}`, 14, 20);
+                doc.autoTable({
+                    head: [headers],
+                    body: data,
+                    startY: 30,
+                    theme: 'striped',
+                    styles: { fontSize: 8 }
+                });
+                doc.save(`${reportType}_report_${new Date().toISOString().split('T')[0]}.pdf`);
+                showNotification('Report exported as PDF!', false);
+            }
+            
+            await logActivity('report_export', `Exported ${reportType} report in ${format} format`);
+        }
+        
+        async function previewReport() {
+            const reportType = document.getElementById('reportType').value;
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            
+            let data = [];
+            let headers = [];
+            
+            if (reportType === 'deposits') {
+                const { data: investments } = await supabaseClient
+                    .from('investments')
+                    .select('*, investors(full_name, email)')
+                    .eq('status', 'active')
+                    .gte('investment_date', startDate)
+                    .lte('investment_date', endDate)
+                    .limit(20);
+                data = investments || [];
+                headers = ['Date', 'Investor', 'Amount'];
+                data = data.map(d => [d.investment_date, d.investors?.full_name, `Rs. ${d.amount}`]);
+            } else if (reportType === 'withdrawals') {
+                const { data: withdrawals } = await supabaseClient
+                    .from('withdrawals')
+                    .select('*, investors(full_name, email)')
+                    .gte('request_date', startDate)
+                    .lte('request_date', endDate)
+                    .limit(20);
+                data = withdrawals || [];
+                headers = ['Date', 'Investor', 'Amount', 'Status'];
+                data = data.map(d => [d.request_date, d.investors?.full_name, `Rs. ${d.amount}`, d.status]);
+            } else if (reportType === 'profits') {
+                const { data: profits } = await supabaseClient
+                    .from('profits')
+                    .select('*, investors(full_name, email)')
+                    .gte('paid_date', startDate)
+                    .lte('paid_date', endDate)
+                    .limit(20);
+                data = profits || [];
+                headers = ['Date', 'Investor', 'Amount', 'Profit %'];
+                data = data.map(d => [d.paid_date, d.investors?.full_name, `Rs. ${d.amount}`, d.profit_percentage]);
+            } else if (reportType === 'investments') {
+                const { data: investments } = await supabaseClient
+                    .from('investments')
+                    .select('*, investors(full_name, email)')
+                    .gte('investment_date', startDate)
+                    .lte('investment_date', endDate)
+                    .limit(20);
+                data = investments || [];
+                headers = ['Date', 'Investor', 'Amount', 'Status'];
+                data = data.map(d => [d.investment_date, d.investors?.full_name, `Rs. ${d.amount}`, d.status]);
+            } else if (reportType === 'investors') {
+                const { data: investors } = await supabaseClient.from('investors').select('full_name, email, total_investment, total_profit').limit(20);
+                data = investors || [];
+                headers = ['Name', 'Email', 'Investment', 'Profit'];
+                data = data.map(d => [d.full_name, d.email, `Rs. ${d.total_investment}`, `Rs. ${d.total_profit}`]);
+            }
+            
+            const previewDiv = document.getElementById('reportPreview');
+            const previewContent = document.getElementById('reportPreviewContent');
+            
+            let tableHtml = '<table class="ledger-table"><thead><tr>';
+            headers.forEach(h => tableHtml += `<th>${h}</th>`);
+            tableHtml += '</tr></thead><tbody>';
+            data.forEach(row => {
+                tableHtml += '<tr>';
+                row.forEach(cell => tableHtml += `<td>${cell}</td>`);
+                tableHtml += '</tr>';
+            });
+            tableHtml += '</tbody></table>';
+            tableHtml += `<p><em>Showing last 20 records. Export full report using the export button.</em></p>`;
+            
+            previewContent.innerHTML = tableHtml;
+            previewDiv.style.display = 'block';
+        }
+        
+        // ========== SYSTEM SETTINGS ==========
+        async function loadSystemSettings() {
+            if (!supabaseClient) return;
+            const { data } = await supabaseClient.from('system_settings').select('key, value');
+            
+            const settingsMap = {};
+            (data || []).forEach(s => settingsMap[s.key] = s.value);
+            
+            document.getElementById('settingWebsiteName').value = settingsMap['website_name'] || 'Sohrab Industries';
+            document.getElementById('settingLogoUrl').value = settingsMap['logo_url'] || '';
+            document.getElementById('settingCurrency').value = settingsMap['currency'] || 'Rs.';
+            document.getElementById('settingTimezone').value = settingsMap['timezone'] || 'Asia/Karachi';
+            document.getElementById('settingMaintenance').value = settingsMap['maintenance_mode'] || 'false';
+            document.getElementById('settingTerms').value = settingsMap['terms_conditions'] || 'Terms and conditions for using Sohrab Industries platform...';
+            
+            document.getElementById('websiteName').innerText = settingsMap['website_name'] || 'Sohrab Industries';
+        }
+        
+        async function saveSystemSettings() {
+            const settings = {
+                website_name: document.getElementById('settingWebsiteName').value,
+                logo_url: document.getElementById('settingLogoUrl').value,
+                currency: document.getElementById('settingCurrency').value,
+                timezone: document.getElementById('settingTimezone').value,
+                maintenance_mode: document.getElementById('settingMaintenance').value,
+                terms_conditions: document.getElementById('settingTerms').value
+            };
+            
+            try {
+                for (const [key, value] of Object.entries(settings)) {
+                    await supabaseClient.from('system_settings').upsert({
+                        key: key,
+                        value: value,
+                        updated_at: new Date().toISOString()
+                    });
+                }
+                
+                document.getElementById('websiteName').innerText = settings.website_name;
+                
+                await logActivity('settings_change', 'Updated system settings');
+                
+                showNotification('Settings saved successfully!', false);
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        // ========== ADMIN USER MANAGEMENT ==========
+        async function addAdminUser() {
+            const name = document.getElementById('newAdminName').value.trim();
+            const email = document.getElementById('newAdminEmail').value.trim();
+            const role = document.getElementById('newAdminRole').value;
+            let password = document.getElementById('newAdminPassword').value.trim();
+            
+            if (!name || !email) {
+                showNotification('Please enter name and email', true);
+                return;
+            }
+            
+            if (!password) {
+                password = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-4);
+            }
+            
+            try {
+                // Create auth user
+                const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: name,
+                            role: role
+                        }
+                    }
+                });
+                
+                if (authError) throw authError;
+                
+                if (authData.user) {
+                    await supabaseClient.from('admin_users').insert([{
+                        id: authData.user.id,
+                        full_name: name,
+                        email: email,
+                        role: role,
+                        is_active: true,
+                        twofa_enabled: false,
+                        created_at: new Date().toISOString()
+                    }]);
+                    
+                    await logActivity('admin_create', `Created new admin user: ${email} with role ${role}`);
+                    
+                    showNotification(`Admin user created! Password: ${password}`, false);
+                    
+                    document.getElementById('newAdminName').value = '';
+                    document.getElementById('newAdminEmail').value = '';
+                    document.getElementById('newAdminPassword').value = '';
+                    
+                    loadAdminUsers();
+                }
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function loadAdminUsers() {
+            if (!supabaseClient) return;
+            const { data } = await supabaseClient.from('admin_users').select('*').order('created_at', { ascending: false });
+            
+            const tbody = document.getElementById('adminUsersList');
+            if (!tbody) return;
+            
+            tbody.innerHTML = (data || []).map(admin => `
+                <tr>
+                    <td>${escapeHtml(admin.full_name)}</span></div></td>
+                    <td>${admin.email}</span></div></td>
+                    <td><span class="role-badge role-${admin.role}">${admin.role}</span></div></td>
+                    <td>${admin.twofa_enabled ? '✅ Yes' : '❌ No'}</td>
+                    <td>${admin.last_login ? new Date(admin.last_login).toLocaleString() : '-'}</td>
+                    <td><span class="status-badge ${admin.is_active ? 'status-active' : 'status-pending'}">${admin.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td>
+                        <button onclick="toggleAdminStatus('${admin.id}', ${!admin.is_active})" class="btn-warning">${admin.is_active ? 'Disable' : 'Enable'}</button>
+                        <button onclick="resetAdminPassword('${admin.id}', '${admin.email}')" class="btn-info">Reset Password</button>
+                        <button onclick="deleteAdminUser('${admin.id}')" class="btn-danger">Delete</button>
+                     </div>
+                </tr>
+            `).join('');
+        }
+        
+        async function toggleAdminStatus(id, active) {
+            try {
+                await supabaseClient.from('admin_users').update({ is_active: active }).eq('id', id);
+                showNotification(`Admin user ${active ? 'activated' : 'deactivated'}`, false);
+                loadAdminUsers();
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function resetAdminPassword(id, email) {
+            try {
+                await supabaseClient.auth.resetPasswordForEmail(email);
+                showNotification(`Password reset email sent to ${email}`, false);
+                await logActivity('admin_password_reset', `Reset password for admin ${email}`);
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        async function deleteAdminUser(id) {
+            if (await confirmAction('Delete this admin user?', 'Delete')) {
+                try {
+                    await supabaseClient.from('admin_users').delete().eq('id', id);
+                    showNotification('Admin user deleted', false);
+                    loadAdminUsers();
+                } catch(e) {
+                    showNotification(e.message, true);
+                }
+            }
+        }
+        
+        async function logoutAllDevices() {
+            if (await confirmAction('Logout from all devices? This will end all active sessions.', 'Session Management')) {
+                try {
+                    await supabaseClient.auth.signOut();
+                    await logActivity('admin_logout_all', 'Logged out from all devices');
+                    localStorage.clear();
+                    window.location.href = 'index.html';
+                } catch(e) {
+                    showNotification(e.message, true);
+                }
+            }
+        }
+        
+        async function showLoginHistory() {
+            const { data } = await supabaseClient
+                .from('admin_activity_logs')
+                .select('*')
+                .eq('action_type', 'admin_login')
+                .order('created_at', { ascending: false })
+                .limit(50);
+            
+            let html = '<div class="table-container"><table class="ledger-table"><thead><tr><th>Date</th><th>IP Address</th><th>Device</th></tr></thead><tbody>';
+            (data || []).forEach(log => {
+                html += `<tr><td>${new Date(log.created_at).toLocaleString()}</td><td>${log.ip_address || '-'}</td><td><small>${escapeHtml((log.device_info || '-').substring(0, 60))}</small></td></tr>`;
+            });
+            html += '</tbody></table></div>';
+            
+            Swal.fire({
+                title: 'Login History',
+                html: html,
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                color: '#fff',
+                confirmButtonColor: '#E8B13C',
+                width: '800px'
+            });
+        }
+        
+        // ========== EXISTING FUNCTIONS (Preserved) ==========
         async function loadStats() {
             if(!supabaseClient) return;
             const { count: ic } = await supabaseClient.from('investors').select('*', { count: 'exact', head: true });
@@ -1747,36 +3464,64 @@
             const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${i.full_name}</option>`).join('');
             if(document.getElementById('investorSelect')) document.getElementById('investorSelect').innerHTML = selectHtml;
             if(document.getElementById('profitInvestorSelect')) document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
+            if(document.getElementById('balanceInvestorSelect')) document.getElementById('balanceInvestorSelect').innerHTML = selectHtml;
+            
             const investorsList = document.getElementById('investorsList');
             if(investorsList) {
                 investorsList.innerHTML = allInvestors.map(i=>`<tr>
-                    <td><strong>${escapeHtml(i.full_name)}</strong></td>
+                    <td><strong>${escapeHtml(i.full_name)}</strong><br><small>${i.email}</small></td>
                     <td>${i.email}</td>
                     <td>${i.phone||'-'}</td>
                     <td>${i.city||'-'}</td>
-                    <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
-                    <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
                     <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
+                    <td>Rs.${(i.profit_balance||0).toLocaleString()}</td>
+                    <td>Rs.${(i.referral_balance||0).toLocaleString()}</td>
+                    <td><span class="status-badge ${i.kyc_status === 'approved' ? 'status-active' : i.kyc_status === 'pending' ? 'status-kyc-pending' : 'status-pending'}">${i.kyc_status || 'Not Submitted'}</span></td>
+                    <td><span class="status-badge ${i.is_blocked ? 'status-pending' : 'status-active'}">${i.is_blocked ? 'Blocked' : 'Active'}</span></td>
                     <td><span class="perm-badge ${i.chat_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.chat_enabled !== false ? 'ON' : 'OFF'}</span></td>
-                    <td><span class="perm-badge ${i.voice_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.voice_enabled !== false ? 'ON' : 'OFF'}</span></td>
-                    <td><span class="perm-badge ${i.video_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.video_enabled !== false ? 'ON' : 'OFF'}</span></td>
                     <td class="action-buttons">
-                        <button onclick="toggleInvestorPermission('${i.id}', 'chat', ${i.chat_enabled !== false})" class="btn-warning">Toggle Chat</button>
+                        <button onclick="toggleInvestorBlock('${i.id}', ${!i.is_blocked})" class="btn-warning">${i.is_blocked ? 'Unblock' : 'Block'}</button>
+                        <button onclick="resetInvestorPassword('${i.id}', '${i.email}')" class="btn-info">Reset Pwd</button>
                         <button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
-                    </td>
+                     </div>
                 </tr>`).join('');
             }
         }
         
-        window.toggleInvestorPermission = async function(investorId, permission, currentValue) {
-            const update = {};
-            update[`${permission}_enabled`] = !currentValue;
+        window.toggleInvestorBlock = async function(investorId, block) {
+            if (await confirmAction(`${block ? 'Block' : 'Unblock'} this investor?`, 'Confirm')) {
+                try {
+                    await supabaseClient.from('investors').update({ is_blocked: block }).eq('id', investorId);
+                    await logActivity('user_block', `${block ? 'Blocked' : 'Unblocked'} investor ${investorId}`);
+                    showNotification(`Investor ${block ? 'blocked' : 'unblocked'}`, false);
+                    loadInvestors();
+                } catch(e) { showNotification(e.message, true); }
+            }
+        };
+        
+        window.resetInvestorPassword = async function(investorId, email) {
             try {
-                await supabaseClient.from('investors').update(update).eq('id', investorId);
-                showNotification(`${permission} permission toggled`, false);
-                loadInvestors();
-                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+                await supabaseClient.auth.resetPasswordForEmail(email);
+                await logActivity('password_reset', `Reset password for investor ${email}`);
+                showNotification(`Password reset email sent to ${email}`, false);
             } catch(e) { showNotification(e.message, true); }
+        };
+        
+        window.deleteInvestor = async function(id){ 
+            if(await confirmAction('Delete this investor? This will delete all related investments, profits, and withdrawals.', 'Delete Investor')){ 
+                await supabaseClient.from('investments').delete().eq('investor_id',id); 
+                await supabaseClient.from('profits').delete().eq('investor_id',id); 
+                await supabaseClient.from('withdrawals').delete().eq('investor_id',id); 
+                await supabaseClient.from('kyc_requests').delete().eq('investor_id',id);
+                await supabaseClient.from('referrals').delete().or(`referrer_id.eq.${id},referred_id.eq.${id}`);
+                await supabaseClient.from('investors').delete().eq('id',id); 
+                await logActivity('user_delete', `Deleted investor ${id}`);
+                showNotification('Investor deleted', false, 'Deleted'); 
+                await loadInvestors(); 
+                await loadStats();
+                await renderAllCharts();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } 
         };
         
         async function loadBuyers() {
@@ -1790,10 +3535,31 @@
                     <td>${b.email}</td>
                     <td>${b.phone||'-'}</td>
                     <td>${b.address||'-'}</td>
-                    <td><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td>
+                    <td><button onclick="toggleBuyerBlock('${b.id}', ${!b.is_blocked})" class="btn-warning">${b.is_blocked ? 'Unblock' : 'Block'}</button><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td>
                 </tr>`).join('');
             }
         }
+        
+        window.toggleBuyerBlock = async function(buyerId, block) {
+            try {
+                await supabaseClient.from('buyers').update({ is_blocked: block }).eq('id', buyerId);
+                await logActivity('user_block', `${block ? 'Blocked' : 'Unblocked'} buyer ${buyerId}`);
+                showNotification(`Buyer ${block ? 'blocked' : 'unblocked'}`, false);
+                loadBuyers();
+            } catch(e) { showNotification(e.message, true); }
+        };
+        
+        window.deleteBuyer = async function(id){ 
+            if(await confirmAction('Delete this buyer?', 'Delete Buyer')){ 
+                await supabaseClient.from('buyers').delete().eq('id',id); 
+                await logActivity('user_delete', `Deleted buyer ${id}`);
+                showNotification('Buyer deleted', false, 'Deleted'); 
+                await loadBuyers(); 
+                await loadStats();
+                await renderAllCharts();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } 
+        };
         
         async function loadProducts() {
             if(!supabaseClient) return;
@@ -1837,7 +3603,7 @@
                     <td>${p.investors?.full_name||'-'}</td>
                     <td>Rs.${(p.amount||0).toLocaleString()}</td>
                     <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
-                    <td>${p.profit_percentage||10}%</td>
+                    <td>${p.profit_percentage||10}%</span></div></td>
                     <td><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td>
                 </tr>`).join('');
             }
@@ -1855,7 +3621,7 @@
                     <td>${req.payment_method || '-'}</td>
                     <td>${req.transaction_id || '-'}</td>
                     <td>${req.screenshot ? `<img src="${req.screenshot}" class="screenshot-thumb" onclick="window.open('${req.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</td>
-                    <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></td>
+                    <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></div></td>
                 </tr>`).join('');
             }
         }
@@ -1876,7 +3642,7 @@
                 <td><small>${w.account_details || '-'}</small></td>
                 <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
                 <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
-                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
+                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`} </div></td>
             </tr>`).join('');
         }
         
@@ -1930,11 +3696,16 @@
             try {
                 const { error } = await supabaseClient.from('investors').insert([{ 
                     id: crypto.randomUUID(), full_name: name, email, phone, city, 
-                    total_investment: investment, total_profit: 0, available_balance: investment,
+                    total_investment: investment, total_profit: 0, available_balance: investment, profit_balance: 0, referral_balance: 0,
                     chat_enabled: true, voice_enabled: true, video_enabled: true,
+                    kyc_status: 'not_submitted',
+                    is_blocked: false,
                     created_at: new Date().toISOString() 
                 }]);
                 if(error) throw error;
+                
+                await logActivity('user_create', `Added new investor: ${name} (${email})`);
+                
                 showNotification('Investor added successfully!', false, 'Added');
                 document.getElementById('newInvestorName').value = ''; 
                 document.getElementById('newInvestorEmail').value = ''; 
@@ -1956,9 +3727,13 @@
                 const { error } = await supabaseClient.from('buyers').insert([{ 
                     id: crypto.randomUUID(), full_name: name, email, phone, address,
                     chat_enabled: true, voice_enabled: true, video_enabled: true,
+                    is_blocked: false,
                     created_at: new Date().toISOString() 
                 }]);
                 if(error) throw error;
+                
+                await logActivity('user_create', `Added new buyer: ${name} (${email})`);
+                
                 showNotification('Buyer added successfully!', false, 'Added');
                 document.getElementById('newBuyerName').value = ''; 
                 document.getElementById('newBuyerEmail').value = ''; 
@@ -1982,6 +3757,9 @@
                     stock_quantity: stock, is_active: true, created_at: new Date().toISOString() 
                 }]);
                 if(error) throw error;
+                
+                await logActivity('product_add', `Added new product: ${name}`);
+                
                 showNotification('Product added successfully!', false, 'Added');
                 document.getElementById('newProductName').value = '';
                 document.getElementById('newProductPrice').value = '';
@@ -1992,48 +3770,11 @@
             } catch(e) { showNotification(e.message, true); }
         };
         
-        window.deleteInvestor = async function(id){ 
-            if(await confirmAction('Delete this investor?', 'Delete Investor')){ 
-                await supabaseClient.from('investments').delete().eq('investor_id',id); 
-                await supabaseClient.from('profits').delete().eq('investor_id',id); 
-                await supabaseClient.from('withdrawals').delete().eq('investor_id',id); 
-                await supabaseClient.from('investors').delete().eq('id',id); 
-                showNotification('Investor deleted', false, 'Deleted'); 
-                await loadInvestors(); 
-                await loadStats();
-                await renderAllCharts();
-                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
-            } 
-        };
-        
-        window.deleteBuyer = async function(id){ 
-            if(await confirmAction('Delete this buyer?', 'Delete Buyer')){ 
-                await supabaseClient.from('buyers').delete().eq('id',id); 
-                showNotification('Buyer deleted', false, 'Deleted'); 
-                await loadBuyers(); 
-                await loadStats();
-                await renderAllCharts();
-                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
-            } 
-        };
-        
-        window.deleteProduct = async function(id){ 
-            if(await confirmAction('Delete this product?', 'Delete Product')){ 
-                await supabaseClient.from('products').update({is_active:false}).eq('id',id); 
-                showNotification('Product deleted', false, 'Deleted'); 
-                await loadProducts(); 
-                await loadStats();
-                await renderAllCharts();
-            } 
-        };
-        
-        // UPDATED: Investment approval with mandatory screenshot validation
         window.approveInvestment = async function(id, amount, investorId) { 
             const { data: invReq } = await supabaseClient.from('investments').select('screenshot, notes, payment_method, transaction_id').eq('id', id).single();
             
-            // Check if screenshot exists
             if (!invReq?.screenshot) {
-                const warningResult = await Swal.fire({
+                const result = await Swal.fire({
                     title: '⚠️ Screenshot Required!',
                     html: `<p><strong>This investment request does not have a payment screenshot.</strong></p>
                            <p>Please ask the investor to provide payment proof before approving.</p>
@@ -2086,6 +3827,16 @@
             
             if(result.isConfirmed) { 
                 await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
+                
+                // Update investor balance
+                const { data: investor } = await supabaseClient.from('investors').select('available_balance, total_investment').eq('id', investorId).single();
+                await supabaseClient.from('investors').update({ 
+                    available_balance: (investor?.available_balance || 0) + amount,
+                    total_investment: (investor?.total_investment || 0) + amount
+                }).eq('id', investorId);
+                
+                await logActivity('investment_approve', `Approved investment of Rs. ${amount} for investor ${investorId}`);
+                
                 showNotification('Investment approved! Payment screenshot verified.', false, 'Approved'); 
                 await loadInvestmentRequests(); 
                 await loadInvestmentHistory(); 
@@ -2119,12 +3870,38 @@
         };
         
         window.approveWithdrawal = async function(id, amount, investorId){ 
+            // Check daily withdrawal limit
+            const today = new Date().toISOString().split('T')[0];
+            const { data: todayWithdrawals } = await supabaseClient
+                .from('withdrawals')
+                .select('amount')
+                .eq('investor_id', investorId)
+                .eq('status', 'approved')
+                .gte('request_date', today);
+            
+            const todayTotal = todayWithdrawals?.reduce((sum, w) => sum + (w.amount || 0), 0) || 0;
+            const dailyLimit = 50000; // Rs. 50,000 daily limit
+            
+            if (todayTotal + amount > dailyLimit) {
+                Swal.fire({
+                    title: 'Daily Limit Exceeded',
+                    html: `<p>Investor has already withdrawn Rs. ${todayTotal.toLocaleString()} today.</p>
+                           <p>Daily limit is Rs. ${dailyLimit.toLocaleString()}.</p>
+                           <p>Requested amount: Rs. ${amount.toLocaleString()}</p>`,
+                    icon: 'warning',
+                    confirmButtonColor: '#E8B13C',
+                    background: '#1a3d33', color: '#fff'
+                });
+                return;
+            }
+            
             openWithdrawalScreenshotModal(id, amount, investorId);
         };
         
         window.rejectWithdrawal = async function(id){ 
             if(!await confirmAction('Reject this withdrawal request?', 'Reject Withdrawal')) return;
             await supabaseClient.from('withdrawals').update({ status: 'rejected' }).eq('id', id); 
+            await logActivity('withdrawal_reject', `Rejected withdrawal #${id}`);
             showNotification('Withdrawal rejected', false, 'Rejected'); 
             await loadWithdrawals(); 
         };
@@ -2217,25 +3994,6 @@
             }
         };
         
-        window.uploadProductImage = async function(id) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = async (ev) => {
-                        await supabaseClient.from('products').update({ image_url: ev.target.result }).eq('id', id);
-                        showNotification('Image uploaded!', false, 'Uploaded');
-                        await loadProducts();
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        };
-        
         window.addInvestment = async function() { 
             const investorId = document.getElementById('investorSelect').value;
             const amount = parseFloat(document.getElementById('invAmount').value);
@@ -2256,6 +4014,16 @@
                     status: 'active' 
                 }]); 
                 if(error) throw error;
+                
+                // Update investor balance
+                const { data: investor } = await supabaseClient.from('investors').select('available_balance, total_investment').eq('id', investorId).single();
+                await supabaseClient.from('investors').update({ 
+                    available_balance: (investor?.available_balance || 0) + amount,
+                    total_investment: (investor?.total_investment || 0) + amount
+                }).eq('id', investorId);
+                
+                await logActivity('investment_add', `Manually added investment of Rs. ${amount} for investor ${investorId}`);
+                
                 showNotification('Investment added successfully!', false, 'Added'); 
                 document.getElementById('invAmount').value = ''; 
                 await loadInvestmentHistory(); 
@@ -2284,6 +4052,16 @@
                     paid_date: new Date().toISOString().split('T')[0] 
                 }]); 
                 if(error) throw error;
+                
+                // Update investor profit balance
+                const { data: investor } = await supabaseClient.from('investors').select('profit_balance, total_profit').eq('id', investorId).single();
+                await supabaseClient.from('investors').update({ 
+                    profit_balance: (investor?.profit_balance || 0) + amount,
+                    total_profit: (investor?.total_profit || 0) + amount
+                }).eq('id', investorId);
+                
+                await logActivity('profit_add', `Manually added profit of Rs. ${amount} for investor ${investorId}`);
+                
                 showNotification('Profit added successfully!', false, 'Added'); 
                 document.getElementById('profitAmount').value = ''; 
                 await loadProfitHistory(); 
@@ -2298,7 +4076,7 @@
             const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
             const investorsList = document.getElementById('investorsList');
             if(investorsList) {
-                investorsList.innerHTML = filtered.map(i=>`<td>...</td>`).join('');
+                investorsList.innerHTML = filtered.map(i=>`<tr>...</td>`).join('');
             }
         };
         
@@ -2327,7 +4105,7 @@
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
             if (filtered.length === 0) { 
-                                    withdrawalsList.innerHTML = '<td><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; 
+                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</span></div></td>'; 
                 return; 
             }
             withdrawalsList.innerHTML = filtered.map(w => `<tr>
@@ -2339,7 +4117,7 @@
                 <td><small>${w.account_details || '-'}</small></td>
                 <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
                 <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
-                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
+                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</div></td>
             </tr>`).join('');
         };
         
@@ -2354,7 +4132,7 @@
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
             if (filtered.length === 0) { 
-                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; 
+                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div><tr>'; 
                 return; 
             }
             ordersList.innerHTML = filtered.map(o => `<tr>
@@ -2384,10 +4162,97 @@
             }); 
         };
         
+        // ========== CREATE NECESSARY TABLES IN SUPABASE ==========
+        async function createRequiredTables() {
+            console.log('Please ensure the following tables exist in Supabase:');
+            console.log('1. admin_activity_logs - for tracking admin actions');
+            console.log('2. balance_audit_trail - for wallet balance adjustments');
+            console.log('3. referrals - for affiliate system');
+            console.log('4. kyc_requests - for KYC verification');
+            console.log('5. announcements - for system announcements');
+            console.log('6. notifications - for user notifications');
+            console.log('7. payment_methods - for payment methods');
+            console.log('8. admin_users - for admin user management');
+            console.log('9. system_settings - for system configuration');
+            console.log('10. chat_messages - for live chat (already exists)');
+            console.log('11. chat_typing - for typing indicators');
+            
+            // Add columns to investors table if needed
+            try {
+                await supabaseClient.from('investors').select('profit_balance').limit(1);
+            } catch(e) {
+                console.log('Please add column: profit_balance to investors table');
+            }
+            try {
+                await supabaseClient.from('investors').select('referral_balance').limit(1);
+            } catch(e) {
+                console.log('Please add column: referral_balance to investors table');
+            }
+            try {
+                await supabaseClient.from('investors').select('kyc_status').limit(1);
+            } catch(e) {
+                console.log('Please add column: kyc_status to investors table');
+            }
+            try {
+                await supabaseClient.from('investors').select('is_blocked').limit(1);
+            } catch(e) {
+                console.log('Please add column: is_blocked to investors table');
+            }
+        }
+        
         // Initialize Supabase
         document.addEventListener('DOMContentLoaded', function() {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            checkAuth();
+            
+            supabaseClient.auth.getSession().then(async ({ data: { session } }) => {
+                if (session?.user) {
+                    currentAdminUser = session.user;
+                    
+                    // Check if user is admin
+                    const { data: adminData } = await supabaseClient.from('admin_users').select('role').eq('id', session.user.id).single();
+                    if (adminData) {
+                        currentAdminRole = adminData.role;
+                        document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
+                        
+                        // Restrict access based on role
+                        if (currentAdminRole === 'staff') {
+                            document.querySelectorAll('.nav-tab').forEach(tab => {
+                                const restrictedTabs = ['adminUsers', 'settings', 'activityLogs'];
+                                if (restrictedTabs.some(r => tab.innerText.toLowerCase().includes(r))) {
+                                    tab.style.display = 'none';
+                                }
+                            });
+                        }
+                    }
+                    
+                    await checkAuth();
+                    await createRequiredTables();
+                    
+                    // Load active announcement banner
+                    const now = new Date().toISOString();
+                    const { data: bannerAnnouncement } = await supabaseClient
+                        .from('announcements')
+                        .select('*')
+                        .eq('is_active', true)
+                        .eq('type', 'banner')
+                        .or(`schedule_date.is.null,schedule_date.lte.${now}`)
+                        .or(`expiry_date.is.null,expiry_date.gte.${now}`)
+                        .limit(1);
+                    
+                    if (bannerAnnouncement && bannerAnnouncement.length > 0) {
+                        document.getElementById('announcementText').innerHTML = `<i class="fas fa-bullhorn"></i> ${escapeHtml(bannerAnnouncement[0].title)}: ${escapeHtml(bannerAnnouncement[0].message)}`;
+                        document.getElementById('announcementBanner').classList.add('active');
+                    }
+                    
+                    // Check for popup announcements
+                    setTimeout(() => showActivePopup(), 2000);
+                    
+                    // Log admin login
+                    await logActivity('admin_login', 'Admin logged in');
+                } else {
+                    window.location.href = 'admin-auth.html';
+                }
+            });
             
             setTimeout(() => {
                 if (window.adminChatSystem) {
@@ -2396,7 +4261,7 @@
             }, 2000);
         });
         
-        // ========== ADMIN CHAT SYSTEM (Preserved) ==========
+        // ========== ADMIN CHAT SYSTEM (Preserved from original) ==========
         (function() {
             window.adminChatSystem = {
                 supabaseClient: null,
@@ -2426,9 +4291,10 @@
                 
                 getUserPermissions: async function(userId, userType) {
                     const table = userType === 'investor' ? 'investors' : 'buyers';
-                    const { data, error } = await this.supabaseClient.from(table).select('chat_enabled, voice_enabled, video_enabled').eq('id', userId).single();
-                    if (error || !data) return { chatEnabled: true, voiceEnabled: true, videoEnabled: true };
-                    return { chatEnabled: data.chat_enabled !== false, voiceEnabled: data.voice_enabled !== false, videoEnabled: data.video_enabled !== false };
+                    const { data, error } = await this.supabaseClient.from(table).select('chat_enabled, voice_enabled, video_enabled, is_blocked').eq('id', userId).single();
+                    if (error || !data) return { chatEnabled: true, voiceEnabled: true, videoEnabled: true, isBlocked: false };
+                    if (data.is_blocked) return { chatEnabled: false, voiceEnabled: false, videoEnabled: false, isBlocked: true };
+                    return { chatEnabled: data.chat_enabled !== false, voiceEnabled: data.voice_enabled !== false, videoEnabled: data.video_enabled !== false, isBlocked: false };
                 },
                 
                 toggleUserChat: async function(userId, userType, enabled) {
@@ -2473,11 +4339,19 @@
                 
                 loadUsers: async function() {
                     try {
-                        const { data: investors } = await this.supabaseClient.from('investors').select('id, full_name, email, chat_enabled, voice_enabled, video_enabled');
-                        const { data: buyers } = await this.supabaseClient.from('buyers').select('id, full_name, email, chat_enabled, voice_enabled, video_enabled');
+                        const { data: investors } = await this.supabaseClient.from('investors').select('id, full_name, email, chat_enabled, voice_enabled, video_enabled, is_blocked');
+                        const { data: buyers } = await this.supabaseClient.from('buyers').select('id, full_name, email, chat_enabled, voice_enabled, video_enabled, is_blocked');
                         this.users = [];
-                        if (investors) investors.forEach(inv => this.users.push({ id: inv.id, name: inv.full_name, email: inv.email, type: 'investor', avatar: 'fa-chart-line', role: '💰 Investor', chatEnabled: inv.chat_enabled !== false, voiceEnabled: inv.voice_enabled !== false, videoEnabled: inv.video_enabled !== false }));
-                        if (buyers) buyers.forEach(buyer => this.users.push({ id: buyer.id, name: buyer.full_name, email: buyer.email, type: 'buyer', avatar: 'fa-shopping-cart', role: '🛒 Buyer', chatEnabled: buyer.chat_enabled !== false, voiceEnabled: buyer.voice_enabled !== false, videoEnabled: buyer.video_enabled !== false }));
+                        if (investors) investors.forEach(inv => {
+                            if (!inv.is_blocked) {
+                                this.users.push({ id: inv.id, name: inv.full_name, email: inv.email, type: 'investor', avatar: 'fa-chart-line', role: '💰 Investor', chatEnabled: inv.chat_enabled !== false, voiceEnabled: inv.voice_enabled !== false, videoEnabled: inv.video_enabled !== false });
+                            }
+                        });
+                        if (buyers) buyers.forEach(buyer => {
+                            if (!buyer.is_blocked) {
+                                this.users.push({ id: buyer.id, name: buyer.full_name, email: buyer.email, type: 'buyer', avatar: 'fa-shopping-cart', role: '🛒 Buyer', chatEnabled: buyer.chat_enabled !== false, voiceEnabled: buyer.voice_enabled !== false, videoEnabled: buyer.video_enabled !== false });
+                            }
+                        });
                         this.renderUserList();
                         this.loadLastMessages();
                     } catch (error) { console.error('Error loading users:', error); }
