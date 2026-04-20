@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Sohrab Industries | Enterprise Admin Control System</title>
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts & Icons with fallback -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -17,26 +17,24 @@
         ::-webkit-scrollbar-track { background: #1e2a28; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #E8B13C; border-radius: 10px; }
         .admin-container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
-        /* header + cards */
-        .admin-header { background: rgba(10, 35, 28, 0.85); backdrop-filter: blur(12px); border-radius: 32px; padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 28px; border: 1px solid rgba(232,177,60,0.3); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
-        .admin-header h1 { font-size: 1.8rem; font-family: 'Playfair Display', serif; background: linear-gradient(135deg, #fff, #E8B13C); -webkit-background-clip: text; background-clip: text; color: transparent; display: flex; gap: 12px; align-items: center; }
-        .logout-btn { background: linear-gradient(135deg, #dc3545, #9b1f2c); border: none; padding: 8px 28px; border-radius: 40px; font-weight: 700; cursor: pointer; transition: all 0.2s; color: white; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .stat-card { background: rgba(20, 45, 38, 0.85); backdrop-filter: blur(8px); border-radius: 24px; padding: 1rem; text-align: center; cursor: pointer; border: 1px solid rgba(232,177,60,0.25); transition: all 0.25s ease; }
-        .stat-card:hover { transform: translateY(-5px); border-color: #E8B13C; background: rgba(30, 65, 55, 0.9); }
-        .stat-number { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #E8B13C, #ffde9e); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(0,0,0,0.35); backdrop-filter: blur(8px); padding: 8px 18px; border-radius: 60px; margin-bottom: 25px; border: 1px solid rgba(232,177,60,0.2); }
-        .nav-tab { background: transparent; border: none; padding: 8px 22px; border-radius: 40px; font-weight: 600; color: #ddd; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .admin-header { background: rgba(10, 35, 28, 0.85); backdrop-filter: blur(12px); border-radius: 32px; padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 28px; border: 1px solid rgba(232,177,60,0.3); }
+        .admin-header h1 { font-size: 1.8rem; font-family: 'Playfair Display', serif; background: linear-gradient(135deg, #fff, #E8B13C); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .logout-btn { background: linear-gradient(135deg, #dc3545, #9b1f2c); border: none; padding: 8px 28px; border-radius: 40px; font-weight: 700; cursor: pointer; color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: rgba(20, 45, 38, 0.85); backdrop-filter: blur(8px); border-radius: 24px; padding: 1rem; text-align: center; cursor: pointer; border: 1px solid rgba(232,177,60,0.25); transition: 0.2s; }
+        .stat-card:hover { transform: translateY(-5px); border-color: #E8B13C; }
+        .stat-number { font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #E8B13C, #ffde9e); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .nav-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(0,0,0,0.35); padding: 8px 18px; border-radius: 60px; margin-bottom: 25px; }
+        .nav-tab { background: transparent; border: none; padding: 8px 22px; border-radius: 40px; font-weight: 600; color: #ddd; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .nav-tab.active, .nav-tab:hover { background: #E8B13C; color: #0a1f1a; }
-        .admin-section { background: rgba(15, 35, 28, 0.88); backdrop-filter: blur(10px); border-radius: 28px; padding: 1.8rem 1.2rem; display: none; border: 1px solid rgba(232,177,60,0.2); animation: fadeSlide 0.3s ease; }
+        .admin-section { background: rgba(15, 35, 28, 0.88); backdrop-filter: blur(10px); border-radius: 28px; padding: 1.8rem 1.2rem; display: none; border: 1px solid rgba(232,177,60,0.2); }
         .admin-section.active { display: block; }
-        @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        .section-title { font-size: 1.6rem; font-family: 'Playfair Display'; border-left: 5px solid #E8B13C; padding-left: 18px; margin-bottom: 25px; background: linear-gradient(135deg, #E8B13C, #f3d572); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .form-card { background: rgba(0,0,0,0.35); border-radius: 24px; padding: 24px; margin-bottom: 32px; border: 1px solid rgba(232,177,60,0.2); }
+        .section-title { font-size: 1.5rem; font-family: 'Playfair Display'; border-left: 5px solid #E8B13C; padding-left: 18px; margin-bottom: 25px; background: linear-gradient(135deg, #E8B13C, #f3d572); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .form-card { background: rgba(0,0,0,0.35); border-radius: 24px; padding: 24px; margin-bottom: 32px; }
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 18px; margin-bottom: 20px; }
-        .form-group label { color: #E8B13C; font-weight: 600; font-size: 0.8rem; margin-bottom: 5px; display: block; }
+        .form-group label { color: #E8B13C; font-weight: 600; font-size: 0.8rem; display: block; margin-bottom: 5px; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(232,177,60,0.4); border-radius: 20px; padding: 10px 16px; color: white; }
-        .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); border: none; padding: 10px 26px; border-radius: 40px; font-weight: 700; color: #0a1f1a; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #E8B13C, #c99b2e); border: none; padding: 10px 26px; border-radius: 40px; font-weight: 700; color: #0a1f1a; cursor: pointer; }
         .btn-success { background: #1e7e5e; color: white; border: none; padding: 6px 14px; border-radius: 30px; cursor: pointer; }
         .btn-danger { background: #dc3545; color: white; border: none; padding: 6px 14px; border-radius: 30px; cursor: pointer; }
         .btn-warning { background: #d4a017; color: #111; border: none; padding: 6px 14px; border-radius: 30px; cursor: pointer; }
@@ -50,17 +48,14 @@
         .screenshot-thumb { max-width: 50px; border-radius: 8px; cursor: pointer; border: 1px solid gold; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; z-index: 2000; }
         .modal.active { display: flex; }
-        .modal-content { background: linear-gradient(145deg, #1a3d33, #0f2a22); border-radius: 32px; max-width: 600px; width: 90%; padding: 28px; border: 1px solid rgba(232,177,60,0.4); }
+        .modal-content { background: linear-gradient(145deg, #1a3d33, #0f2a22); border-radius: 32px; max-width: 600px; width: 90%; padding: 28px; }
         .charts-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px,1fr)); gap: 1.5rem; margin-bottom: 2rem; }
         .chart-card { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 1rem; }
-        .batch-row { cursor: pointer; transition: 0.1s; }
-        .batch-row:hover { background: rgba(232,177,60,0.1); }
-        .progress-tracker { display: flex; gap: 4px; background: #0f2a22; border-radius: 30px; padding: 3px 8px; }
-        .progress-step { font-size: 0.6rem; padding: 3px 6px; border-radius: 20px; background: #2a4a3e; }
-        .progress-step.completed { background: #1e7e5e; color: white; }
-        .progress-step.active { background: #d4a017; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 0.7; } 100% { opacity: 1; } }
-        /* chat styles compact */
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 10000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s; }
+        .loading-overlay.hide { opacity: 0; pointer-events: none; }
+        .loading-container { background: linear-gradient(145deg, #1a3d33, #0f2a22); border-radius: 28px; padding: 40px; text-align: center; min-width: 320px; border: 1px solid rgba(232,177,60,0.3); }
+        .progress-bar-container { background: rgba(255,255,255,0.1); border-radius: 50px; height: 12px; margin: 20px 0; overflow: hidden; }
+        .progress-bar-fill { background: linear-gradient(90deg, #E8B13C, #ffd966); width: 0%; height: 100%; transition: width 0.3s; }
         .chat-container { display: flex; height: 70vh; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; }
         .chat-user-list { width: 320px; background: rgba(10,35,28,0.9); border-right: 1px solid rgba(232,177,60,0.2); overflow-y: auto; }
         .chat-user-item { display: flex; align-items: center; padding: 12px; gap: 12px; border-bottom: 1px solid rgba(232,177,60,0.1); cursor: pointer; }
@@ -74,21 +69,15 @@
         .message.sent .message-bubble { background: #E8B13C; color: #0a1f1a; }
         .chat-input-area { display: flex; gap: 10px; padding: 12px; background: rgba(0,0,0,0.5); border-top: 1px solid rgba(232,177,60,0.2); }
         .chat-input { flex: 1; background: rgba(255,255,255,0.1); border: none; border-radius: 40px; padding: 12px 18px; color: white; }
-        .user-controls { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-        .toggle-switch { position: relative; width: 44px; height: 22px; display: inline-block; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #dc3545; border-radius: 34px; transition: 0.2s; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: white; border-radius: 50%; transition: 0.2s; }
-        input:checked + .slider { background-color: #1e7e5e; }
-        input:checked + .slider:before { transform: translateX(22px); }
         @media (max-width: 700px) { .chat-user-list { width: 260px; } .message { max-width: 85%; } }
     </style>
 </head>
 <body>
+<div id="loadingOverlay" class="loading-overlay"><div class="loading-container"><div class="progress-bar-container"><div class="progress-bar-fill" id="progressFill"></div></div><div id="loadingPercent">0%</div><div id="loadingStatus">Initializing...</div></div></div>
 <div class="admin-container">
     <div class="admin-header"><h1><i class="fas fa-crown"></i> Sohrab Industries · Command Center</h1><div><span id="adminEmail"></span> <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Exit</button></div></div>
     <div class="stats-grid">
-        <div class="stat-card" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><div class="stat-number" id="totalInvestors">0</div><div>Investors</div></div>
+        <div class="stat-card" onclick="showSection('dashboard')"><div class="stat-number" id="totalInvestors">0</div><div>Investors</div></div>
         <div class="stat-card" onclick="showSection('batches')"><div class="stat-number" id="totalBatches">0</div><div>Batches</div></div>
         <div class="stat-card" onclick="showSection('investmentRequests')"><div class="stat-number" id="pendingRequests">0</div><div>Pending Inv</div></div>
         <div class="stat-card" onclick="showSection('investments')"><div class="stat-number" id="totalInvestments">Rs 0</div><div>Total Invest</div></div>
@@ -108,85 +97,231 @@
         <button class="nav-tab" onclick="showSection('orders')"><i class="fas fa-truck"></i> Orders</button>
         <button class="nav-tab" onclick="showSection('livechat')"><i class="fas fa-comments"></i> Live Chat</button>
     </div>
-    <!-- DASHBOARD -->
-    <div id="dashboardSection" class="admin-section active"><h2 class="section-title">📊 Real-time Analytics</h2><div class="charts-dashboard"><canvas id="revenueChart"></canvas><canvas id="batchStatusChart"></canvas></div><div class="table-container"><h3>Recent Activities</h3><table><thead><tr><th>Event</th><th>Detail</th><th>Time</th></tr></thead><tbody id="recentLogs"></tbody></table></div></div>
-    <!-- BATCHES (Investment Batches) -->
-    <div id="batchesSection" class="admin-section"><h2 class="section-title">📦 Investment Batches</h2><div class="form-card"><div class="form-row"><div class="form-group"><label>Batch Name</label><input id="batchName" placeholder="Winter 2025"></div><div class="form-group"><label>Target Investment (Rs)</label><input id="batchTarget" type="number"></div><div class="form-group"><label>Profit %</label><input id="batchProfitPct" value="50"></div><div class="form-group"><label>Slots</label><input id="batchSlots" type="number"></div></div><button class="btn-primary" onclick="createBatch()">Create Batch</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Target</th><th>Filled</th><th>Status</th><th>Net Profit</th><th>Investor Share</th><th>Actions</th></tr></thead><tbody id="batchesList"></tbody></table></div></div>
-    <!-- INVESTORS -->
-    <div id="investorsSection" class="admin-section"><h2 class="section-title">👥 Investors</h2><div class="form-card"><div class="form-row"><input id="invName" placeholder="Full name"><input id="invEmail" placeholder="Email"><input id="invPhone" placeholder="Phone"></div><button class="btn-primary" onclick="addInvestor()">Add Investor</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Total Inv</th><th>Profit</th><th>Balance</th><th>Chat Perm</th><th>Action</th></tr></thead><tbody id="investorsTable"></tbody></table></div></div>
-    <!-- BUYERS -->
+    <!-- Dashboard -->
+    <div id="dashboardSection" class="admin-section active"><h2 class="section-title">📊 Analytics</h2><div class="charts-dashboard"><canvas id="revenueChart"></canvas><canvas id="batchChart"></canvas></div><div class="table-container"><h3>Recent Activities</h3><table><thead><tr><th>Event</th><th>Detail</th><th>Time</th></tr></thead><tbody id="recentLogs"></tbody></table></div></div>
+    <!-- Batches -->
+    <div id="batchesSection" class="admin-section"><h2 class="section-title">📦 Batches</h2><div class="form-card"><div class="form-row"><div class="form-group"><label>Batch Name</label><input id="batchName" placeholder="Winter 2025"></div><div class="form-group"><label>Target (Rs)</label><input id="batchTarget" type="number"></div><div class="form-group"><label>Profit %</label><input id="batchProfitPct" value="50"></div><div class="form-group"><label>Slots</label><input id="batchSlots" type="number"></div></div><button class="btn-primary" onclick="createBatch()">Create Batch</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Target</th><th>Filled</th><th>Status</th><th>Net Profit</th><th>Investor Share</th><th>Actions</th></tr></thead><tbody id="batchesList"></tbody></table></div></div>
+    <!-- Investors -->
+    <div id="investorsSection" class="admin-section"><h2 class="section-title">👥 Investors</h2><div class="form-card"><div class="form-row"><input id="invName" placeholder="Full name"><input id="invEmail" placeholder="Email"></div><button class="btn-primary" onclick="addInvestor()">Add Investor</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Balance</th><th>Profit</th><th>Action</th></tr></thead><tbody id="investorsTable"></tbody></table></div></div>
+    <!-- Buyers -->
     <div id="buyersSection" class="admin-section"><h2 class="section-title">🛒 Buyers</h2><div class="form-card"><div class="form-row"><input id="buyerName" placeholder="Name"><input id="buyerEmail" placeholder="Email"></div><button class="btn-primary" onclick="addBuyer()">Add Buyer</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Action</th></tr></thead><tbody id="buyersTable"></tbody></table></div></div>
-    <!-- INVESTMENT REQUESTS -->
-    <div id="investmentRequestsSection" class="admin-section"><h2 class="section-title">⏳ Pending Requests (Screenshot Mandatory)</h2><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Screenshot</th><th>Actions</th></tr></thead><tbody id="requestsTable"></tbody></table></div></div>
-    <!-- INVESTMENTS HISTORY -->
+    <!-- Investment Requests -->
+    <div id="investmentRequestsSection" class="admin-section"><h2 class="section-title">⏳ Pending Requests</h2><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Screenshot</th><th>Actions</th></tr></thead><tbody id="requestsTable"></tbody></table></div></div>
+    <!-- Investments History -->
     <div id="investmentsSection" class="admin-section"><h2 class="section-title">💰 Investment Ledger</h2><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody id="investmentsHistoryTable"></tbody></table></div></div>
-    <!-- PROFITS -->
-    <div id="profitsSection" class="admin-section"><h2 class="section-title">📈 Profit Records</h2><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th></tr></thead><tbody id="profitsTable"></tbody></table></div></div>
-    <!-- WITHDRAWALS -->
-    <div id="withdrawalsSection" class="admin-section"><h2 class="section-title">💸 Withdrawal Approvals</h2><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Proof Screenshot</th><th>Status</th><th>Action</th></tr></thead><tbody id="withdrawalsTable"></tbody></table></div></div>
-    <!-- PRODUCTS & ORDERS -->
+    <!-- Profits -->
+    <div id="profitsSection" class="admin-section"><h2 class="section-title">📈 Profit Records</h2><div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th></tr></thead><tbody id="profitsTable"></tbody></table></div></div>
+    <!-- Withdrawals -->
+    <div id="withdrawalsSection" class="admin-section"><h2 class="section-title">💸 Withdrawals</h2><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Proof</th><th>Status</th><th>Action</th></tr></thead><tbody id="withdrawalsTable"></tbody></table></div></div>
+    <!-- Products -->
     <div id="productsSection" class="admin-section"><h2 class="section-title">💡 Products</h2><div class="form-card"><div class="form-row"><input id="prodName" placeholder="Product"><input id="prodPrice" placeholder="Price"></div><button class="btn-primary" onclick="addProduct()">Add Product</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Price</th><th>Action</th></tr></thead><tbody id="productsTable"></tbody></table></div></div>
-    <div id="ordersSection" class="admin-section"><h2 class="section-title">📦 Orders</h2><div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead><tbody id="ordersTable"></tbody></table></div></div>
-    <!-- LIVE CHAT SECTION -->
-    <div id="livechatSection" class="admin-section"><h2 class="section-title"><i class="fas fa-headset"></i> Live Support Chat</h2><div class="chat-system-toggle" style="display:flex; align-items:center; gap:15px; margin-bottom:15px;"><span>Global Chat System:</span><label class="toggle-switch"><input type="checkbox" id="globalChatToggle" checked><span class="slider"></span></label><span id="chatStatusText">Active</span></div><div class="chat-container"><div class="chat-user-list" id="chatUserListSide"></div><div class="chat-area"><div class="chat-messages-area" id="chatMessagesContainer"><div class="empty-state" style="text-align:center; padding:40px;">Select a user</div></div><div class="chat-input-area"><textarea id="chatMessageInput" rows="1" placeholder="Type message..." class="chat-input"></textarea><button class="btn-primary" onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button></div></div></div></div>
+    <!-- Orders -->
+    <div id="ordersSection" class="admin-section"><h2 class="section-title">📦 Orders</h2><div class="table-container"></table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead><tbody id="ordersTable"></tbody></table></div></div>
+    <!-- Live Chat -->
+    <div id="livechatSection" class="admin-section"><h2 class="section-title"><i class="fas fa-headset"></i> Live Support</h2><div class="chat-container"><div class="chat-user-list" id="chatUserListSide"></div><div class="chat-area"><div class="chat-messages-area" id="chatMessagesContainer"><div class="empty-state" style="text-align:center; padding:40px;">Select a user</div></div><div class="chat-input-area"><textarea id="chatMessageInput" rows="1" placeholder="Type message..." class="chat-input"></textarea><button class="btn-primary" onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button></div></div></div></div>
 </div>
 <!-- Withdrawal Screenshot Modal -->
-<div id="screenshotModal" class="modal"><div class="modal-content"><h3>📎 Upload Payment Proof</h3><input type="file" id="wdProofInput" accept="image/*"><div id="previewImg" style="margin-top:10px;"></div><button class="btn-primary" onclick="confirmWithdrawApproval()">Confirm Approval</button><button class="btn-danger" onclick="closeScreenshotModal()">Cancel</button></div></div>
-
+<div id="screenshotModal" class="modal"><div class="modal-content"><h3>📎 Upload Payment Proof</h3><input type="file" id="wdProofInput" accept="image/*"><div id="previewImg" style="margin-top:10px;"></div><button class="btn-primary" onclick="confirmWithdrawApproval()">Confirm</button><button class="btn-danger" onclick="closeScreenshotModal()">Cancel</button></div></div>
 <script>
-    const supabase = supabase.createClient('https://czvxrjtdintvfjcgblxm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g');
-    let currentUser = null, pendingWithdrawal = null, tempScreenshot = null;
-    let allInvestors = [], allBatches = [], chart1, chart2;
-    // Helper
-    function showNotification(msg, isErr=false){ Swal.fire({ icon: isErr?'error':'success', text: msg, background:'#1a3d33', color:'#fff', confirmButtonColor:'#E8B13C', timer:2000 }); }
-    async function confirmAction(msg){ let res = await Swal.fire({title:'Confirm',text:msg,icon:'question',showCancelButton:true,confirmButtonColor:'#E8B13C'}); return res.isConfirmed; }
-    function showSection(id){ document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active')); document.getElementById(id+'Section').classList.add('active'); document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active')); if(id==='livechat') loadChatUsers(); }
-    function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;});}
-    // Auth
-    async function checkAuth(){ let {data:{user}} = await supabase.auth.getUser(); if(!user || !user.email?.includes('admin')){ window.location.href='admin-auth.html'; return; } document.getElementById('adminEmail').innerHTML = `<i class="fas fa-shield-alt"></i> ${user.email}`; currentUser=user; await refreshAll(); setupRealtime(); }
-    async function handleLogout(){ await supabase.auth.signOut(); window.location.href='index.html'; }
-    // Core Data Load
-    async function refreshAll(){ await loadInvestors(); await loadBatches(); await loadInvestmentRequests(); await loadInvestmentsHistory(); await loadProfits(); await loadWithdrawals(); await loadBuyers(); await loadProducts(); await loadOrders(); await loadStatsAndCharts(); await loadRecentLogs(); }
-    async function loadStatsAndCharts(){ let {count:invCount}=await supabase.from('investors').select('*',{count:'exact',head:true}); let {count:batchCount}=await supabase.from('investment_batches').select('*',{count:'exact',head:true}); let {count:pendReq}=await supabase.from('investments').select('*',{count:'exact',head:true}).eq('status','pending'); let {data:invAmt}=await supabase.from('investments').select('amount').eq('status','active'); let totalInv=invAmt?.reduce((a,b)=>a+(b.amount||0),0)||0; let {data:profSum}=await supabase.from('profits').select('amount'); let totalProf=profSum?.reduce((a,b)=>a+(b.amount||0),0)||0; let {count:pendWd}=await supabase.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending'); document.getElementById('totalInvestors').innerText=invCount||0; document.getElementById('totalBatches').innerText=batchCount||0; document.getElementById('pendingRequests').innerText=pendReq||0; document.getElementById('totalInvestments').innerText=`Rs ${totalInv.toLocaleString()}`; document.getElementById('totalProfit').innerText=`Rs ${totalProf.toLocaleString()}`; document.getElementById('pendingWithdrawals').innerText=pendWd||0; 
-        // charts
-        let {data:batchesStat}=await supabase.from('investment_batches').select('status'); let statusMap={'In Production':0,'Completed':0,'Sold':0,'Profit Distributed':0}; batchesStat?.forEach(b=>{if(statusMap[b.status]!==undefined) statusMap[b.status]++; else statusMap['In Production']++;}); let revData=[totalInv,totalProf]; if(chart1) chart1.destroy(); if(chart2) chart2.destroy(); chart1=new Chart(document.getElementById('revenueChart'),{type:'bar',data:{labels:['Total Investments','Total Profits'],datasets:[{label:'Rs',data:revData,backgroundColor:'#E8B13C'}]}}); chart2=new Chart(document.getElementById('batchStatusChart'),{type:'doughnut',data:{labels:Object.keys(statusMap),datasets:[{data:Object.values(statusMap),backgroundColor:['#d4a017','#1e7e5e','#2c6e9e','#0a5e3a']}]}});
+    const SUPABASE_URL = 'https://czvxrjtdintvfjcgblxm.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInRlc3QiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.placeholder';
+    // Use valid key - the actual key from original
+    const SUPABASE_VALID_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dnhyanRkaW50dmZqY2dibHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTY4NTcsImV4cCI6MjA5MTQ3Mjg1N30.jc8n6tinfkM7LuEMza1N2yX2u-IeVgOfFcaAtwBjX0g';
+    let supabaseClient = null, currentAdminUser = null, pendingWithdrawal = null, tempScreenshot = null, chart1 = null, chart2 = null;
+    let allInvestors = [], allBatches = [], allWithdrawals = [];
+    
+    function updateLoadingProgress(percent, status) {
+        const fill = document.getElementById('progressFill');
+        const percentSpan = document.getElementById('loadingPercent');
+        const statusSpan = document.getElementById('loadingStatus');
+        if (fill) fill.style.width = percent + '%';
+        if (percentSpan) percentSpan.innerText = percent + '%';
+        if (statusSpan) statusSpan.innerText = status;
     }
-    async function loadInvestors(){ let {data}=await supabase.from('investors').select('*').order('created_at',{ascending:false}); allInvestors=data||[]; let html=''; allInvestors.forEach(i=>{html+=`<tr><td>${escapeHtml(i.full_name)}</td><td>${i.email}</td><td>Rs ${(i.total_investment||0).toLocaleString()}</td><td>Rs ${(i.total_profit||0).toLocaleString()}</td><td>Rs ${(i.available_balance||0).toLocaleString()}</td><td><button class="btn-warning" onclick="toggleChatPerm('${i.id}')">${i.chat_enabled!==false?'ON':'OFF'}</button></td><td><button class="btn-danger" onclick="deleteInvestorRow('${i.id}')">Del</button></td></tr>`;}); document.getElementById('investorsTable').innerHTML=html||'<tr><td colspan="7">No investors</td></tr>'; }
-    async function loadBatches(){ let {data}=await supabase.from('investment_batches').select('*').order('created_at',{ascending:false}); allBatches=data||[]; let rows=''; for(let b of allBatches){ let netProfit=(b.sales||0)-(b.expenses||0); let investorShare=netProfit*0.5; rows+=`<tr><td>${escapeHtml(b.batch_name)}</td><td>Rs ${b.investment_amount}</td><td>${b.filled_slots||0}/${b.total_slots}</td><td><span class="status-badge status-active">${b.status||'In Production'}</span></td><td>Rs ${netProfit.toLocaleString()}</td><td>Rs ${investorShare.toLocaleString()}</td><td><button class="btn-success" onclick="distributeProfitBatch('${b.id}',${investorShare})">Distribute 50%</button> <button class="btn-danger" onclick="deleteBatchItem('${b.id}')">Del</button></td></tr>`; } document.getElementById('batchesList').innerHTML=rows||'<tr><td colspan="7">No batches</td></tr>'; }
-    async function createBatch(){ let name=document.getElementById('batchName').value; let target=parseFloat(document.getElementById('batchTarget').value); let profitPct=parseFloat(document.getElementById('batchProfitPct').value); let slots=parseInt(document.getElementById('batchSlots').value); if(!name||!target||!profitPct||!slots) return showNotification('Fill all fields',1); await supabase.from('investment_batches').insert([{id:crypto.randomUUID(),batch_name:name,investment_amount:target,profit_percentage:profitPct,total_slots:slots,filled_slots:0,status:'In Production',is_visible:true,created_at:new Date()}]); showNotification('Batch created'); document.getElementById('batchName').value=''; document.getElementById('batchTarget').value=''; loadBatches(); loadStatsAndCharts();}
-    async function distributeProfitBatch(batchId, profitAmount){ if(profitAmount<=0) return showNotification('No profit to distribute',1); let {data:batch}=await supabase.from('investment_batches').select('*').eq('id',batchId).single(); if(!batch) return; let {data:investments}=await supabase.from('investments').select('*, investors(id,full_name,available_balance)').eq('batch_id',batchId).eq('status','active'); if(!investments?.length) return showNotification('No investors in this batch',1); let totalInv=investments.reduce((s,i)=>s+(i.amount||0),0); for(let inv of investments){ let share=(inv.amount/totalInv)*profitAmount; await supabase.from('profits').insert([{investor_id:inv.investor_id,amount:share,month:new Date().toISOString().slice(0,7),profit_percentage:batch.profit_percentage,paid:true,paid_date:new Date(),batch_id:batchId}]); await supabase.from('investors').update({total_profit:supabase.rpc('increment',{x:share}), available_balance:supabase.rpc('increment',{x:share})}).eq('id',inv.investor_id); } await supabase.from('investment_batches').update({status:'Profit Distributed',profit_credited:true}).eq('id',batchId); showNotification(`Profit Rs ${profitAmount.toLocaleString()} distributed`); loadBatches(); loadInvestors(); loadStatsAndCharts(); }
-    async function deleteBatchItem(id){ if(await confirmAction('Delete batch?')){ await supabase.from('investment_batches').delete().eq('id',id); loadBatches(); } }
-    async function loadInvestmentRequests(){ let {data}=await supabase.from('investments').select('*, investors(full_name)').eq('status','pending'); let html=''; data?.forEach(r=>{html+=`<tr><td>${escapeHtml(r.investors?.full_name)}</td><td>Rs ${r.amount}</td><td>${r.screenshot?`<img src="${r.screenshot}" class="screenshot-thumb" onclick="window.open('${r.screenshot}')">`:'❌ No proof'}</td><td><button class="btn-success" onclick="approveInvestmentReq('${r.id}','${r.investor_id}',${r.amount})">Approve</button> <button class="btn-danger" onclick="rejectInvestmentReq('${r.id}')">Reject</button></td></tr>`;}); document.getElementById('requestsTable').innerHTML=html||'<tr><td colspan="4">No pending requests</td></tr>'; }
-    async function approveInvestmentReq(id,investorId,amount){ let {data:req}=await supabase.from('investments').select('screenshot').eq('id',id).single(); if(!req?.screenshot){ showNotification('Screenshot missing! Cannot approve without payment proof.',1); return; } await supabase.from('investments').update({status:'active'}).eq('id',id); await supabase.from('investors').update({total_investment:supabase.rpc('increment',{x:amount}), available_balance:supabase.rpc('increment',{x:amount})}).eq('id',investorId); showNotification('Investment approved'); loadInvestmentRequests(); loadInvestors(); loadStatsAndCharts(); }
-    async function rejectInvestmentReq(id){ await supabase.from('investments').update({status:'rejected'}).eq('id',id); loadInvestmentRequests(); }
-    async function loadInvestmentsHistory(){ let {data}=await supabase.from('investments').select('*, investors(full_name)').eq('status','active'); let html=''; data?.forEach(i=>{html+=`<tr><td>${escapeHtml(i.investors?.full_name)}</td><td>Rs ${i.amount}</td><td>${new Date(i.investment_date).toLocaleDateString()}</td><td><span class="status-badge status-active">Active</span></td></tr>`;}); document.getElementById('investmentsHistoryTable').innerHTML=html||'</td><td colspan="4">No investments</td></tr>'; }
-    async function loadProfits(){ let {data}=await supabase.from('profits').select('*, investors(full_name)').order('paid_date',{ascending:false}); let html=''; data?.forEach(p=>{html+=`<tr><td>${escapeHtml(p.investors?.full_name)}</td><td>Rs ${p.amount}</td><td>${p.month}</td></tr>`;}); document.getElementById('profitsTable').innerHTML=html||'<tr><td colspan="3">No profits</td></tr>'; }
-    async function loadWithdrawals(){ let {data}=await supabase.from('withdrawals').select('*, investors(full_name)').order('request_date',{ascending:false}); let html=''; data?.forEach(w=>{html+=`<tr><td>${escapeHtml(w.investors?.full_name)}</td><td>Rs ${w.amount}</td><td>${w.approval_screenshot?`<img src="${w.approval_screenshot}" class="screenshot-thumb">`:'pending'}</td><td>${w.status}</td><td>${w.status==='pending'?`<button class="btn-success" onclick="openWithdrawProof('${w.id}',${w.amount},'${w.investor_id}')">Approve</button> <button class="btn-danger" onclick="rejectWithdraw('${w.id}')">Reject</button>`:'-'}</td></tr>`;}); document.getElementById('withdrawalsTable').innerHTML=html||'<tr><td colspan="5">No withdrawals</td></tr>'; }
-    window.openWithdrawProof=function(id,amount,investorId){ pendingWithdrawal={id,amount,investorId}; tempScreenshot=null; document.getElementById('previewImg').innerHTML=''; document.getElementById('screenshotModal').classList.add('active'); document.getElementById('wdProofInput').value=''; document.getElementById('wdProofInput').onchange=e=>{let file=e.target.files[0]; if(file){let reader=new FileReader(); reader.onload=ev=>{tempScreenshot=ev.target.result; document.getElementById('previewImg').innerHTML=`<img src="${ev.target.result}" style="max-width:150px; border-radius:12px;">`;}; reader.readAsDataURL(file);}}; };
-    window.confirmWithdrawApproval=async function(){ if(!tempScreenshot){ showNotification('Please upload screenshot proof',1); return; } await supabase.from('withdrawals').update({status:'approved', approval_screenshot:tempScreenshot, processed_date:new Date()}).eq('id',pendingWithdrawal.id); await supabase.from('investors').update({available_balance:supabase.rpc('decrement',{x:pendingWithdrawal.amount})}).eq('id',pendingWithdrawal.investorId); closeScreenshotModal(); loadWithdrawals(); loadInvestors(); showNotification('Withdrawal approved'); };
-    window.rejectWithdraw=async function(id){ if(await confirmAction('Reject withdrawal?')){ await supabase.from('withdrawals').update({status:'rejected'}).eq('id',id); loadWithdrawals(); } };
+    function hideLoading() { const el = document.getElementById('loadingOverlay'); if(el) { el.classList.add('hide'); setTimeout(()=>{ if(el) el.style.display='none'; }, 500); } }
+    function showNotification(msg, isErr=false){ Swal.fire({ icon: isErr?'error':'success', text: msg, background:'#1a3d33', color:'#fff', confirmButtonColor:'#E8B13C', timer:2000 }); }
+    async function confirmAction(msg){ let res = await Swal.fire({title:'Confirm',text:msg,icon:'question',showCancelButton:true,confirmButtonColor:'#E8B13C',background:'#1a3d33',color:'#fff'}); return res.isConfirmed; }
+    function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>]/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+    
+    window.showSection = function(section){
+        document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+        document.getElementById(section+'Section').classList.add('active');
+        document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+        if(section==='livechat') loadChatUsers();
+    };
+    
+    async function checkAuth(){
+        try {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            if(error || !session){
+                window.location.href = 'admin-auth.html';
+                return false;
+            }
+            currentAdminUser = session.user;
+            document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
+            await refreshAll();
+            return true;
+        } catch(e){ window.location.href = 'admin-auth.html'; return false; }
+    }
+    async function handleLogout(){ await supabaseClient.auth.signOut(); window.location.href='index.html'; }
+    
+    async function refreshAll(){
+        updateLoadingProgress(10,'Loading stats...'); await loadStats();
+        updateLoadingProgress(30,'Loading investors...'); await loadInvestors();
+        updateLoadingProgress(50,'Loading batches...'); await loadBatches();
+        updateLoadingProgress(70,'Loading withdrawals...'); await loadWithdrawals();
+        updateLoadingProgress(85,'Loading requests...'); await loadInvestmentRequests();
+        updateLoadingProgress(95,'Rendering...'); await renderCharts();
+        updateLoadingProgress(100,'Ready'); setTimeout(hideLoading,500);
+    }
+    async function loadStats(){
+        let {count:ic}=await supabaseClient.from('investors').select('*',{count:'exact',head:true});
+        let {count:bc}=await supabaseClient.from('investment_batches').select('*',{count:'exact',head:true});
+        let {count:pr}=await supabaseClient.from('investments').select('*',{count:'exact',head:true}).eq('status','pending');
+        let {data:invAmt}=await supabaseClient.from('investments').select('amount').eq('status','active');
+        let totalInv=invAmt?.reduce((a,b)=>a+(b.amount||0),0)||0;
+        let {data:profSum}=await supabaseClient.from('profits').select('amount');
+        let totalProf=profSum?.reduce((a,b)=>a+(b.amount||0),0)||0;
+        let {count:pendWd}=await supabaseClient.from('withdrawals').select('*',{count:'exact',head:true}).eq('status','pending');
+        document.getElementById('totalInvestors').innerText=ic||0; document.getElementById('totalBatches').innerText=bc||0;
+        document.getElementById('pendingRequests').innerText=pr||0; document.getElementById('totalInvestments').innerHTML=`Rs ${totalInv.toLocaleString()}`;
+        document.getElementById('totalProfit').innerHTML=`Rs ${totalProf.toLocaleString()}`; document.getElementById('pendingWithdrawals').innerText=pendWd||0;
+        let recent=[];
+        let {data:acts}=await supabaseClient.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5);
+        acts?.forEach(a=>recent.push({action:'Investment',detail:`${a.investors?.full_name} invested Rs.${a.amount}`,time:new Date(a.created_at).toLocaleString()}));
+        document.getElementById('recentLogs').innerHTML=recent.map(r=>`<tr><td>${r.action}</td><td>${r.detail}</td><td>${r.time}</td></tr>`).join('')||'<tr><td colspan="3">No activity</td></tr>';
+    }
+    async function loadInvestors(){
+        let {data}=await supabaseClient.from('investors').select('*').order('created_at',{ascending:false});
+        allInvestors=data||[];
+        let html=''; allInvestors.forEach(i=>{html+=`<tr><td>${escapeHtml(i.full_name)}</td><td>${i.email}</td><td>Rs ${(i.available_balance||0).toLocaleString()}</td><td>Rs ${(i.total_profit||0).toLocaleString()}</td><td><button class="btn-danger" onclick="deleteInvestorRow('${i.id}')">Del</button></td></tr>`;});
+        document.getElementById('investorsTable').innerHTML=html||'<tr><td colspan="5">No investors</td></tr>';
+    }
+    async function loadBatches(){
+        let {data}=await supabaseClient.from('investment_batches').select('*').order('created_at',{ascending:false});
+        allBatches=data||[];
+        let rows=''; for(let b of allBatches){ let netProfit=(b.sales||0)-(b.expenses||0); let investorShare=netProfit*0.5;
+            rows+=`<tr><td>${escapeHtml(b.batch_name)}</td><td>Rs ${b.investment_amount}</td><td>${b.filled_slots||0}/${b.total_slots}</td><td><span class="status-badge status-active">${b.status||'In Production'}</span></td><td>Rs ${netProfit.toLocaleString()}</td><td>Rs ${investorShare.toLocaleString()}</td><td><button class="btn-success" onclick="distributeProfit('${b.id}',${investorShare})">Distribute</button> <button class="btn-danger" onclick="deleteBatchItem('${b.id}')">Del</button></td></tr>`;
+        }
+        document.getElementById('batchesList').innerHTML=rows||'<tr><td colspan="7">No batches</td></tr>';
+    }
+    async function loadInvestmentRequests(){
+        let {data}=await supabaseClient.from('investments').select('*, investors(full_name)').eq('status','pending');
+        let html=''; data?.forEach(r=>{html+=`<tr><td>${escapeHtml(r.investors?.full_name)}</td><td>Rs ${r.amount}</td><td>${r.screenshot?`<img src="${r.screenshot}" class="screenshot-thumb" onclick="window.open('${r.screenshot}')">`:'❌'}</td><td><button class="btn-success" onclick="approveInvestment('${r.id}','${r.investor_id}',${r.amount})">Approve</button> <button class="btn-danger" onclick="rejectInvestmentReq('${r.id}')">Reject</button></td></tr>`;});
+        document.getElementById('requestsTable').innerHTML=html||'<tr><td colspan="4">No pending</td></tr>';
+    }
+    async function loadWithdrawals(){
+        let {data}=await supabaseClient.from('withdrawals').select('*, investors(full_name)').order('request_date',{ascending:false});
+        allWithdrawals=data||[];
+        let html=''; data?.forEach(w=>{html+=`<tr><td>${escapeHtml(w.investors?.full_name)}</td><td>Rs ${w.amount}</td><td>${w.approval_screenshot?`<img src="${w.approval_screenshot}" class="screenshot-thumb">`:'pending'}</td><td>${w.status}</td><td>${w.status==='pending'?`<button class="btn-success" onclick="openWithdrawProof('${w.id}',${w.amount},'${w.investor_id}')">Approve</button> <button class="btn-danger" onclick="rejectWithdraw('${w.id}')">Reject</button>`:'-'}</td></tr>`;});
+        document.getElementById('withdrawalsTable').innerHTML=html||'<tr><td colspan="5">No withdrawals</td></tr>';
+    }
+    async function loadBuyers(){
+        let {data}=await supabaseClient.from('buyers').select('*');
+        let html=''; data?.forEach(b=>{html+=`<tr><td>${escapeHtml(b.full_name)}</td><td>${b.email}</td><td><button class="btn-danger" onclick="deleteBuyerRow('${b.id}')">Delete</button></td></tr>`;});
+        document.getElementById('buyersTable').innerHTML=html||'<tr><td colspan="3">No buyers</td></tr>';
+    }
+    async function loadProducts(){
+        let {data}=await supabaseClient.from('products').select('*').eq('is_active',true);
+        let html=''; data?.forEach(p=>{html+=`<tr><td>${escapeHtml(p.name)}</td><td>Rs ${p.price}</td><td><button class="btn-danger" onclick="deleteProductRow('${p.id}')">Del</button></td></tr>`;});
+        document.getElementById('productsTable').innerHTML=html||'<tr><td colspan="3">No products</td></tr>';
+    }
+    async function loadOrders(){
+        let {data}=await supabaseClient.from('orders').select('*').order('order_date',{ascending:false});
+        let html=''; data?.forEach(o=>{html+=`<tr><td>${o.id.slice(0,8)}</td><td>${o.customer_name||'guest'}</td><td>Rs ${o.total_amount}</td><td>${o.status}</td></tr>`;});
+        document.getElementById('ordersTable').innerHTML=html||'<tr><td colspan="4">No orders</td></tr>';
+    }
+    async function renderCharts(){
+        let {data:inv}=await supabaseClient.from('investments').select('amount');
+        let totalInv=inv?.reduce((a,b)=>a+(b.amount||0),0)||0;
+        let {data:prof}=await supabaseClient.from('profits').select('amount');
+        let totalProf=prof?.reduce((a,b)=>a+(b.amount||0),0)||0;
+        let {data:batches}=await supabaseClient.from('investment_batches').select('status');
+        let statusCount={InProduction:0,Completed:0,Sold:0};
+        batches?.forEach(b=>{if(b.status==='In Production')statusCount.InProduction++; else if(b.status==='Completed')statusCount.Completed++; else if(b.status==='Sold')statusCount.Sold++;});
+        if(chart1) chart1.destroy(); if(chart2) chart2.destroy();
+        chart1=new Chart(document.getElementById('revenueChart'),{type:'bar',data:{labels:['Investments','Profits'],datasets:[{label:'Rs',data:[totalInv,totalProf],backgroundColor:'#E8B13C'}]}});
+        chart2=new Chart(document.getElementById('batchChart'),{type:'doughnut',data:{labels:['In Production','Completed','Sold'],datasets:[{data:[statusCount.InProduction,statusCount.Completed,statusCount.Sold],backgroundColor:['#d4a017','#1e7e5e','#2c6e9e']}]}});
+    }
+    async function loadInvestmentHistory(){
+        let {data}=await supabaseClient.from('investments').select('*, investors(full_name)').eq('status','active');
+        let html=''; data?.forEach(i=>{html+=`<tr><td>${escapeHtml(i.investors?.full_name)}</td><td>Rs ${i.amount}</td><td>${new Date(i.investment_date).toLocaleDateString()}</td><td><span class="status-badge status-active">Active</span></td></tr>`;});
+        document.getElementById('investmentsHistoryTable').innerHTML=html||'<tr><td colspan="4">No investments</td></tr>';
+    }
+    async function loadProfits(){
+        let {data}=await supabaseClient.from('profits').select('*, investors(full_name)').order('paid_date',{ascending:false});
+        let html=''; data?.forEach(p=>{html+=`<tr><td>${escapeHtml(p.investors?.full_name)}</td><td>Rs ${p.amount}</td><td>${p.month}</td></tr>`;});
+        document.getElementById('profitsTable').innerHTML=html||'<tr><td colspan="3">No profits</td></tr>';
+    }
+    // Actions
+    window.createBatch = async function(){
+        let name=document.getElementById('batchName').value, target=parseFloat(document.getElementById('batchTarget').value), profitPct=parseFloat(document.getElementById('batchProfitPct').value), slots=parseInt(document.getElementById('batchSlots').value);
+        if(!name||!target||!profitPct||!slots) return showNotification('Fill all fields',1);
+        await supabaseClient.from('investment_batches').insert([{id:crypto.randomUUID(),batch_name:name,investment_amount:target,profit_percentage:profitPct,total_slots:slots,filled_slots:0,status:'In Production',is_visible:true,created_at:new Date()}]);
+        showNotification('Batch created'); loadBatches(); loadStats(); renderCharts();
+    };
+    window.distributeProfit = async function(batchId, profitAmount){
+        if(profitAmount<=0) return showNotification('No profit to distribute',1);
+        let {data:investments}=await supabaseClient.from('investments').select('*, investors(id,available_balance,profit_balance)').eq('batch_id',batchId).eq('status','active');
+        if(!investments?.length) return showNotification('No investors',1);
+        let totalInv=investments.reduce((s,i)=>s+(i.amount||0),0);
+        for(let inv of investments){
+            let share=(inv.amount/totalInv)*profitAmount;
+            await supabaseClient.from('profits').insert([{investor_id:inv.investor_id,amount:share,month:new Date().toISOString().slice(0,7),profit_percentage:50,paid:true,paid_date:new Date(),batch_id:batchId}]);
+            await supabaseClient.from('investors').update({profit_balance: (inv.investors?.profit_balance||0)+share, total_profit: (inv.investors?.total_profit||0)+share }).eq('id',inv.investor_id);
+        }
+        await supabaseClient.from('investment_batches').update({status:'Profit Distributed',profit_credited:true}).eq('id',batchId);
+        showNotification(`Profit Rs ${profitAmount.toLocaleString()} distributed`); loadBatches(); loadInvestors(); loadStats();
+    };
+    window.deleteBatchItem = async function(id){ if(await confirmAction('Delete batch?')){ await supabaseClient.from('investment_batches').delete().eq('id',id); loadBatches(); } };
+    window.approveInvestment = async function(id,investorId,amount){
+        let {data:req}=await supabaseClient.from('investments').select('screenshot').eq('id',id).single();
+        if(!req?.screenshot) return showNotification('Screenshot missing! Cannot approve.',1);
+        await supabaseClient.from('investments').update({status:'active'}).eq('id',id);
+        let {data:inv}=await supabaseClient.from('investors').select('available_balance,total_investment').eq('id',investorId).single();
+        await supabaseClient.from('investors').update({available_balance:(inv?.available_balance||0)+amount, total_investment:(inv?.total_investment||0)+amount}).eq('id',investorId);
+        showNotification('Investment approved'); loadInvestmentRequests(); loadInvestmentsHistory(); loadInvestors(); loadStats();
+    };
+    window.rejectInvestmentReq = async function(id){ await supabaseClient.from('investments').update({status:'rejected'}).eq('id',id); loadInvestmentRequests(); };
+    window.openWithdrawProof = function(id,amount,investorId){ pendingWithdrawal={id,amount,investorId}; tempScreenshot=null; document.getElementById('previewImg').innerHTML=''; document.getElementById('screenshotModal').classList.add('active'); document.getElementById('wdProofInput').onchange=e=>{let file=e.target.files[0]; if(file){let reader=new FileReader(); reader.onload=ev=>{tempScreenshot=ev.target.result; document.getElementById('previewImg').innerHTML=`<img src="${ev.target.result}" style="max-width:150px;border-radius:12px;">`;}; reader.readAsDataURL(file);}}; };
+    window.confirmWithdrawApproval = async function(){ if(!tempScreenshot){ showNotification('Upload proof',1); return; } await supabaseClient.from('withdrawals').update({status:'approved',approval_screenshot:tempScreenshot,processed_date:new Date()}).eq('id',pendingWithdrawal.id); await supabaseClient.from('investors').update({available_balance:supabaseClient.rpc('decrement',{x:pendingWithdrawal.amount})}).eq('id',pendingWithdrawal.investorId); closeScreenshotModal(); loadWithdrawals(); loadInvestors(); showNotification('Approved'); };
+    window.rejectWithdraw = async function(id){ if(await confirmAction('Reject?')){ await supabaseClient.from('withdrawals').update({status:'rejected'}).eq('id',id); loadWithdrawals(); } };
     function closeScreenshotModal(){ document.getElementById('screenshotModal').classList.remove('active'); pendingWithdrawal=null; tempScreenshot=null; }
-    async function loadBuyers(){ let {data}=await supabase.from('buyers').select('*'); let html=''; data?.forEach(b=>{html+=`<tr><td>${escapeHtml(b.full_name)}</td><td>${b.email}</td><td><button class="btn-danger" onclick="deleteBuyerRow('${b.id}')">Delete</button></td></tr>`;}); document.getElementById('buyersTable').innerHTML=html||'<tr><td colspan="3">No buyers</td></tr>'; }
-    async function addInvestor(){ let name=document.getElementById('invName').value, email=document.getElementById('invEmail').value, phone=document.getElementById('invPhone').value; if(!name||!email) return showNotification('Name/email required',1); await supabase.from('investors').insert([{id:crypto.randomUUID(),full_name:name,email,phone,chat_enabled:true,total_investment:0,total_profit:0,available_balance:0}]); loadInvestors(); showNotification('Investor added'); document.getElementById('invName').value=''; document.getElementById('invEmail').value=''; }
-    async function addBuyer(){ let name=document.getElementById('buyerName').value, email=document.getElementById('buyerEmail').value; if(!name||!email) return; await supabase.from('buyers').insert([{id:crypto.randomUUID(),full_name:name,email,chat_enabled:true}]); loadBuyers(); showNotification('Buyer added'); }
-    async function addProduct(){ let name=document.getElementById('prodName').value, price=parseFloat(document.getElementById('prodPrice').value); if(!name||!price) return; await supabase.from('products').insert([{id:crypto.randomUUID(),name,price,is_active:true}]); loadProducts(); }
-    async function loadProducts(){ let {data}=await supabase.from('products').select('*').eq('is_active',true); let html=''; data?.forEach(p=>{html+=`<tr><td>${escapeHtml(p.name)}</td><td>Rs ${p.price}</td><td><button class="btn-danger" onclick="deleteProductRow('${p.id}')">Del</button></td></tr>`;}); document.getElementById('productsTable').innerHTML=html||'<tr><td colspan="3">No products</td></tr>'; }
-    async function loadOrders(){ let {data}=await supabase.from('orders').select('*').order('order_date',{ascending:false}); let html=''; data?.forEach(o=>{html+=`<tr><td>${o.id.slice(0,8)}</td><td>${o.customer_name||'guest'}</td><td>Rs ${o.total_amount}</td><td>${o.status}</td></tr>`;}); document.getElementById('ordersTable').innerHTML=html||'<tr><td colspan="4">No orders</td></tr>'; }
-    async function loadRecentLogs(){ let activities=[]; let {data:invReqs}=await supabase.from('investments').select('*,investors(full_name)').order('created_at',{ascending:false}).limit(5); invReqs?.forEach(i=>activities.push({desc:`${i.investors?.full_name} investment Rs ${i.amount}`,time:new Date(i.created_at).toLocaleString()})); let {data:wd}=await supabase.from('withdrawals').select('*,investors(full_name)').order('request_date',{ascending:false}).limit(5); wd?.forEach(w=>activities.push({desc:`${w.investors?.full_name} withdrawal Rs ${w.amount} ${w.status}`,time:new Date(w.request_date).toLocaleString()})); activities.sort((a,b)=>new Date(b.time)-new Date(a.time)); document.getElementById('recentLogs').innerHTML=activities.slice(0,8).map(a=>`<tr><td>💰</td><td>${escapeHtml(a.desc)}</td><td>${a.time}</td></tr>`).join('')||'<tr><td colspan="3">No activity</td></tr>'; }
-    window.toggleChatPerm=async function(id){ let inv=allInvestors.find(i=>i.id===id); let newVal=!inv?.chat_enabled; await supabase.from('investors').update({chat_enabled:newVal}).eq('id',id); loadInvestors(); loadChatUsers(); };
-    window.deleteInvestorRow=async function(id){ if(await confirmAction('Delete investor and all data?')){ await supabase.from('investments').delete().eq('investor_id',id); await supabase.from('profits').delete().eq('investor_id',id); await supabase.from('withdrawals').delete().eq('investor_id',id); await supabase.from('investors').delete().eq('id',id); loadInvestors(); loadStatsAndCharts(); } };
-    window.deleteBuyerRow=async function(id){ await supabase.from('buyers').delete().eq('id',id); loadBuyers(); };
-    window.deleteProductRow=async function(id){ await supabase.from('products').update({is_active:false}).eq('id',id); loadProducts(); };
-    // LIVE CHAT FULL
-    let chatUsers=[], currentChatId=null, currentChatType=null, chatSubscription=null;
-    async function loadChatUsers(){ let {data:investors}=await supabase.from('investors').select('id,full_name,email,chat_enabled'); let {data:buyers}=await supabase.from('buyers').select('id,full_name,email,chat_enabled'); chatUsers=[...(investors||[]).map(i=>({id:i.id,name:i.full_name,type:'investor',chatEnabled:i.chat_enabled})),...(buyers||[]).map(b=>({id:b.id,name:b.full_name,type:'buyer',chatEnabled:b.chat_enabled}))]; renderChatUserList(); }
-    function renderChatUserList(){ let container=document.getElementById('chatUserListSide'); if(!container) return; container.innerHTML=chatUsers.map(u=>`<div class="chat-user-item ${currentChatId===u.id&&currentChatType===u.type?'active':''}" onclick="selectChatUser('${u.id}','${u.type}','${escapeHtml(u.name)}')"><div><i class="fas ${u.type==='investor'?'fa-chart-line':'fa-user'}"></i> ${escapeHtml(u.name)}</div><div class="user-controls"><span>${u.chatEnabled?'✅':'🔇'}</span></div></div>`).join(''); }
-    window.selectChatUser=async function(id,type,name){ currentChatId=id; currentChatType=type; await loadMessages(id,type); renderChatUserList(); };
-    async function loadMessages(userId,type){ let {data}=await supabase.from('chat_messages').select('*').or(`and(sender_type.eq.admin,receiver_id.eq.${userId},receiver_type.eq.${type}),and(sender_id.eq.${userId},sender_type.eq.${type},receiver_type.eq.admin)`).order('created_at',{ascending:true}); let container=document.getElementById('chatMessagesContainer'); if(!container) return; if(!data?.length){ container.innerHTML='<div class="empty-state">Start conversation</div>'; return; } let html=''; data.forEach(m=>{let isAdmin=m.sender_type==='admin'; html+=`<div class="message ${isAdmin?'sent':'received'}"><div class="message-bubble">${escapeHtml(m.text||'')}<div style="font-size:10px;">${new Date(m.created_at).toLocaleTimeString()}</div></div></div>`;}); container.innerHTML=html; container.scrollTop=container.scrollHeight; }
-    window.sendChatMessage=async function(){ if(!currentChatId) return showNotification('Select a user first',1); let input=document.getElementById('chatMessageInput'); let text=input.value.trim(); if(!text) return; let userObj=chatUsers.find(u=>u.id===currentChatId&&u.type===currentChatType); if(userObj && !userObj.chatEnabled) return showNotification('Chat disabled for this user',1); await supabase.from('chat_messages').insert([{id:crypto.randomUUID(),sender_id:currentUser?.id||'admin',sender_type:'admin',receiver_id:currentChatId,receiver_type:currentChatType,text:text,created_at:new Date()}]); input.value=''; await loadMessages(currentChatId,currentChatType); };
-    async function setupRealtime(){ supabase.channel('admin-realtime').on('postgres_changes',{event:'*',schema:'public',table:'investment_batches'},()=>{loadBatches();loadStatsAndCharts();}).on('postgres_changes',{event:'*',schema:'public',table:'investments'},()=>{loadInvestmentRequests();loadInvestmentsHistory();loadStatsAndCharts();}).on('postgres_changes',{event:'*',schema:'public',table:'withdrawals'},()=>{loadWithdrawals();loadStatsAndCharts();}).on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_messages'},(payload)=>{if(currentChatId && ((payload.new.sender_id===currentChatId && payload.new.sender_type===currentChatType) || (payload.new.receiver_id===currentChatId && payload.new.receiver_type===currentChatType))){ loadMessages(currentChatId,currentChatType); }}).subscribe(); }
-    document.getElementById('globalChatToggle')?.addEventListener('change',(e)=>{let enabled=e.target.checked; document.getElementById('chatStatusText').innerText=enabled?'Active':'Disabled'; if(!enabled) showNotification('Chat system disabled globally',0);});
-    checkAuth();
+    window.addInvestor = async function(){ let name=document.getElementById('invName').value, email=document.getElementById('invEmail').value; if(!name||!email) return showNotification('Required',1); await supabaseClient.from('investors').insert([{id:crypto.randomUUID(),full_name:name,email,chat_enabled:true,total_investment:0,total_profit:0,available_balance:0,profit_balance:0}]); loadInvestors(); showNotification('Added'); document.getElementById('invName').value=''; document.getElementById('invEmail').value=''; };
+    window.addBuyer = async function(){ let name=document.getElementById('buyerName').value, email=document.getElementById('buyerEmail').value; if(!name||!email) return; await supabaseClient.from('buyers').insert([{id:crypto.randomUUID(),full_name:name,email,chat_enabled:true}]); loadBuyers(); showNotification('Added'); };
+    window.addProduct = async function(){ let name=document.getElementById('prodName').value, price=parseFloat(document.getElementById('prodPrice').value); if(!name||!price) return; await supabaseClient.from('products').insert([{id:crypto.randomUUID(),name,price,is_active:true}]); loadProducts(); };
+    window.deleteInvestorRow = async function(id){ if(await confirmAction('Delete investor and all data?')){ await supabaseClient.from('investments').delete().eq('investor_id',id); await supabaseClient.from('profits').delete().eq('investor_id',id); await supabaseClient.from('withdrawals').delete().eq('investor_id',id); await supabaseClient.from('investors').delete().eq('id',id); loadInvestors(); loadStats(); } };
+    window.deleteBuyerRow = async function(id){ await supabaseClient.from('buyers').delete().eq('id',id); loadBuyers(); };
+    window.deleteProductRow = async function(id){ await supabaseClient.from('products').update({is_active:false}).eq('id',id); loadProducts(); };
+    // Live Chat Functions
+    let chatUsers=[], currentChatId=null, currentChatType=null;
+    async function loadChatUsers(){
+        let {data:investors}=await supabaseClient.from('investors').select('id,full_name,chat_enabled');
+        let {data:buyers}=await supabaseClient.from('buyers').select('id,full_name,chat_enabled');
+        chatUsers=[...(investors||[]).map(i=>({id:i.id,name:i.full_name,type:'investor',chatEnabled:i.chat_enabled})),...(buyers||[]).map(b=>({id:b.id,name:b.full_name,type:'buyer',chatEnabled:b.chat_enabled}))];
+        let container=document.getElementById('chatUserListSide'); if(!container) return;
+        container.innerHTML=chatUsers.map(u=>`<div class="chat-user-item ${currentChatId===u.id&&currentChatType===u.type?'active':''}" onclick="selectChatUser('${u.id}','${u.type}','${escapeHtml(u.name)}')"><div><i class="fas ${u.type==='investor'?'fa-chart-line':'fa-user'}"></i> ${escapeHtml(u.name)}</div></div>`).join('');
+    }
+    window.selectChatUser=async function(id,type,name){ currentChatId=id; currentChatType=type; await loadMessages(id,type); loadChatUsers(); };
+    async function loadMessages(userId,type){
+        let {data}=await supabaseClient.from('chat_messages').select('*').or(`and(sender_type.eq.admin,receiver_id.eq.${userId},receiver_type.eq.${type}),and(sender_id.eq.${userId},sender_type.eq.${type},receiver_type.eq.admin)`).order('created_at',{ascending:true});
+        let container=document.getElementById('chatMessagesContainer'); if(!container) return;
+        if(!data?.length){ container.innerHTML='<div class="empty-state">Start conversation</div>'; return; }
+        let html=''; data.forEach(m=>{let isAdmin=m.sender_type==='admin'; html+=`<div class="message ${isAdmin?'sent':'received'}"><div class="message-bubble">${escapeHtml(m.text||'')}<div style="font-size:10px;">${new Date(m.created_at).toLocaleTimeString()}</div></div></div>`;});
+        container.innerHTML=html; container.scrollTop=container.scrollHeight;
+    }
+    window.sendChatMessage=async function(){ if(!currentChatId) return showNotification('Select a user',1); let input=document.getElementById('chatMessageInput'); let text=input.value.trim(); if(!text) return; await supabaseClient.from('chat_messages').insert([{id:crypto.randomUUID(),sender_id:currentAdminUser?.id||'admin',sender_type:'admin',receiver_id:currentChatId,receiver_type:currentChatType,text:text,created_at:new Date()}]); input.value=''; await loadMessages(currentChatId,currentChatType); };
+    // Init
+    document.addEventListener('DOMContentLoaded', async function(){
+        updateLoadingProgress(5,'Connecting...');
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_VALID_KEY);
+        updateLoadingProgress(20,'Auth check...');
+        const authOk = await checkAuth();
+        if(!authOk) return;
+        updateLoadingProgress(100,'Ready'); hideLoading();
+        // Setup realtime subscriptions
+        supabaseClient.channel('admin-realtime').on('postgres_changes',{event:'*',schema:'public',table:'investment_batches'},()=>{loadBatches();loadStats();}).on('postgres_changes',{event:'*',schema:'public',table:'investments'},()=>{loadInvestmentRequests();loadStats();}).on('postgres_changes',{event:'*',schema:'public',table:'withdrawals'},()=>{loadWithdrawals();loadStats();}).subscribe();
+    });
 </script>
 </body>
 </html>
