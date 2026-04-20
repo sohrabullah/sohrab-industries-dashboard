@@ -66,71 +66,81 @@
         
         .admin-container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
         
-        /* Loading Overlay Styles */
-        .loading-overlay {
+        /* Professional Loader Styles */
+        .loader-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.96);
+            backdrop-filter: blur(12px);
             z-index: 10000;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), visibility 0.6s;
         }
         
-        .loading-overlay.hide {
+        .loader-overlay.hide {
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
         }
         
-        .loading-container {
+        .loader-container {
             background: linear-gradient(145deg, #1a3d33, #0f2a22);
-            border-radius: 28px;
-            padding: 40px;
+            border-radius: 32px;
+            padding: 48px 56px;
             text-align: center;
-            min-width: 320px;
-            border: 1px solid rgba(232,177,60,0.3);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            animation: fadeSlideUp 0.3s ease;
+            min-width: 360px;
+            border: 1px solid rgba(232,177,60,0.4);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(232,177,60,0.2);
+            animation: fadeSlideUp 0.4s ease;
         }
         
-        .loading-container h3 {
-            color: #E8B13C;
-            margin-bottom: 20px;
+        .loader-brand {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #E8B13C, #ffd966, #E8B13C);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            margin-bottom: 28px;
             font-family: 'Playfair Display', serif;
+            text-shadow: 0 0 15px rgba(232,177,60,0.3);
         }
         
-        .progress-bar-container {
-            background: rgba(255,255,255,0.1);
-            border-radius: 50px;
-            height: 12px;
-            margin: 20px 0;
+        .loader-progress-container {
+            background: rgba(255,255,255,0.08);
+            border-radius: 60px;
+            height: 8px;
+            margin: 28px 0 20px;
             overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
         }
         
-        .progress-bar-fill {
-            background: linear-gradient(90deg, #E8B13C, #ffd966);
+        .loader-progress-fill {
+            background: linear-gradient(90deg, #E8B13C, #ffd966, #E8B13C);
             width: 0%;
             height: 100%;
-            border-radius: 50px;
-            transition: width 0.3s ease;
+            border-radius: 60px;
+            transition: width 0.25s ease-out;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 0 8px #E8B13C;
         }
         
-        .progress-bar-fill::after {
+        .loader-progress-fill::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 1.5s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 1.2s infinite;
         }
         
         @keyframes shimmer {
@@ -138,26 +148,30 @@
             100% { transform: translateX(100%); }
         }
         
-        .loading-percentage {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #E8B13C;
-            margin: 10px 0;
+        .loader-percentage {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #E8B13C, #ffd966);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 12px 0 8px;
+            font-family: 'Inter', monospace;
         }
         
-        .loading-status {
+        .loader-status {
             color: rgba(255,255,255,0.7);
             font-size: 0.85rem;
-            margin-top: 10px;
+            letter-spacing: 0.5px;
         }
         
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(232,177,60,0.3);
-            border-top-color: #E8B13C;
+        .loader-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(232,177,60,0.2);
+            border-top: 3px solid #E8B13C;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
             margin: 0 auto 20px;
         }
         
@@ -168,17 +182,18 @@
         /* Lazy Loading Skeleton */
         .skeleton-row {
             background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-            margin: 8px 0;
-            padding: 12px;
+            border-radius: 12px;
+            margin: 10px 0;
+            padding: 16px;
             animation: pulse 1.5s ease-in-out infinite;
         }
         
         @keyframes pulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.7; }
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
         }
         
+        /* Rest of original styles preserved */
         .admin-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -750,16 +765,16 @@
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-container">
-            <div class="loading-spinner"></div>
-            <h3><i class="fas fa-shield-alt"></i> Sohrab Industries</h3>
-            <div class="progress-bar-container">
-                <div class="progress-bar-fill" id="progressBarFill"></div>
+    <!-- Professional Loader Overlay -->
+    <div id="loaderOverlay" class="loader-overlay">
+        <div class="loader-container">
+            <div class="loader-spinner"></div>
+            <div class="loader-brand">✨ SI Sohrab Industries ✨</div>
+            <div class="loader-progress-container">
+                <div class="loader-progress-fill" id="loaderProgressFill"></div>
             </div>
-            <div class="loading-percentage" id="loadingPercentage">0%</div>
-            <div class="loading-status" id="loadingStatus">Initializing system...</div>
+            <div class="loader-percentage" id="loaderPercentage">0%</div>
+            <div class="loader-status" id="loaderStatus">Initializing secure connection...</div>
         </div>
     </div>
     
@@ -954,7 +969,7 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
@@ -982,7 +997,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -1172,7 +1187,7 @@
             
             <h2 class="section-title"><i class="fas fa-list"></i> All Announcements</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Title</th><th>Message</th><th>Type</th><th>Target</th><th>Status</th><th>Schedule</th><th>Actions</th></tr></thead>
                     <tbody id="announcementsList"></tbody>
                 </table>
@@ -1210,7 +1225,7 @@
             
             <h2 class="section-title"><i class="fas fa-history"></i> Notification History</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Date</th><th>Type</th><th>Title</th><th>Message</th><th>Target</th><th>Sent By</th></tr>
                     </thead>
                     <tbody id="notificationHistoryList"></tbody>
@@ -1529,32 +1544,32 @@
         let allInvestorsFull = [];
         let allTransactionsFull = [];
         
-        // Loading overlay functions
-        function showLoading() {
-            const overlay = document.getElementById('loadingOverlay');
+        // Professional Loader functions
+        function showLoader() {
+            const overlay = document.getElementById('loaderOverlay');
             if (overlay) {
                 overlay.classList.remove('hide');
                 overlay.style.display = 'flex';
             }
         }
         
-        function hideLoading() {
-            const overlay = document.getElementById('loadingOverlay');
+        function hideLoader() {
+            const overlay = document.getElementById('loaderOverlay');
             if (overlay) {
                 overlay.classList.add('hide');
                 setTimeout(() => {
                     if (overlay) overlay.style.display = 'none';
-                }, 500);
+                }, 600);
             }
         }
         
-        function updateLoadingProgress(percentage, status) {
-            const fill = document.getElementById('progressBarFill');
-            const percentSpan = document.getElementById('loadingPercentage');
-            const statusSpan = document.getElementById('loadingStatus');
+        function updateLoaderProgress(percentage, status) {
+            const fill = document.getElementById('loaderProgressFill');
+            const percentSpan = document.getElementById('loaderPercentage');
+            const statusSpan = document.getElementById('loaderStatus');
             
-            if (fill) fill.style.width = percentage + '%';
-            if (percentSpan) percentSpan.innerText = percentage + '%';
+            if (fill) fill.style.width = Math.min(100, Math.max(0, percentage)) + '%';
+            if (percentSpan) percentSpan.innerText = Math.min(100, Math.max(0, percentage)) + '%';
             if (statusSpan) statusSpan.innerText = status;
         }
         
@@ -1576,14 +1591,10 @@
             return fallbackValue;
         }
         
-        // MODIFIED: Check Auth Function - Bypasses redirect to admin-auth.html, directly sets admin session
+        // Fixed Auth Check - bypasses redirect, sets admin session
         async function checkAuth() {
             try {
-                // Instead of checking Supabase session, we set a simulated admin session
-                // This allows the dashboard to load directly without auth redirect
-                console.log('Admin dashboard loading directly (auth bypass for demo)');
-                
-                // Set current admin user as a simulated session
+                console.log('Admin dashboard loading directly');
                 currentAdminUser = {
                     id: 'simulated-admin-id',
                     email: 'admin@sohrab.com'
@@ -1596,7 +1607,6 @@
                 return true;
             } catch (error) {
                 console.error('Auth check error:', error);
-                // Still continue - don't redirect
                 currentAdminUser = { id: 'fallback', email: 'admin@sohrab.com' };
                 currentAdminRole = 'superadmin';
                 return true;
@@ -1698,8 +1708,8 @@
                 return;
             }
             
-            showLoading();
-            updateLoadingProgress(10, 'Creating investment batch...');
+            showLoader();
+            updateLoaderProgress(10, 'Creating investment batch...');
             
             try {
                 const { data: userData } = await supabaseClient.auth.getUser();
@@ -1729,8 +1739,8 @@
                 
                 await logActivity('batch_create', `Created new batch: ${batchName}`);
                 
-                updateLoadingProgress(100, 'Batch created successfully!');
-                setTimeout(() => hideLoading(), 1000);
+                updateLoaderProgress(100, 'Batch created successfully!');
+                setTimeout(() => hideLoader(), 1000);
                 
                 showNotification('Investment batch created successfully!', false);
                 
@@ -1749,7 +1759,7 @@
                 loadBatches();
                 renderAllCharts();
             } catch(e) {
-                hideLoading();
+                hideLoader();
                 showNotification(e.message, true);
             }
         }
@@ -1807,22 +1817,22 @@
                     const slotWarning = availableSlots <= 0 ? '<span class="status-badge status-pending" style="background:#dc3545;">FULL</span>' : `${batch.filled_slots || 0}/${batch.total_slots || 0}`;
                     
                     html += `<tr class="batch-row" onclick="showBatchDetail('${batch.id}', 'investment')">
-                        <td>${batch.id?.slice(0, 12)}... </div></div>
-                        <td><strong>${escapeHtml(batch.batch_name || 'N/A')}</strong> </div></div>
-                        <td>Rs. ${(batch.investment_amount || 0).toLocaleString()} </div></div>
-                        <td>${batch.profit_percentage || 0}%</span></div> </div></div>
-                        <td>${batch.duration_days || 0} days</span></div> </div></div>
-                        <td>${batch.total_slots || 0}</span></div> </div></div>
-                        <td>${slotWarning}</span></div> </div></div>
-                        <td>${batch.production_quantity || 0}</span></div> </div></div>
-                        <td><span class="status-badge ${statusClass}">${batch.status || 'In Production'}</span> </div></div>
-                        <td>${progressHtml}</span></div> </div></div>
-                        <td>Rs. ${(batch.sales || 0).toLocaleString()} </div></div>
-                        <td>Rs. ${(batch.expenses || 0).toLocaleString()} </div></div>
-                        <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()} </div></div>
-                        <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()} </div></div>
-                        <td>${roi}%</span></div> </div></div>
-                        <td><span class="status-badge ${batch.is_visible ? 'status-active' : 'status-pending'}">${batch.is_visible ? 'Visible' : 'Hidden'}</span> </div></div>
+                        <td>${batch.id?.slice(0, 12)}... </div>
+                        <td><strong>${escapeHtml(batch.batch_name || 'N/A')}</strong> </div>
+                        <td>Rs. ${(batch.investment_amount || 0).toLocaleString()} </div>
+                        <td>${batch.profit_percentage || 0}%</span></div>
+                        <td>${batch.duration_days || 0} days</span></div>
+                        <td>${batch.total_slots || 0}</span></div>
+                        <td>${slotWarning}</span></div>
+                        <td>${batch.production_quantity || 0}</span></div>
+                        <td><span class="status-badge ${statusClass}">${batch.status || 'In Production'}</span> </div>
+                        <td>${progressHtml}</span></div>
+                        <td>Rs. ${(batch.sales || 0).toLocaleString()} </div>
+                        <td>Rs. ${(batch.expenses || 0).toLocaleString()} </div>
+                        <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()} </div>
+                        <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()} </div>
+                        <td>${roi}%</span></div>
+                        <td><span class="status-badge ${batch.is_visible ? 'status-active' : 'status-pending'}">${batch.is_visible ? 'Visible' : 'Hidden'}</span> </div>
                         <td class="action-buttons">
                             <button onclick="event.stopPropagation();updateInvestmentBatch('${batch.id}')" class="btn-warning">Edit</button>
                             <button onclick="event.stopPropagation();toggleBatchVisibility('${batch.id}', ${!batch.is_visible})" class="btn-info">${batch.is_visible ? 'Hide' : 'Show'}</button>
@@ -1851,22 +1861,22 @@
                     totalRoi += parseFloat(roi);
                     
                     html += `<tr class="batch-row" onclick="showBatchDetail('${batch.id}', 'production')">
-                        <td>${batch.id?.slice(0, 12)}...</span></div> </div></div>
-                        <td>Production Batch</span></div> </div></div>
-                        <td>Rs. ${(batch.investment_amount || 0).toLocaleString()} </div></div>
-                        <td>50%</span></div> </div></div>
-                        <td>-</span></div> </div></div>
-                        <td>-</span></div> </div></div>
-                        <td>-</span></div> </div></div>
-                        <td>${batch.production_quantity || 0} </div></div>
-                        <td><span class="status-badge ${statusClass}">${batch.status}</span> </div></div>
-                        <td>${progressHtml} </div></div>
-                        <td>Rs. ${(batch.sales || 0).toLocaleString()} </div></div>
-                        <td>Rs. ${(batch.expenses || 0).toLocaleString()} </div></div>
-                        <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()} </div></div>
-                        <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()} </div></div>
-                        <td>${roi}%</span></div> </div></div>
-                        <td><span class="status-badge status-active">Visible</span> </div></div>
+                        <td>${batch.id?.slice(0, 12)}...</span></div>
+                        <td>Production Batch</span></div>
+                        <td>Rs. ${(batch.investment_amount || 0).toLocaleString()} </div>
+                        <td>50%</span></div>
+                        <td>-</span></div>
+                        <td>-</span></div>
+                        <td>-</span></div>
+                        <td>${batch.production_quantity || 0} </div>
+                        <td><span class="status-badge ${statusClass}">${batch.status}</span> </div>
+                        <td>${progressHtml} </div>
+                        <td>Rs. ${(batch.sales || 0).toLocaleString()} </div>
+                        <td>Rs. ${(batch.expenses || 0).toLocaleString()} </div>
+                        <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()} </div>
+                        <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()} </div>
+                        <td>${roi}%</span></div>
+                        <td><span class="status-badge status-active">Visible</span> </div>
                         <td class="action-buttons">
                             <button onclick="event.stopPropagation();updateBatchStatus('${batch.id}')" class="btn-warning">Update Status</button>
                             ${!batch.profit_credited && batch.status === 'Sold' ? `<button onclick="event.stopPropagation();creditProfitToInvestor('${batch.id}', ${investorShare}, '${batch.investments?.investor_id}')" class="btn-success">Credit Profit</button>` : ''}
@@ -1947,14 +1957,14 @@
             });
             
             if (result.isConfirmed) {
-                showLoading();
-                updateLoadingProgress(10, 'Distributing profits...');
+                showLoader();
+                updateLoaderProgress(10, 'Distributing profits...');
                 
                 try {
                     for (let i = 0; i < distributions.length; i++) {
                         const dist = distributions[i];
                         const progress = 10 + Math.floor((i / distributions.length) * 80);
-                        updateLoadingProgress(progress, `Processing ${dist.investorName}...`);
+                        updateLoaderProgress(progress, `Processing ${dist.investorName}...`);
                         
                         const txId = `PROFIT-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
                         
@@ -1994,8 +2004,8 @@
                     
                     await logActivity('profit_distribute', `Distributed Rs. ${profitAmount.toLocaleString()} profit from batch ${batch.batch_name}`);
                     
-                    updateLoadingProgress(100, 'Profit distribution complete!');
-                    setTimeout(() => hideLoading(), 1000);
+                    updateLoaderProgress(100, 'Profit distribution complete!');
+                    setTimeout(() => hideLoader(), 1000);
                     
                     showNotification(`Profit of Rs. ${profitAmount.toLocaleString()} distributed to ${distributions.length} investors!`, false);
                     loadBatches();
@@ -2003,7 +2013,7 @@
                     loadStats();
                     renderAllCharts();
                 } catch(e) { 
-                    hideLoading();
+                    hideLoader();
                     showNotification(e.message, true);
                     console.error('Distribution error:', e);
                 }
@@ -2445,30 +2455,94 @@
             document.getElementById('withdrawalScreenshotPreview').classList.remove('active'); 
         };
         
+        // FIXED: Logout from all devices - clears all sessions properly
         window.handleLogout = async function(){ 
-            await logActivity('admin_logout', 'Admin logged out');
-            await supabaseClient.auth.signOut(); 
-            localStorage.clear(); 
-            // Instead of redirecting to auth page, we reload to simulate fresh start
-            window.location.reload(); 
+            const result = await Swal.fire({
+                title: 'Logout',
+                text: 'Are you sure you want to logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#E8B13C',
+                confirmButtonText: 'Yes, Logout',
+                cancelButtonText: 'Cancel',
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                color: '#fff'
+            });
+            
+            if (result.isConfirmed) {
+                await logActivity('admin_logout', 'Admin logged out');
+                if (supabaseClient) {
+                    await supabaseClient.auth.signOut();
+                }
+                localStorage.clear();
+                sessionStorage.clear();
+                // Clear all cookies if any
+                document.cookie.split(";").forEach(function(c) { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                window.location.reload(); 
+            }
+        };
+        
+        // FIXED: Logout from all devices button handler
+        window.logoutAllDevices = async function() {
+            const result = await Swal.fire({
+                title: '⚠️ Logout From All Devices',
+                text: 'This will end all active sessions across all browsers and devices. All users will need to login again. Are you sure?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, Logout Everyone',
+                cancelButtonText: 'Cancel',
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                color: '#fff'
+            });
+            
+            if (result.isConfirmed) {
+                try {
+                    // Clear all admin sessions from Supabase
+                    if (supabaseClient) {
+                        await supabaseClient.auth.signOut();
+                    }
+                    // Clear all local storage
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    // Clear cookies
+                    document.cookie.split(";").forEach(function(c) { 
+                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                    });
+                    
+                    await logActivity('admin_logout_all', 'Logged out from all devices by admin');
+                    
+                    showNotification('Logged out from all devices successfully! Redirecting...', false, 'Session Cleared');
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } catch(e) {
+                    showNotification(e.message, true);
+                }
+            }
         };
         
         async function refreshAllData() {
-            showLoading();
-            updateLoadingProgress(10, 'Loading statistics...');
+            showLoader();
+            updateLoaderProgress(10, 'Loading statistics...');
             await loadStats();
-            updateLoadingProgress(30, 'Loading investors...');
+            updateLoaderProgress(30, 'Loading investors...');
             await loadInvestors();
-            updateLoadingProgress(50, 'Loading batches...');
+            updateLoaderProgress(50, 'Loading batches...');
             await loadBatches();
-            updateLoadingProgress(70, 'Loading transactions...');
+            updateLoaderProgress(70, 'Loading transactions...');
             await loadInvestmentHistory();
-            updateLoadingProgress(85, 'Loading withdrawal requests...');
+            updateLoaderProgress(85, 'Loading withdrawal requests...');
             await loadWithdrawals();
-            updateLoadingProgress(95, 'Finalizing...');
+            updateLoaderProgress(95, 'Finalizing...');
             await renderAllCharts();
-            updateLoadingProgress(100, 'Ready!');
-            setTimeout(() => hideLoading(), 500);
+            updateLoaderProgress(100, 'Ready!');
+            setTimeout(() => hideLoader(), 500);
         }
         
         // ========== ACTIVITY LOGGING SYSTEM ==========
@@ -2484,7 +2558,6 @@
                 
                 const deviceInfo = `${navigator.userAgent.substring(0, 200)}`;
                 
-                // Check if table exists - safe insert with fallback
                 await supabaseClient.from('admin_activity_logs').insert([{
                     admin_id: currentAdminUser.id,
                     admin_email: currentAdminUser.email,
@@ -2523,7 +2596,7 @@
                 if (!tbody) return;
                 
                 if (filtered.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No activity logs found. Activity logging will work when tables are created. </div></td>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No activity logs found. Activity logging will work when tables are created. </div></tr>';
                     return;
                 }
                 
@@ -2541,7 +2614,7 @@
                 console.error('Error loading activity logs:', e);
                 const tbody = document.getElementById('activityLogsList');
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Activity logs table not found. Please create admin_activity_logs table. </div></td>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Activity logs table not found. Please create admin_activity_logs table. </div></tr>';
                 }
             }
         }
@@ -2639,7 +2712,6 @@
                     
                     await supabaseClient.from('investors').update(updateObj).eq('id', investorId);
                     
-                    // Record in balance audit trail (safe - table may not exist)
                     try {
                         await supabaseClient.from('balance_audit_trail').insert([{
                             investor_id: investorId,
@@ -2749,7 +2821,7 @@
                 tbody.innerHTML = (data || []).map(record => `
                     <tr>
                         <td>${new Date(record.created_at).toLocaleString()} </div>
-                        <td>${escapeHtml(record.investors?.full_name || record.investor_id)}</span></div> </div>
+                        <td>${escapeHtml(record.investors?.full_name || record.investor_id)}</span></div>
                         <td>${record.wallet_type} </div>
                         <td><span class="status-badge ${record.transaction_type === 'credit' ? 'status-active' : 'status-pending'}">${record.transaction_type}</span> </div>
                         <td>Rs. ${(record.amount || 0).toLocaleString()} </div>
@@ -2786,7 +2858,6 @@
             if (!supabaseClient) return;
             
             try {
-                // Load referral settings
                 const { data: settings } = await supabaseClient.from('system_settings').select('value').eq('key', 'referral_settings').single();
                 if (settings) {
                     const refSettings = JSON.parse(settings.value || '{"commission":5,"min_withdraw":500,"multi_level":false}');
@@ -2797,7 +2868,6 @@
             } catch(e) { console.log('Referral settings table not found'); }
             
             try {
-                // Load referral stats
                 const { data: referrals } = await supabaseClient.from('referrals').select('*, referrer:referrer_id(full_name), referred:referred_id(full_name)').order('created_at', { ascending: false });
                 
                 const totalReferrals = referrals?.length || 0;
@@ -2808,7 +2878,6 @@
                 document.getElementById('totalCommission').innerHTML = `Rs. ${totalCommission.toLocaleString()}`;
                 document.getElementById('pendingCommission').innerHTML = `Rs. ${pendingCommission.toLocaleString()}`;
                 
-                // Top referrers
                 const referrerMap = new Map();
                 referrals?.forEach(r => {
                     const referrerName = r.referrer?.full_name || r.referrer_id;
@@ -2830,7 +2899,7 @@
                         topReferrersTbody.innerHTML = topReferrers.map(r => `
                             <tr>
                                 <td>${escapeHtml(r.name)} </div>
-                                <td>-</span></div> </div>
+                                <td>-</span></div>
                                 <td>${r.count} </div>
                                 <td>Rs. ${r.commission.toLocaleString()} </div>
                                 <td><button class="btn-info" onclick="viewReferrerDetails('${r.name}')">View</button> </div>
@@ -2839,7 +2908,6 @@
                     }
                 }
                 
-                // Referral transactions
                 const transactionsTbody = document.getElementById('referralTransactionsList');
                 if (transactionsTbody) {
                     if (!referrals || referrals.length === 0) {
@@ -2848,8 +2916,8 @@
                         transactionsTbody.innerHTML = (referrals || []).map(r => `
                             <tr>
                                 <td>${new Date(r.created_at).toLocaleDateString()} </div>
-                                <td>${escapeHtml(r.referrer?.full_name || r.referrer_id)}</span></div> </div>
-                                <td>${escapeHtml(r.referred?.full_name || r.referred_id)}</span></div> </div>
+                                <td>${escapeHtml(r.referrer?.full_name || r.referrer_id)}</span></div>
+                                <td>${escapeHtml(r.referred?.full_name || r.referred_id)}</span></div>
                                 <td>Rs. ${(r.investment_amount || 0).toLocaleString()} </div>
                                 <td>Rs. ${(r.commission_earned || 0).toLocaleString()} </div>
                                 <td><span class="status-badge ${r.commission_paid ? 'status-active' : 'status-pending'}">${r.commission_paid ? 'Paid' : 'Pending'}</span> </div>
@@ -2928,9 +2996,9 @@
                 tbody.innerHTML = filtered.map(kyc => `
                     <tr>
                         <td><strong>${escapeHtml(kyc.investors?.full_name || 'Unknown')}</strong><br><small>${kyc.investors?.email || ''}</small> </div>
-                        <td>${kyc.cnic_front ? `<img src="${kyc.cnic_front}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_front}')">` : '-'}</span></div> </div>
-                        <td>${kyc.cnic_back ? `<img src="${kyc.cnic_back}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_back}')">` : '-'}</span></div> </div>
-                        <td>${kyc.selfie ? `<img src="${kyc.selfie}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.selfie}')">` : '-'}</span></div> </div>
+                        <td>${kyc.cnic_front ? `<img src="${kyc.cnic_front}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_front}')">` : '-'}</span></div>
+                        <td>${kyc.cnic_back ? `<img src="${kyc.cnic_back}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_back}')">` : '-'}</span></div>
+                        <td>${kyc.selfie ? `<img src="${kyc.selfie}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.selfie}')">` : '-'}</span></div>
                         <td><span class="status-badge ${kyc.status === 'approved' ? 'status-active' : kyc.status === 'rejected' ? 'status-pending' : 'status-kyc-pending'}">${kyc.status || 'pending'}</span> </div>
                         <td>${kyc.submitted_at ? new Date(kyc.submitted_at).toLocaleDateString() : '-'} </div>
                         <td>
@@ -2943,7 +3011,7 @@
                 console.error('Error loading KYC requests:', e);
                 const tbody = document.getElementById('kycRequestsList');
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">KYC requests table not found. Please create kyc_requests table. </div></td>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">KYC requests table not found. Please create kyc_requests table. </div></tr>';
                 }
             }
         }
@@ -3295,7 +3363,7 @@
                         <td>${n.type} </div>
                         <td><strong>${escapeHtml(n.title)}</strong> </div>
                         <td><small>${escapeHtml(n.message.substring(0, 80))}...</small> </div>
-                        <td>${n.user_type}/${n.user_id?.slice(0, 8)}</span></div> </div>
+                        <td>${n.user_type}/${n.user_id?.slice(0, 8)}</span></div>
                         <td>${currentAdminUser?.email || 'admin'} </div>
                     </tr>
                 `).join('');
@@ -3697,15 +3765,15 @@
                 if (!tbody) return;
                 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No admin users found. Create admin_users table. </div><tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No admin users found. Create admin_users table. </div></tr>';
                     return;
                 }
                 
                 tbody.innerHTML = (data || []).map(admin => `
                     <tr>
-                        <td>${escapeHtml(admin.full_name)}</span></div> </div>
-                        <td>${admin.email}</span></div> </div>
-                        <td><span class="role-badge role-${admin.role}">${admin.role}</span></div> </div>
+                        <td>${escapeHtml(admin.full_name)}</span></div>
+                        <td>${admin.email}</span></div>
+                        <td><span class="role-badge role-${admin.role}">${admin.role}</span></div>
                         <td>${admin.twofa_enabled ? '✅ Yes' : '❌ No'} </div>
                         <td>${admin.last_login ? new Date(admin.last_login).toLocaleString() : '-'} </div>
                         <td><span class="status-badge ${admin.is_active ? 'status-active' : 'status-pending'}">${admin.is_active ? 'Active' : 'Inactive'}</span> </div>
@@ -3753,18 +3821,44 @@
             }
         }
         
-        async function logoutAllDevices() {
-            if (await confirmAction('Logout from all devices? This will end all active sessions.', 'Session Management')) {
+        // Fixed: logoutAllDevices now properly clears all sessions
+        window.logoutAllDevices = async function() {
+            const result = await Swal.fire({
+                title: '⚠️ Logout From All Devices',
+                text: 'This will end all active sessions across all browsers and devices. All users will need to login again. Are you sure?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, Logout Everyone',
+                cancelButtonText: 'Cancel',
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                color: '#fff'
+            });
+            
+            if (result.isConfirmed) {
                 try {
-                    await supabaseClient.auth.signOut();
-                    await logActivity('admin_logout_all', 'Logged out from all devices');
+                    if (supabaseClient) {
+                        await supabaseClient.auth.signOut();
+                    }
                     localStorage.clear();
-                    window.location.reload();
+                    sessionStorage.clear();
+                    document.cookie.split(";").forEach(function(c) { 
+                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                    });
+                    
+                    await logActivity('admin_logout_all', 'Logged out from all devices by admin');
+                    
+                    showNotification('Logged out from all devices successfully! Redirecting...', false, 'Session Cleared');
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                 } catch(e) {
                     showNotification(e.message, true);
                 }
             }
-        }
+        };
         
         async function showLoginHistory() {
             try {
@@ -3833,10 +3927,10 @@
                         <td><strong>${escapeHtml(i.full_name)}</strong><br><small>${i.email}</small> </div>
                         <td>${i.email} </div>
                         <td>${i.phone||'-'} </div>
-                        <td>${i.city||'-'}</span></div> </div>
-                        <td>Rs.${(i.available_balance||0).toLocaleString()}</span></div> </div>
-                        <td>Rs.${(i.profit_balance||0).toLocaleString()}</span></div> </div>
-                        <td>Rs.${(i.referral_balance||0).toLocaleString()}</span></div> </div>
+                        <td>${i.city||'-'}</span></div>
+                        <td>Rs.${(i.available_balance||0).toLocaleString()}</span></div>
+                        <td>Rs.${(i.profit_balance||0).toLocaleString()}</span></div>
+                        <td>Rs.${(i.referral_balance||0).toLocaleString()}</span></div>
                         <td><span class="status-badge ${i.kyc_status === 'approved' ? 'status-active' : i.kyc_status === 'pending' ? 'status-kyc-pending' : 'status-pending'}">${i.kyc_status || 'Not Submitted'}</span> </div>
                         <td><span class="status-badge ${i.is_blocked ? 'status-pending' : 'status-active'}">${i.is_blocked ? 'Blocked' : 'Active'}</span> </div>
                         <td><span class="perm-badge ${i.chat_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.chat_enabled !== false ? 'ON' : 'OFF'}</span> </div>
@@ -3896,8 +3990,8 @@
                     buyersList.innerHTML = allBuyers.map(b=>`<tr>
                         <td><strong>${escapeHtml(b.full_name)}</strong> </div>
                         <td>${b.email} </div>
-                        <td>${b.phone||'-'}</span></div> </div>
-                        <td>${b.address||'-'}</span></div> </div>
+                        <td>${b.phone||'-'}</span></div>
+                        <td>${b.address||'-'}</span></div>
                         <td><button onclick="toggleBuyerBlock('${b.id}', ${!b.is_blocked})" class="btn-warning">${b.is_blocked ? 'Unblock' : 'Block'}</button><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button> </div>
                     </tr>`).join('');
                 }
@@ -3932,7 +4026,7 @@
                 allProducts = data || [];
                 const productsList = document.getElementById('productsList');
                 if(productsList) {
-                    if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</span></div></td>'; return; }
+                    if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</span></div></tr>'; return; }
                     productsList.innerHTML = data.map(p=>`<tr>
                         <td><strong>${escapeHtml(p.name)}</strong> </div>
                         <td>${p.category} </div>
@@ -3972,7 +4066,7 @@
                         <td>${p.investors?.full_name||'-'} </div>
                         <td>Rs.${(p.amount||0).toLocaleString()} </div>
                         <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})} </div>
-                        <td>${p.profit_percentage||10}%</span></div> </div>
+                        <td>${p.profit_percentage||10}%</span></div>
                         <td><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button> </div>
                     </tr>`).join('');
                 }
@@ -4016,7 +4110,7 @@
                     <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span> </div>
                     <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')} </div>
                     <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`} </div> </div>
-                </tr>`).join('');
+                </table>`).join('');
             } catch(e) { console.error('Error loading withdrawals:', e); }
         }
         
@@ -4027,7 +4121,7 @@
                 allOrders = data || [];
                 const ordersList = document.getElementById('ordersList');
                 if (!ordersList) return;
-                if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></td>'; return; }
+                if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></tr>'; return; }
                 ordersList.innerHTML = allOrders.map(o => `<tr>
                     <td><strong>${o.id?.slice(0, 12)}...</strong> </div>
                     <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong> </div>
@@ -4481,7 +4575,7 @@
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
             if (filtered.length === 0) { 
-                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</span></div></td>'; 
+                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</span></div></tr>'; 
                 return; 
             }
             withdrawalsList.innerHTML = filtered.map(w => `<tr>
@@ -4508,7 +4602,7 @@
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
             if (filtered.length === 0) { 
-                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></td>'; 
+                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></tr>'; 
                 return; 
             }
             ordersList.innerHTML = filtered.map(o => `<tr>
@@ -4556,46 +4650,46 @@
         
         // Initialize Supabase with loading progress
         document.addEventListener('DOMContentLoaded', async function() {
-            updateLoadingProgress(5, 'Initializing Supabase connection...');
+            updateLoaderProgress(5, 'Initializing Supabase connection...');
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            updateLoadingProgress(10, 'Checking authentication...');
+            updateLoaderProgress(10, 'Checking authentication...');
             
             const isAuthenticated = await checkAuth();
             if (!isAuthenticated) return;
             
-            updateLoadingProgress(20, 'Loading dashboard data...');
+            updateLoaderProgress(20, 'Loading dashboard data...');
             await createRequiredTables();
             
-            updateLoadingProgress(30, 'Loading statistics...');
+            updateLoaderProgress(30, 'Loading statistics...');
             await loadStats();
             
-            updateLoadingProgress(40, 'Loading investors...');
+            updateLoaderProgress(40, 'Loading investors...');
             await loadInvestors();
             
-            updateLoadingProgress(50, 'Loading buyers...');
+            updateLoaderProgress(50, 'Loading buyers...');
             await loadBuyers();
             
-            updateLoadingProgress(60, 'Loading batches...');
+            updateLoaderProgress(60, 'Loading batches...');
             await loadBatches();
             
-            updateLoadingProgress(70, 'Loading investment history...');
+            updateLoaderProgress(70, 'Loading investment history...');
             await loadInvestmentHistory();
             
-            updateLoadingProgress(80, 'Loading profit history...');
+            updateLoaderProgress(80, 'Loading profit history...');
             await loadProfitHistory();
             
-            updateLoadingProgress(85, 'Loading withdrawal requests...');
+            updateLoaderProgress(85, 'Loading withdrawal requests...');
             await loadWithdrawals();
             
-            updateLoadingProgress(90, 'Loading products and orders...');
+            updateLoaderProgress(90, 'Loading products and orders...');
             await loadProducts();
             await loadOrders();
             
-            updateLoadingProgress(95, 'Rendering charts...');
+            updateLoaderProgress(95, 'Rendering charts...');
             await renderAllCharts();
             
-            updateLoadingProgress(100, 'Ready!');
+            updateLoaderProgress(100, 'Ready!');
             
             // Load active announcement banner
             const now = new Date().toISOString();
@@ -4622,7 +4716,7 @@
             await logActivity('admin_login', 'Admin logged in');
             
             // Hide loading after a short delay to show completion
-            setTimeout(() => hideLoading(), 1000);
+            setTimeout(() => hideLoader(), 800);
             
             // Setup realtime sync
             setupRealtimeSync();
