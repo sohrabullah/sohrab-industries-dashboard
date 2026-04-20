@@ -171,10 +171,10 @@
             border-radius: 8px;
             margin: 8px 0;
             padding: 12px;
-            animation: pulse 1.5s ease-in-out infinite;
+            animation: skeletonPulse 1.5s ease-in-out infinite;
         }
         
-        @keyframes pulse {
+        @keyframes skeletonPulse {
             0%, 100% { opacity: 0.4; }
             50% { opacity: 0.7; }
         }
@@ -770,7 +770,7 @@
         <button onclick="closePopup()" class="btn-primary" style="margin-top: 20px; width: 100%;">Close</button>
     </div>
     
-    <div class="admin-container">
+    <div class="admin-container" style="display: none;" id="adminContainer">
         <!-- Announcement Banner -->
         <div id="announcementBanner" class="announcement-banner">
             <span id="announcementText"><i class="fas fa-bullhorn"></i> Welcome to Sohrab Industries Admin Panel</span>
@@ -998,7 +998,7 @@
                 <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
             </div>
             <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
-            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
         </div>
 
         <!-- Withdrawals Section -->
@@ -1006,7 +1006,7 @@
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
             <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary">Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button></div>
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Approval Screenshot</th><th>Actions</th></tr></thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
@@ -1027,7 +1027,7 @@
                 <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
             </div>
             <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
         </div>
 
         <!-- Orders Section -->
@@ -1036,7 +1036,7 @@
                 <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
                 <div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="🔍 Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div>
             </div>
-            <div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
         </div>
 
         <!-- WALLET MANAGEMENT Section -->
@@ -1099,7 +1099,7 @@
             
             <div class="table-container">
                 <h3 style="color:#E8B13C; margin:15px 0;">Top Referrers</h3>
-                <table>
+                </table>
                     <thead><tr><th>Investor</th><th>Referral Code</th><th>Total Referrals</th><th>Total Commission</th><th>Actions</th></tr></thead>
                     <tbody id="topReferrersList"></tbody>
                 </table>
@@ -1172,7 +1172,7 @@
             
             <h2 class="section-title"><i class="fas fa-list"></i> All Announcements</h2>
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Title</th><th>Message</th><th>Type</th><th>Target</th><th>Status</th><th>Schedule</th><th>Actions</th></tr></thead>
                     <tbody id="announcementsList"></tbody>
                 </table>
@@ -1210,7 +1210,7 @@
             
             <h2 class="section-title"><i class="fas fa-history"></i> Notification History</h2>
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Date</th><th>Type</th><th>Title</th><th>Message</th><th>Target</th><th>Sent By</th></tr>
                     </thead>
                     <tbody id="notificationHistoryList"></tbody>
@@ -1331,7 +1331,7 @@
             
             <h2 class="section-title"><i class="fas fa-users"></i> Admin Users List</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>2FA Enabled</th><th>Last Login</th><th>Status</th><th>Actions</th></tr></thead>
                     <tbody id="adminUsersList"></tbody>
                 </table>
@@ -1544,6 +1544,8 @@
                 overlay.classList.add('hide');
                 setTimeout(() => {
                     if (overlay) overlay.style.display = 'none';
+                    const adminContainer = document.getElementById('adminContainer');
+                    if (adminContainer) adminContainer.style.display = 'block';
                 }, 500);
             }
         }
@@ -1576,9 +1578,7 @@
             return fallbackValue;
         }
         
-        // ========== FIXED: Check Auth Function - Proper session persistence ==========
-        // IMPORTANT: This function now returns true for authenticated, false for not authenticated
-        // It does NOT redirect - redirect is handled by the caller
+        // Check Auth Function - Returns boolean only, no redirect
         async function checkAuth() {
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
@@ -1588,7 +1588,7 @@
                     return false;
                 }
                 
-                // Verify admin role with proper error handling
+                // Verify admin role
                 const { data: adminData, error: adminError } = await supabaseClient
                     .from('admin_users')
                     .select('role, is_active')
@@ -1596,10 +1596,8 @@
                     .single();
                 
                 if (adminError) {
-                    console.error('Admin verification error:', adminError);
-                    // If table doesn't exist yet, allow access but log warning
                     if (adminError.code === 'PGRST116') {
-                        console.warn('admin_users table not found - creating default admin session');
+                        console.warn('admin_users table not found - allowing access');
                         currentAdminUser = session.user;
                         currentAdminRole = 'superadmin';
                         document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
@@ -1952,7 +1950,7 @@
                 });
                 distributionHtml += `<tr><td>${escapeHtml(inv.investors?.full_name || 'Unknown')}</td><td>Rs. ${inv.amount.toLocaleString()}</td><td>Rs. ${investorProfit.toLocaleString()}</td></tr>`;
             }
-            distributionHtml += '</tbody></table><hr>';
+            distributionHtml += '</tbody><table><hr>';
             distributionHtml += `<p><strong>Sohrab Industries Share (50%):</strong> Rs. ${profitAmount.toLocaleString()}</p>`;
             distributionHtml += '</div>';
             
@@ -2506,7 +2504,6 @@
                 
                 const deviceInfo = `${navigator.userAgent.substring(0, 200)}`;
                 
-                // Check if table exists - safe insert with fallback
                 await supabaseClient.from('admin_activity_logs').insert([{
                     admin_id: currentAdminUser.id,
                     admin_email: currentAdminUser.email,
@@ -2545,7 +2542,7 @@
                 if (!tbody) return;
                 
                 if (filtered.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No activity logs found. Activity logging will work when tables are created.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No activity logs found. Activity logging will work when tables are created.</td></table>';
                     return;
                 }
                 
@@ -2661,7 +2658,6 @@
                     
                     await supabaseClient.from('investors').update(updateObj).eq('id', investorId);
                     
-                    // Record in balance audit trail (safe - table may not exist)
                     try {
                         await supabaseClient.from('balance_audit_trail').insert([{
                             investor_id: investorId,
@@ -2764,7 +2760,7 @@
                 if (!tbody) return;
                 
                 if (!data || data.length === 0) {
-                                        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No balance adjustments recorded yet. Create balance_audit_trail table for tracking.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No balance adjustments recorded yet. Create balance_audit_trail table for tracking.</td></tr>';
                     return;
                 }
                 
@@ -2848,8 +2844,8 @@
                     } else {
                         topReferrersTbody.innerHTML = topReferrers.map(r => `
                             <tr>
-                                <td>${escapeHtml(r.name)}</td>
-                                <td>-</td>
+                                <td>${escapeHtml(r.name)}</span></div></td>
+                                <td>-</span></div></td>
                                 <td>${r.count}</td>
                                 <td>Rs. ${r.commission.toLocaleString()}</td>
                                 <td><button class="btn-info" onclick="viewReferrerDetails('${r.name}')">View</button></td>
@@ -2861,13 +2857,13 @@
                 const transactionsTbody = document.getElementById('referralTransactionsList');
                 if (transactionsTbody) {
                     if (!referrals || referrals.length === 0) {
-                        transactionsTbody.innerHTML = '<tr><td colspan="6" class="empty-state">No referral transactions found. Create referrals table.</td></tr>';
+                        transactionsTbody.innerHTML = '<tr><td colspan="6" class="empty-state">No referral transactions found. Create referrals table. Neutron</div></tr>';
                     } else {
                         transactionsTbody.innerHTML = (referrals || []).map(r => `
                             <tr>
                                 <td>${new Date(r.created_at).toLocaleDateString()}</td>
-                                <td>${escapeHtml(r.referrer?.full_name || r.referrer_id)}</td>
-                                <td>${escapeHtml(r.referred?.full_name || r.referred_id)}</td>
+                                <td>${escapeHtml(r.referrer?.full_name || r.referrer_id)}</span></div></td>
+                                <td>${escapeHtml(r.referred?.full_name || r.referred_id)}</span></div></td>
                                 <td>Rs. ${(r.investment_amount || 0).toLocaleString()}</td>
                                 <td>Rs. ${(r.commission_earned || 0).toLocaleString()}</td>
                                 <td><span class="status-badge ${r.commission_paid ? 'status-active' : 'status-pending'}">${r.commission_paid ? 'Paid' : 'Pending'}</span></td>
@@ -2879,7 +2875,7 @@
                 console.error('Error loading referral data:', e);
                 const tbody = document.getElementById('topReferrersList');
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Referrals table not found. Please create referrals table.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Referrals table not found. Please create referrals table. Neutron</div></tr>';
                 }
             }
         }
@@ -2939,29 +2935,29 @@
                 if (!tbody) return;
                 
                 if (filtered.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No KYC requests found. Create kyc_requests table.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No KYC requests found. Create kyc_requests table. Neutron</div></tr>';
                     return;
                 }
                 
                 tbody.innerHTML = filtered.map(kyc => `
                     <tr>
                         <td><strong>${escapeHtml(kyc.investors?.full_name || 'Unknown')}</strong><br><small>${kyc.investors?.email || ''}</small></td>
-                        <td>${kyc.cnic_front ? `<img src="${kyc.cnic_front}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_front}')">` : '-'}</td>
-                        <td>${kyc.cnic_back ? `<img src="${kyc.cnic_back}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_back}')">` : '-'}</td>
-                        <td>${kyc.selfie ? `<img src="${kyc.selfie}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.selfie}')">` : '-'}</td>
+                        <td>${kyc.cnic_front ? `<img src="${kyc.cnic_front}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_front}')">` : '-'}</span></div></td>
+                        <td>${kyc.cnic_back ? `<img src="${kyc.cnic_back}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_back}')">` : '-'}</span></div></td>
+                        <td>${kyc.selfie ? `<img src="${kyc.selfie}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.selfie}')">` : '-'}</span></div></td>
                         <td><span class="status-badge ${kyc.status === 'approved' ? 'status-active' : kyc.status === 'rejected' ? 'status-pending' : 'status-kyc-pending'}">${kyc.status || 'pending'}</span></td>
                         <td>${kyc.submitted_at ? new Date(kyc.submitted_at).toLocaleDateString() : '-'}</td>
                         <td>
                             <button onclick="viewKYCDetail('${kyc.id}')" class="btn-info">Review</button>
                             ${kyc.status === 'pending' ? `<button onclick="approveKYCRequest('${kyc.id}')" class="btn-success">Approve</button><button onclick="rejectKYCRequest('${kyc.id}')" class="btn-danger">Reject</button>` : ''}
-                        </td>
+                         </div>
                     </tr>
                 `).join('');
             } catch(e) {
                 console.error('Error loading KYC requests:', e);
                 const tbody = document.getElementById('kycRequestsList');
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">KYC requests table not found. Please create kyc_requests table.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">KYC requests table not found. Please create kyc_requests table. Neutron</div></td>';
                 }
             }
         }
@@ -3117,7 +3113,7 @@
                 if (!tbody) return;
                 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No announcements created yet. Create announcements table.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No announcements created yet. Create announcements table. Neutron</div></tr>';
                     return;
                 }
                 
@@ -3132,7 +3128,7 @@
                         <td>
                             <button onclick="toggleAnnouncement('${a.id}', ${!a.is_active})" class="btn-warning">${a.is_active ? 'Disable' : 'Enable'}</button>
                             <button onclick="deleteAnnouncement('${a.id}')" class="btn-danger">Delete</button>
-                        </td>
+                         </div>
                     </tr>
                 `).join('');
             } catch(e) {
@@ -3303,7 +3299,7 @@
                 if (!tbody) return;
                 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No notifications sent yet. Create notifications table.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No notifications sent yet. Create notifications table. Neutron</div></tr>';
                     return;
                 }
                 
@@ -3313,7 +3309,7 @@
                         <td>${n.type}</td>
                         <td><strong>${escapeHtml(n.title)}</strong></td>
                         <td><small>${escapeHtml(n.message.substring(0, 80))}...</small></td>
-                        <td>${n.user_type}/${n.user_id?.slice(0, 8)}</td>
+                        <td>${n.user_type}/${n.user_id?.slice(0, 8)}</span></div></td>
                         <td>${currentAdminUser?.email || 'admin'}</td>
                     </tr>
                 `).join('');
@@ -3376,7 +3372,7 @@
                 if (!tbody) return;
                 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No payment methods added. Create payment_methods table.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No payment methods added. Create payment_methods table. Neutron</div></tr>';
                     return;
                 }
                 
@@ -3390,7 +3386,7 @@
                         <td>
                             <button onclick="togglePaymentMethod('${p.id}', '${p.status === 'active' ? 'inactive' : 'active'}')" class="btn-warning">${p.status === 'active' ? 'Disable' : 'Enable'}</button>
                             <button onclick="deletePaymentMethod('${p.id}')" class="btn-danger">Delete</button>
-                        </td>
+                         </div>
                     </tr>
                 `).join('');
             } catch(e) {
@@ -3715,7 +3711,7 @@
                 if (!tbody) return;
                 
                 if (!data || data.length === 0) {
-                                       tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No admin users found. Create admin_users table.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No admin users found. Create admin_users table. Neutron</div><tr>';
                     return;
                 }
                 
@@ -4045,7 +4041,7 @@
                 allOrders = data || [];
                 const ordersList = document.getElementById('ordersList');
                 if (!ordersList) return;
-                if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<td><td colspan="10" class="empty-state">No orders found</span></div></table>'; return; }
+                if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></td>'; return; }
                 ordersList.innerHTML = allOrders.map(o => `<tr>
                     <td><strong>${o.id?.slice(0, 12)}...</strong></td>
                     <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
@@ -4572,87 +4568,74 @@
             console.log('11. chat_typing - for typing indicators');
         }
         
-        // ========== FIXED: Initialize Supabase with proper loading and auth ==========
+        // ========== MAIN INITIALIZATION WITH PROPER LOADING ==========
         document.addEventListener('DOMContentLoaded', async function() {
             // Show loader immediately
             showLoading();
-            updateLoadingProgress(0, 'Initializing...');
+            updateLoadingProgress(0, 'Initializing system...');
             
             // Initialize Supabase
-            updateLoadingProgress(5, 'Connecting to Supabase...');
+            updateLoadingProgress(5, 'Connecting to database...');
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            // Check authentication with retry
+            // Check authentication - this function does NOT redirect
             updateLoadingProgress(10, 'Verifying credentials...');
+            const isAuthenticated = await checkAuth();
             
-            let authSuccess = false;
-            let retryCount = 0;
-            const maxRetries = 2;
-            
-            while (!authSuccess && retryCount <= maxRetries) {
-                try {
-                    const authResult = await checkAuth();
-                    if (authResult) {
-                        authSuccess = true;
-                        break;
-                    }
-                } catch (err) {
-                    console.error(`Auth attempt ${retryCount + 1} failed:`, err);
-                }
-                retryCount++;
-                if (retryCount <= maxRetries) {
-                    updateLoadingProgress(10, `Retrying connection (${retryCount}/${maxRetries})...`);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-            }
-            
-            if (!authSuccess) {
-                // Auth failed, redirect to login page
-                updateLoadingProgress(100, 'Authentication failed. Redirecting...');
+            if (!isAuthenticated) {
+                // Only redirect if not authenticated
+                updateLoadingProgress(100, 'Authentication failed. Redirecting to login...');
                 setTimeout(() => {
                     window.location.href = 'admin-auth.html';
                 }, 1000);
                 return;
             }
             
-            updateLoadingProgress(20, 'Loading dashboard data...');
+            // Show success message and continue loading
+            updateLoadingProgress(15, 'Authentication successful! Loading data...');
+            
+            // Create tables if needed (non-blocking)
             await createRequiredTables();
             
-            updateLoadingProgress(30, 'Loading statistics...');
+            // Load all data with progress tracking
+            updateLoadingProgress(20, 'Loading statistics...');
             await loadStats();
             
-            updateLoadingProgress(40, 'Loading investors...');
+            updateLoadingProgress(30, 'Loading investors...');
             await loadInvestors();
             
-            updateLoadingProgress(50, 'Loading buyers...');
+            updateLoadingProgress(40, 'Loading buyers...');
             await loadBuyers();
             
-            updateLoadingProgress(60, 'Loading batches...');
+            updateLoadingProgress(50, 'Loading batches...');
             await loadBatches();
             
-            updateLoadingProgress(70, 'Loading investment history...');
+            updateLoadingProgress(60, 'Loading investment history...');
             await loadInvestmentHistory();
             
-            updateLoadingProgress(75, 'Loading profit history...');
+            updateLoadingProgress(70, 'Loading profit history...');
             await loadProfitHistory();
             
-            updateLoadingProgress(80, 'Loading withdrawal requests...');
+            updateLoadingProgress(75, 'Loading withdrawal requests...');
             await loadWithdrawals();
             
-            updateLoadingProgress(85, 'Loading products...');
+            updateLoadingProgress(80, 'Loading products...');
             await loadProducts();
             
-            updateLoadingProgress(90, 'Loading orders...');
+            updateLoadingProgress(85, 'Loading orders...');
             await loadOrders();
+            
+            updateLoadingProgress(90, 'Loading recent activities...');
+            await loadRecentActivities();
             
             updateLoadingProgress(95, 'Rendering charts...');
             await renderAllCharts();
             
-            updateLoadingProgress(100, 'Ready!');
+            updateLoadingProgress(100, 'Dashboard ready!');
             
             // Load active announcement banner
-            const now = new Date().toISOString();
             try {
+                const now = new Date().toISOString();
                 const { data: bannerAnnouncement } = await supabaseClient
                     .from('announcements')
                     .select('*')
@@ -4674,8 +4657,8 @@
             // Log admin login
             await logActivity('admin_login', 'Admin logged in');
             
-            // Hide loading after a short delay to show completion
-            setTimeout(() => hideLoading(), 1000);
+            // Hide loading and show dashboard
+            setTimeout(() => hideLoading(), 800);
             
             // Setup realtime sync
             setupRealtimeSync();
