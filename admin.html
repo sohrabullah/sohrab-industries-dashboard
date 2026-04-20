@@ -4582,14 +4582,19 @@
             updateLoadingProgress(10, 'Verifying credentials...');
             const isAuthenticated = await checkAuth();
             
-            if (!isAuthenticated) {
-                // Only redirect if not authenticated
-                updateLoadingProgress(100, 'Authentication failed. Redirecting to login...');
-                setTimeout(() => {
-                    window.location.href = 'admin-auth.html';
-                }, 1000);
-                return;
-            }
+           async function checkAuth() {
+    try {
+        // IMPORTANT: Get session and check if user is logged in
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        
+        // CRITICAL FIX: If no session, return false immediately
+        if (error || !session) {
+            console.log('No active session');
+            return false;
+        }
+        
+        // Rest of the code remains the same...
+        
             
             // Show success message and continue loading
             updateLoadingProgress(15, 'Authentication successful! Loading data...');
