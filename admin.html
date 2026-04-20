@@ -938,7 +938,7 @@
             </div>
             
             <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"></table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Main Balance</th><th>Profit Balance</th><th>Referral Balance</th><th>KYC</th><th>Status</th><th>Chat</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Main Balance</th><th>Profit Balance</th><th>Referral Balance</th><th>KYC</th><th>Status</th><th>Chat</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
         </div>
 
         <!-- Buyers Section -->
@@ -954,7 +954,7 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"></table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
@@ -1364,7 +1364,7 @@
             </div>
             
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Timestamp</th><th>Admin Email</th><th>Action Type</th><th>Description</th><th>IP Address</th><th>Device Info</th></tr>
                     </thead>
                     <tbody id="activityLogsList"></tbody>
@@ -1577,18 +1577,14 @@
         }
         
         // ========== FIXED: Check Auth Function - Proper session persistence ==========
+        // IMPORTANT: This function now returns true for authenticated, false for not authenticated
+        // It does NOT redirect - redirect is handled by the caller
         async function checkAuth() {
             try {
-                // Check if we're already on admin-auth page - prevent loop
-                if (window.location.pathname.includes('admin-auth.html')) {
-                    return false;
-                }
-                
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
                 
                 if (error || !session) {
-                    console.log('No active session, redirecting to login...');
-                    window.location.href = 'admin-auth.html';
+                    console.log('No active session');
                     return false;
                 }
                 
@@ -1610,15 +1606,11 @@
                         document.getElementById('adminRoleBadge').innerText = 'Super Admin';
                         return true;
                     }
-                    await supabaseClient.auth.signOut();
-                    window.location.href = 'admin-auth.html';
                     return false;
                 }
                 
                 if (!adminData || !adminData.is_active) {
                     console.log('Not an admin or account inactive');
-                    await supabaseClient.auth.signOut();
-                    window.location.href = 'admin-auth.html';
                     return false;
                 }
                 
@@ -1630,7 +1622,6 @@
                 return true;
             } catch (error) {
                 console.error('Auth check error:', error);
-                // Don't redirect immediately on network errors - retry logic in main init
                 return false;
             }
         }
@@ -1808,7 +1799,7 @@
                 if(!tbody) return;
                 
                 if(allBatches.length === 0 && prodBatchesList.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="17" class="empty-state">No batches created yet. Create your first batch above.</td></table>'; 
+                    tbody.innerHTML = '<tr><td colspan="17" class="empty-state">No batches created yet. Create your first batch above.</td></tr>'; 
                     return; 
                 }
                 
@@ -2773,14 +2764,14 @@
                 if (!tbody) return;
                 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No balance adjustments recorded yet. Create balance_audit_trail table for tracking.</td></tr>';
+                                        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No balance adjustments recorded yet. Create balance_audit_trail table for tracking.</td></tr>';
                     return;
                 }
                 
                 tbody.innerHTML = (data || []).map(record => `
                     <tr>
                         <td>${new Date(record.created_at).toLocaleString()}</td>
-                        <td>${escapeHtml(record.investors?.full_name || record.investor_id)}</span></div></td>
+                        <td>${escapeHtml(record.investors?.full_name || record.investor_id)}</td>
                         <td>${record.wallet_type}</td>
                         <td><span class="status-badge ${record.transaction_type === 'credit' ? 'status-active' : 'status-pending'}">${record.transaction_type}</span></td>
                         <td>Rs. ${(record.amount || 0).toLocaleString()}</td>
@@ -2817,7 +2808,6 @@
             if (!supabaseClient) return;
             
             try {
-                // Load referral settings
                 const { data: settings } = await supabaseClient.from('system_settings').select('value').eq('key', 'referral_settings').single();
                 if (settings) {
                     const refSettings = JSON.parse(settings.value || '{"commission":5,"min_withdraw":500,"multi_level":false}');
@@ -2828,7 +2818,6 @@
             } catch(e) { console.log('Referral settings table not found'); }
             
             try {
-                // Load referral stats
                 const { data: referrals } = await supabaseClient.from('referrals').select('*, referrer:referrer_id(full_name), referred:referred_id(full_name)').order('created_at', { ascending: false });
                 
                 const totalReferrals = referrals?.length || 0;
@@ -2839,7 +2828,6 @@
                 document.getElementById('totalCommission').innerHTML = `Rs. ${totalCommission.toLocaleString()}`;
                 document.getElementById('pendingCommission').innerHTML = `Rs. ${pendingCommission.toLocaleString()}`;
                 
-                // Top referrers
                 const referrerMap = new Map();
                 referrals?.forEach(r => {
                     const referrerName = r.referrer?.full_name || r.referrer_id;
@@ -2860,8 +2848,8 @@
                     } else {
                         topReferrersTbody.innerHTML = topReferrers.map(r => `
                             <tr>
-                                <td>${escapeHtml(r.name)}</span></div></td>
-                                <td>-</span></div></td>
+                                <td>${escapeHtml(r.name)}</td>
+                                <td>-</td>
                                 <td>${r.count}</td>
                                 <td>Rs. ${r.commission.toLocaleString()}</td>
                                 <td><button class="btn-info" onclick="viewReferrerDetails('${r.name}')">View</button></td>
@@ -2870,7 +2858,6 @@
                     }
                 }
                 
-                // Referral transactions
                 const transactionsTbody = document.getElementById('referralTransactionsList');
                 if (transactionsTbody) {
                     if (!referrals || referrals.length === 0) {
@@ -2879,8 +2866,8 @@
                         transactionsTbody.innerHTML = (referrals || []).map(r => `
                             <tr>
                                 <td>${new Date(r.created_at).toLocaleDateString()}</td>
-                                <td>${escapeHtml(r.referrer?.full_name || r.referrer_id)}</span></div></td>
-                                <td>${escapeHtml(r.referred?.full_name || r.referred_id)}</span></div></td>
+                                <td>${escapeHtml(r.referrer?.full_name || r.referrer_id)}</td>
+                                <td>${escapeHtml(r.referred?.full_name || r.referred_id)}</td>
                                 <td>Rs. ${(r.investment_amount || 0).toLocaleString()}</td>
                                 <td>Rs. ${(r.commission_earned || 0).toLocaleString()}</td>
                                 <td><span class="status-badge ${r.commission_paid ? 'status-active' : 'status-pending'}">${r.commission_paid ? 'Paid' : 'Pending'}</span></td>
@@ -2959,15 +2946,15 @@
                 tbody.innerHTML = filtered.map(kyc => `
                     <tr>
                         <td><strong>${escapeHtml(kyc.investors?.full_name || 'Unknown')}</strong><br><small>${kyc.investors?.email || ''}</small></td>
-                        <td>${kyc.cnic_front ? `<img src="${kyc.cnic_front}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_front}')">` : '-'}</span></div></td>
-                        <td>${kyc.cnic_back ? `<img src="${kyc.cnic_back}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_back}')">` : '-'}</span></div></td>
-                        <td>${kyc.selfie ? `<img src="${kyc.selfie}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.selfie}')">` : '-'}</span></div></td>
+                        <td>${kyc.cnic_front ? `<img src="${kyc.cnic_front}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_front}')">` : '-'}</td>
+                        <td>${kyc.cnic_back ? `<img src="${kyc.cnic_back}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_back}')">` : '-'}</td>
+                        <td>${kyc.selfie ? `<img src="${kyc.selfie}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.selfie}')">` : '-'}</td>
                         <td><span class="status-badge ${kyc.status === 'approved' ? 'status-active' : kyc.status === 'rejected' ? 'status-pending' : 'status-kyc-pending'}">${kyc.status || 'pending'}</span></td>
                         <td>${kyc.submitted_at ? new Date(kyc.submitted_at).toLocaleDateString() : '-'}</td>
                         <td>
                             <button onclick="viewKYCDetail('${kyc.id}')" class="btn-info">Review</button>
                             ${kyc.status === 'pending' ? `<button onclick="approveKYCRequest('${kyc.id}')" class="btn-success">Approve</button><button onclick="rejectKYCRequest('${kyc.id}')" class="btn-danger">Reject</button>` : ''}
-                         </div>
+                        </td>
                     </tr>
                 `).join('');
             } catch(e) {
@@ -3145,7 +3132,7 @@
                         <td>
                             <button onclick="toggleAnnouncement('${a.id}', ${!a.is_active})" class="btn-warning">${a.is_active ? 'Disable' : 'Enable'}</button>
                             <button onclick="deleteAnnouncement('${a.id}')" class="btn-danger">Delete</button>
-                         </div>
+                        </td>
                     </tr>
                 `).join('');
             } catch(e) {
@@ -3326,7 +3313,7 @@
                         <td>${n.type}</td>
                         <td><strong>${escapeHtml(n.title)}</strong></td>
                         <td><small>${escapeHtml(n.message.substring(0, 80))}...</small></td>
-                        <td>${n.user_type}/${n.user_id?.slice(0, 8)}</span></div></td>
+                        <td>${n.user_type}/${n.user_id?.slice(0, 8)}</td>
                         <td>${currentAdminUser?.email || 'admin'}</td>
                     </tr>
                 `).join('');
@@ -3403,7 +3390,7 @@
                         <td>
                             <button onclick="togglePaymentMethod('${p.id}', '${p.status === 'active' ? 'inactive' : 'active'}')" class="btn-warning">${p.status === 'active' ? 'Disable' : 'Enable'}</button>
                             <button onclick="deletePaymentMethod('${p.id}')" class="btn-danger">Delete</button>
-                         </div>
+                        </td>
                     </tr>
                 `).join('');
             } catch(e) {
@@ -3728,7 +3715,7 @@
                 if (!tbody) return;
                 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No admin users found. Create admin_users table.</td></tr>';
+                                       tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No admin users found. Create admin_users table.</td></tr>';
                     return;
                 }
                 
@@ -4036,7 +4023,7 @@
                 allWithdrawals = data || [];
                 const withdrawalsList = document.getElementById('withdrawalsList');
                 if (!withdrawalsList) return;
-                if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</span></div><tr>'; return; }
+                if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</span></div></td>'; return; }
                 withdrawalsList.innerHTML = allWithdrawals.map(w => `<tr>
                     <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
                     <td><small>${w.investors?.email || '-'}</small></td>
@@ -4058,7 +4045,7 @@
                 allOrders = data || [];
                 const ordersList = document.getElementById('ordersList');
                 if (!ordersList) return;
-                if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></td>'; return; }
+                if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<td><td colspan="10" class="empty-state">No orders found</span></div></table>'; return; }
                 ordersList.innerHTML = allOrders.map(o => `<tr>
                     <td><strong>${o.id?.slice(0, 12)}...</strong></td>
                     <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
@@ -4620,7 +4607,11 @@
             }
             
             if (!authSuccess) {
-                // Auth failed, loader will be hidden by redirect
+                // Auth failed, redirect to login page
+                updateLoadingProgress(100, 'Authentication failed. Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'admin-auth.html';
+                }, 1000);
                 return;
             }
             
