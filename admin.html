@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
+        /* All your existing styles remain exactly the same */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
@@ -33,6 +34,105 @@
                 radial-gradient(circle at 80% 20%, rgba(30,78,62,0.15) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
+        }
+        
+        /* Loading Overlay Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-container {
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 28px;
+            padding: 40px;
+            text-align: center;
+            min-width: 320px;
+            border: 1px solid rgba(232,177,60,0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: fadeSlideUp 0.3s ease;
+        }
+        
+        .loading-container h3 {
+            color: #E8B13C;
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .progress-bar-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            height: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #E8B13C, #ffd966);
+            width: 0%;
+            height: 100%;
+            border-radius: 50px;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .loading-percentage {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #E8B13C;
+            margin: 10px 0;
+        }
+        
+        .loading-status {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(232,177,60,0.3);
+            border-top-color: #E8B13C;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         @keyframes fadeSlideUp {
@@ -408,7 +508,6 @@
         }
         .required-star { color: #dc3545; margin-left: 4px; }
         
-        /* 2FA Modal Styles */
         .twofa-container {
             text-align: center;
         }
@@ -426,7 +525,6 @@
             font-family: monospace;
         }
         
-        /* Announcement Banner */
         .announcement-banner {
             background: linear-gradient(135deg, #E8B13C, #c99b2e);
             color: #0a1f1a;
@@ -450,7 +548,6 @@
             color: #0a1f1a;
         }
         
-        /* Popup Styles */
         .custom-popup {
             position: fixed;
             top: 50%;
@@ -479,7 +576,6 @@
         }
         .popup-overlay.active { display: block; }
         
-        /* KYC Upload */
         .kyc-doc-preview {
             display: flex;
             gap: 15px;
@@ -498,7 +594,6 @@
             border-radius: 8px;
         }
         
-        /* Role Badges */
         .role-badge {
             display: inline-block;
             padding: 4px 12px;
@@ -661,6 +756,19 @@
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <h3><i class="fas fa-shield-alt"></i> Sohrab Industries</h3>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
+            <div class="loading-status" id="loadingStatus">Initializing system...</div>
+        </div>
+    </div>
+    
     <!-- Popup Overlay -->
     <div id="popupOverlay" class="popup-overlay"></div>
     <div id="customPopup" class="custom-popup">
@@ -852,14 +960,14 @@
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
             <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
-            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
         </div>
 
         <!-- Investment Requests Section -->
         <div id="investmentRequestsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Actions</th></tr></thead>
                     <tbody id="investmentRequestsList"></tbody>
                 </table>
@@ -880,7 +988,7 @@
                 <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
             </div>
             <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
-            <div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
         </div>
 
         <!-- Profits Section -->
@@ -904,7 +1012,7 @@
             <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
             <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary">Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button></div>
             <div class="table-container">
-                <table>
+                </table>
                     <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Approval Screenshot</th><th>Actions</th></tr></thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
@@ -934,10 +1042,10 @@
                 <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
                 <div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="🔍 Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div>
             </div>
-            <div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></tr></div>
         </div>
 
-        <!-- WALLET MANAGEMENT Section (NEW) -->
+        <!-- WALLET MANAGEMENT Section -->
         <div id="walletsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-wallet"></i> Wallet Management</h2>
             
@@ -963,14 +1071,15 @@
             <h2 class="section-title"><i class="fas fa-list"></i> Balance Adjustment History (Audit Trail)</h2>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Date</th><th>Investor</th><th>Wallet Type</th><th>Type</th><th>Amount</th><th>Previous Balance</th><th>New Balance</th><th>Reason</th><th>Adjusted By</th></tr>
+                    <thead>
+                        <tr><th>Date</th><th>Investor</th><th>Wallet Type</th><th>Type</th><th>Amount</th><th>Previous Balance</th><th>New Balance</th><th>Reason</th><th>Adjusted By</th></tr>
                     </thead>
                     <tbody id="balanceAuditTrail"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- AFFILIATE/REFERRAL SYSTEM Section (NEW) -->
+        <!-- AFFILIATE/REFERRAL SYSTEM Section -->
         <div id="affiliatesSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-link"></i> Referral & Affiliate System</h2>
             
@@ -1004,7 +1113,7 @@
             
             <div class="table-container">
                 <h3 style="color:#E8B13C; margin:15px 0;">Referral Transactions</h3>
-                <table>
+                </table>
                     <thead><tr><th>Date</th><th>Referrer</th><th>Referred User</th><th>Amount</th><th>Commission</th><th>Status</th></tr>
                     </thead>
                     <tbody id="referralTransactionsList"></tbody>
@@ -1012,7 +1121,7 @@
             </div>
         </div>
 
-        <!-- KYC VERIFICATION Section (NEW) -->
+        <!-- KYC VERIFICATION Section -->
         <div id="kycSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-id-card"></i> KYC Verification System</h2>
             
@@ -1038,7 +1147,7 @@
             </div>
         </div>
 
-        <!-- ANNOUNCEMENT SYSTEM Section (NEW) -->
+        <!-- ANNOUNCEMENT SYSTEM Section -->
         <div id="announcementsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-bullhorn"></i> Announcement Management</h2>
             
@@ -1076,7 +1185,7 @@
             </div>
         </div>
 
-        <!-- NOTIFICATION SYSTEM Section (NEW) -->
+        <!-- NOTIFICATION SYSTEM Section -->
         <div id="notificationsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-bell"></i> Notification System</h2>
             
@@ -1107,7 +1216,7 @@
             
             <h2 class="section-title"><i class="fas fa-history"></i> Notification History</h2>
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Date</th><th>Type</th><th>Title</th><th>Message</th><th>Target</th><th>Sent By</th></tr>
                     </thead>
                     <tbody id="notificationHistoryList"></tbody>
@@ -1115,7 +1224,7 @@
             </div>
         </div>
 
-        <!-- PAYMENT METHOD MANAGEMENT Section (NEW) -->
+        <!-- PAYMENT METHOD MANAGEMENT Section -->
         <div id="paymentMethodsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-credit-card"></i> Payment Methods Management</h2>
             
@@ -1143,7 +1252,7 @@
             </div>
         </div>
 
-        <!-- REPORTS & ANALYTICS Section (NEW) -->
+        <!-- REPORTS & ANALYTICS Section -->
         <div id="reportsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-chart-bar"></i> Reports & Analytics</h2>
             
@@ -1179,7 +1288,7 @@
             </div>
         </div>
 
-        <!-- SYSTEM SETTINGS Section (NEW) -->
+        <!-- SYSTEM SETTINGS Section -->
         <div id="settingsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-cog"></i> System Settings</h2>
             
@@ -1206,7 +1315,7 @@
             </div>
         </div>
 
-        <!-- ADMIN USERS MANAGEMENT Section (NEW) -->
+        <!-- ADMIN USERS MANAGEMENT Section -->
         <div id="adminUsersSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-user-shield"></i> Admin Users Management</h2>
             
@@ -1241,7 +1350,7 @@
             </div>
         </div>
 
-        <!-- ACTIVITY LOGS Section (NEW) -->
+        <!-- ACTIVITY LOGS Section -->
         <div id="activityLogsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-history"></i> Activity Logs</h2>
             
@@ -1261,7 +1370,7 @@
             </div>
             
             <div class="table-container">
-                <table>
+                <tr>
                     <thead><tr><th>Timestamp</th><th>Admin Email</th><th>Action Type</th><th>Description</th><th>IP Address</th><th>Device Info</th></tr>
                     </thead>
                     <tbody id="activityLogsList"></tbody>
@@ -1444,6 +1553,35 @@
                 .subscribe();
         }
         
+        // Loading Overlay Functions
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.remove('hide');
+                overlay.style.display = 'flex';
+            }
+        }
+        
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('hide');
+                setTimeout(() => {
+                    if (overlay) overlay.style.display = 'none';
+                }, 500);
+            }
+        }
+        
+        function updateLoadingProgress(percentage, status) {
+            const fill = document.getElementById('progressBarFill');
+            const percentSpan = document.getElementById('loadingPercentage');
+            const statusSpan = document.getElementById('loadingStatus');
+            
+            if (fill) fill.style.width = percentage + '%';
+            if (percentSpan) percentSpan.innerText = percentage + '%';
+            if (statusSpan) statusSpan.innerText = status;
+        }
+        
         // Helper Functions
         function showNotification(msg, isError = false, title = "") { 
             Swal.fire({ icon: isError ? 'error' : 'success', title: title || (isError ? 'Error!' : 'Success!'), text: msg, background: 'linear-gradient(145deg, #1a3d33, #0f2a22)', color: '#fff', confirmButtonColor: '#E8B13C', timer: isError ? 3000 : 2000 });
@@ -1486,6 +1624,97 @@
             if (section === 'activityLogs') { loadActivityLogs(); }
         };
 
+        // ========== ACTIVITY LOGGING SYSTEM ==========
+        async function logActivity(actionType, description) {
+            if (!supabaseClient || !currentAdminUser) return;
+            try {
+                let ipAddress = 'Unknown';
+                try {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipRes.json();
+                    ipAddress = ipData.ip;
+                } catch(e) { console.log('IP fetch failed'); }
+                
+                const deviceInfo = `${navigator.userAgent.substring(0, 200)}`;
+                
+                await supabaseClient.from('admin_activity_logs').insert([{
+                    admin_id: currentAdminUser.id,
+                    admin_email: currentAdminUser.email,
+                    action_type: actionType,
+                    description: description,
+                    ip_address: ipAddress,
+                    device_info: deviceInfo,
+                    created_at: new Date().toISOString()
+                }]);
+            } catch(e) { console.error('Failed to log activity:', e); }
+        }
+        
+        async function loadActivityLogs() {
+            if (!supabaseClient) return;
+            const searchTerm = document.getElementById('logSearch')?.value.toLowerCase() || '';
+            const typeFilter = document.getElementById('logTypeFilter')?.value || 'all';
+            
+            let query = supabaseClient.from('admin_activity_logs').select('*').order('created_at', { ascending: false });
+            
+            if (typeFilter !== 'all') {
+                query = query.eq('action_type', typeFilter);
+            }
+            
+            const { data } = await query.limit(200);
+            
+            let filtered = data || [];
+            if (searchTerm) {
+                filtered = filtered.filter(log => 
+                    log.description?.toLowerCase().includes(searchTerm) || 
+                    log.admin_email?.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            const tbody = document.getElementById('activityLogsList');
+            if (!tbody) return;
+            
+            tbody.innerHTML = filtered.map(log => `
+                <tr>
+                    <td>${new Date(log.created_at).toLocaleString()}</td>
+                    <td>${escapeHtml(log.admin_email || 'Unknown')}</td>
+                    <td><span class="status-badge status-active">${log.action_type}</span></td>
+                    <td>${escapeHtml(log.description || '')}</td>
+                    <td><small>${log.ip_address || '-'}</small></td>
+                    <td><small>${escapeHtml((log.device_info || '-').substring(0, 50))}</small></td>
+                </tr>
+            `).join('');
+        }
+        
+        async function exportLogs() {
+            const { data } = await supabaseClient.from('admin_activity_logs').select('*').order('created_at', { ascending: false });
+            if (!data || data.length === 0) {
+                showNotification('No logs to export', true);
+                return;
+            }
+            
+            const csvRows = [['Timestamp', 'Admin Email', 'Action Type', 'Description', 'IP Address', 'Device Info']];
+            for (const log of data) {
+                csvRows.push([
+                    new Date(log.created_at).toLocaleString(),
+                    log.admin_email,
+                    log.action_type,
+                    log.description,
+                    log.ip_address || '',
+                    (log.device_info || '').substring(0, 200)
+                ]);
+            }
+            
+            const csvContent = csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `activity_logs_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('Logs exported successfully!', false);
+        }
+        
         // ========== ENHANCED INVESTMENT BATCH SYSTEM ==========
         async function createInvestmentBatch() {
             const batchName = document.getElementById('newBatchName').value.trim();
@@ -1531,12 +1760,10 @@
                 
                 if (error) throw error;
                 
-                // Log activity
                 await logActivity('batch_create', `Created new batch: ${batchName}`);
                 
                 showNotification('Investment batch created successfully!', false);
                 
-                // Reset form
                 document.getElementById('newBatchName').value = '';
                 document.getElementById('newBatchAmount').value = '';
                 document.getElementById('newBatchProfitPercent').value = '50';
@@ -1611,18 +1838,18 @@
                         <td>${batch.id?.slice(0, 12)}...</td>
                         <td><strong>${escapeHtml(batch.batch_name || 'N/A')}</strong></td>
                         <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
-                        <td>${batch.profit_percentage || 0}%</td>
-                        <td>${batch.duration_days || 0} days</td>
-                        <td>${batch.total_slots || 0}</td>
-                        <td>${slotWarning}</td>
-                        <td>${batch.production_quantity || 0}</td>
+                        <td>${batch.profit_percentage || 0}%</span></div></td>
+                        <td>${batch.duration_days || 0} days</span></div></td>
+                        <td>${batch.total_slots || 0}</span></div></td>
+                        <td>${slotWarning}</span></div></td>
+                        <td>${batch.production_quantity || 0}</span></div></td>
                         <td><span class="status-badge ${statusClass}">${batch.status || 'In Production'}</span></td>
-                        <td>${progressHtml}</td>
+                        <td>${progressHtml}</span></div></td>
                         <td>Rs. ${(batch.sales || 0).toLocaleString()}</td>
                         <td>Rs. ${(batch.expenses || 0).toLocaleString()}</td>
                         <td class="${netProfit < 0 ? 'loss-negative' : ''}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
                         <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
-                        <td>${roi}%</td>
+                        <td>${roi}%</span></div></td>
                         <td><span class="status-badge ${batch.is_visible ? 'status-active' : 'status-pending'}">${batch.is_visible ? 'Visible' : 'Hidden'}</span></td>
                         <td class="action-buttons">
                             <button onclick="event.stopPropagation();updateInvestmentBatch('${batch.id}')" class="btn-warning">Edit</button>
@@ -1652,7 +1879,7 @@
                     totalRoi += parseFloat(roi);
                     
                     html += `<tr class="batch-row" onclick="showBatchDetail('${batch.id}', 'production')">
-                        <td>${batch.id?.slice(0, 12)}...</td>
+                        <td>${batch.id?.slice(0, 12)}...</span></div></td>
                         <td>Production Batch</span></div></td>
                         <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
                         <td>50%</span></div></td>
@@ -1748,8 +1975,15 @@
             });
             
             if (result.isConfirmed) {
+                showLoading();
+                updateLoadingProgress(10, 'Distributing profits...');
+                
                 try {
-                    for (const dist of distributions) {
+                    for (let i = 0; i < distributions.length; i++) {
+                        const dist = distributions[i];
+                        const progress = 10 + Math.floor((i / distributions.length) * 80);
+                        updateLoadingProgress(progress, `Processing ${dist.investorName}...`);
+                        
                         const txId = `PROFIT-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
                         
                         await supabaseClient.from('profit_ledger').insert([{
@@ -1788,12 +2022,16 @@
                     
                     await logActivity('profit_distribute', `Distributed Rs. ${profitAmount.toLocaleString()} profit from batch ${batch.batch_name}`);
                     
+                    updateLoadingProgress(100, 'Profit distribution complete!');
+                    setTimeout(() => hideLoading(), 1000);
+                    
                     showNotification(`Profit of Rs. ${profitAmount.toLocaleString()} distributed to ${distributions.length} investors!`, false);
                     loadBatches();
                     loadInvestors();
                     loadStats();
                     renderAllCharts();
                 } catch(e) { 
+                    hideLoading();
                     showNotification(e.message, true);
                     console.error('Distribution error:', e);
                 }
@@ -2243,101 +2481,21 @@
         };
         
         async function refreshAllData() {
-            await loadStats(); await loadInvestors(); await loadBuyers(); await loadInvestmentRequests();
-            await loadInvestmentHistory(); await loadProfitHistory(); await loadWithdrawals();
-            await loadProducts(); await loadOrders(); await loadRecentActivities(); await loadBatches(); await renderAllCharts();
-        }
-        
-        // ========== ACTIVITY LOGGING SYSTEM ==========
-        async function logActivity(actionType, description) {
-            if (!supabaseClient || !currentAdminUser) return;
-            try {
-                // Get IP and device info
-                let ipAddress = 'Unknown';
-                try {
-                    const ipRes = await fetch('https://api.ipify.org?format=json');
-                    const ipData = await ipRes.json();
-                    ipAddress = ipData.ip;
-                } catch(e) { console.log('IP fetch failed'); }
-                
-                const deviceInfo = `${navigator.userAgent.substring(0, 200)}`;
-                
-                await supabaseClient.from('admin_activity_logs').insert([{
-                    admin_id: currentAdminUser.id,
-                    admin_email: currentAdminUser.email,
-                    action_type: actionType,
-                    description: description,
-                    ip_address: ipAddress,
-                    device_info: deviceInfo,
-                    created_at: new Date().toISOString()
-                }]);
-            } catch(e) { console.error('Failed to log activity:', e); }
-        }
-        
-        async function loadActivityLogs() {
-            if (!supabaseClient) return;
-            const searchTerm = document.getElementById('logSearch')?.value.toLowerCase() || '';
-            const typeFilter = document.getElementById('logTypeFilter')?.value || 'all';
-            
-            let query = supabaseClient.from('admin_activity_logs').select('*').order('created_at', { ascending: false });
-            
-            if (typeFilter !== 'all') {
-                query = query.eq('action_type', typeFilter);
-            }
-            
-            const { data } = await query.limit(200);
-            
-            let filtered = data || [];
-            if (searchTerm) {
-                filtered = filtered.filter(log => 
-                    log.description?.toLowerCase().includes(searchTerm) || 
-                    log.admin_email?.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            const tbody = document.getElementById('activityLogsList');
-            if (!tbody) return;
-            
-            tbody.innerHTML = filtered.map(log => `
-                <tr>
-                    <td>${new Date(log.created_at).toLocaleString()}</td>
-                    <td>${escapeHtml(log.admin_email || 'Unknown')}</td>
-                    <td><span class="status-badge status-active">${log.action_type}</span></td>
-                    <td>${escapeHtml(log.description || '')}</td>
-                    <td><small>${log.ip_address || '-'}</small></td>
-                    <td><small>${escapeHtml((log.device_info || '-').substring(0, 50))}</small></td>
-                </tr>
-            `).join('');
-        }
-        
-        async function exportLogs() {
-            const { data } = await supabaseClient.from('admin_activity_logs').select('*').order('created_at', { ascending: false });
-            if (!data || data.length === 0) {
-                showNotification('No logs to export', true);
-                return;
-            }
-            
-            const csvRows = [['Timestamp', 'Admin Email', 'Action Type', 'Description', 'IP Address', 'Device Info']];
-            for (const log of data) {
-                csvRows.push([
-                    new Date(log.created_at).toLocaleString(),
-                    log.admin_email,
-                    log.action_type,
-                    log.description,
-                    log.ip_address || '',
-                    (log.device_info || '').substring(0, 200)
-                ]);
-            }
-            
-            const csvContent = csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `activity_logs_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showNotification('Logs exported successfully!', false);
+            showLoading();
+            updateLoadingProgress(10, 'Loading statistics...');
+            await loadStats();
+            updateLoadingProgress(30, 'Loading investors...');
+            await loadInvestors();
+            updateLoadingProgress(50, 'Loading batches...');
+            await loadBatches();
+            updateLoadingProgress(70, 'Loading transactions...');
+            await loadInvestmentHistory();
+            updateLoadingProgress(85, 'Loading withdrawal requests...');
+            await loadWithdrawals();
+            updateLoadingProgress(95, 'Finalizing...');
+            await renderAllCharts();
+            updateLoadingProgress(100, 'Ready!');
+            setTimeout(() => hideLoading(), 500);
         }
         
         // ========== WALLET & BALANCE CONTROL ==========
@@ -2399,7 +2557,6 @@
                     
                     await supabaseClient.from('investors').update(updateObj).eq('id', investorId);
                     
-                    // Record in balance audit trail
                     await supabaseClient.from('balance_audit_trail').insert([{
                         investor_id: investorId,
                         wallet_type: walletType,
@@ -2499,7 +2656,7 @@
             tbody.innerHTML = (data || []).map(record => `
                 <tr>
                     <td>${new Date(record.created_at).toLocaleString()}</td>
-                    <td>${escapeHtml(record.investors?.full_name || record.investor_id)}</td>
+                    <td>${escapeHtml(record.investors?.full_name || record.investor_id)}</span></div></td>
                     <td>${record.wallet_type}</td>
                     <td><span class="status-badge ${record.transaction_type === 'credit' ? 'status-active' : 'status-pending'}">${record.transaction_type}</span></td>
                     <td>Rs. ${(record.amount || 0).toLocaleString()}</td>
@@ -2524,67 +2681,68 @@
         async function loadReferralData() {
             if (!supabaseClient) return;
             
-            // Load referral settings
-            const { data: settings } = await supabaseClient.from('system_settings').select('value').eq('key', 'referral_settings').single();
-            if (settings) {
-                const refSettings = JSON.parse(settings.value || '{"commission":5,"min_withdraw":500,"multi_level":false}');
-                document.getElementById('referralCommission').value = refSettings.commission || 5;
-                document.getElementById('referralMinWithdraw').value = refSettings.min_withdraw || 500;
-                document.getElementById('multiLevelEnabled').value = refSettings.multi_level ? 'true' : 'false';
-            }
-            
-            // Load referral stats
-            const { data: referrals } = await supabaseClient.from('referrals').select('*, referrer:referrer_id(full_name), referred:referred_id(full_name)').order('created_at', { ascending: false });
-            
-            // Calculate totals
-            const totalReferrals = referrals?.length || 0;
-            const totalCommission = referrals?.reduce((sum, r) => sum + (r.commission_paid || 0), 0) || 0;
-            const pendingCommission = referrals?.reduce((sum, r) => sum + ((r.commission_earned || 0) - (r.commission_paid || 0)), 0) || 0;
-            
-            document.getElementById('totalReferrals').innerHTML = totalReferrals;
-            document.getElementById('totalCommission').innerHTML = `Rs. ${totalCommission.toLocaleString()}`;
-            document.getElementById('pendingCommission').innerHTML = `Rs. ${pendingCommission.toLocaleString()}`;
-            
-            // Top referrers
-            const referrerMap = new Map();
-            referrals?.forEach(r => {
-                const referrerName = r.referrer?.full_name || r.referrer_id;
-                if (!referrerMap.has(referrerName)) {
-                    referrerMap.set(referrerName, { count: 0, commission: 0 });
+            try {
+                const { data: settings } = await supabaseClient.from('system_settings').select('value').eq('key', 'referral_settings').single();
+                if (settings) {
+                    const refSettings = JSON.parse(settings.value || '{"commission":5,"min_withdraw":500,"multi_level":false}');
+                    document.getElementById('referralCommission').value = refSettings.commission || 5;
+                    document.getElementById('referralMinWithdraw').value = refSettings.min_withdraw || 500;
+                    document.getElementById('multiLevelEnabled').value = refSettings.multi_level ? 'true' : 'false';
                 }
-                const stats = referrerMap.get(referrerName);
-                stats.count++;
-                stats.commission += (r.commission_earned || 0);
-            });
+            } catch(e) { console.log('Referral settings table not found'); }
             
-            const topReferrers = Array.from(referrerMap.entries()).map(([name, stats]) => ({ name, ...stats })).sort((a, b) => b.commission - a.commission).slice(0, 10);
-            
-            const topReferrersTbody = document.getElementById('topReferrersList');
-            if (topReferrersTbody) {
-                topReferrersTbody.innerHTML = topReferrers.map(r => `
-                    <tr>
-                        <td>${escapeHtml(r.name)}</td>
-                        <td>-</td>
-                        <td>${r.count}</td>
-                        <td>Rs. ${r.commission.toLocaleString()}</td>
-                        <td><button class="btn-info" onclick="viewReferrerDetails('${r.name}')">View</button></td>
-                    </tr>
-                `).join('');
-            }
-            
-            // Referral transactions
-            const transactionsTbody = document.getElementById('referralTransactionsList');
-            if (transactionsTbody) {
-                transactionsTbody.innerHTML = (referrals || []).map(r => `
-                    <tr>
-                        <td>${new Date(r.created_at).toLocaleDateString()}</td>
-                        <td>${escapeHtml(r.referrer?.full_name || r.referrer_id)}</td>
-                        <td>${escapeHtml(r.referred?.full_name || r.referred_id)}</td>
-                        <td>Rs. ${(r.investment_amount || 0).toLocaleString()}</td>
-                        <td>Rs. ${(r.commission_earned || 0).toLocaleString()}</td>
-                        <td><span class="status-badge ${r.commission_paid ? 'status-active' : 'status-pending'}">${r.commission_paid ? 'Paid' : 'Pending'}</span></td>
-                    </tr>
-                `).join('');
+            try {
+                const { data: referrals } = await supabaseClient.from('referrals').select('*, referrer:referrer_id(full_name), referred:referred_id(full_name)').order('created_at', { ascending: false });
+                
+                const totalReferrals = referrals?.length || 0;
+                const totalCommission = referrals?.reduce((sum, r) => sum + (r.commission_paid || 0), 0) || 0;
+                const pendingCommission = referrals?.reduce((sum, r) => sum + ((r.commission_earned || 0) - (r.commission_paid || 0)), 0) || 0;
+                
+                document.getElementById('totalReferrals').innerHTML = totalReferrals;
+                document.getElementById('totalCommission').innerHTML = `Rs. ${totalCommission.toLocaleString()}`;
+                document.getElementById('pendingCommission').innerHTML = `Rs. ${pendingCommission.toLocaleString()}`;
+                
+                const referrerMap = new Map();
+                referrals?.forEach(r => {
+                    const referrerName = r.referrer?.full_name || r.referrer_id;
+                    if (!referrerMap.has(referrerName)) {
+                        referrerMap.set(referrerName, { count: 0, commission: 0 });
+                    }
+                    const stats = referrerMap.get(referrerName);
+                    stats.count++;
+                    stats.commission += (r.commission_earned || 0);
+                });
+                
+                const topReferrers = Array.from(referrerMap.entries()).map(([name, stats]) => ({ name, ...stats })).sort((a, b) => b.commission - a.commission).slice(0, 10);
+                
+                const topReferrersTbody = document.getElementById('topReferrersList');
+                if (topReferrersTbody) {
+                    topReferrersTbody.innerHTML = topReferrers.map(r => `
+                        <tr>
+                            <td>${escapeHtml(r.name)}</span></div></td>
+                            <td>-</span></div></td>
+                            <td>${r.count}</td>
+                            <td>Rs. ${r.commission.toLocaleString()}</td>
+                            <td><button class="btn-info" onclick="viewReferrerDetails('${r.name}')">View</button></td>
+                        </tr>
+                    `).join('');
+                }
+                
+                const transactionsTbody = document.getElementById('referralTransactionsList');
+                if (transactionsTbody) {
+                    transactionsTbody.innerHTML = (referrals || []).map(r => `
+                        <tr>
+                            <td>${new Date(r.created_at).toLocaleDateString()}</td>
+                            <td>${escapeHtml(r.referrer?.full_name || r.referrer_id)}</span></div></td>
+                            <td>${escapeHtml(r.referred?.full_name || r.referred_id)}</span></div></td>
+                            <td>Rs. ${(r.investment_amount || 0).toLocaleString()}</td>
+                            <td>Rs. ${(r.commission_earned || 0).toLocaleString()}</td>
+                            <td><span class="status-badge ${r.commission_paid ? 'status-active' : 'status-pending'}">${r.commission_paid ? 'Paid' : 'Pending'}</span></td>
+                        </tr>
+                    `).join('');
+                }
+            } catch(e) {
+                console.error('Error loading referral data:', e);
             }
         }
         
@@ -2652,7 +2810,7 @@
                     <td>
                         <button onclick="viewKYCDetail('${kyc.id}')" class="btn-info">Review</button>
                         ${kyc.status === 'pending' ? `<button onclick="approveKYCRequest('${kyc.id}')" class="btn-success">Approve</button><button onclick="rejectKYCRequest('${kyc.id}')" class="btn-danger">Reject</button>` : ''}
-                    </td>
+                     </div>
                 </tr>
             `).join('');
         }
@@ -2692,7 +2850,6 @@
                     reviewed_by: currentAdminUser?.email || 'admin'
                 }).eq('id', pendingKYCId);
                 
-                // Update investor's KYC status
                 const { data: kyc } = await supabaseClient.from('kyc_requests').select('investor_id').eq('id', pendingKYCId).single();
                 await supabaseClient.from('investors').update({ kyc_status: 'approved' }).eq('id', kyc.investor_id);
                 
@@ -2788,7 +2945,6 @@
                 
                 loadAnnouncements();
                 
-                // Show popup immediately if scheduled for now
                 if (!scheduleDate || new Date(scheduleDate) <= new Date()) {
                     showActivePopup();
                 }
@@ -2815,7 +2971,7 @@
                     <td>
                         <button onclick="toggleAnnouncement('${a.id}', ${!a.is_active})" class="btn-warning">${a.is_active ? 'Disable' : 'Enable'}</button>
                         <button onclick="deleteAnnouncement('${a.id}')" class="btn-danger">Delete</button>
-                    </td>
+                     </div>
                 </tr>
             `).join('');
         }
@@ -2973,7 +3129,7 @@
                     <td>${n.type}</td>
                     <td><strong>${escapeHtml(n.title)}</strong></td>
                     <td><small>${escapeHtml(n.message.substring(0, 80))}...</small></td>
-                    <td>${n.user_type}/${n.user_id?.slice(0, 8)}</td>
+                    <td>${n.user_type}/${n.user_id?.slice(0, 8)}</span></div></td>
                     <td>${currentAdminUser?.email || 'admin'}</td>
                 </tr>
             `).join('');
@@ -3041,7 +3197,7 @@
                     <td>
                         <button onclick="togglePaymentMethod('${p.id}', '${p.status === 'active' ? 'inactive' : 'active'}')" class="btn-warning">${p.status === 'active' ? 'Disable' : 'Enable'}</button>
                         <button onclick="deletePaymentMethod('${p.id}')" class="btn-danger">Delete</button>
-                    </td>
+                     </div>
                 </tr>
             `).join('');
         }
@@ -3303,7 +3459,6 @@
             }
             
             try {
-                // Create auth user
                 const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
@@ -3567,7 +3722,7 @@
             allProducts = data || [];
             const productsList = document.getElementById('productsList');
             if(productsList) {
-                if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</td></tr>'; return; }
+                if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="5" class="empty-state">No products found</span></div></td>'; return; }
                 productsList.innerHTML = data.map(p=>`<tr>
                     <td><strong>${escapeHtml(p.name)}</strong></td>
                     <td>${p.category}</td>
@@ -3632,7 +3787,7 @@
             allWithdrawals = data || [];
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
-            if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; return; }
+            if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</span></div></td>'; return; }
             withdrawalsList.innerHTML = allWithdrawals.map(w => `<tr>
                 <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
                 <td><small>${w.investors?.email || '-'}</small></td>
@@ -3652,7 +3807,7 @@
             allOrders = data || [];
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
-            if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; return; }
+            if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></td>'; return; }
             ordersList.innerHTML = allOrders.map(o => `<tr>
                 <td><strong>${o.id?.slice(0, 12)}...</strong></td>
                 <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
@@ -3828,7 +3983,6 @@
             if(result.isConfirmed) { 
                 await supabaseClient.from('investments').update({ status: 'active' }).eq('id', id); 
                 
-                // Update investor balance
                 const { data: investor } = await supabaseClient.from('investors').select('available_balance, total_investment').eq('id', investorId).single();
                 await supabaseClient.from('investors').update({ 
                     available_balance: (investor?.available_balance || 0) + amount,
@@ -3870,7 +4024,6 @@
         };
         
         window.approveWithdrawal = async function(id, amount, investorId){ 
-            // Check daily withdrawal limit
             const today = new Date().toISOString().split('T')[0];
             const { data: todayWithdrawals } = await supabaseClient
                 .from('withdrawals')
@@ -3880,7 +4033,7 @@
                 .gte('request_date', today);
             
             const todayTotal = todayWithdrawals?.reduce((sum, w) => sum + (w.amount || 0), 0) || 0;
-            const dailyLimit = 50000; // Rs. 50,000 daily limit
+            const dailyLimit = 50000;
             
             if (todayTotal + amount > dailyLimit) {
                 Swal.fire({
@@ -4015,7 +4168,6 @@
                 }]); 
                 if(error) throw error;
                 
-                // Update investor balance
                 const { data: investor } = await supabaseClient.from('investors').select('available_balance, total_investment').eq('id', investorId).single();
                 await supabaseClient.from('investors').update({ 
                     available_balance: (investor?.available_balance || 0) + amount,
@@ -4053,7 +4205,6 @@
                 }]); 
                 if(error) throw error;
                 
-                // Update investor profit balance
                 const { data: investor } = await supabaseClient.from('investors').select('profit_balance, total_profit').eq('id', investorId).single();
                 await supabaseClient.from('investors').update({ 
                     profit_balance: (investor?.profit_balance || 0) + amount,
@@ -4132,7 +4283,7 @@
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
             if (filtered.length === 0) { 
-                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div><tr>'; 
+                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></td>'; 
                 return; 
             }
             ordersList.innerHTML = filtered.map(o => `<tr>
@@ -4176,60 +4327,77 @@
             console.log('9. system_settings - for system configuration');
             console.log('10. chat_messages - for live chat (already exists)');
             console.log('11. chat_typing - for typing indicators');
-            
-            // Add columns to investors table if needed
-            try {
-                await supabaseClient.from('investors').select('profit_balance').limit(1);
-            } catch(e) {
-                console.log('Please add column: profit_balance to investors table');
-            }
-            try {
-                await supabaseClient.from('investors').select('referral_balance').limit(1);
-            } catch(e) {
-                console.log('Please add column: referral_balance to investors table');
-            }
-            try {
-                await supabaseClient.from('investors').select('kyc_status').limit(1);
-            } catch(e) {
-                console.log('Please add column: kyc_status to investors table');
-            }
-            try {
-                await supabaseClient.from('investors').select('is_blocked').limit(1);
-            } catch(e) {
-                console.log('Please add column: is_blocked to investors table');
-            }
         }
         
+        // ========== FIXED: MAIN INITIALIZATION WITH PROPER LOADER ==========
+        // Show loader immediately when page starts loading
+        showLoading();
+        updateLoadingProgress(0, 'Starting admin panel...');
+        
         // Initialize Supabase
-        document.addEventListener('DOMContentLoaded', function() {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
-            supabaseClient.auth.getSession().then(async ({ data: { session } }) => {
-                if (session?.user) {
-                    currentAdminUser = session.user;
-                    
-                    // Check if user is admin
-                    const { data: adminData } = await supabaseClient.from('admin_users').select('role').eq('id', session.user.id).single();
-                    if (adminData) {
-                        currentAdminRole = adminData.role;
-                        document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
-                        
-                        // Restrict access based on role
-                        if (currentAdminRole === 'staff') {
-                            document.querySelectorAll('.nav-tab').forEach(tab => {
-                                const restrictedTabs = ['adminUsers', 'settings', 'activityLogs'];
-                                if (restrictedTabs.some(r => tab.innerText.toLowerCase().includes(r))) {
-                                    tab.style.display = 'none';
-                                }
-                            });
-                        }
-                    }
-                    
-                    await checkAuth();
-                    await createRequiredTables();
-                    
-                    // Load active announcement banner
-                    const now = new Date().toISOString();
+        updateLoadingProgress(5, 'Connecting to database...');
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Check authentication - THIS IS THE CRITICAL FIX
+        updateLoadingProgress(10, 'Verifying credentials...');
+        
+        supabaseClient.auth.getSession().then(async ({ data: { session } }) => {
+            if (session?.user) {
+                // User is authenticated - load dashboard
+                updateLoadingProgress(15, 'Authentication successful! Loading data...');
+                currentAdminUser = session.user;
+                
+                // Check admin role
+                const { data: adminData } = await supabaseClient.from('admin_users').select('role').eq('id', session.user.id).single();
+                if (adminData) {
+                    currentAdminRole = adminData.role;
+                    document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
+                }
+                
+                document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
+                
+                // Create required tables (non-blocking)
+                await createRequiredTables();
+                
+                // Load all data with progress tracking
+                updateLoadingProgress(20, 'Loading statistics...');
+                await loadStats();
+                
+                updateLoadingProgress(30, 'Loading investors...');
+                await loadInvestors();
+                
+                updateLoadingProgress(40, 'Loading buyers...');
+                await loadBuyers();
+                
+                updateLoadingProgress(50, 'Loading batches...');
+                await loadBatches();
+                
+                updateLoadingProgress(60, 'Loading investment history...');
+                await loadInvestmentHistory();
+                
+                updateLoadingProgress(65, 'Loading profit history...');
+                await loadProfitHistory();
+                
+                updateLoadingProgress(70, 'Loading withdrawal requests...');
+                await loadWithdrawals();
+                
+                updateLoadingProgress(75, 'Loading products...');
+                await loadProducts();
+                
+                updateLoadingProgress(80, 'Loading orders...');
+                await loadOrders();
+                
+                updateLoadingProgress(85, 'Loading recent activities...');
+                await loadRecentActivities();
+                
+                updateLoadingProgress(90, 'Rendering charts...');
+                await renderAllCharts();
+                
+                updateLoadingProgress(95, 'Finalizing...');
+                
+                // Load active announcement banner
+                const now = new Date().toISOString();
+                try {
                     const { data: bannerAnnouncement } = await supabaseClient
                         .from('announcements')
                         .select('*')
@@ -4243,22 +4411,41 @@
                         document.getElementById('announcementText').innerHTML = `<i class="fas fa-bullhorn"></i> ${escapeHtml(bannerAnnouncement[0].title)}: ${escapeHtml(bannerAnnouncement[0].message)}`;
                         document.getElementById('announcementBanner').classList.add('active');
                     }
-                    
-                    // Check for popup announcements
-                    setTimeout(() => showActivePopup(), 2000);
-                    
-                    // Log admin login
-                    await logActivity('admin_login', 'Admin logged in');
-                } else {
+                } catch(e) { console.log('Announcement banner not available'); }
+                
+                // Check for popup announcements
+                setTimeout(() => showActivePopup(), 2000);
+                
+                // Log admin login
+                await logActivity('admin_login', 'Admin logged in');
+                
+                updateLoadingProgress(100, 'Dashboard ready!');
+                
+                // Hide loading and show dashboard
+                setTimeout(() => hideLoading(), 800);
+                
+                // Setup realtime sync
+                setupRealtimeSync();
+                
+                // Initialize chat system
+                setTimeout(() => {
+                    if (window.adminChatSystem) {
+                        window.adminChatSystem.init(supabaseClient);
+                    }
+                }, 2000);
+            } else {
+                // No session - redirect to login page
+                updateLoadingProgress(100, 'No session found. Redirecting to login...');
+                setTimeout(() => {
                     window.location.href = 'admin-auth.html';
-                }
-            });
-            
+                }, 1000);
+            }
+        }).catch(error => {
+            console.error('Session check error:', error);
+            updateLoadingProgress(100, 'Authentication error. Redirecting...');
             setTimeout(() => {
-                if (window.adminChatSystem) {
-                    window.adminChatSystem.init(supabaseClient);
-                }
-            }, 2000);
+                window.location.href = 'admin-auth.html';
+            }, 1000);
         });
         
         // ========== ADMIN CHAT SYSTEM (Preserved from original) ==========
@@ -4290,11 +4477,13 @@
                 },
                 
                 getUserPermissions: async function(userId, userType) {
-                    const table = userType === 'investor' ? 'investors' : 'buyers';
-                    const { data, error } = await this.supabaseClient.from(table).select('chat_enabled, voice_enabled, video_enabled, is_blocked').eq('id', userId).single();
-                    if (error || !data) return { chatEnabled: true, voiceEnabled: true, videoEnabled: true, isBlocked: false };
-                    if (data.is_blocked) return { chatEnabled: false, voiceEnabled: false, videoEnabled: false, isBlocked: true };
-                    return { chatEnabled: data.chat_enabled !== false, voiceEnabled: data.voice_enabled !== false, videoEnabled: data.video_enabled !== false, isBlocked: false };
+                    try {
+                        const table = userType === 'investor' ? 'investors' : 'buyers';
+                        const { data, error } = await this.supabaseClient.from(table).select('chat_enabled, voice_enabled, video_enabled, is_blocked').eq('id', userId).single();
+                        if (error || !data) return { chatEnabled: true, voiceEnabled: true, videoEnabled: true, isBlocked: false };
+                        if (data.is_blocked) return { chatEnabled: false, voiceEnabled: false, videoEnabled: false, isBlocked: true };
+                        return { chatEnabled: data.chat_enabled !== false, voiceEnabled: data.voice_enabled !== false, videoEnabled: data.video_enabled !== false, isBlocked: false };
+                    } catch(e) { return { chatEnabled: true, voiceEnabled: true, videoEnabled: true, isBlocked: false }; }
                 },
                 
                 toggleUserChat: async function(userId, userType, enabled) {
