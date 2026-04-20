@@ -179,15 +179,6 @@
             50% { opacity: 0.7; }
         }
         
-        /* Lazy load images */
-        img[data-src] {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        img.loaded {
-            opacity: 1;
-        }
-        
         .admin-header {
             background: linear-gradient(135deg, #0a2f24 0%, #1a4a3a 50%, #0a2f24 100%);
             color: white;
@@ -464,38 +455,136 @@
         .stat-box .stat-label { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
         .stat-box .stat-value { font-size: 1.3rem; font-weight: bold; color: #E8B13C; }
         
-        /* Rest of existing styles kept intact */
         .ledger-table { font-size: 0.8rem; }
         .ledger-table th, .ledger-table td { padding: 6px 8px; }
         .financial-highlight { font-weight: bold; color: #E8B13C; }
+        
         .batch-row { cursor: pointer; transition: background 0.2s; }
         .batch-row:hover { background: rgba(232,177,60,0.15); }
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            align-items: center;
+            justify-content: center;
+        }
         .modal.active { display: flex; }
-        .modal-content { background: linear-gradient(145deg, #1a3d33, #0f2a22); padding: 30px; border-radius: 32px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; border: 1px solid rgba(232,177,60,0.3); animation: slideInModal 0.3s ease; }
-        .modal-content h2 { color: #E8B13C; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
-        .screenshot-preview { margin-top: 15px; display: none; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .modal-content {
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            padding: 30px;
+            border-radius: 32px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid rgba(232,177,60,0.3);
+            animation: slideInModal 0.3s ease;
+        }
+        .modal-content h2 {
+            color: #E8B13C;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .screenshot-preview {
+            margin-top: 15px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
         .screenshot-preview.active { display: flex; }
-        .screenshot-preview img { max-width: 150px; max-height: 150px; border-radius: 12px; border: 1px solid #E8B13C; }
-        .remove-screenshot-btn { background: #dc3545; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 14px; }
+        .screenshot-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 12px;
+            border: 1px solid #E8B13C;
+        }
+        .remove-screenshot-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 14px;
+        }
         .required-star { color: #dc3545; margin-left: 4px; }
+        
         .twofa-container { text-align: center; }
         .twofa-qr { background: white; padding: 15px; border-radius: 16px; display: inline-block; margin: 15px 0; }
         .twofa-code-input { font-size: 24px; letter-spacing: 8px; text-align: center; font-family: monospace; }
-        .announcement-banner { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; padding: 12px 20px; border-radius: 16px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        
+        .announcement-banner {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            color: #0a1f1a;
+            padding: 12px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
         .announcement-banner.active { display: flex; }
-        .announcement-close { background: rgba(0,0,0,0.2); border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; color: #0a1f1a; }
-        .custom-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(145deg, #1a3d33, #0f2a22); border-radius: 28px; padding: 30px; max-width: 450px; width: 90%; z-index: 3000; display: none; border: 2px solid #E8B13C; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .announcement-close {
+            background: rgba(0,0,0,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            color: #0a1f1a;
+        }
+        
+        .custom-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 28px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            z-index: 3000;
+            display: none;
+            border: 2px solid #E8B13C;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
         .custom-popup.active { display: block; animation: slideInModal 0.3s ease; }
-        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2999; display: none; }
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2999;
+            display: none;
+        }
         .popup-overlay.active { display: block; }
+        
         .kyc-doc-preview { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px; }
         .kyc-doc-item { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 10px; text-align: center; }
         .kyc-doc-item img { max-width: 150px; max-height: 150px; border-radius: 8px; }
+        
         .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
         .role-superadmin { background: linear-gradient(135deg, #E8B13C, #c99b2e); color: #0a1f1a; }
         .role-admin { background: linear-gradient(135deg, #17a2b8, #0f7a8a); color: white; }
         .role-staff { background: linear-gradient(135deg, #6c757d, #495057); color: white; }
+        
         .chat-container { display: flex; height: calc(100vh - 320px); min-height: 600px; background: rgba(0,0,0,0.2); border-radius: 24px; overflow: hidden; border: 1px solid rgba(232,177,60,0.2); }
         .chat-user-list { width: 450px; background: linear-gradient(145deg, rgba(10,35,28,0.95), rgba(5,25,18,0.95)); border-right: 1px solid rgba(232,177,60,0.2); display: flex; flex-direction: column; overflow: hidden; }
         .chat-user-list-header { padding: 20px; border-bottom: 1px solid rgba(232,177,60,0.2); background: rgba(0,0,0,0.2); }
@@ -620,10 +709,32 @@
         .perm-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; margin-left: 5px; }
         .perm-enabled { background: #1e7e5e; color: white; }
         .perm-disabled { background: #dc3545; color: white; }
-        .slot-warning { background: linear-gradient(135deg, #dc3545, #c0392b); color: white; padding: 8px 15px; border-radius: 10px; margin: 10px 0; font-size: 0.8rem; display: none; }
+        
+        .slot-warning {
+            background: linear-gradient(135deg, #dc3545, #c0392b);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 0.8rem;
+            display: none;
+        }
         .slot-warning.show { display: block; }
-        .load-more-btn { text-align: center; padding: 12px; background: rgba(232,177,60,0.1); border-radius: 12px; cursor: pointer; margin: 10px 0; color: #E8B13C; transition: all 0.3s; }
-        .load-more-btn:hover { background: rgba(232,177,60,0.2); }
+        
+        .load-more-btn {
+            text-align: center;
+            padding: 12px;
+            background: rgba(232,177,60,0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 10px 0;
+            color: #E8B13C;
+            transition: all 0.3s;
+        }
+        .load-more-btn:hover {
+            background: rgba(232,177,60,0.2);
+        }
+        
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; text-align: center; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
@@ -639,21 +750,41 @@
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-container">
             <div class="loading-spinner"></div>
             <h3><i class="fas fa-shield-alt"></i> Sohrab Industries</h3>
-            <div class="progress-bar-container"><div class="progress-bar-fill" id="progressBarFill"></div></div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
             <div class="loading-percentage" id="loadingPercentage">0%</div>
             <div class="loading-status" id="loadingStatus">Initializing system...</div>
         </div>
     </div>
+    
+    <!-- Popup Overlay -->
     <div id="popupOverlay" class="popup-overlay"></div>
-    <div id="customPopup" class="custom-popup"><div id="popupContent"></div><button onclick="closePopup()" class="btn-primary" style="margin-top: 20px; width: 100%;">Close</button></div>
+    <div id="customPopup" class="custom-popup">
+        <div id="popupContent"></div>
+        <button onclick="closePopup()" class="btn-primary" style="margin-top: 20px; width: 100%;">Close</button>
+    </div>
     
     <div class="admin-container">
-        <div id="announcementBanner" class="announcement-banner"><span id="announcementText"><i class="fas fa-bullhorn"></i> Welcome to Sohrab Industries Admin Panel</span><button class="announcement-close" onclick="closeAnnouncement()">×</button></div>
-        <div class="admin-header"><h1><i class="fas fa-shield-alt"></i> <span id="websiteName">Sohrab Industries</span> - Admin Control Panel</h1><div><span id="adminEmail"></span><span id="adminRoleBadge" class="role-badge role-superadmin" style="margin:0 10px;">Super Admin</span><button onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
+        <!-- Announcement Banner -->
+        <div id="announcementBanner" class="announcement-banner">
+            <span id="announcementText"><i class="fas fa-bullhorn"></i> Welcome to Sohrab Industries Admin Panel</span>
+            <button class="announcement-close" onclick="closeAnnouncement()">×</button>
+        </div>
+        
+        <div class="admin-header">
+            <h1><i class="fas fa-shield-alt"></i> <span id="websiteName">Sohrab Industries</span> - Admin Control Panel</h1>
+            <div>
+                <span id="adminEmail"></span>
+                <span id="adminRoleBadge" class="role-badge role-superadmin" style="margin:0 10px;">Super Admin</span>
+                <button onclick="handleLogout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
 
         <div class="stats-grid">
             <div class="stat-card" onclick="showSection('dashboard')"><h3><i class="fas fa-tachometer-alt"></i> Dashboard</h3><div class="stat-number" id="totalInvestors">0</div></div>
@@ -690,40 +821,690 @@
             <button class="nav-tab live-chat-tab" onclick="showSection('livechat')" id="liveChatTabBtn"><i class="fas fa-comments"></i> Live Chat</button>
         </div>
 
-        <!-- Dashboard Section (truncated for brevity, but fully functional) -->
-        <div id="dashboardSection" class="admin-section active"><h2 class="section-title"><i class="fas fa-chart-pie"></i> Analytics Dashboard</h2><div class="charts-dashboard"><div class="chart-card"><h4><i class="fas fa-chart-line"></i> Investors Growth</h4><canvas id="investorsGrowthChart"></canvas></div><div class="chart-card"><h4><i class="fas fa-chart-line"></i> Buyers Growth</h4><canvas id="buyersGrowthChart"></canvas></div><div class="chart-card"><h4><i class="fas fa-industry"></i> Production vs Batches</h4><canvas id="productionChart"></canvas></div><div class="chart-card"><h4><i class="fas fa-chart-line"></i> Investment Growth</h4><canvas id="investmentGrowthChart"></canvas></div><div class="chart-card"><h4><i class="fas fa-chart-line"></i> Profit Growth</h4><canvas id="profitChart"></canvas></div><div class="chart-card"><h4><i class="fas fa-chart-pie"></i> Batch Status Distribution</h4><canvas id="batchStatusChart"></canvas></div><div class="chart-card"><h4><i class="fas fa-chart-line"></i> Orders Trend</h4><canvas id="ordersChart"></canvas></div><div class="chart-card"><h4><i class="fas fa-chart-pie"></i> Product Categories</h4><canvas id="productCategoryChart"></canvas></div></div><div class="stats-row"><div class="stat-box"><div class="stat-label">Total Production</div><div class="stat-value" id="totalProduction">0</div></div><div class="stat-box"><div class="stat-label">Total Sales</div><div class="stat-value" id="totalSales">Rs. 0</div></div><div class="stat-box"><div class="stat-label">Total Returns</div><div class="stat-value" id="totalReturns">0</div></div><div class="stat-box"><div class="stat-label">Damaged Units</div><div class="stat-value" id="totalDamaged">0</div></div><div class="stat-box"><div class="stat-label">Avg ROI</div><div class="stat-value" id="avgROI">0%</div></div></div><div class="table-container"><h3 style="color:#E8B13C; margin-bottom:15px;">Recent Activities <i class="fas fa-history"></i></h3><table><thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead><tbody id="recentActivities"></tbody></table></div></div>
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="admin-section active">
+            <h2 class="section-title"><i class="fas fa-chart-pie"></i> Analytics Dashboard</h2>
+            
+            <div class="charts-dashboard">
+                <div class="chart-card"><h4><i class="fas fa-chart-line"></i> Investors Growth</h4><canvas id="investorsGrowthChart"></canvas></div>
+                <div class="chart-card"><h4><i class="fas fa-chart-line"></i> Buyers Growth</h4><canvas id="buyersGrowthChart"></canvas></div>
+                <div class="chart-card"><h4><i class="fas fa-industry"></i> Production vs Batches</h4><canvas id="productionChart"></canvas></div>
+                <div class="chart-card"><h4><i class="fas fa-chart-line"></i> Investment Growth</h4><canvas id="investmentGrowthChart"></canvas></div>
+                <div class="chart-card"><h4><i class="fas fa-chart-line"></i> Profit Growth</h4><canvas id="profitChart"></canvas></div>
+                <div class="chart-card"><h4><i class="fas fa-chart-pie"></i> Batch Status Distribution</h4><canvas id="batchStatusChart"></canvas></div>
+                <div class="chart-card"><h4><i class="fas fa-chart-line"></i> Orders Trend</h4><canvas id="ordersChart"></canvas></div>
+                <div class="chart-card"><h4><i class="fas fa-chart-pie"></i> Product Categories</h4><canvas id="productCategoryChart"></canvas></div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-box"><div class="stat-label">Total Production</div><div class="stat-value" id="totalProduction">0</div></div>
+                <div class="stat-box"><div class="stat-label">Total Sales</div><div class="stat-value" id="totalSales">Rs. 0</div></div>
+                <div class="stat-box"><div class="stat-label">Total Returns</div><div class="stat-value" id="totalReturns">0</div></div>
+                <div class="stat-box"><div class="stat-label">Damaged Units</div><div class="stat-value" id="totalDamaged">0</div></div>
+                <div class="stat-box"><div class="stat-label">Avg ROI</div><div class="stat-value" id="avgROI">0%</div></div>
+            </div>
+            
+            <div class="table-container">
+                <h3 style="color:#E8B13C; margin-bottom:15px;">Recent Activities <i class="fas fa-history"></i></h3>
+                <table>
+                    <thead><tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr></thead>
+                    <tbody id="recentActivities"></tbody>
+                </table>
+            </div>
+        </div>
 
-        <!-- Remaining sections (batches, investors, buyers, etc.) - identical to original, kept for functionality -->
-        <div id="batchesSection" class="admin-section"><h2 class="section-title"><i class="fas fa-industry"></i> Investment Batches Management</h2><div class="form-card"><h3><i class="fas fa-plus-circle"></i> Create New Investment Batch</h3><div class="form-row"><div class="form-group"><label>Batch Name *</label><input type="text" id="newBatchName" placeholder="e.g., Summer 2025 Batch"></div><div class="form-group"><label>Investment Amount (Rs.) *</label><input type="number" id="newBatchAmount" placeholder="Enter amount per investor"></div><div class="form-group"><label>Profit Percentage (%) *</label><input type="number" id="newBatchProfitPercent" placeholder="Expected profit %" value="50"></div><div class="form-group"><label>Duration (Days) *</label><input type="number" id="newBatchDuration" placeholder="Investment duration in days"></div><div class="form-group"><label>Total Slots / Investors Limit *</label><input type="number" id="newBatchSlots" placeholder="Max investors"></div></div><div class="form-row"><div class="form-group"><label>Production Quantity (Bulbs)</label><input type="number" id="batchProdQty" placeholder="Quantity"></div><div class="form-group"><label>Batch Status</label><select id="batchStatusSelect"><option value="In Production">In Production</option><option value="Completed">Completed</option><option value="Sold">Sold</option><option value="Profit Distributed">Profit Distributed</option></select></div></div><div class="form-row"><div class="form-group"><label>Sales Amount (Rs.)</label><input type="number" id="batchSales" placeholder="0"></div><div class="form-group"><label>Expenses (Rs.)</label><input type="number" id="batchExpenses" placeholder="0"></div><div class="form-group"><label>Returned Units</label><input type="number" id="batchReturns" placeholder="0"></div><div class="form-group"><label>Damaged Units</label><input type="number" id="batchDamaged" placeholder="0"></div></div><div class="form-row"><div class="form-group"><label>Visibility Status</label><select id="batchVisibility"><option value="true">Visible to all investors</option><option value="false">Hidden from investors</option></select></div></div><button onclick="createInvestmentBatch()" class="btn-primary"><i class="fas fa-save"></i> Create Investment Batch</button></div><h2 class="section-title"><i class="fas fa-list"></i> All Batches</h2><div class="search-box"><input type="text" id="batchSearch" placeholder="🔍 Search batches..."><button onclick="searchBatches()" class="btn-primary">Search</button></div><div class="table-container"><table><thead><tr><th>Batch ID</th><th>Batch Name</th><th>Investment</th><th>Profit %</th><th>Duration</th><th>Slots</th><th>Filled</th><th>Prod Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit</th><th>Investor Share (50%)</th><th>ROI</th><th>Visibility</th><th>Actions</th></tr></thead><tbody id="batchesList"></tbody></table></div></div>
-        <div id="investorsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-users"></i> Investors Management</h2><div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Investor</h3><div class="form-row"><div class="form-group"><label>Full Name *</label><input type="text" id="newInvestorName" placeholder="Enter full name"></div><div class="form-group"><label>Email *</label><input type="email" id="newInvestorEmail" placeholder="Enter email"></div><div class="form-group"><label>Phone</label><input type="tel" id="newInvestorPhone" placeholder="Enter phone"></div><div class="form-group"><label>City</label><input type="text" id="newInvestorCity" placeholder="Enter city"></div><div class="form-group"><label>Initial Investment (Rs.)</label><input type="number" id="newInvestorInvestment" placeholder="0" value="0"></div></div><button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button></div><div class="form-card"><h3><i class="fas fa-wallet"></i> Manual Balance Adjustment</h3><div class="form-row"><div class="form-group"><label>Select Investor</label><select id="balanceInvestorSelect"></select></div><div class="form-group"><label>Wallet Type</label><select id="walletTypeSelect"><option value="available_balance">Main Balance</option><option value="profit_balance">Profit Balance</option><option value="referral_balance">Referral Earnings</option></select></div><div class="form-group"><label>Action</label><select id="balanceActionSelect"><option value="add">Add (+) Credit</option><option value="deduct">Deduct (-) Debit</option></select></div><div class="form-group"><label>Amount (Rs.)</label><input type="number" id="balanceAmount" placeholder="Enter amount"></div><div class="form-group"><label>Reason / Notes</label><input type="text" id="balanceReason" placeholder="Reason for adjustment"></div></div><button onclick="adjustBalance()" class="btn-primary"><i class="fas fa-exchange-alt"></i> Apply Balance Adjustment</button></div><div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Main Balance</th><th>Profit Balance</th><th>Referral Balance</th><th>KYC</th><th>Status</th><th>Chat</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div></div>
-        <div id="buyersSection" class="admin-section"><h2 class="section-title"><i class="fas fa-user-friends"></i> Buyers Management</h2><div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Buyer</h3><div class="form-row"><div class="form-group"><label>Full Name *</label><input type="text" id="newBuyerName" placeholder="Enter full name"></div><div class="form-group"><label>Email *</label><input type="email" id="newBuyerEmail" placeholder="Enter email"></div><div class="form-group"><label>Phone</label><input type="tel" id="newBuyerPhone" placeholder="Enter phone"></div><div class="form-group"><label>Address</label><textarea id="newBuyerAddress" rows="2" placeholder="Enter address"></textarea></div></div><button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button></div><div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div></div>
-        <div id="investmentRequestsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Actions</th></tr></thead><tbody id="investmentRequestsList"></tbody></table></div></div>
-        <div id="investmentsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-plus-circle"></i> Manually Add Investment</h2><div class="form-card"><div class="form-row"><div class="form-group"><label>Select Investor</label><select id="investorSelect"></select></div><div class="form-group"><label>Amount (Rs.)</label><input type="number" id="invAmount" placeholder="Enter amount"></div><div class="form-group"><label>Investment Date</label><input type="date" id="invDate"></div><div class="form-group"><label>Payment Method</label><select id="invPaymentMethod"><option>Bank Transfer</option><option>EasyPaisa</option><option>JazzCash</option></select></div><div class="form-group"><label>Transaction ID</label><input type="text" id="invTransactionId" placeholder="Transaction ID"></div></div><button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button></div><h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div></div>
-        <div id="profitsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-gift"></i> Manually Add Profit</h2><div class="form-card"><div class="form-row"><div class="form-group"><label>Select Investor</label><select id="profitInvestorSelect"></select></div><div class="form-group"><label>Profit Amount (Rs.)</label><input type="number" id="profitAmount" placeholder="Enter profit amount"></div><div class="form-group"><label>Month</label><input type="month" id="profitMonth"></div><div class="form-group"><label>Profit Percentage</label><input type="number" id="profitPercentage" placeholder="%" value="10"></div></div><button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button></div><h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div></div>
-        <div id="withdrawalsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2><div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary">Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button></div><div class="table-container"><table><thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Approval Screenshot</th><th>Actions</th></tr></thead><tbody id="withdrawalsList"></tbody></table></div></div>
-        <div id="productsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2><div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Product</h3><div class="form-row"><div class="form-group"><label>Product Name *</label><input type="text" id="newProductName" placeholder="Enter product name"></div><div class="form-group"><label>Category *</label><select id="newProductCategory"><option>LED Bulbs</option><option>Energy Saving</option><option>Decorative</option><option>Street Light</option><option>Solar</option></select></div><div class="form-group"><label>Wattage</label><input type="text" id="newProductWattage" placeholder="e.g., 9W"></div><div class="form-group"><label>Price (Rs.) *</label><input type="number" id="newProductPrice" placeholder="Enter price"></div><div class="form-group"><label>Stock Quantity</label><input type="number" id="newProductStock" placeholder="0" value="0"></div></div><button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button></div><div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div></div>
-        <div id="ordersSection" class="admin-section"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;"><h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2><div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="🔍 Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div></div><div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div></div>
-        <div id="walletsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-wallet"></i> Wallet Management</h2><div class="form-card"><h3><i class="fas fa-exchange-alt"></i> Balance Adjustment (with Audit Trail)</h3><div class="form-row"><div class="form-group"><label>Select Investor</label><select id="walletInvestorSelect"></select></div><div class="form-group"><label>Wallet Type</label><select id="walletTypeSelect2"><option value="available_balance">💰 Main Balance</option><option value="profit_balance">📈 Profit Balance</option><option value="referral_balance">🤝 Referral Earnings</option></select></div><div class="form-group"><label>Operation</label><select id="walletOperation"><option value="credit">➕ Credit (Add)</option><option value="debit">➖ Debit (Subtract)</option></select></div><div class="form-group"><label>Amount (Rs.)</label><input type="number" id="walletAmount" placeholder="Enter amount"></div><div class="form-group"><label>Reason *</label><input type="text" id="walletReason" placeholder="Reason for adjustment"></div></div><button onclick="adjustWalletBalance()" class="btn-primary"><i class="fas fa-save"></i> Apply Adjustment</button></div><h2 class="section-title"><i class="fas fa-list"></i> Balance Adjustment History (Audit Trail)</h2><div class="table-container"><table><thead><tr><th>Date</th><th>Investor</th><th>Wallet Type</th><th>Type</th><th>Amount</th><th>Previous Balance</th><th>New Balance</th><th>Reason</th><th>Adjusted By</th></tr></thead><tbody id="balanceAuditTrail"></tbody></table></div></div>
-        <div id="affiliatesSection" class="admin-section"><h2 class="section-title"><i class="fas fa-link"></i> Referral & Affiliate System</h2><div class="form-card"><h3><i class="fas fa-sliders-h"></i> Referral Settings</h3><div class="form-row"><div class="form-group"><label>Referral Commission (%)</label><input type="number" id="referralCommission" value="5" step="0.5"></div><div class="form-group"><label>Minimum Withdrawal (Rs.)</label><input type="number" id="referralMinWithdraw" value="500"></div><div class="form-group"><label>Enable Multi-Level</label><select id="multiLevelEnabled"><option value="false">Disabled</option><option value="true">Enabled (2 Levels)</option></select></div></div><button onclick="saveReferralSettings()" class="btn-primary"><i class="fas fa-save"></i> Save Settings</button></div><h2 class="section-title"><i class="fas fa-chart-line"></i> Referral Dashboard</h2><div class="stats-row"><div class="stat-box"><div class="stat-label">Total Referrals</div><div class="stat-value" id="totalReferrals">0</div></div><div class="stat-box"><div class="stat-label">Total Commission Paid</div><div class="stat-value" id="totalCommission">Rs. 0</div></div><div class="stat-box"><div class="stat-label">Pending Commission</div><div class="stat-value" id="pendingCommission">Rs. 0</div></div></div><div class="table-container"><h3 style="color:#E8B13C; margin:15px 0;">Top Referrers</h3><table><thead><tr><th>Investor</th><th>Referral Code</th><th>Total Referrals</th><th>Total Commission</th><th>Actions</th></tr></thead><tbody id="topReferrersList"></tbody></table></div><div class="table-container"><h3 style="color:#E8B13C; margin:15px 0;">Referral Transactions</h3></table><thead><tr><th>Date</th><th>Referrer</th><th>Referred User</th><th>Amount</th><th>Commission</th><th>Status</th></tr></thead><tbody id="referralTransactionsList"></tbody></table></div></div>
-        <div id="kycSection" class="admin-section"><h2 class="section-title"><i class="fas fa-id-card"></i> KYC Verification System</h2><div class="search-box"><input type="text" id="kycSearch" placeholder="Search by name or email..."><select id="kycStatusFilter"><option value="all">All Status</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="not_submitted">Not Submitted</option></select><button onclick="loadKYCRequests()" class="btn-primary">Filter</button></div><div class="table-container"><table><thead><tr><th>Investor</th><th>CNIC Front</th><th>CNIC Back</th><th>Selfie</th><th>Status</th><th>Submitted Date</th><th>Actions</th></tr></thead><tbody id="kycRequestsList"></tbody></table></div></div>
-        <div id="announcementsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-bullhorn"></i> Announcement Management</h2><div class="form-card"><h3><i class="fas fa-plus-circle"></i> Create New Announcement</h3><div class="form-row"><div class="form-group"><label>Title *</label><input type="text" id="announcementTitle" placeholder="Announcement title"></div><div class="form-group"><label>Message *</label><textarea id="announcementMessage" rows="3" placeholder="Announcement content"></textarea></div></div><div class="form-row"><div class="form-group"><label>Display Type</label><select id="announcementType"><option value="banner">Dashboard Banner</option><option value="popup">Popup</option><option value="notification">Notification Only</option></select></div><div class="form-group"><label>Target Audience</label><select id="announcementTarget"><option value="all">All Users</option><option value="investors">Investors Only</option><option value="buyers">Buyers Only</option></select></div></div><div class="form-row"><div class="form-group"><label>Schedule Date (Optional)</label><input type="datetime-local" id="announcementSchedule"></div><div class="form-group"><label>Expiry Date (Optional)</label><input type="datetime-local" id="announcementExpiry"></div></div><button onclick="createAnnouncement()" class="btn-primary"><i class="fas fa-save"></i> Create Announcement</button></div><h2 class="section-title"><i class="fas fa-list"></i> All Announcements</h2><div class="table-container"><table><thead><tr><th>Title</th><th>Message</th><th>Type</th><th>Target</th><th>Status</th><th>Schedule</th><th>Actions</th></tr></thead><tbody id="announcementsList"></tbody></table></div></div>
-        <div id="notificationsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-bell"></i> Notification System</h2><div class="form-card"><h3><i class="fas fa-paper-plane"></i> Send Notification</h3><div class="form-row"><div class="form-group"><label>Send To</label><select id="notificationTarget"><option value="all">All Users</option><option value="investors">All Investors</option><option value="buyers">All Buyers</option><option value="selected">Selected Users</option></select></div><div class="form-group" id="selectedUsersGroup" style="display:none;"><label>Select Users</label><select id="selectedUsersList" multiple style="height:100px;"></select></div></div><div class="form-row"><div class="form-group"><label>Notification Type</label><select id="notificationType"><option value="general">📢 General Alert</option><option value="investment">💰 Investment Update</option><option value="withdrawal">💸 Withdrawal Update</option><option value="profit">📈 Profit Distribution</option><option value="kyc">🪪 KYC Update</option></select></div><div class="form-group"><label>Title *</label><input type="text" id="notificationTitle" placeholder="Notification title"></div></div><div class="form-group"><label>Message *</label><textarea id="notificationMessage" rows="3" placeholder="Notification content"></textarea></div><button onclick="sendNotification()" class="btn-primary"><i class="fas fa-paper-plane"></i> Send Notification</button></div><h2 class="section-title"><i class="fas fa-history"></i> Notification History</h2><div class="table-container"><table><thead><tr><th>Date</th><th>Type</th><th>Title</th><th>Message</th><th>Target</th><th>Sent By</th></tr></thead><tbody id="notificationHistoryList"></tbody></table></div></div>
-        <div id="paymentMethodsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-credit-card"></i> Payment Methods Management</h2><div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add Payment Method</h3><div class="form-row"><div class="form-group"><label>Method Name</label><input type="text" id="newPaymentMethod" placeholder="e.g., JazzCash, EasyPaisa, Bank Transfer"></div><div class="form-group"><label>Account/Number</label><input type="text" id="paymentAccount" placeholder="Account number or mobile number"></div><div class="form-group"><label>Account Holder Name</label><input type="text" id="paymentHolderName" placeholder="Account holder name"></div></div><div class="form-row"><div class="form-group"><label>Minimum Deposit</label><input type="number" id="paymentMinDeposit" placeholder="0"></div><div class="form-group"><label>Maximum Deposit</label><input type="number" id="paymentMaxDeposit" placeholder="0"></div><div class="form-group"><label>Status</label><select id="paymentStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div><button onclick="addPaymentMethod()" class="btn-primary"><i class="fas fa-save"></i> Add Payment Method</button></div><h2 class="section-title"><i class="fas fa-list"></i> Active Payment Methods</h2><div class="table-container"><tr><thead><tr><th>Method</th><th>Account Details</th><th>Min Deposit</th><th>Max Deposit</th><th>Status</th><th>Actions</th></tr></thead><tbody id="paymentMethodsList"></tbody></table></div></div>
-        <div id="reportsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-chart-bar"></i> Reports & Analytics</h2><div class="form-card"><h3><i class="fas fa-download"></i> Generate Report</h3><div class="form-row"><div class="form-group"><label>Report Type</label><select id="reportType"><option value="deposits">Deposits Report</option><option value="withdrawals">Withdrawals Report</option><option value="profits">Profits Report</option><option value="investments">Investments Report</option><option value="investors">Investors List</option></select></div><div class="form-group"><label>Start Date</label><input type="date" id="reportStartDate"></div><div class="form-group"><label>End Date</label><input type="date" id="reportEndDate"></div></div><div class="form-row"><div class="form-group"><label>Export Format</label><select id="exportFormat"><option value="excel">Excel (XLSX)</option><option value="pdf">PDF</option><option value="csv">CSV</option></select></div></div><div style="display: flex; gap: 15px;"><button onclick="generateReport()" class="btn-primary"><i class="fas fa-chart-line"></i> Generate & Export</button><button onclick="previewReport()" class="btn-info"><i class="fas fa-eye"></i> Preview</button></div></div><div id="reportPreview" class="table-container" style="display:none;"><h3 style="color:#E8B13C;">Report Preview</h3><div id="reportPreviewContent"></div></div></div>
-        <div id="settingsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-cog"></i> System Settings</h2><div class="form-card"><h3><i class="fas fa-globe"></i> General Settings</h3><div class="form-row"><div class="form-group"><label>Website Name</label><input type="text" id="settingWebsiteName" placeholder="Sohrab Industries"></div><div class="form-group"><label>Website Logo URL</label><input type="text" id="settingLogoUrl" placeholder="Logo URL or upload"></div><div class="form-group"><label>Currency Symbol</label><input type="text" id="settingCurrency" value="Rs."></div></div><div class="form-row"><div class="form-group"><label>Timezone</label><select id="settingTimezone"><option value="Asia/Karachi">Asia/Karachi (PKT)</option><option value="Asia/Dubai">Asia/Dubai (GST)</option><option value="UTC">UTC</option></select></div><div class="form-group"><label>Maintenance Mode</label><select id="settingMaintenance"><option value="false">Disabled (Normal Operation)</option><option value="true">Enabled (Maintenance Mode)</option></select></div></div><div class="form-group"><label>Terms & Conditions</label><textarea id="settingTerms" rows="6" placeholder="Terms and conditions for investors and buyers..."></textarea></div><button onclick="saveSystemSettings()" class="btn-primary"><i class="fas fa-save"></i> Save Settings</button></div></div>
-        <div id="adminUsersSection" class="admin-section"><h2 class="section-title"><i class="fas fa-user-shield"></i> Admin Users Management</h2><div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Admin</h3><div class="form-row"><div class="form-group"><label>Full Name</label><input type="text" id="newAdminName" placeholder="Full name"></div><div class="form-group"><label>Email</label><input type="email" id="newAdminEmail" placeholder="Email address"></div><div class="form-group"><label>Role</label><select id="newAdminRole"><option value="admin">Sub Admin</option><option value="staff">Staff</option></select></div></div><div class="form-row"><div class="form-group"><label>Temporary Password</label><input type="text" id="newAdminPassword" placeholder="Auto-generated if empty"></div></div><button onclick="addAdminUser()" class="btn-primary"><i class="fas fa-user-plus"></i> Add Admin User</button></div><h2 class="section-title"><i class="fas fa-users"></i> Admin Users List</h2><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>2FA Enabled</th><th>Last Login</th><th>Status</th><th>Actions</th></tr></thead><tbody id="adminUsersList"></tbody></table></div><div class="form-card"><h3><i class="fas fa-shield-alt"></i> Session Management</h3><button onclick="logoutAllDevices()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout From All Devices</button><button onclick="showLoginHistory()" class="btn-info"><i class="fas fa-history"></i> View Login History</button></div></div>
-        <div id="activityLogsSection" class="admin-section"><h2 class="section-title"><i class="fas fa-history"></i> Activity Logs</h2><div class="search-box"><input type="text" id="logSearch" placeholder="Search logs..."><select id="logTypeFilter"><option value="all">All Types</option><option value="admin_login">Admin Login</option><option value="balance_adjust">Balance Adjustment</option><option value="investment_approve">Investment Approval</option><option value="withdrawal_approve">Withdrawal Approval</option><option value="user_block">User Block/Unblock</option><option value="settings_change">Settings Change</option></select><button onclick="loadActivityLogs()" class="btn-primary">Search</button><button onclick="exportLogs()" class="btn-success">Export Logs</button></div><div class="table-container"><table><thead><tr><th>Timestamp</th><th>Admin Email</th><th>Action Type</th><th>Description</th><th>IP Address</th><th>Device Info</th></tr></thead><tbody id="activityLogsList"></tbody></table></div></div>
-        <div id="livechatSection" class="admin-section"><h2 class="section-title"><i class="fas fa-comments"></i> Live Chat Control Center</h2><div class="chat-system-toggle"><i class="fas fa-power-off" style="color:#E8B13C;"></i><span style="color:white;">Global Chat System:</span><label class="toggle-switch"><input type="checkbox" id="chatSystemToggle" checked onchange="adminChatSystem.toggleGlobalChatSystem(this.checked)"><span class="toggle-slider"></span></label><span id="chatSystemStatus" style="color:#1e7e5e;">● Active</span></div><div class="chat-container"><div class="chat-user-list"><div class="chat-user-list-header"><h3><i class="fas fa-users"></i> Conversations</h3><input type="text" id="chatUserSearch" class="chat-user-search" placeholder="Search users..." onkeyup="adminChatSystem.filterUsers()"></div><div class="chat-users-scroll" id="chatUsersList"><div class="empty-state" style="padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading users...</div></div></div><div class="chat-area"><div class="chat-area-header" id="chatAreaHeader"><div class="chat-area-info"><div class="chat-area-avatar"><i class="fas fa-user-circle"></i></div><div><h3 id="selectedUserName">Select a conversation</h3><p id="selectedUserStatus">Choose a user to start chatting</p></div></div><div id="individualControls" class="individual-controls-group"></div></div><div id="chatMessagesArea" class="chat-messages-area"><div class="empty-state"><i class="fas fa-comments" style="font-size: 48px;"></i><p>Select a user to start chatting</p></div></div><div id="typingIndicatorArea"></div><div class="chat-input-area"><div id="replyBar" class="reply-bar"><span><i class="fas fa-reply"></i> Replying to: <span id="replyingToText"></span></span><button onclick="adminChatSystem.cancelReply()" style="background:none; border:none; color:#dc3545; cursor:pointer;">×</button></div><div class="quick-replies"><button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('Thank you for contacting Sohrab Industries! How can I help you today?')">🙏 Thank You</button><button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('Your request is being processed. We will get back to you shortly.')">⏳ Processing</button><button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('I have forwarded your concern to the relevant department.')">📤 Forwarded</button><button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('Please provide your order/investment ID for faster assistance.')">🆔 Need ID</button></div><div class="chat-toolbar"><button class="chat-tool-btn" onclick="adminChatSystem.showAttachMenu()"><i class="fas fa-image"></i> Image</button><button class="chat-tool-btn" onclick="adminChatSystem.showVideoMenu()"><i class="fas fa-video"></i> Video</button><button class="chat-tool-btn" onclick="adminChatSystem.showDocumentMenu()"><i class="fas fa-file-pdf"></i> Document</button><button class="chat-tool-btn" onclick="adminChatSystem.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button><button class="chat-tool-btn" onclick="adminChatSystem.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button><button class="chat-tool-btn" onclick="adminChatSystem.showProductSelector()"><i class="fas fa-box"></i> Product</button><button class="chat-tool-btn" onclick="adminChatSystem.showPollCreator()"><i class="fas fa-poll"></i> Poll</button><button class="chat-tool-btn" onclick="adminChatSystem.shareLocation()"><i class="fas fa-map-marker-alt"></i> Location</button><button class="chat-tool-btn" onclick="adminChatSystem.createEvent()"><i class="fas fa-calendar-alt"></i> Event</button></div><div class="chat-input-wrapper"><textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();adminChatSystem.sendMessage();}"></textarea><button class="emoji-btn" onclick="adminChatSystem.toggleEmojiPicker()"><i class="fas fa-smile"></i></button><button class="chat-send-btn" onclick="adminChatSystem.sendMessage()"><i class="fas fa-paper-plane"></i></button></div><div id="emojiPicker" class="emoji-picker"></div><div id="mediaPreview" class="media-preview"></div></div></div></div></div>
+        <!-- INVESTMENT BATCHES Section -->
+        <div id="batchesSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-industry"></i> Investment Batches Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Create New Investment Batch</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Batch Name *</label><input type="text" id="newBatchName" placeholder="e.g., Summer 2025 Batch"></div>
+                    <div class="form-group"><label>Investment Amount (Rs.) *</label><input type="number" id="newBatchAmount" placeholder="Enter amount per investor"></div>
+                    <div class="form-group"><label>Profit Percentage (%) *</label><input type="number" id="newBatchProfitPercent" placeholder="Expected profit %" value="50"></div>
+                    <div class="form-group"><label>Duration (Days) *</label><input type="number" id="newBatchDuration" placeholder="Investment duration in days"></div>
+                    <div class="form-group"><label>Total Slots / Investors Limit *</label><input type="number" id="newBatchSlots" placeholder="Max investors"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Production Quantity (Bulbs)</label><input type="number" id="batchProdQty" placeholder="Quantity"></div>
+                    <div class="form-group"><label>Batch Status</label><select id="batchStatusSelect">
+                        <option value="In Production">In Production</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Sold">Sold</option>
+                        <option value="Profit Distributed">Profit Distributed</option>
+                    </select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Sales Amount (Rs.)</label><input type="number" id="batchSales" placeholder="0"></div>
+                    <div class="form-group"><label>Expenses (Rs.)</label><input type="number" id="batchExpenses" placeholder="0"></div>
+                    <div class="form-group"><label>Returned Units</label><input type="number" id="batchReturns" placeholder="0"></div>
+                    <div class="form-group"><label>Damaged Units</label><input type="number" id="batchDamaged" placeholder="0"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Visibility Status</label><select id="batchVisibility">
+                        <option value="true">Visible to all investors</option>
+                        <option value="false">Hidden from investors</option>
+                    </select></div>
+                </div>
+                <button onclick="createInvestmentBatch()" class="btn-primary"><i class="fas fa-save"></i> Create Investment Batch</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-list"></i> All Batches</h2>
+            <div class="search-box"><input type="text" id="batchSearch" placeholder="🔍 Search batches..."><button onclick="searchBatches()" class="btn-primary">Search</button></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Batch ID</th><th>Batch Name</th><th>Investment</th><th>Profit %</th><th>Duration</th><th>Slots</th><th>Filled</th><th>Prod Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit</th><th>Investor Share (50%)</th><th>ROI</th><th>Visibility</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="batchesList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Investors Section -->
+        <div id="investorsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-users"></i> Investors Management</h2>
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Add New Investor</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name *</label><input type="text" id="newInvestorName" placeholder="Enter full name"></div>
+                    <div class="form-group"><label>Email *</label><input type="email" id="newInvestorEmail" placeholder="Enter email"></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="newInvestorPhone" placeholder="Enter phone"></div>
+                    <div class="form-group"><label>City</label><input type="text" id="newInvestorCity" placeholder="Enter city"></div>
+                    <div class="form-group"><label>Initial Investment (Rs.)</label><input type="number" id="newInvestorInvestment" placeholder="0" value="0"></div>
+                </div>
+                <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
+            </div>
+            
+            <!-- Wallet Balance Control for Investors -->
+            <div class="form-card">
+                <h3><i class="fas fa-wallet"></i> Manual Balance Adjustment</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Select Investor</label><select id="balanceInvestorSelect"></select></div>
+                    <div class="form-group"><label>Wallet Type</label><select id="walletTypeSelect">
+                        <option value="available_balance">Main Balance</option>
+                        <option value="profit_balance">Profit Balance</option>
+                        <option value="referral_balance">Referral Earnings</option>
+                    </select></div>
+                    <div class="form-group"><label>Action</label><select id="balanceActionSelect">
+                        <option value="add">Add (+) Credit</option>
+                        <option value="deduct">Deduct (-) Debit</option>
+                    </select></div>
+                    <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="balanceAmount" placeholder="Enter amount"></div>
+                    <div class="form-group"><label>Reason / Notes</label><input type="text" id="balanceReason" placeholder="Reason for adjustment"></div>
+                </div>
+                <button onclick="adjustBalance()" class="btn-primary"><i class="fas fa-exchange-alt"></i> Apply Balance Adjustment</button>
+            </div>
+            
+            <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Main Balance</th><th>Profit Balance</th><th>Referral Balance</th><th>KYC</th><th>Status</th><th>Chat</th><th>Actions</th></tr></thead><tbody id="investorsList"></tbody></table></div>
+        </div>
+
+        <!-- Buyers Section -->
+        <div id="buyersSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-user-friends"></i> Buyers Management</h2>
+            <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Buyer</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name *</label><input type="text" id="newBuyerName" placeholder="Enter full name"></div>
+                    <div class="form-group"><label>Email *</label><input type="email" id="newBuyerEmail" placeholder="Enter email"></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="newBuyerPhone" placeholder="Enter phone"></div>
+                    <div class="form-group"><label>Address</label><textarea id="newBuyerAddress" rows="2" placeholder="Enter address"></textarea></div>
+                </div>
+                <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
+            </div>
+            <div class="search-box"><input type="text" id="buyerSearch" placeholder="🔍 Search buyers..."><button onclick="searchBuyers()" class="btn-primary">Search</button><button onclick="resetBuyerSearch()" class="btn-primary">Reset</button></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody id="buyersList"></tbody></table></div>
+        </div>
+
+        <!-- Investment Requests Section -->
+        <div id="investmentRequestsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-clock"></i> Pending Investment Requests</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Actions</th></tr></thead>
+                    <tbody id="investmentRequestsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Investments Section -->
+        <div id="investmentsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-plus-circle"></i> Manually Add Investment</h2>
+            <div class="form-card">
+                <div class="form-row">
+                    <div class="form-group"><label>Select Investor</label><select id="investorSelect"></select></div>
+                    <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="invAmount" placeholder="Enter amount"></div>
+                    <div class="form-group"><label>Investment Date</label><input type="date" id="invDate"></div>
+                    <div class="form-group"><label>Payment Method</label><select id="invPaymentMethod"><option>Bank Transfer</option><option>EasyPaisa</option><option>JazzCash</option></select></div>
+                    <div class="form-group"><label>Transaction ID</label><input type="text" id="invTransactionId" placeholder="Transaction ID"></div>
+                </div>
+                <button onclick="addInvestment()" class="btn-primary"><i class="fas fa-save"></i> Add Investment</button>
+            </div>
+            <h2 class="section-title"><i class="fas fa-history"></i> All Investments History</h2>
+            <div class="table-container"><tr><thead><tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr></thead><tbody id="investmentHistory"></tbody></table></div>
+        </div>
+
+        <!-- Profits Section -->
+        <div id="profitsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-gift"></i> Manually Add Profit</h2>
+            <div class="form-card">
+                <div class="form-row">
+                    <div class="form-group"><label>Select Investor</label><select id="profitInvestorSelect"></select></div>
+                    <div class="form-group"><label>Profit Amount (Rs.)</label><input type="number" id="profitAmount" placeholder="Enter profit amount"></div>
+                    <div class="form-group"><label>Month</label><input type="month" id="profitMonth"></div>
+                    <div class="form-group"><label>Profit Percentage</label><input type="number" id="profitPercentage" placeholder="%" value="10"></div>
+                </div>
+                <button onclick="addProfit()" class="btn-primary"><i class="fas fa-save"></i> Add Profit</button>
+            </div>
+            <h2 class="section-title"><i class="fas fa-list"></i> Profit History</h2>
+            <div class="table-container"></table><thead><tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr></thead><tbody id="profitHistory"></tbody></table></div>
+        </div>
+
+        <!-- Withdrawals Section -->
+        <div id="withdrawalsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests Management</h2>
+            <div class="search-box"><input type="text" id="withdrawalSearch" placeholder="🔍 Search by investor name..."><button onclick="searchWithdrawals()" class="btn-primary">Search</button><button onclick="resetWithdrawalSearch()" class="btn-primary">Reset</button></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Approval Screenshot</th><th>Actions</th></tr></thead>
+                    <tbody id="withdrawalsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div id="productsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-box"></i> Products Management</h2>
+            <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Product Name *</label><input type="text" id="newProductName" placeholder="Enter product name"></div>
+                    <div class="form-group"><label>Category *</label><select id="newProductCategory"><option>LED Bulbs</option><option>Energy Saving</option><option>Decorative</option><option>Street Light</option><option>Solar</option></select></div>
+                    <div class="form-group"><label>Wattage</label><input type="text" id="newProductWattage" placeholder="e.g., 9W"></div>
+                    <div class="form-group"><label>Price (Rs.) *</label><input type="number" id="newProductPrice" placeholder="Enter price"></div>
+                    <div class="form-group"><label>Stock Quantity</label><input type="number" id="newProductStock" placeholder="0" value="0"></div>
+                </div>
+                <button onclick="addNewProduct()" class="btn-primary"><i class="fas fa-save"></i> Add Product</button>
+            </div>
+            <div class="search-box"><input type="text" id="productSearch" placeholder="🔍 Search products..."><button onclick="searchProducts()" class="btn-primary">Search</button></div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="ordersSection" class="admin-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h2 class="section-title"><i class="fas fa-truck"></i> Orders Management</h2>
+                <div class="search-box" style="margin-bottom: 0;"><input type="text" id="orderSearch" placeholder="🔍 Search by Order ID..."><button onclick="searchOrders()" class="btn-primary">Search</button><button onclick="resetOrderSearch()" class="btn-primary">Reset</button></div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr></thead><tbody id="ordersList"></tbody></table></div>
+        </div>
+
+        <!-- WALLET MANAGEMENT Section -->
+        <div id="walletsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-wallet"></i> Wallet Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-exchange-alt"></i> Balance Adjustment (with Audit Trail)</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Select Investor</label><select id="walletInvestorSelect"></select></div>
+                    <div class="form-group"><label>Wallet Type</label><select id="walletTypeSelect2">
+                        <option value="available_balance">💰 Main Balance</option>
+                        <option value="profit_balance">📈 Profit Balance</option>
+                        <option value="referral_balance">🤝 Referral Earnings</option>
+                    </select></div>
+                    <div class="form-group"><label>Operation</label><select id="walletOperation">
+                        <option value="credit">➕ Credit (Add)</option>
+                        <option value="debit">➖ Debit (Subtract)</option>
+                    </select></div>
+                    <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="walletAmount" placeholder="Enter amount"></div>
+                    <div class="form-group"><label>Reason *</label><input type="text" id="walletReason" placeholder="Reason for adjustment"></div>
+                </div>
+                <button onclick="adjustWalletBalance()" class="btn-primary"><i class="fas fa-save"></i> Apply Adjustment</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-list"></i> Balance Adjustment History (Audit Trail)</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Date</th><th>Investor</th><th>Wallet Type</th><th>Type</th><th>Amount</th><th>Previous Balance</th><th>New Balance</th><th>Reason</th><th>Adjusted By</th></tr>
+                    </thead>
+                    <tbody id="balanceAuditTrail"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- AFFILIATE/REFERRAL SYSTEM Section -->
+        <div id="affiliatesSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-link"></i> Referral & Affiliate System</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-sliders-h"></i> Referral Settings</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Referral Commission (%)</label><input type="number" id="referralCommission" value="5" step="0.5"></div>
+                    <div class="form-group"><label>Minimum Withdrawal (Rs.)</label><input type="number" id="referralMinWithdraw" value="500"></div>
+                    <div class="form-group"><label>Enable Multi-Level</label><select id="multiLevelEnabled">
+                        <option value="false">Disabled</option>
+                        <option value="true">Enabled (2 Levels)</option>
+                    </select></div>
+                </div>
+                <button onclick="saveReferralSettings()" class="btn-primary"><i class="fas fa-save"></i> Save Settings</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> Referral Dashboard</h2>
+            <div class="stats-row">
+                <div class="stat-box"><div class="stat-label">Total Referrals</div><div class="stat-value" id="totalReferrals">0</div></div>
+                <div class="stat-box"><div class="stat-label">Total Commission Paid</div><div class="stat-value" id="totalCommission">Rs. 0</div></div>
+                <div class="stat-box"><div class="stat-label">Pending Commission</div><div class="stat-value" id="pendingCommission">Rs. 0</div></div>
+            </div>
+            
+            <div class="table-container">
+                <h3 style="color:#E8B13C; margin:15px 0;">Top Referrers</h3>
+                <table>
+                    <thead><tr><th>Investor</th><th>Referral Code</th><th>Total Referrals</th><th>Total Commission</th><th>Actions</th></tr></thead>
+                    <tbody id="topReferrersList"></tbody>
+                </table>
+            </div>
+            
+            <div class="table-container">
+                <h3 style="color:#E8B13C; margin:15px 0;">Referral Transactions</h3>
+                <table>
+                    <thead><tr><th>Date</th><th>Referrer</th><th>Referred User</th><th>Amount</th><th>Commission</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="referralTransactionsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- KYC VERIFICATION Section -->
+        <div id="kycSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-id-card"></i> KYC Verification System</h2>
+            
+            <div class="search-box">
+                <input type="text" id="kycSearch" placeholder="Search by name or email...">
+                <select id="kycStatusFilter">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="not_submitted">Not Submitted</option>
+                </select>
+                <button onclick="loadKYCRequests()" class="btn-primary">Filter</button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Investor</th><th>CNIC Front</th><th>CNIC Back</th><th>Selfie</th><th>Status</th><th>Submitted Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="kycRequestsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ANNOUNCEMENT SYSTEM Section -->
+        <div id="announcementsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-bullhorn"></i> Announcement Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Create New Announcement</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Title *</label><input type="text" id="announcementTitle" placeholder="Announcement title"></div>
+                    <div class="form-group"><label>Message *</label><textarea id="announcementMessage" rows="3" placeholder="Announcement content"></textarea></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Display Type</label><select id="announcementType">
+                        <option value="banner">Dashboard Banner</option>
+                        <option value="popup">Popup</option>
+                        <option value="notification">Notification Only</option>
+                    </select></div>
+                    <div class="form-group"><label>Target Audience</label><select id="announcementTarget">
+                        <option value="all">All Users</option>
+                        <option value="investors">Investors Only</option>
+                        <option value="buyers">Buyers Only</option>
+                    </select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Schedule Date (Optional)</label><input type="datetime-local" id="announcementSchedule"></div>
+                    <div class="form-group"><label>Expiry Date (Optional)</label><input type="datetime-local" id="announcementExpiry"></div>
+                </div>
+                <button onclick="createAnnouncement()" class="btn-primary"><i class="fas fa-save"></i> Create Announcement</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-list"></i> All Announcements</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Title</th><th>Message</th><th>Type</th><th>Target</th><th>Status</th><th>Schedule</th><th>Actions</th></tr></thead>
+                    <tbody id="announcementsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION SYSTEM Section -->
+        <div id="notificationsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-bell"></i> Notification System</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-paper-plane"></i> Send Notification</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Send To</label><select id="notificationTarget">
+                        <option value="all">All Users</option>
+                        <option value="investors">All Investors</option>
+                        <option value="buyers">All Buyers</option>
+                        <option value="selected">Selected Users</option>
+                    </select></div>
+                    <div class="form-group" id="selectedUsersGroup" style="display:none;"><label>Select Users</label><select id="selectedUsersList" multiple style="height:100px;"></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Notification Type</label><select id="notificationType">
+                        <option value="general">📢 General Alert</option>
+                        <option value="investment">💰 Investment Update</option>
+                        <option value="withdrawal">💸 Withdrawal Update</option>
+                        <option value="profit">📈 Profit Distribution</option>
+                        <option value="kyc">🪪 KYC Update</option>
+                    </select></div>
+                    <div class="form-group"><label>Title *</label><input type="text" id="notificationTitle" placeholder="Notification title"></div>
+                </div>
+                <div class="form-group"><label>Message *</label><textarea id="notificationMessage" rows="3" placeholder="Notification content"></textarea></div>
+                <button onclick="sendNotification()" class="btn-primary"><i class="fas fa-paper-plane"></i> Send Notification</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-history"></i> Notification History</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Date</th><th>Type</th><th>Title</th><th>Message</th><th>Target</th><th>Sent By</th></tr>
+                    </thead>
+                    <tbody id="notificationHistoryList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PAYMENT METHOD MANAGEMENT Section -->
+        <div id="paymentMethodsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-credit-card"></i> Payment Methods Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Add Payment Method</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Method Name</label><input type="text" id="newPaymentMethod" placeholder="e.g., JazzCash, EasyPaisa, Bank Transfer"></div>
+                    <div class="form-group"><label>Account/Number</label><input type="text" id="paymentAccount" placeholder="Account number or mobile number"></div>
+                    <div class="form-group"><label>Account Holder Name</label><input type="text" id="paymentHolderName" placeholder="Account holder name"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Minimum Deposit</label><input type="number" id="paymentMinDeposit" placeholder="0"></div>
+                    <div class="form-group"><label>Maximum Deposit</label><input type="number" id="paymentMaxDeposit" placeholder="0"></div>
+                    <div class="form-group"><label>Status</label><select id="paymentStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+                </div>
+                <button onclick="addPaymentMethod()" class="btn-primary"><i class="fas fa-save"></i> Add Payment Method</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-list"></i> Active Payment Methods</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Method</th><th>Account Details</th><th>Min Deposit</th><th>Max Deposit</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="paymentMethodsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REPORTS & ANALYTICS Section -->
+        <div id="reportsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-chart-bar"></i> Reports & Analytics</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-download"></i> Generate Report</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Report Type</label><select id="reportType">
+                        <option value="deposits">Deposits Report</option>
+                        <option value="withdrawals">Withdrawals Report</option>
+                        <option value="profits">Profits Report</option>
+                        <option value="investments">Investments Report</option>
+                        <option value="investors">Investors List</option>
+                    </select></div>
+                    <div class="form-group"><label>Start Date</label><input type="date" id="reportStartDate"></div>
+                    <div class="form-group"><label>End Date</label><input type="date" id="reportEndDate"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Export Format</label><select id="exportFormat">
+                        <option value="excel">Excel (XLSX)</option>
+                        <option value="pdf">PDF</option>
+                        <option value="csv">CSV</option>
+                    </select></div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button onclick="generateReport()" class="btn-primary"><i class="fas fa-chart-line"></i> Generate & Export</button>
+                    <button onclick="previewReport()" class="btn-info"><i class="fas fa-eye"></i> Preview</button>
+                </div>
+            </div>
+            
+            <div id="reportPreview" class="table-container" style="display:none;">
+                <h3 style="color:#E8B13C;">Report Preview</h3>
+                <div id="reportPreviewContent"></div>
+            </div>
+        </div>
+
+        <!-- SYSTEM SETTINGS Section -->
+        <div id="settingsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-cog"></i> System Settings</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-globe"></i> General Settings</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Website Name</label><input type="text" id="settingWebsiteName" placeholder="Sohrab Industries"></div>
+                    <div class="form-group"><label>Website Logo URL</label><input type="text" id="settingLogoUrl" placeholder="Logo URL or upload"></div>
+                    <div class="form-group"><label>Currency Symbol</label><input type="text" id="settingCurrency" value="Rs."></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Timezone</label><select id="settingTimezone">
+                        <option value="Asia/Karachi">Asia/Karachi (PKT)</option>
+                        <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+                        <option value="UTC">UTC</option>
+                    </select></div>
+                    <div class="form-group"><label>Maintenance Mode</label><select id="settingMaintenance">
+                        <option value="false">Disabled (Normal Operation)</option>
+                        <option value="true">Enabled (Maintenance Mode)</option>
+                    </select></div>
+                </div>
+                <div class="form-group"><label>Terms & Conditions</label><textarea id="settingTerms" rows="6" placeholder="Terms and conditions for investors and buyers..."></textarea></div>
+                <button onclick="saveSystemSettings()" class="btn-primary"><i class="fas fa-save"></i> Save Settings</button>
+            </div>
+        </div>
+
+        <!-- ADMIN USERS MANAGEMENT Section -->
+        <div id="adminUsersSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-user-shield"></i> Admin Users Management</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Add New Admin</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Full Name</label><input type="text" id="newAdminName" placeholder="Full name"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="newAdminEmail" placeholder="Email address"></div>
+                    <div class="form-group"><label>Role</label><select id="newAdminRole">
+                        <option value="admin">Sub Admin</option>
+                        <option value="staff">Staff</option>
+                    </select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Temporary Password</label><input type="text" id="newAdminPassword" placeholder="Auto-generated if empty"></div>
+                </div>
+                <button onclick="addAdminUser()" class="btn-primary"><i class="fas fa-user-plus"></i> Add Admin User</button>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-users"></i> Admin Users List</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>2FA Enabled</th><th>Last Login</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="adminUsersList"></tbody>
+                </table>
+            </div>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-shield-alt"></i> Session Management</h3>
+                <button onclick="logoutAllDevices()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout From All Devices</button>
+                <button onclick="showLoginHistory()" class="btn-info"><i class="fas fa-history"></i> View Login History</button>
+            </div>
+        </div>
+
+        <!-- ACTIVITY LOGS Section -->
+        <div id="activityLogsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-history"></i> Activity Logs</h2>
+            
+            <div class="search-box">
+                <input type="text" id="logSearch" placeholder="Search logs...">
+                <select id="logTypeFilter">
+                    <option value="all">All Types</option>
+                    <option value="admin_login">Admin Login</option>
+                    <option value="balance_adjust">Balance Adjustment</option>
+                    <option value="investment_approve">Investment Approval</option>
+                    <option value="withdrawal_approve">Withdrawal Approval</option>
+                    <option value="user_block">User Block/Unblock</option>
+                    <option value="settings_change">Settings Change</option>
+                </select>
+                <button onclick="loadActivityLogs()" class="btn-primary">Search</button>
+                <button onclick="exportLogs()" class="btn-success">Export Logs</button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Timestamp</th><th>Admin Email</th><th>Action Type</th><th>Description</th><th>IP Address</th><th>Device Info</th></tr>
+                    </thead>
+                    <tbody id="activityLogsList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Live Chat Section -->
+        <div id="livechatSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-comments"></i> Live Chat Control Center</h2>
+            <div class="chat-system-toggle">
+                <i class="fas fa-power-off" style="color:#E8B13C;"></i>
+                <span style="color:white;">Global Chat System:</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="chatSystemToggle" checked onchange="adminChatSystem.toggleGlobalChatSystem(this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span id="chatSystemStatus" style="color:#1e7e5e;">● Active</span>
+            </div>
+            <div class="chat-container">
+                <div class="chat-user-list">
+                    <div class="chat-user-list-header">
+                        <h3><i class="fas fa-users"></i> Conversations</h3>
+                        <input type="text" id="chatUserSearch" class="chat-user-search" placeholder="Search users..." onkeyup="adminChatSystem.filterUsers()">
+                    </div>
+                    <div class="chat-users-scroll" id="chatUsersList">
+                        <div class="empty-state" style="padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading users...</div>
+                    </div>
+                </div>
+                <div class="chat-area">
+                    <div class="chat-area-header" id="chatAreaHeader">
+                        <div class="chat-area-info">
+                            <div class="chat-area-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div><h3 id="selectedUserName">Select a conversation</h3><p id="selectedUserStatus">Choose a user to start chatting</p></div>
+                        </div>
+                        <div id="individualControls" class="individual-controls-group"></div>
+                    </div>
+                    <div id="chatMessagesArea" class="chat-messages-area">
+                        <div class="empty-state"><i class="fas fa-comments" style="font-size: 48px;"></i><p>Select a user to start chatting</p></div>
+                    </div>
+                    <div id="typingIndicatorArea"></div>
+                    <div class="chat-input-area">
+                        <div id="replyBar" class="reply-bar"><span><i class="fas fa-reply"></i> Replying to: <span id="replyingToText"></span></span><button onclick="adminChatSystem.cancelReply()" style="background:none; border:none; color:#dc3545; cursor:pointer;">×</button></div>
+                        <div class="quick-replies">
+                            <button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('Thank you for contacting Sohrab Industries! How can I help you today?')">🙏 Thank You</button>
+                            <button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('Your request is being processed. We will get back to you shortly.')">⏳ Processing</button>
+                            <button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('I have forwarded your concern to the relevant department.')">📤 Forwarded</button>
+                            <button class="quick-reply-btn" onclick="adminChatSystem.sendQuickReply('Please provide your order/investment ID for faster assistance.')">🆔 Need ID</button>
+                        </div>
+                        <div class="chat-toolbar">
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showAttachMenu()"><i class="fas fa-image"></i> Image</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showVideoMenu()"><i class="fas fa-video"></i> Video</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showDocumentMenu()"><i class="fas fa-file-pdf"></i> Document</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showVoiceRecorder()"><i class="fas fa-microphone"></i> Voice</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.openGifPicker()"><i class="fas fa-file-image"></i> GIF</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showProductSelector()"><i class="fas fa-box"></i> Product</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.showPollCreator()"><i class="fas fa-poll"></i> Poll</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.shareLocation()"><i class="fas fa-map-marker-alt"></i> Location</button>
+                            <button class="chat-tool-btn" onclick="adminChatSystem.createEvent()"><i class="fas fa-calendar-alt"></i> Event</button>
+                        </div>
+                        <div class="chat-input-wrapper">
+                            <textarea id="chatInput" class="chat-input" placeholder="Type a message..." rows="1" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();adminChatSystem.sendMessage();}"></textarea>
+                            <button class="emoji-btn" onclick="adminChatSystem.toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
+                            <button class="chat-send-btn" onclick="adminChatSystem.sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                        <div id="emojiPicker" class="emoji-picker"></div>
+                        <div id="mediaPreview" class="media-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="twofaModal" class="modal"><div class="modal-content"><h2><i class="fas fa-shield-alt"></i> Two-Factor Authentication Setup</h2><div class="twofa-container" id="twofaContent"></div></div></div>
-    <div id="batchDetailModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('batchDetailModal')">&times;</span><h2 id="batchDetailTitle">Batch Details</h2><div id="batchDetailContent"></div></div></div>
-    <div id="withdrawalScreenshotModal" class="modal"><div class="modal-content"><h2><i class="fas fa-camera"></i> Upload Approval Screenshot</h2><div class="form-group"><label>Payment Proof Screenshot <span class="required-star">*</span></label><input type="file" id="withdrawalScreenshotInput" accept="image/*" onchange="previewWithdrawalScreenshot(this)"></div><div id="withdrawalScreenshotPreview" class="screenshot-preview"></div><div style="display:flex; gap:12px; margin-top:20px;"><button onclick="submitWithdrawalApprovalWithScreenshot()" class="btn-primary" style="flex:1;">Confirm & Approve</button><button onclick="closeWithdrawalScreenshotModal()" class="btn-danger" style="flex:1;">Cancel</button></div></div></div>
-    <div id="kycDetailModal" class="modal"><div class="modal-content"><h2><i class="fas fa-id-card"></i> KYC Document Verification</h2><div id="kycDetailContent"></div><div style="display:flex; gap:12px; margin-top:20px;"><button onclick="approveKYC()" class="btn-success">Approve KYC</button><button onclick="rejectKYC()" class="btn-danger">Reject KYC</button><button onclick="closeModal('kycDetailModal')" class="btn-info">Close</button></div></div></div>
-    <div id="voiceRecordingOverlay" class="voice-recording-overlay"><div class="recording-wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div><div class="recording-timer" id="recordingTimer">0:00</div><div class="recording-controls"><button class="recording-cancel-btn" onclick="adminChatSystem.cancelVoiceRecording()"><i class="fas fa-times"></i></button><button class="recording-stop-btn" onclick="adminChatSystem.stopVoiceRecording()"><i class="fas fa-stop"></i></button></div></div>
-    <div id="productSelectorModal" class="product-selector-modal"><div class="product-selector-header"><h3 style="color:#E8B13C;">Select Product to Share</h3><button onclick="adminChatSystem.closeProductSelector()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div><div id="productSelectorList"></div></div>
-    <div id="gifPickerModal" class="gif-picker-modal"><div class="gif-search-header"><input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="adminChatSystem.searchGIFs(this.value)"><button onclick="adminChatSystem.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px; cursor:pointer;">&times;</button></div><div id="gifGrid" class="gif-grid"><div style="padding:20px;text-align:center;">Loading GIFs...</div></div></div>
-    <div id="pollModal" class="poll-modal"><div class="product-selector-header"><h3 style="color:#E8B13C;">Create a Poll</h3><button onclick="adminChatSystem.closePollModal()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div><div style="padding:20px;"><div class="form-group"><label>Poll Question</label><input type="text" id="pollQuestion" placeholder="Ask a question..."></div><div class="form-group"><label>Options</label><div id="pollOptionsList"><div class="poll-option-row"><input type="text" placeholder="Option 1" style="flex:1;"></div><div class="poll-option-row"><input type="text" placeholder="Option 2" style="flex:1;"></div></div><button onclick="adminChatSystem.addPollOption()" class="btn-primary" style="margin-top:10px; padding:6px 12px; font-size:0.8rem;">+ Add Option</button></div><button onclick="adminChatSystem.sendPoll()" class="btn-primary" style="margin-top:15px; width:100%;">Send Poll</button></div></div>
+    <!-- 2FA Setup Modal -->
+    <div id="twofaModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-shield-alt"></i> Two-Factor Authentication Setup</h2>
+            <div class="twofa-container" id="twofaContent"></div>
+        </div>
+    </div>
+
+    <!-- Batch Detail Modal -->
+    <div id="batchDetailModal" class="modal">
+        <div class="modal-content"><span class="close" onclick="closeModal('batchDetailModal')">&times;</span><h2 id="batchDetailTitle">Batch Details</h2><div id="batchDetailContent"></div></div>
+    </div>
+
+    <!-- Withdrawal Screenshot Upload Modal -->
+    <div id="withdrawalScreenshotModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-camera"></i> Upload Approval Screenshot</h2>
+            <div class="form-group"><label>Payment Proof Screenshot <span class="required-star">*</span></label><input type="file" id="withdrawalScreenshotInput" accept="image/*" onchange="previewWithdrawalScreenshot(this)"></div>
+            <div id="withdrawalScreenshotPreview" class="screenshot-preview"></div>
+            <div style="display:flex; gap:12px; margin-top:20px;"><button onclick="submitWithdrawalApprovalWithScreenshot()" class="btn-primary" style="flex:1;">Confirm & Approve</button><button onclick="closeWithdrawalScreenshotModal()" class="btn-danger" style="flex:1;">Cancel</button></div>
+        </div>
+    </div>
+
+    <!-- KYC Detail Modal -->
+    <div id="kycDetailModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-id-card"></i> KYC Document Verification</h2>
+            <div id="kycDetailContent"></div>
+            <div style="display:flex; gap:12px; margin-top:20px;">
+                <button onclick="approveKYC()" class="btn-success">Approve KYC</button>
+                <button onclick="rejectKYC()" class="btn-danger">Reject KYC</button>
+                <button onclick="closeModal('kycDetailModal')" class="btn-info">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Recording Overlay -->
+    <div id="voiceRecordingOverlay" class="voice-recording-overlay">
+        <div class="recording-wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
+        <div class="recording-timer" id="recordingTimer">0:00</div>
+        <div class="recording-controls"><button class="recording-cancel-btn" onclick="adminChatSystem.cancelVoiceRecording()"><i class="fas fa-times"></i></button><button class="recording-stop-btn" onclick="adminChatSystem.stopVoiceRecording()"><i class="fas fa-stop"></i></button></div>
+    </div>
+    
+    <!-- Product Selector Modal -->
+    <div id="productSelectorModal" class="product-selector-modal">
+        <div class="product-selector-header"><h3 style="color:#E8B13C;">Select Product to Share</h3><button onclick="adminChatSystem.closeProductSelector()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div>
+        <div id="productSelectorList"></div>
+    </div>
+
+    <!-- GIF Picker Modal -->
+    <div id="gifPickerModal" class="gif-picker-modal">
+        <div class="gif-search-header"><input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="adminChatSystem.searchGIFs(this.value)"><button onclick="adminChatSystem.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px; cursor:pointer;">&times;</button></div>
+        <div id="gifGrid" class="gif-grid"><div style="padding:20px;text-align:center;">Loading GIFs...</div></div>
+    </div>
+
+    <!-- Poll Creator Modal -->
+    <div id="pollModal" class="poll-modal">
+        <div class="product-selector-header"><h3 style="color:#E8B13C;">Create a Poll</h3><button onclick="adminChatSystem.closePollModal()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div>
+        <div style="padding:20px;">
+            <div class="form-group"><label>Poll Question</label><input type="text" id="pollQuestion" placeholder="Ask a question..."></div>
+            <div class="form-group"><label>Options</label>
+                <div id="pollOptionsList"><div class="poll-option-row"><input type="text" placeholder="Option 1" style="flex:1;"></div><div class="poll-option-row"><input type="text" placeholder="Option 2" style="flex:1;"></div></div>
+                <button onclick="adminChatSystem.addPollOption()" class="btn-primary" style="margin-top:10px; padding:6px 12px; font-size:0.8rem;">+ Add Option</button>
+            </div>
+            <button onclick="adminChatSystem.sendPoll()" class="btn-primary" style="margin-top:15px; width:100%;">Send Poll</button>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -795,7 +1576,7 @@
             return fallbackValue;
         }
         
-        // FIXED: Check Auth Function - Prevents redirect loop
+        // Check Auth Function (FIXED)
         async function checkAuth() {
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
@@ -815,8 +1596,6 @@
                 if (adminError || !adminData || !adminData.is_active) {
                     console.log('Not an admin or account inactive');
                     await supabaseClient.auth.signOut();
-                    localStorage.clear();
-                    sessionStorage.clear();
                     window.location.href = 'admin-auth.html';
                     return false;
                 }
@@ -826,32 +1605,12 @@
                 document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle"></i> ${session.user.email}`;
                 document.getElementById('adminRoleBadge').innerText = currentAdminRole === 'superadmin' ? 'Super Admin' : (currentAdminRole === 'admin' ? 'Sub Admin' : 'Staff');
                 
-                // Store auth state to prevent loop
-                sessionStorage.setItem('admin_authenticated', 'true');
-                sessionStorage.setItem('admin_role', currentAdminRole);
-                
                 return true;
             } catch (error) {
                 console.error('Auth check error:', error);
                 window.location.href = 'admin-auth.html';
                 return false;
             }
-        }
-        
-        // Lazy loading for images
-        function lazyLoadImages() {
-            const images = document.querySelectorAll('img[data-src]');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src;
-                        img.classList.add('loaded');
-                        observer.unobserve(img);
-                    }
-                });
-            });
-            images.forEach(img => observer.observe(img));
         }
         
         // Real-time subscription for batch updates
@@ -1061,7 +1820,7 @@
                         <td>${batch.id?.slice(0, 12)}...</td>
                         <td><strong>${escapeHtml(batch.batch_name || 'N/A')}</strong></td>
                         <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
-                        <td>${batch.profit_percentage || 0}%</span></div></div></td>
+                        <td>${batch.profit_percentage || 0}%</span></div></td>
                         <td>${batch.duration_days || 0} days</span></div></td>
                         <td>${batch.total_slots || 0}</span></div></td>
                         <td>${slotWarning}</span></div></td>
@@ -1700,7 +2459,6 @@
             await logActivity('admin_logout', 'Admin logged out');
             await supabaseClient.auth.signOut(); 
             localStorage.clear(); 
-            sessionStorage.clear();
             window.location.href = 'index.html'; 
         };
         
@@ -1735,6 +2493,7 @@
                 
                 const deviceInfo = `${navigator.userAgent.substring(0, 200)}`;
                 
+                // Check if table exists - safe insert with fallback
                 await supabaseClient.from('admin_activity_logs').insert([{
                     admin_id: currentAdminUser.id,
                     admin_email: currentAdminUser.email,
@@ -1889,6 +2648,7 @@
                     
                     await supabaseClient.from('investors').update(updateObj).eq('id', investorId);
                     
+                    // Record in balance audit trail (safe - table may not exist)
                     try {
                         await supabaseClient.from('balance_audit_trail').insert([{
                             investor_id: investorId,
@@ -2035,6 +2795,7 @@
             if (!supabaseClient) return;
             
             try {
+                // Load referral settings
                 const { data: settings } = await supabaseClient.from('system_settings').select('value').eq('key', 'referral_settings').single();
                 if (settings) {
                     const refSettings = JSON.parse(settings.value || '{"commission":5,"min_withdraw":500,"multi_level":false}');
@@ -2045,6 +2806,7 @@
             } catch(e) { console.log('Referral settings table not found'); }
             
             try {
+                // Load referral stats
                 const { data: referrals } = await supabaseClient.from('referrals').select('*, referrer:referrer_id(full_name), referred:referred_id(full_name)').order('created_at', { ascending: false });
                 
                 const totalReferrals = referrals?.length || 0;
@@ -2055,6 +2817,7 @@
                 document.getElementById('totalCommission').innerHTML = `Rs. ${totalCommission.toLocaleString()}`;
                 document.getElementById('pendingCommission').innerHTML = `Rs. ${pendingCommission.toLocaleString()}`;
                 
+                // Top referrers
                 const referrerMap = new Map();
                 referrals?.forEach(r => {
                     const referrerName = r.referrer?.full_name || r.referrer_id;
@@ -2075,7 +2838,7 @@
                     } else {
                         topReferrersTbody.innerHTML = topReferrers.map(r => `
                             <tr>
-                                <td>${escapeHtml(r.name)}</span></div></td>
+                                <td>${escapeHtml(r.name)}</td>
                                 <td>-</span></div></td>
                                 <td>${r.count}</td>
                                 <td>Rs. ${r.commission.toLocaleString()}</td>
@@ -2085,6 +2848,7 @@
                     }
                 }
                 
+                // Referral transactions
                 const transactionsTbody = document.getElementById('referralTransactionsList');
                 if (transactionsTbody) {
                     if (!referrals || referrals.length === 0) {
@@ -2173,9 +2937,9 @@
                 tbody.innerHTML = filtered.map(kyc => `
                     <tr>
                         <td><strong>${escapeHtml(kyc.investors?.full_name || 'Unknown')}</strong><br><small>${kyc.investors?.email || ''}</small></td>
-                        <td>${kyc.cnic_front ? `<img data-src="${kyc.cnic_front}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_front}')">` : '-'}</span></div></td>
-                        <td>${kyc.cnic_back ? `<img data-src="${kyc.cnic_back}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_back}')">` : '-'}</span></div></td>
-                        <td>${kyc.selfie ? `<img data-src="${kyc.selfie}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.selfie}')">` : '-'}</span></div></td>
+                        <td>${kyc.cnic_front ? `<img src="${kyc.cnic_front}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_front}')">` : '-'}</span></div></td>
+                        <td>${kyc.cnic_back ? `<img src="${kyc.cnic_back}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.cnic_back}')">` : '-'}</span></div></td>
+                        <td>${kyc.selfie ? `<img src="${kyc.selfie}" class="screenshot-thumb" onclick="viewKYCDocument('${kyc.selfie}')">` : '-'}</span></div></td>
                         <td><span class="status-badge ${kyc.status === 'approved' ? 'status-active' : kyc.status === 'rejected' ? 'status-pending' : 'status-kyc-pending'}">${kyc.status || 'pending'}</span></td>
                         <td>${kyc.submitted_at ? new Date(kyc.submitted_at).toLocaleDateString() : '-'}</td>
                         <td>
@@ -2184,7 +2948,6 @@
                          </div>
                     </tr>
                 `).join('');
-                lazyLoadImages();
             } catch(e) {
                 console.error('Error loading KYC requests:', e);
                 const tbody = document.getElementById('kycRequestsList');
@@ -2345,8 +3108,7 @@
                 if (!tbody) return;
                 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No announcements created yet. Create announcements table.</div>
-                    `;
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No announcements created yet. Create announcements table.</td></tr>';
                     return;
                 }
                 
@@ -3006,7 +3768,6 @@
                     await supabaseClient.auth.signOut();
                     await logActivity('admin_logout_all', 'Logged out from all devices');
                     localStorage.clear();
-                    sessionStorage.clear();
                     window.location.href = 'index.html';
                 } catch(e) {
                     showNotification(e.message, true);
@@ -3141,7 +3902,7 @@
                 allBuyers = data || [];
                 const buyersList = document.getElementById('buyersList');
                 if(buyersList) {
-                    buyersList.innerHTML = allBuyers.map(b=>`<tr>
+                    buyersList.innerHTML = allBuyers.map(b=>`<td>
                         <td><strong>${escapeHtml(b.full_name)}</strong></td>
                         <td>${b.email}</td>
                         <td>${b.phone||'-'}</span></div></td>
@@ -3239,10 +4000,9 @@
                         <td>${new Date(req.created_at).toLocaleDateString()}</td>
                         <td>${req.payment_method || '-'}</td>
                         <td>${req.transaction_id || '-'}</td>
-                        <td>${req.screenshot ? `<img data-src="${req.screenshot}" class="screenshot-thumb" onclick="window.open('${req.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</td>
+                        <td>${req.screenshot ? `<img src="${req.screenshot}" class="screenshot-thumb" onclick="window.open('${req.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</td>
                         <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></div></td>
                     </tr>`).join('');
-                    lazyLoadImages();
                 }
             } catch(e) { console.error('Error loading investment requests:', e); }
         }
@@ -3263,10 +4023,9 @@
                     <td>${w.payment_method || '-'}</td>
                     <td><small>${w.account_details || '-'}</small></td>
                     <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
-                    <td>${w.approval_screenshot ? `<img data-src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
+                    <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
                     <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`} </div></td>
                 </tr>`).join('');
-                lazyLoadImages();
             } catch(e) { console.error('Error loading withdrawals:', e); }
         }
         
@@ -3742,10 +4501,9 @@
                 <td>${w.payment_method || '-'}</td>
                 <td><small>${w.account_details || '-'}</small></td>
                 <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
-                <td>${w.approval_screenshot ? `<img data-src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
+                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
                 <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</div></td>
             </tr>`).join('');
-            lazyLoadImages();
         };
         
         window.resetWithdrawalSearch = function() { 
@@ -3759,7 +4517,7 @@
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
             if (filtered.length === 0) { 
-                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div></tr>'; 
+                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</span></div><tr>'; 
                 return; 
             }
             ordersList.innerHTML = filtered.map(o => `<tr>
@@ -3877,9 +4635,6 @@
             
             // Setup realtime sync
             setupRealtimeSync();
-            
-            // Initialize lazy loading for images
-            lazyLoadImages();
             
             // Initialize chat system
             setTimeout(() => {
