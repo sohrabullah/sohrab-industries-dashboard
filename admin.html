@@ -640,6 +640,8 @@
             <button class="nav-tab" onclick="showSection('team')"><i class="fas fa-users-cog"></i> Team</button>
             <button class="nav-tab" onclick="showSection('bulk')"><i class="fas fa-layer-group"></i> Bulk Ops</button>
             <button class="nav-tab" onclick="showSection('loss')"><i class="fas fa-chart-line"></i> Loss Mgmt</button>
+            <!-- NEW: Communication Tab -->
+            <button class="nav-tab" onclick="showSection('communication')"><i class="fas fa-bullhorn"></i> Communication</button>
         </div>
 
         <!-- Dashboard Section (Existing - Preserved) -->
@@ -737,9 +739,10 @@
             </div>
         </div>
 
-        <!-- Investors Section (Existing - Enhanced with Tiers) -->
+        <!-- INVESTORS Section (Enhanced with Referral Monitoring & Notification Controls) -->
         <div id="investorsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-users"></i> Investors Management</h2>
+            
             <div class="form-card">
                 <h3><i class="fas fa-plus-circle"></i> Add New Investor</h3>
                 <div class="form-row">
@@ -757,6 +760,91 @@
                 </div>
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
+            
+            <!-- NEW: Send Notification to All Investors Card -->
+            <div class="form-card">
+                <h3><i class="fas fa-bullhorn"></i> Send Notification to All Investors</h3>
+                <div class="form-group">
+                    <label>Notification Title</label>
+                    <input type="text" id="bulkNotifTitle" placeholder="e.g., Important Update">
+                </div>
+                <div class="form-group">
+                    <label>Notification Message</label>
+                    <textarea id="bulkNotifMessage" rows="3" placeholder="Enter notification message..."></textarea>
+                </div>
+                <button onclick="sendNotificationToAllInvestors()" class="btn-primary"><i class="fas fa-paper-plane"></i> Send to All Investors</button>
+            </div>
+            
+            <!-- NEW: Send Notification to Specific Investor Card -->
+            <div class="form-card">
+                <h3><i class="fas fa-user"></i> Send Notification to Specific Investor</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Select Investor</label>
+                        <select id="singleInvestorNotifSelect"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notification Title</label>
+                    <input type="text" id="singleNotifTitle" placeholder="e.g., Account Update">
+                </div>
+                <div class="form-group">
+                    <label>Notification Message</label>
+                    <textarea id="singleNotifMessage" rows="3" placeholder="Enter notification message..."></textarea>
+                </div>
+                <button onclick="sendNotificationToSingleInvestor()" class="btn-primary"><i class="fas fa-paper-plane"></i> Send to Selected Investor</button>
+            </div>
+            
+            <!-- NEW: Create Popup Card -->
+            <div class="form-card">
+                <h3><i class="fas fa-window-popup"></i> Create Popup Message (Shows on Investor Dashboard)</h3>
+                <div class="form-group">
+                    <label>Popup Title</label>
+                    <input type="text" id="popupTitleInput" placeholder="e.g., Special Announcement">
+                </div>
+                <div class="form-group">
+                    <label>Popup Message</label>
+                    <textarea id="popupMessageInput" rows="3" placeholder="Enter popup message..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Show For (User Type)</label>
+                        <select id="popupTargetType">
+                            <option value="all">All Investors</option>
+                            <option value="premium">Premium Only</option>
+                            <option value="tier_bronze">Bronze Tier Only</option>
+                            <option value="tier_silver">Silver Tier Only</option>
+                            <option value="tier_gold">Gold Tier Only</option>
+                            <option value="tier_vip">VIP Tier Only</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Expires After (Days)</label>
+                        <input type="number" id="popupExpiryDays" value="7" placeholder="Days until expiry">
+                    </div>
+                </div>
+                <button onclick="createPopup()" class="btn-primary"><i class="fas fa-plus"></i> Create Popup</button>
+            </div>
+            
+            <!-- NEW: Referral Monitoring Card -->
+            <div class="form-card">
+                <h3><i class="fas fa-chart-line"></i> Investor Referral Performance</h3>
+                <div class="search-box">
+                    <input type="text" id="referralSearch" placeholder="Search by investor name or email...">
+                    <button onclick="searchReferralStats()" class="btn-primary">Search</button>
+                    <button onclick="resetReferralSearch()" class="btn-info">Reset</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Investor</th><th>Referral Code</th><th>Total Referrals</th><th>Total Commission Earned</th><th>Paid Commission</th><th>Pending Commission</th><th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="referralStatsList"></tbody>
+                    </table>
+                </div>
+            </div>
+            
             <div class="search-box"><input type="text" id="investorSearch" placeholder="🔍 Search investors..."><button onclick="searchInvestors()" class="btn-primary">Search</button><button onclick="resetInvestorSearch()" class="btn-primary">Reset</button></div>
             <div class="table-container">
                 <table>
@@ -984,595 +1072,188 @@
             </div>
         </div>
 
-        <!-- ========== NEW ENTERPRISE SECTIONS ========== -->
+        <!-- NEW: COMMUNICATION SECTION (Popup & Notification Management) -->
+        <div id="communicationSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-bullhorn"></i> Communication Center</h2>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-bell"></i> Send Notification</h3>
+                <div class="form-group">
+                    <label>Target Audience</label>
+                    <select id="notifTargetAudience">
+                        <option value="all">All Investors</option>
+                        <option value="premium">Premium Subscribers Only</option>
+                        <option value="free">Free Users Only</option>
+                        <option value="tier_bronze">Bronze Tier Only</option>
+                        <option value="tier_silver">Silver Tier Only</option>
+                        <option value="tier_gold">Gold Tier Only</option>
+                        <option value="tier_vip">VIP Tier Only</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notification Title</label>
+                    <input type="text" id="notifTitle" placeholder="e.g., Important Update">
+                </div>
+                <div class="form-group">
+                    <label>Notification Message</label>
+                    <textarea id="notifMessage" rows="3" placeholder="Enter your message here..."></textarea>
+                </div>
+                <button onclick="sendTargetedNotification()" class="btn-primary"><i class="fas fa-paper-plane"></i> Send Notification</button>
+            </div>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-window-popup"></i> Create Popup Message</h3>
+                <div class="form-group">
+                    <label>Popup Title</label>
+                    <input type="text" id="commPopupTitle" placeholder="e.g., Special Offer">
+                </div>
+                <div class="form-group">
+                    <label>Popup Message</label>
+                    <textarea id="commPopupMessage" rows="3" placeholder="Enter popup message..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Target Audience</label>
+                        <select id="commPopupTarget">
+                            <option value="all">All Investors</option>
+                            <option value="premium">Premium Subscribers Only</option>
+                            <option value="free">Free Users Only</option>
+                            <option value="tier_bronze">Bronze Tier Only</option>
+                            <option value="tier_silver">Silver Tier Only</option>
+                            <option value="tier_gold">Gold Tier Only</option>
+                            <option value="tier_vip">VIP Tier Only</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Expires After (Days)</label>
+                        <input type="number" id="commPopupExpiry" value="7">
+                    </div>
+                </div>
+                <button onclick="createCommunicationPopup()" class="btn-primary"><i class="fas fa-plus"></i> Create Popup</button>
+            </div>
+            
+            <div class="form-card">
+                <h3><i class="fas fa-history"></i> Recent Notifications</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Date</th><th>Title</th><th>Audience</th><th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentNotificationsList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-        <!-- HOLDING WALLET SECTION (Escrow System) -->
+        <!-- ========== EXISTING ENTERPRISE SECTIONS (Preserved) ========== -->
+
+        <!-- HOLDING WALLET SECTION -->
         <div id="holdingSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-wallet"></i> Payment Holding & Escrow System</h2>
-            
-            <div class="holding-wallet-card">
-                <h3 style="color:#E8B13C;"><i class="fas fa-chart-line"></i> Holding Balance Summary</h3>
-                <div class="stats-row">
-                    <div class="stat-box"><div class="stat-label">Total Pending Holding</div><div class="stat-value" id="totalHoldingAmount">Rs. 0</div></div>
-                    <div class="stat-box"><div class="stat-label">Pending Approvals</div><div class="stat-value" id="pendingHoldingCount">0</div></div>
-                    <div class="stat-box"><div class="stat-label">Released This Month</div><div class="stat-value" id="releasedThisMonth">Rs. 0</div></div>
-                </div>
-            </div>
-            
-            <div class="form-card">
-                <h3><i class="fas fa-clock"></i> Pending Holding Approvals</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Investor</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Submitted</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pendingHoldingsList"></tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="form-card">
-                <h3><i class="fas fa-history"></i> Release History</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Investor</th><th>Amount</th><th>Released To</th><th>Released Date</th><th>Approved By</th>
-                            </tr>
-                        </thead>
-                        <tbody id="releaseHistoryList"></tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="holding-wallet-card"><h3 style="color:#E8B13C;"><i class="fas fa-chart-line"></i> Holding Balance Summary</h3>
+                <div class="stats-row"><div class="stat-box"><div class="stat-label">Total Pending Holding</div><div class="stat-value" id="totalHoldingAmount">Rs. 0</div></div>
+                <div class="stat-box"><div class="stat-label">Pending Approvals</div><div class="stat-value" id="pendingHoldingCount">0</div></div>
+                <div class="stat-box"><div class="stat-label">Released This Month</div><div class="stat-value" id="releasedThisMonth">Rs. 0</div></div></div></div>
+            <div class="form-card"><h3><i class="fas fa-clock"></i> Pending Holding Approvals</h3><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Submitted</th><th>Actions</th></tr></thead><tbody id="pendingHoldingsList"></tbody></div></div>
+            <div class="form-card"><h3><i class="fas fa-history"></i> Release History</h3><div class="table-container"><table><thead><tr><th>Investor</th><th>Amount</th><th>Released To</th><th>Released Date</th><th>Approved By</th></tr></thead><tbody id="releaseHistoryList"></tbody></div></div>
         </div>
 
         <!-- USER TIERS SECTION -->
         <div id="tiersSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-layer-group"></i> User Tier Management</h2>
-            
-            <div class="form-card">
-                <h3>Investor Tiers Configuration</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Tier</th><th>Min Investment</th><th>Profit Bonus %</th><th>Priority Withdrawal</th><th>Exclusive Batches</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="investorTiersConfig"></tbody>
-                    </table>
-                </div>
-                <button onclick="showAddTierModal()" class="btn-primary" style="margin-top:15px;"><i class="fas fa-plus"></i> Add/Edit Tier Benefits</button>
-            </div>
-            
-            <div class="form-card">
-                <h3>Buyer Tiers Configuration</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Tier</th><th>Min Purchase</th><th>Discount %</th><th>Bulk Discount</th><th>Early Access</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="buyerTiersConfig"></tbody>
-                    </table>
-                </div>
-                <button onclick="showAddBuyerTierModal()" class="btn-primary" style="margin-top:15px;"><i class="fas fa-plus"></i> Add/Edit Buyer Tier Benefits</button>
-            </div>
-            
-            <div class="form-card">
-                <h3>Auto-Tier Assignment Rules</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Auto-Assign Investor Tiers</label>
-                        <select id="autoAssignInvestorTiers">
-                            <option value="true">Enabled</option>
-                            <option value="false">Disabled</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>Auto-Assign Buyer Tiers</label>
-                        <select id="autoAssignBuyerTiers">
-                            <option value="true">Enabled</option>
-                            <option value="false">Disabled</option>
-                        </select>
-                    </div>
-                </div>
-                <button onclick="updateAutoAssignSettings()" class="btn-primary">Save Settings</button>
-                <button onclick="runManualTierAssignment()" class="btn-success" style="margin-left:10px;"><i class="fas fa-sync"></i> Run Manual Assignment Now</button>
-            </div>
+            <div class="form-card"><h3>Investor Tiers Configuration</h3><div class="table-container"><table><thead><tr><th>Tier</th><th>Min Investment</th><th>Profit Bonus %</th><th>Priority Withdrawal</th><th>Exclusive Batches</th><th>Actions</th></tr></thead><tbody id="investorTiersConfig"></tbody></div><button onclick="showAddTierModal()" class="btn-primary" style="margin-top:15px;"><i class="fas fa-plus"></i> Add/Edit Tier Benefits</button></div>
+            <div class="form-card"><h3>Buyer Tiers Configuration</h3><div class="table-container"><table><thead><tr><th>Tier</th><th>Min Purchase</th><th>Discount %</th><th>Bulk Discount</th><th>Early Access</th><th>Actions</th></tr></thead><tbody id="buyerTiersConfig"></tbody></div><button onclick="showAddBuyerTierModal()" class="btn-primary" style="margin-top:15px;"><i class="fas fa-plus"></i> Add/Edit Buyer Tier Benefits</button></div>
+            <div class="form-card"><h3>Auto-Tier Assignment Rules</h3><div class="form-row"><div class="form-group"><label>Auto-Assign Investor Tiers</label><select id="autoAssignInvestorTiers"><option value="true">Enabled</option><option value="false">Disabled</option></select></div><div class="form-group"><label>Auto-Assign Buyer Tiers</label><select id="autoAssignBuyerTiers"><option value="true">Enabled</option><option value="false">Disabled</option></select></div></div><button onclick="updateAutoAssignSettings()" class="btn-primary">Save Settings</button><button onclick="runManualTierAssignment()" class="btn-success" style="margin-left:10px;"><i class="fas fa-sync"></i> Run Manual Assignment Now</button></div>
         </div>
 
         <!-- SUBSCRIPTIONS SECTION -->
         <div id="subscriptionsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-crown"></i> Premium Subscription Management</h2>
-            
-            <div class="form-card">
-                <h3><i class="fas fa-tags"></i> Subscription Plans</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Plan Name</th><th>Monthly Price</th><th>Yearly Price</th><th>Features</th><th>Status</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="subscriptionPlansList"></tbody>
-                    </table>
-                </div>
-                <button onclick="showAddPlanModal()" class="btn-primary" style="margin-top:15px;"><i class="fas fa-plus"></i> Add New Plan</button>
-            </div>
-            
-            <div class="form-card">
-                <h3><i class="fas fa-users"></i> Active Subscriptions</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>User</th><th>Type</th><th>Plan</th><th>Start Date</th><th>End Date</th><th>Status</th><th>Auto-Renew</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="activeSubscriptionsList"></tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="form-card">
-                <h3><i class="fas fa-cog"></i> Premium Feature Toggles</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Early Access to Batches</label><select id="premiumEarlyAccess"><option value="true">Enabled for Premium</option><option value="false">Disabled</option></select></div>
-                    <div class="form-group"><label>Higher Profit Percentage</label><select id="premiumProfitBonus"><option value="true">Enabled (+5-10%)</option><option value="false">Disabled</option></select></div>
-                    <div class="form-group"><label>Priority Withdrawal</label><select id="premiumPriorityWithdrawal"><option value="true">Enabled</option><option value="false">Disabled</option></select></div>
-                    <div class="form-group"><label>Advanced Analytics</label><select id="premiumAnalytics"><option value="true">Enabled</option><option value="false">Disabled</option></select></div>
-                    <div class="form-group"><label>Priority Support</label><select id="premiumSupport"><option value="true">Enabled</option><option value="false">Disabled</option></select></div>
-                </div>
-                <button onclick="savePremiumFeatureToggles()" class="btn-primary">Save Feature Toggles</button>
-            </div>
+            <div class="form-card"><h3><i class="fas fa-tags"></i> Subscription Plans</h3><div class="table-container"></table><thead><tr><th>Plan Name</th><th>Monthly Price</th><th>Yearly Price</th><th>Features</th><th>Status</th><th>Actions</th></tr></thead><tbody id="subscriptionPlansList"></tbody></div><button onclick="showAddPlanModal()" class="btn-primary" style="margin-top:15px;"><i class="fas fa-plus"></i> Add New Plan</button></div>
+            <div class="form-card"><h3><i class="fas fa-users"></i> Active Subscriptions</h3><div class="table-container"><table><thead><tr><th>User</th><th>Type</th><th>Plan</th><th>Start Date</th><th>End Date</th><th>Status</th><th>Auto-Renew</th><th>Actions</th></tr></thead><tbody id="activeSubscriptionsList"></tbody></div></div>
+            <div class="form-card"><h3><i class="fas fa-cog"></i> Premium Feature Toggles</h3><div class="form-row"><div class="form-group"><label>Early Access to Batches</label><select id="premiumEarlyAccess"><option value="true">Enabled for Premium</option><option value="false">Disabled</option></select></div><div class="form-group"><label>Higher Profit Percentage</label><select id="premiumProfitBonus"><option value="true">Enabled (+5-10%)</option><option value="false">Disabled</option></select></div><div class="form-group"><label>Priority Withdrawal</label><select id="premiumPriorityWithdrawal"><option value="true">Enabled</option><option value="false">Disabled</option></select></div><div class="form-group"><label>Advanced Analytics</label><select id="premiumAnalytics"><option value="true">Enabled</option><option value="false">Disabled</option></select></div><div class="form-group"><label>Priority Support</label><select id="premiumSupport"><option value="true">Enabled</option><option value="false">Disabled</option></select></div></div><button onclick="savePremiumFeatureToggles()" class="btn-primary">Save Feature Toggles</button></div>
         </div>
 
         <!-- ADVANCED ACCOUNTING SECTION -->
         <div id="accountingSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-book"></i> Advanced Accounting System</h2>
-            
-            <div class="stats-row">
-                <div class="stat-box"><div class="stat-label">Total Assets</div><div class="stat-value" id="totalAssets">Rs. 0</div></div>
-                <div class="stat-box"><div class="stat-label">Total Liabilities</div><div class="stat-value" id="totalLiabilities">Rs. 0</div></div>
-                <div class="stat-box"><div class="stat-label">Net Worth</div><div class="stat-value" id="netWorth">Rs. 0</div></div>
-                <div class="stat-box"><div class="stat-label">Monthly Revenue</div><div class="stat-value" id="monthlyRevenue">Rs. 0</div></div>
-                <div class="stat-box"><div class="stat-label">Monthly Expenses</div><div class="stat-value" id="monthlyExpenses">Rs. 0</div></div>
-                <div class="stat-box"><div class="stat-label">Net Profit</div><div class="stat-value" id="netProfitTotal">Rs. 0</div></div>
-            </div>
-            
-            <div class="form-card">
-                <h3>General Ledger</h3>
-                <div class="search-box"><input type="text" id="ledgerSearch" placeholder="Search transactions..."><button onclick="searchLedger()" class="btn-primary">Search</button></div>
-                <div class="table-container">
-                    <table class="ledger-table">
-                        <thead>
-                            <tr><th>Date</th><th>Description</th><th>Account</th><th>Debit (Rs.)</th><th>Credit (Rs.)</th><th>Balance (Rs.)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="generalLedger"></tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="form-card">
-                <h3>Cash Flow Statement</h3>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Period</th><th>Operating Cash Flow</th><th>Investing Cash Flow</th><th>Financing Cash Flow</th><th>Net Cash Flow</th></tr></thead>
-                        <tbody id="cashFlowStatement"></tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="form-card">
-                <h3>Add Manual Ledger Entry</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Description</label><input type="text" id="ledgerDescription" placeholder="Transaction description"></div>
-                    <div class="form-group"><label>Account</label><select id="ledgerAccount"><option>Cash</option><option>Bank</option><option>Investment Account</option><option>Profit Account</option><option>Expense Account</option></select></div>
-                    <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="ledgerAmount" placeholder="Amount"></div>
-                    <div class="form-group"><label>Type</label><select id="ledgerType"><option value="debit">Debit</option><option value="credit">Credit</option></select></div>
-                </div>
-                <button onclick="addLedgerEntry()" class="btn-primary">Add Entry</button>
-            </div>
+            <div class="stats-row"><div class="stat-box"><div class="stat-label">Total Assets</div><div class="stat-value" id="totalAssets">Rs. 0</div></div><div class="stat-box"><div class="stat-label">Total Liabilities</div><div class="stat-value" id="totalLiabilities">Rs. 0</div></div><div class="stat-box"><div class="stat-label">Net Worth</div><div class="stat-value" id="netWorth">Rs. 0</div></div><div class="stat-box"><div class="stat-label">Monthly Revenue</div><div class="stat-value" id="monthlyRevenue">Rs. 0</div></div><div class="stat-box"><div class="stat-label">Monthly Expenses</div><div class="stat-value" id="monthlyExpenses">Rs. 0</div></div><div class="stat-box"><div class="stat-label">Net Profit</div><div class="stat-value" id="netProfitTotal">Rs. 0</div></div></div>
+            <div class="form-card"><h3>General Ledger</h3><div class="search-box"><input type="text" id="ledgerSearch" placeholder="Search transactions..."><button onclick="searchLedger()" class="btn-primary">Search</button></div><div class="table-container"><table class="ledger-table"><thead><tr><th>Date</th><th>Description</th><th>Account</th><th>Debit (Rs.)</th><th>Credit (Rs.)</th><th>Balance (Rs.)</th></tr></thead><tbody id="generalLedger"></tbody></div></div>
+            <div class="form-card"><h3>Cash Flow Statement</h3><div class="table-container"><table><thead><tr><th>Period</th><th>Operating Cash Flow</th><th>Investing Cash Flow</th><th>Financing Cash Flow</th><th>Net Cash Flow</th></tr></thead><tbody id="cashFlowStatement"></tbody></div></div>
+            <div class="form-card"><h3>Add Manual Ledger Entry</h3><div class="form-row"><div class="form-group"><label>Description</label><input type="text" id="ledgerDescription" placeholder="Transaction description"></div><div class="form-group"><label>Account</label><select id="ledgerAccount"><option>Cash</option><option>Bank</option><option>Investment Account</option><option>Profit Account</option><option>Expense Account</option></select></div><div class="form-group"><label>Amount (Rs.)</label><input type="number" id="ledgerAmount" placeholder="Amount"></div><div class="form-group"><label>Type</label><select id="ledgerType"><option value="debit">Debit</option><option value="credit">Credit</option></select></div></div><button onclick="addLedgerEntry()" class="btn-primary">Add Entry</button></div>
         </div>
 
         <!-- AUDIT LOGS SECTION -->
         <div id="auditSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-history"></i> Audit & Activity Logs</h2>
-            
-            <div class="form-card">
-                <div class="search-box">
-                    <input type="text" id="auditSearch" placeholder="Search by action, user, or details...">
-                    <select id="auditTypeFilter"><option value="">All Actions</option><option value="investment">Investments</option><option value="withdrawal">Withdrawals</option><option value="batch">Batches</option><option value="user">User Management</option><option value="settings">Settings</option></select>
-                    <input type="date" id="auditDateFrom">
-                    <input type="date" id="auditDateTo">
-                    <button onclick="searchAuditLogs()" class="btn-primary">Search</button>
-                    <button onclick="exportAuditLogs()" class="btn-success">Export CSV</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Timestamp</th><th>Admin/User</th><th>Action Type</th><th>Action</th><th>Details</th><th>IP Address</th>
-                            </tr>
-                        </thead>
-                        <tbody id="auditLogsList"></tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="form-card"><div class="search-box"><input type="text" id="auditSearch" placeholder="Search by action, user, or details..."><select id="auditTypeFilter"><option value="">All Actions</option><option value="investment">Investments</option><option value="withdrawal">Withdrawals</option><option value="batch">Batches</option><option value="user">User Management</option><option value="settings">Settings</option></select><input type="date" id="auditDateFrom"><input type="date" id="auditDateTo"><button onclick="searchAuditLogs()" class="btn-primary">Search</button><button onclick="exportAuditLogs()" class="btn-success">Export CSV</button></div><div class="table-container"><tr><thead><tr><th>Timestamp</th><th>Admin/User</th><th>Action Type</th><th>Action</th><th>Details</th><th>IP Address</th></tr></thead><tbody id="auditLogsList"></tbody></div></div>
         </div>
 
         <!-- RISK MANAGEMENT SECTION -->
         <div id="riskSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-chart-line"></i> Risk Management System</h2>
-            
-            <div class="form-card">
-                <h3>Batch Risk Assessment</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Batch Name</th><th>Investment</th><th>Expected ROI</th><th>Risk Level</th><th>Risk Score</th><th>Recommendation</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="batchRiskAssessment"></tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="form-card">
-                <h3>Portfolio Risk Analysis</h3>
-                <div class="stats-row">
-                    <div class="stat-box"><div class="stat-label">Overall Risk Score</div><div class="stat-value" id="overallRiskScore">0/100</div></div>
-                    <div class="stat-box"><div class="stat-label">Diversification Score</div><div class="stat-value" id="diversificationScore">0%</div></div>
-                    <div class="stat-box"><div class="stat-label">Concentration Risk</div><div class="stat-value" id="concentrationRisk">0%</div></div>
-                </div>
-            </div>
-            
-            <div class="form-card">
-                <h3>Configure Risk Parameters</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Low Risk Threshold (ROI %)</label><input type="number" id="lowRiskThreshold" value="30"></div>
-                    <div class="form-group"><label>Medium Risk Threshold (ROI %)</label><input type="number" id="mediumRiskThreshold" value="60"></div>
-                    <div class="form-group"><label>High Risk Threshold (ROI %)</label><input type="number" id="highRiskThreshold" value="100"></div>
-                </div>
-                <button onclick="saveRiskParameters()" class="btn-primary">Save Parameters</button>
-            </div>
+            <div class="form-card"><h3>Batch Risk Assessment</h3><div class="table-container"><tr><thead><tr><th>Batch Name</th><th>Investment</th><th>Expected ROI</th><th>Risk Level</th><th>Risk Score</th><th>Recommendation</th><th>Actions</th></tr></thead><tbody id="batchRiskAssessment"></tbody></div></div>
+            <div class="form-card"><h3>Portfolio Risk Analysis</h3><div class="stats-row"><div class="stat-box"><div class="stat-label">Overall Risk Score</div><div class="stat-value" id="overallRiskScore">0/100</div></div><div class="stat-box"><div class="stat-label">Diversification Score</div><div class="stat-value" id="diversificationScore">0%</div></div><div class="stat-box"><div class="stat-label">Concentration Risk</div><div class="stat-value" id="concentrationRisk">0%</div></div></div></div>
+            <div class="form-card"><h3>Configure Risk Parameters</h3><div class="form-row"><div class="form-group"><label>Low Risk Threshold (ROI %)</label><input type="number" id="lowRiskThreshold" value="30"></div><div class="form-group"><label>Medium Risk Threshold (ROI %)</label><input type="number" id="mediumRiskThreshold" value="60"></div><div class="form-group"><label>High Risk Threshold (ROI %)</label><input type="number" id="highRiskThreshold" value="100"></div></div><button onclick="saveRiskParameters()" class="btn-primary">Save Parameters</button></div>
         </div>
 
         <!-- DOCUMENTS SECTION -->
         <div id="documentsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-folder-open"></i> Document Management System</h2>
-            
-            <div class="form-card">
-                <h3>Upload Document</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Document Type</label><select id="docType">
-                        <option value="payment_proof">Payment Proof</option>
-                        <option value="withdrawal_proof">Withdrawal Proof</option>
-                        <option value="invoice">Invoice</option>
-                        <option value="contract">Contract</option>
-                        <option value="identification">Identification</option>
-                    </select></div>
-                    <div class="form-group"><label>Associated User (Optional)</label><select id="docUserId"><option value="">None</option></select></div>
-                    <div class="form-group"><label>File</label><input type="file" id="docFile" accept="image/*,.pdf,.docx"></div>
-                </div>
-                <div class="form-group"><label>Notes</label><textarea id="docNotes" rows="2" placeholder="Additional notes..."></textarea></div>
-                <button onclick="uploadDocument()" class="btn-primary"><i class="fas fa-upload"></i> Upload Document</button>
-            </div>
-            
-            <div class="form-card">
-                <h3>Document Repository</h3>
-                <div class="search-box"><input type="text" id="docSearch" placeholder="Search documents..."><button onclick="searchDocuments()" class="btn-primary">Search</button></div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Date</th><th>Type</th><th>Associated User</th><th>Preview</th><th>Notes</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="documentsList"></tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="form-card"><h3>Upload Document</h3><div class="form-row"><div class="form-group"><label>Document Type</label><select id="docType"><option value="payment_proof">Payment Proof</option><option value="withdrawal_proof">Withdrawal Proof</option><option value="invoice">Invoice</option><option value="contract">Contract</option><option value="identification">Identification</option></select></div><div class="form-group"><label>Associated User (Optional)</label><select id="docUserId"><option value="">None</option></select></div><div class="form-group"><label>File</label><input type="file" id="docFile" accept="image/*,.pdf,.docx"></div></div><div class="form-group"><label>Notes</label><textarea id="docNotes" rows="2" placeholder="Additional notes..."></textarea></div><button onclick="uploadDocument()" class="btn-primary"><i class="fas fa-upload"></i> Upload Document</button></div>
+            <div class="form-card"><h3>Document Repository</h3><div class="search-box"><input type="text" id="docSearch" placeholder="Search documents..."><button onclick="searchDocuments()" class="btn-primary">Search</button></div><div class="table-container"></table><thead><tr><th>Date</th><th>Type</th><th>Associated User</th><th>Preview</th><th>Notes</th><th>Actions</th></tr></thead><tbody id="documentsList"></tbody></div></div>
         </div>
 
         <!-- AUTOMATION SECTION -->
         <div id="automationSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-robot"></i> Automation System</h2>
-            
-            <div class="form-card">
-                <h3>Automation Rules</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Rule Name</th><th>Trigger</th><th>Action</th><th>Schedule</th><th>Status</th><th>Last Run</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="automationRulesList"></tbody>
-                    </table>
-                </div>
-                <button onclick="showAddAutomationRuleModal()" class="btn-primary" style="margin-top:15px;"><i class="fas fa-plus"></i> Add Automation Rule</button>
-            </div>
-            
-            <div class="form-card">
-                <h3>Scheduled Reports</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Report Type</label><select id="reportType">
-                        <option value="daily_summary">Daily Summary</option>
-                        <option value="weekly_report">Weekly Report</option>
-                        <option value="monthly_financial">Monthly Financial</option>
-                        <option value="investment_report">Investment Report</option>
-                    </select></div>
-                    <div class="form-group"><label>Schedule</label><select id="reportSchedule">
-                        <option value="daily">Daily at 9 AM</option>
-                        <option value="weekly">Weekly on Monday</option>
-                        <option value="monthly">Monthly on 1st</option>
-                    </select></div>
-                    <div class="form-group"><label>Recipients (comma-separated)</label><input type="text" id="reportRecipients" placeholder="emails@example.com"></div>
-                </div>
-                <button onclick="scheduleReport()" class="btn-primary">Schedule Report</button>
-            </div>
-            
-            <div class="form-card">
-                <h3>Auto Profit Distribution Settings</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Auto Distribute Profits</label><select id="autoDistributeProfits"><option value="true">Enabled</option><option value="false">Disabled</option></select></div>
-                    <div class="form-group"><label>Distribution Day of Month</label><select id="distributionDay"><option>1</option><option>5</option><option>10</option><option>15</option><option>20</option><option>25</option></select></div>
-                </div>
-                <button onclick="saveAutoDistributionSettings()" class="btn-primary">Save Settings</button>
-                <button onclick="runAutoProfitDistribution()" class="btn-success" style="margin-left:10px;"><i class="fas fa-play"></i> Run Now</button>
-            </div>
+            <div class="form-card"><h3>Automation Rules</h3><div class="table-container"><tr><thead><tr><th>Rule Name</th><th>Trigger</th><th>Action</th><th>Schedule</th><th>Status</th><th>Last Run</th><th>Actions</th></tr></thead><tbody id="automationRulesList"></tbody></div><button onclick="showAddAutomationRuleModal()" class="btn-primary" style="margin-top:15px;"><i class="fas fa-plus"></i> Add Automation Rule</button></div>
+            <div class="form-card"><h3>Scheduled Reports</h3><div class="form-row"><div class="form-group"><label>Report Type</label><select id="reportType"><option value="daily_summary">Daily Summary</option><option value="weekly_report">Weekly Report</option><option value="monthly_financial">Monthly Financial</option><option value="investment_report">Investment Report</option></select></div><div class="form-group"><label>Schedule</label><select id="reportSchedule"><option value="daily">Daily at 9 AM</option><option value="weekly">Weekly on Monday</option><option value="monthly">Monthly on 1st</option></select></div><div class="form-group"><label>Recipients (comma-separated)</label><input type="text" id="reportRecipients" placeholder="emails@example.com"></div></div><button onclick="scheduleReport()" class="btn-primary">Schedule Report</button></div>
+            <div class="form-card"><h3>Auto Profit Distribution Settings</h3><div class="form-row"><div class="form-group"><label>Auto Distribute Profits</label><select id="autoDistributeProfits"><option value="true">Enabled</option><option value="false">Disabled</option></select></div><div class="form-group"><label>Distribution Day of Month</label><select id="distributionDay"><option>1</option><option>5</option><option>10</option><option>15</option><option>20</option><option>25</option></select></div></div><button onclick="saveAutoDistributionSettings()" class="btn-primary">Save Settings</button><button onclick="runAutoProfitDistribution()" class="btn-success" style="margin-left:10px;"><i class="fas fa-play"></i> Run Now</button></div>
         </div>
 
         <!-- SUPPORT TICKET SYSTEM -->
         <div id="ticketsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-ticket-alt"></i> Support Ticket System</h2>
-            
-            <div class="stats-row">
-                <div class="stat-box"><div class="stat-label">Open Tickets</div><div class="stat-value" id="openTicketsCount">0</div></div>
-                <div class="stat-box"><div class="stat-label">In Progress</div><div class="stat-value" id="inProgressTicketsCount">0</div></div>
-                <div class="stat-box"><div class="stat-label">Resolved Today</div><div class="stat-value" id="resolvedTodayCount">0</div></div>
-                <div class="stat-box"><div class="stat-label">Avg Response Time</div><div class="stat-value" id="avgResponseTime">0h</div></div>
-            </div>
-            
-            <div class="form-card">
-                <div class="search-box"><input type="text" id="ticketSearch" placeholder="Search tickets..."><select id="ticketStatusFilter"><option value="">All Status</option><option value="open">Open</option><option value="in_progress">In Progress</option><option value="resolved">Resolved</option><option value="closed">Closed</option></select><button onclick="searchTickets()" class="btn-primary">Search</button></div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Ticket ID</th><th>User</th><th>Subject</th><th>Priority</th><th>Status</th><th>Created</th><th>Last Update</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ticketsList"></tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="stats-row"><div class="stat-box"><div class="stat-label">Open Tickets</div><div class="stat-value" id="openTicketsCount">0</div></div><div class="stat-box"><div class="stat-label">In Progress</div><div class="stat-value" id="inProgressTicketsCount">0</div></div><div class="stat-box"><div class="stat-label">Resolved Today</div><div class="stat-value" id="resolvedTodayCount">0</div></div><div class="stat-box"><div class="stat-label">Avg Response Time</div><div class="stat-value" id="avgResponseTime">0h</div></div></div>
+            <div class="form-card"><div class="search-box"><input type="text" id="ticketSearch" placeholder="Search tickets..."><select id="ticketStatusFilter"><option value="">All Status</option><option value="open">Open</option><option value="in_progress">In Progress</option><option value="resolved">Resolved</option><option value="closed">Closed</option></select><button onclick="searchTickets()" class="btn-primary">Search</button></div><div class="table-container"><table><thead><tr><th>Ticket ID</th><th>User</th><th>Subject</th><th>Priority</th><th>Status</th><th>Created</th><th>Last Update</th><th>Actions</th></tr></thead><tbody id="ticketsList"></tbody></div></div>
         </div>
 
         <!-- TEAM MANAGEMENT SECTION -->
         <div id="teamSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-users-cog"></i> Team Management</h2>
-            
-            <div class="form-card">
-                <h3>Add Team Member</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Name</label><input type="text" id="teamMemberName"></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="teamMemberEmail"></div>
-                    <div class="form-group"><label>Role</label><select id="teamMemberRole">
-                        <option value="admin">Admin</option>
-                        <option value="moderator">Moderator</option>
-                        <option value="support">Support Agent</option>
-                        <option value="finance">Finance Officer</option>
-                        <option value="viewer">Viewer Only</option>
-                    </select></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Permissions</label>
-                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                            <label><input type="checkbox" class="teamPerm" value="manage_investments"> Manage Investments</label>
-                            <label><input type="checkbox" class="teamPerm" value="manage_withdrawals"> Manage Withdrawals</label>
-                            <label><input type="checkbox" class="teamPerm" value="manage_batches"> Manage Batches</label>
-                            <label><input type="checkbox" class="teamPerm" value="manage_users"> Manage Users</label>
-                            <label><input type="checkbox" class="teamPerm" value="view_reports"> View Reports</label>
-                            <label><input type="checkbox" class="teamPerm" value="manage_settings"> Manage Settings</label>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="addTeamMember()" class="btn-primary">Add Team Member</button>
-            </div>
-            
-            <div class="form-card">
-                <h3>Team Members</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Name</th><th>Email</th><th>Role</th><th>Permissions</th><th>Last Active</th><th>Status</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="teamMembersList"></tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="form-card"><h3>Add Team Member</h3><div class="form-row"><div class="form-group"><label>Name</label><input type="text" id="teamMemberName"></div><div class="form-group"><label>Email</label><input type="email" id="teamMemberEmail"></div><div class="form-group"><label>Role</label><select id="teamMemberRole"><option value="admin">Admin</option><option value="moderator">Moderator</option><option value="support">Support Agent</option><option value="finance">Finance Officer</option><option value="viewer">Viewer Only</option></select></div></div><div class="form-row"><div class="form-group"><label>Permissions</label><div style="display: flex; flex-wrap: wrap; gap: 10px;"><label><input type="checkbox" class="teamPerm" value="manage_investments"> Manage Investments</label><label><input type="checkbox" class="teamPerm" value="manage_withdrawals"> Manage Withdrawals</label><label><input type="checkbox" class="teamPerm" value="manage_batches"> Manage Batches</label><label><input type="checkbox" class="teamPerm" value="manage_users"> Manage Users</label><label><input type="checkbox" class="teamPerm" value="view_reports"> View Reports</label><label><input type="checkbox" class="teamPerm" value="manage_settings"> Manage Settings</label></div></div></div><button onclick="addTeamMember()" class="btn-primary">Add Team Member</button></div>
+            <div class="form-card"><h3>Team Members</h3><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Permissions</th><th>Last Active</th><th>Status</th><th>Actions</th></tr></thead><tbody id="teamMembersList"></tbody></div></div>
         </div>
 
         <!-- BULK OPERATIONS SECTION -->
         <div id="bulkSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-layer-group"></i> Bulk Operations</h2>
-            
-            <div class="form-card">
-                <h3>Bulk Approvals</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Select Type</label><select id="bulkApproveType">
-                        <option value="investments">Investment Requests</option>
-                        <option value="withdrawals">Withdrawal Requests</option>
-                    </select></div>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th><input type="checkbox" id="selectAllBulk"></th><th>ID</th><th>User</th><th>Amount</th><th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bulkApproveList"></tbody>
-                    </table>
-                </div>
-                <button onclick="processBulkApprovals()" class="btn-success" style="margin-top:15px;"><i class="fas fa-check-double"></i> Approve Selected</button>
-            </div>
-            
-            <div class="form-card">
-                <h3>Bulk Notifications</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Recipient Type</label><select id="bulkNotifyType">
-                        <option value="all_investors">All Investors</option>
-                        <option value="all_buyers">All Buyers</option>
-                        <option value="premium_users">Premium Users Only</option>
-                        <option value="specific_tier">Specific Tier</option>
-                    </select></div>
-                    <div class="form-group"><label>Tier (if applicable)</label><select id="bulkNotifyTier"><option value="">All</option><option value="bronze">Bronze</option><option value="silver">Silver</option><option value="gold">Gold</option><option value="vip">VIP</option></select></div>
-                </div>
-                <div class="form-group"><label>Message</label><textarea id="bulkMessage" rows="3" placeholder="Enter notification message..."></textarea></div>
-                <button onclick="sendBulkNotification()" class="btn-primary"><i class="fas fa-bullhorn"></i> Send Bulk Notification</button>
-            </div>
+            <div class="form-card"><h3>Bulk Approvals</h3><div class="form-row"><div class="form-group"><label>Select Type</label><select id="bulkApproveType"><option value="investments">Investment Requests</option><option value="withdrawals">Withdrawal Requests</option></select></div></div><div class="table-container"><table><thead><tr><th><input type="checkbox" id="selectAllBulk"></th><th>ID</th><th>User</th><th>Amount</th><th>Date</th></tr></thead><tbody id="bulkApproveList"></tbody></div><button onclick="processBulkApprovals()" class="btn-success" style="margin-top:15px;"><i class="fas fa-check-double"></i> Approve Selected</button></div>
+            <div class="form-card"><h3>Bulk Notifications</h3><div class="form-row"><div class="form-group"><label>Recipient Type</label><select id="bulkNotifyType"><option value="all_investors">All Investors</option><option value="all_buyers">All Buyers</option><option value="premium_users">Premium Users Only</option><option value="specific_tier">Specific Tier</option></select></div><div class="form-group"><label>Tier (if applicable)</label><select id="bulkNotifyTier"><option value="">All</option><option value="bronze">Bronze</option><option value="silver">Silver</option><option value="gold">Gold</option><option value="vip">VIP</option></select></div></div><div class="form-group"><label>Message</label><textarea id="bulkMessage" rows="3" placeholder="Enter notification message..."></textarea></div><button onclick="sendBulkNotification()" class="btn-primary"><i class="fas fa-bullhorn"></i> Send Bulk Notification</button></div>
         </div>
 
         <!-- LOSS MANAGEMENT SECTION -->
         <div id="lossSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-chart-line"></i> Loss Management System</h2>
-            
-            <div class="form-card">
-                <h3>Loss Tracking</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Batch Name</th><th>Loss Amount</th><th>Affected Investors</th><th>Loss per Investor</th><th>Status</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lossTrackingList"></tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="form-card">
-                <h3>Fair Loss Distribution</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>Select Batch</label><select id="lossBatchSelect"></select></div>
-                    <div class="form-group"><label>Distribution Method</label><select id="lossDistributionMethod">
-                        <option value="proportional">Proportional to Investment</option>
-                        <option value="equal">Equal Distribution</option>
-                        <option value="tier_based">Tier-Based (VIP protected)</option>
-                    </select></div>
-                </div>
-                <button onclick="calculateLossDistribution()" class="btn-primary">Calculate Distribution</button>
-                <button onclick="applyLossDistribution()" class="btn-warning" style="margin-left:10px;">Apply Distribution</button>
-            </div>
-            
-            <div class="form-card">
-                <h3>Loss Reserve Fund</h3>
-                <div class="stats-row">
-                    <div class="stat-box"><div class="stat-label">Reserve Balance</div><div class="stat-value" id="reserveBalance">Rs. 0</div></div>
-                    <div class="stat-box"><div class="stat-label">Reserve Target</div><div class="stat-value" id="reserveTarget">Rs. 500,000</div></div>
-                    <div class="stat-box"><div class="stat-label">Allocation Rate</div><div class="stat-value" id="allocationRate">5%</div></div>
-                </div>
-                <button onclick="addToReserveFund()" class="btn-primary">Add to Reserve Fund</button>
-            </div>
+            <div class="form-card"><h3>Loss Tracking</h3><div class="table-container"><table><thead><tr><th>Batch Name</th><th>Loss Amount</th><th>Affected Investors</th><th>Loss per Investor</th><th>Status</th><th>Actions</th></tr></thead><tbody id="lossTrackingList"></tbody></div></div>
+            <div class="form-card"><h3>Fair Loss Distribution</h3><div class="form-row"><div class="form-group"><label>Select Batch</label><select id="lossBatchSelect"></select></div><div class="form-group"><label>Distribution Method</label><select id="lossDistributionMethod"><option value="proportional">Proportional to Investment</option><option value="equal">Equal Distribution</option><option value="tier_based">Tier-Based (VIP protected)</option></select></div></div><button onclick="calculateLossDistribution()" class="btn-primary">Calculate Distribution</button><button onclick="applyLossDistribution()" class="btn-warning" style="margin-left:10px;">Apply Distribution</button></div>
+            <div class="form-card"><h3>Loss Reserve Fund</h3><div class="stats-row"><div class="stat-box"><div class="stat-label">Reserve Balance</div><div class="stat-value" id="reserveBalance">Rs. 0</div></div><div class="stat-box"><div class="stat-label">Reserve Target</div><div class="stat-value" id="reserveTarget">Rs. 500,000</div></div><div class="stat-box"><div class="stat-label">Allocation Rate</div><div class="stat-value" id="allocationRate">5%</div></div></div><button onclick="addToReserveFund()" class="btn-primary">Add to Reserve Fund</button></div>
         </div>
     </div>
 
     <!-- Modals for Premium Features -->
-    <div id="addTierModal" class="modal">
-        <div class="modal-content"><h2><i class="fas fa-layer-group"></i> Configure Tier Benefits</h2>
-            <div class="form-group"><label>Tier Name</label><input type="text" id="tierNameModal"></div>
-            <div class="form-group"><label>Min Investment Required (Rs.)</label><input type="number" id="tierMinInvestment"></div>
-            <div class="form-group"><label>Profit Bonus (%)</label><input type="number" id="tierProfitBonus" value="0"></div>
-            <div class="form-group"><label>Priority Withdrawal</label><select id="tierPriorityWithdrawal"><option value="true">Yes</option><option value="false">No</option></select></div>
-            <div class="form-group"><label>Exclusive Batches Access</label><select id="tierExclusiveBatches"><option value="true">Yes</option><option value="false">No</option></select></div>
-            <button onclick="saveTierConfig()" class="btn-primary">Save</button>
-            <button onclick="closeModal('addTierModal')" class="btn-danger">Cancel</button>
-        </div>
-    </div>
-
-    <div id="addPlanModal" class="modal">
-        <div class="modal-content"><h2><i class="fas fa-crown"></i> Add Subscription Plan</h2>
-            <div class="form-group"><label>Plan Name</label><input type="text" id="planName"></div>
-            <div class="form-group"><label>Monthly Price (Rs.)</label><input type="number" id="planMonthlyPrice"></div>
-            <div class="form-group"><label>Yearly Price (Rs.)</label><input type="number" id="planYearlyPrice"></div>
-            <div class="form-group"><label>Features (comma-separated)</label><input type="text" id="planFeatures" placeholder="Early access, Higher profit, Priority support"></div>
-            <button onclick="saveSubscriptionPlan()" class="btn-primary">Save Plan</button>
-            <button onclick="closeModal('addPlanModal')" class="btn-danger">Cancel</button>
-        </div>
-    </div>
-
-    <div id="addAutomationRuleModal" class="modal">
-        <div class="modal-content"><h2><i class="fas fa-robot"></i> Add Automation Rule</h2>
-            <div class="form-group"><label>Rule Name</label><input type="text" id="autoRuleName"></div>
-            <div class="form-group"><label>Trigger</label><select id="autoTrigger">
-                <option value="batch_completed">Batch Completed</option>
-                <option value="investment_received">Investment Received</option>
-                <option value="profit_due">Profit Distribution Due</option>
-                <option value="withdrawal_requested">Withdrawal Requested</option>
-            </select></div>
-            <div class="form-group"><label>Action</label><select id="autoAction">
-                <option value="send_notification">Send Notification</option>
-                <option value="auto_approve">Auto Approve (if criteria met)</option>
-                <option value="distribute_profit">Distribute Profit</option>
-                <option value="update_tier">Update User Tier</option>
-            </select></div>
-            <div class="form-group"><label>Schedule (cron or interval)</label><input type="text" id="autoSchedule" placeholder="daily, weekly, monthly"></div>
-            <button onclick="saveAutomationRule()" class="btn-primary">Save Rule</button>
-            <button onclick="closeModal('addAutomationRuleModal')" class="btn-danger">Cancel</button>
-        </div>
-    </div>
-
-    <div id="ticketDetailModal" class="modal">
-        <div class="modal-content"><h2><i class="fas fa-ticket-alt"></i> Ticket Details</h2>
-            <div id="ticketDetailContent"></div>
-            <div class="form-group"><label>Response</label><textarea id="ticketResponse" rows="3" placeholder="Type your response..."></textarea></div>
-            <div class="form-group"><label>Update Status</label><select id="ticketUpdateStatus"><option value="open">Open</option><option value="in_progress">In Progress</option><option value="resolved">Resolved</option><option value="closed">Closed</option></select></div>
-            <button onclick="submitTicketResponse()" class="btn-primary">Submit Response</button>
-            <button onclick="closeModal('ticketDetailModal')" class="btn-danger">Close</button>
-        </div>
-    </div>
-
-    <!-- Batch Detail Modal (Existing) -->
-    <div id="batchDetailModal" class="modal">
-        <div class="modal-content"><span class="close" onclick="closeModal('batchDetailModal')">&times;</span><h2 id="batchDetailTitle">Batch Details</h2><div id="batchDetailContent"></div></div>
-    </div>
-
-    <!-- Withdrawal Screenshot Upload Modal (Existing) -->
-    <div id="withdrawalScreenshotModal" class="modal">
-        <div class="modal-content">
-            <h2><i class="fas fa-camera"></i> Upload Approval Screenshot</h2>
-            <div class="form-group"><label>Payment Proof Screenshot <span class="required-star">*</span></label><input type="file" id="withdrawalScreenshotInput" accept="image/*" onchange="previewWithdrawalScreenshot(this)"></div>
-            <div id="withdrawalScreenshotPreview" class="screenshot-preview"></div>
-            <div style="display:flex; gap:12px; margin-top:20px;"><button onclick="submitWithdrawalApprovalWithScreenshot()" class="btn-primary" style="flex:1;">Confirm & Approve</button><button onclick="closeWithdrawalScreenshotModal()" class="btn-danger" style="flex:1;">Cancel</button></div>
-        </div>
-    </div>
-
-    <!-- Voice Recording Overlay (Existing) -->
-    <div id="voiceRecordingOverlay" class="voice-recording-overlay">
-        <div class="recording-wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
-        <div class="recording-timer" id="recordingTimer">0:00</div>
-        <div class="recording-controls"><button class="recording-cancel-btn" onclick="adminChatSystem.cancelVoiceRecording()"><i class="fas fa-times"></i></button><button class="recording-stop-btn" onclick="adminChatSystem.stopVoiceRecording()"><i class="fas fa-stop"></i></button></div>
-    </div>
-    
-    <!-- Product Selector Modal (Existing) -->
-    <div id="productSelectorModal" class="product-selector-modal">
-        <div class="product-selector-header"><h3 style="color:#E8B13C;">Select Product to Share</h3><button onclick="adminChatSystem.closeProductSelector()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div>
-        <div id="productSelectorList"></div>
-    </div>
-
-    <!-- GIF Picker Modal (Existing) -->
-    <div id="gifPickerModal" class="gif-picker-modal">
-        <div class="gif-search-header"><input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="adminChatSystem.searchGIFs(this.value)"><button onclick="adminChatSystem.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px; cursor:pointer;">&times;</button></div>
-        <div id="gifGrid" class="gif-grid"><div style="padding:20px;text-align:center;">Loading GIFs...</div></div>
-    </div>
-
-    <!-- Poll Creator Modal (Existing) -->
-    <div id="pollModal" class="poll-modal">
-        <div class="product-selector-header"><h3 style="color:#E8B13C;">Create a Poll</h3><button onclick="adminChatSystem.closePollModal()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div>
-        <div style="padding:20px;">
-            <div class="form-group"><label>Poll Question</label><input type="text" id="pollQuestion" placeholder="Ask a question..."></div>
-            <div class="form-group"><label>Options</label>
-                <div id="pollOptionsList"><div class="poll-option-row"><input type="text" placeholder="Option 1" style="flex:1;"></div><div class="poll-option-row"><input type="text" placeholder="Option 2" style="flex:1;"></div></div>
-                <button onclick="adminChatSystem.addPollOption()" class="btn-primary" style="margin-top:10px; padding:6px 12px; font-size:0.8rem;">+ Add Option</button>
-            </div>
-            <button onclick="adminChatSystem.sendPoll()" class="btn-primary" style="margin-top:15px; width:100%;">Send Poll</button>
-        </div>
-    </div>
+    <div id="addTierModal" class="modal"><div class="modal-content"><h2><i class="fas fa-layer-group"></i> Configure Tier Benefits</h2><div class="form-group"><label>Tier Name</label><input type="text" id="tierNameModal"></div><div class="form-group"><label>Min Investment Required (Rs.)</label><input type="number" id="tierMinInvestment"></div><div class="form-group"><label>Profit Bonus (%)</label><input type="number" id="tierProfitBonus" value="0"></div><div class="form-group"><label>Priority Withdrawal</label><select id="tierPriorityWithdrawal"><option value="true">Yes</option><option value="false">No</option></select></div><div class="form-group"><label>Exclusive Batches Access</label><select id="tierExclusiveBatches"><option value="true">Yes</option><option value="false">No</option></select></div><button onclick="saveTierConfig()" class="btn-primary">Save</button><button onclick="closeModal('addTierModal')" class="btn-danger">Cancel</button></div></div>
+    <div id="addPlanModal" class="modal"><div class="modal-content"><h2><i class="fas fa-crown"></i> Add Subscription Plan</h2><div class="form-group"><label>Plan Name</label><input type="text" id="planName"></div><div class="form-group"><label>Monthly Price (Rs.)</label><input type="number" id="planMonthlyPrice"></div><div class="form-group"><label>Yearly Price (Rs.)</label><input type="number" id="planYearlyPrice"></div><div class="form-group"><label>Features (comma-separated)</label><input type="text" id="planFeatures" placeholder="Early access, Higher profit, Priority support"></div><button onclick="saveSubscriptionPlan()" class="btn-primary">Save Plan</button><button onclick="closeModal('addPlanModal')" class="btn-danger">Cancel</button></div></div>
+    <div id="addAutomationRuleModal" class="modal"><div class="modal-content"><h2><i class="fas fa-robot"></i> Add Automation Rule</h2><div class="form-group"><label>Rule Name</label><input type="text" id="autoRuleName"></div><div class="form-group"><label>Trigger</label><select id="autoTrigger"><option value="batch_completed">Batch Completed</option><option value="investment_received">Investment Received</option><option value="profit_due">Profit Distribution Due</option><option value="withdrawal_requested">Withdrawal Requested</option></select></div><div class="form-group"><label>Action</label><select id="autoAction"><option value="send_notification">Send Notification</option><option value="auto_approve">Auto Approve (if criteria met)</option><option value="distribute_profit">Distribute Profit</option><option value="update_tier">Update User Tier</option></select></div><div class="form-group"><label>Schedule (cron or interval)</label><input type="text" id="autoSchedule" placeholder="daily, weekly, monthly"></div><button onclick="saveAutomationRule()" class="btn-primary">Save Rule</button><button onclick="closeModal('addAutomationRuleModal')" class="btn-danger">Cancel</button></div></div>
+    <div id="ticketDetailModal" class="modal"><div class="modal-content"><h2><i class="fas fa-ticket-alt"></i> Ticket Details</h2><div id="ticketDetailContent"></div><div class="form-group"><label>Response</label><textarea id="ticketResponse" rows="3" placeholder="Type your response..."></textarea></div><div class="form-group"><label>Update Status</label><select id="ticketUpdateStatus"><option value="open">Open</option><option value="in_progress">In Progress</option><option value="resolved">Resolved</option><option value="closed">Closed</option></select></div><button onclick="submitTicketResponse()" class="btn-primary">Submit Response</button><button onclick="closeModal('ticketDetailModal')" class="btn-danger">Close</button></div></div>
+    <div id="batchDetailModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('batchDetailModal')">&times;</span><h2 id="batchDetailTitle">Batch Details</h2><div id="batchDetailContent"></div></div></div>
+    <div id="withdrawalScreenshotModal" class="modal"><div class="modal-content"><h2><i class="fas fa-camera"></i> Upload Approval Screenshot</h2><div class="form-group"><label>Payment Proof Screenshot <span class="required-star">*</span></label><input type="file" id="withdrawalScreenshotInput" accept="image/*" onchange="previewWithdrawalScreenshot(this)"></div><div id="withdrawalScreenshotPreview" class="screenshot-preview"></div><div style="display:flex; gap:12px; margin-top:20px;"><button onclick="submitWithdrawalApprovalWithScreenshot()" class="btn-primary" style="flex:1;">Confirm & Approve</button><button onclick="closeWithdrawalScreenshotModal()" class="btn-danger" style="flex:1;">Cancel</button></div></div></div>
+    <div id="voiceRecordingOverlay" class="voice-recording-overlay"><div class="recording-wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div><div class="recording-timer" id="recordingTimer">0:00</div><div class="recording-controls"><button class="recording-cancel-btn" onclick="adminChatSystem.cancelVoiceRecording()"><i class="fas fa-times"></i></button><button class="recording-stop-btn" onclick="adminChatSystem.stopVoiceRecording()"><i class="fas fa-stop"></i></button></div></div>
+    <div id="productSelectorModal" class="product-selector-modal"><div class="product-selector-header"><h3 style="color:#E8B13C;">Select Product to Share</h3><button onclick="adminChatSystem.closeProductSelector()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div><div id="productSelectorList"></div></div>
+    <div id="gifPickerModal" class="gif-picker-modal"><div class="gif-search-header"><input type="text" id="gifSearchInput" placeholder="Search GIFs..." onkeyup="adminChatSystem.searchGIFs(this.value)"><button onclick="adminChatSystem.closeGifPicker()" style="background:none; border:none; color:#E8B13C; font-size:20px; cursor:pointer;">&times;</button></div><div id="gifGrid" class="gif-grid"><div style="padding:20px;text-align:center;">Loading GIFs...</div></div></div>
+    <div id="pollModal" class="poll-modal"><div class="product-selector-header"><h3 style="color:#E8B13C;">Create a Poll</h3><button onclick="adminChatSystem.closePollModal()" style="background:none; border:none; color:#E8B13C; font-size:24px; cursor:pointer;">&times;</button></div><div style="padding:20px;"><div class="form-group"><label>Poll Question</label><input type="text" id="pollQuestion" placeholder="Ask a question..."></div><div class="form-group"><label>Options</label><div id="pollOptionsList"><div class="poll-option-row"><input type="text" placeholder="Option 1" style="flex:1;"></div><div class="poll-option-row"><input type="text" placeholder="Option 2" style="flex:1;"></div></div><button onclick="adminChatSystem.addPollOption()" class="btn-primary" style="margin-top:10px; padding:6px 12px; font-size:0.8rem;">+ Add Option</button></div><button onclick="adminChatSystem.sendPoll()" class="btn-primary" style="margin-top:15px; width:100%;">Send Poll</button></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -1588,6 +1269,360 @@
         
         // Real-time subscription for batch updates
         let batchSubscription = null;
+        
+        // ========== NEW FUNCTIONS: Notification & Popup Management ==========
+        
+        // Send notification to all investors
+        async function sendNotificationToAllInvestors() {
+            const title = document.getElementById('bulkNotifTitle').value.trim();
+            const message = document.getElementById('bulkNotifMessage').value.trim();
+            
+            if (!title || !message) {
+                showNotification('Please enter both title and message', true);
+                return;
+            }
+            
+            try {
+                const { data: investors } = await supabaseClient.from('investors').select('id');
+                if (!investors || investors.length === 0) {
+                    showNotification('No investors found', true);
+                    return;
+                }
+                
+                // Insert notification for each investor
+                for (const investor of investors) {
+                    await supabaseClient.from('admin_notifications').insert([{
+                        id: crypto.randomUUID(),
+                        investor_id: investor.id,
+                        title: title,
+                        message: message,
+                        read: false,
+                        created_at: new Date().toISOString()
+                    }]);
+                }
+                
+                await logAudit('bulk_notification_sent', `Sent notification to ${investors.length} investors`, { title, messageLength: message.length });
+                showNotification(`Notification sent to ${investors.length} investors!`, false);
+                
+                // Clear form
+                document.getElementById('bulkNotifTitle').value = '';
+                document.getElementById('bulkNotifMessage').value = '';
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        // Send notification to single investor
+        async function sendNotificationToSingleInvestor() {
+            const investorId = document.getElementById('singleInvestorNotifSelect').value;
+            const title = document.getElementById('singleNotifTitle').value.trim();
+            const message = document.getElementById('singleNotifMessage').value.trim();
+            
+            if (!investorId) {
+                showNotification('Please select an investor', true);
+                return;
+            }
+            if (!title || !message) {
+                showNotification('Please enter both title and message', true);
+                return;
+            }
+            
+            try {
+                await supabaseClient.from('admin_notifications').insert([{
+                    id: crypto.randomUUID(),
+                    investor_id: investorId,
+                    title: title,
+                    message: message,
+                    read: false,
+                    created_at: new Date().toISOString()
+                }]);
+                
+                await logAudit('notification_sent', `Sent notification to investor ${investorId}`, { title });
+                showNotification('Notification sent!', false);
+                
+                document.getElementById('singleNotifTitle').value = '';
+                document.getElementById('singleNotifMessage').value = '';
+            } catch(e) {
+                showNotification(e.message, true);
+            }
+        }
+        
+        // Create popup message
+        async function createPopup() {
+            const title = document.getElementById('popupTitleInput').value.trim();
+            const message = document.getElementById('popupMessageInput').value.trim();
+            const targetType = document.getElementById('popupTargetType').value;
+            const expiryDays = parseInt(document.getElementById('popupExpiryDays').value) || 7;
+            
+            if (!title || !message) {
+                showNotification('Please enter both title and message', true);
+                return;
+            }
+            
+            // Get target investors based on selection
+            let query = supabaseClient.from('investors').select('id');
+            
+            if (targetType === 'premium') {
+                query = query.eq('subscription_status', 'premium');
+            } else if (targetType === 'tier_bronze') {
+                query = query.eq('tier', 'bronze');
+            } else if (targetType === 'tier_silver') {
+                query = query.eq('tier', 'silver');
+            } else if (targetType === 'tier_gold') {
+                query = query.eq('tier', 'gold');
+            } else if (targetType === 'tier_vip') {
+                query = query.eq('tier', 'vip');
+            }
+            
+            const { data: investors } = await query;
+            
+            if (!investors || investors.length === 0) {
+                showNotification('No investors match the selected criteria', true);
+                return;
+            }
+            
+            const expiresAt = new Date();
+            expiresAt.setDate(expiresAt.getDate() + expiryDays);
+            
+            // Insert popup for each target investor
+            for (const investor of investors) {
+                await supabaseClient.from('admin_popups').insert([{
+                    id: crypto.randomUUID(),
+                    investor_id: investor.id,
+                    title: title,
+                    message: message,
+                    is_active: true,
+                    expires_at: expiresAt.toISOString(),
+                    created_at: new Date().toISOString()
+                }]);
+            }
+            
+            await logAudit('popup_created', `Created popup for ${investors.length} investors`, { title, targetType });
+            showNotification(`Popup created for ${investors.length} investors!`, false);
+            
+            document.getElementById('popupTitleInput').value = '';
+            document.getElementById('popupMessageInput').value = '';
+        }
+        
+        // Send targeted notification from communication section
+        async function sendTargetedNotification() {
+            const audience = document.getElementById('notifTargetAudience').value;
+            const title = document.getElementById('notifTitle').value.trim();
+            const message = document.getElementById('notifMessage').value.trim();
+            
+            if (!title || !message) {
+                showNotification('Please enter both title and message', true);
+                return;
+            }
+            
+            let query = supabaseClient.from('investors').select('id');
+            
+            if (audience === 'premium') {
+                query = query.eq('subscription_status', 'premium');
+            } else if (audience === 'free') {
+                query = query.eq('subscription_status', 'free');
+            } else if (audience === 'tier_bronze') {
+                query = query.eq('tier', 'bronze');
+            } else if (audience === 'tier_silver') {
+                query = query.eq('tier', 'silver');
+            } else if (audience === 'tier_gold') {
+                query = query.eq('tier', 'gold');
+            } else if (audience === 'tier_vip') {
+                query = query.eq('tier', 'vip');
+            }
+            
+            const { data: investors } = await query;
+            
+            if (!investors || investors.length === 0) {
+                showNotification('No investors match the selected criteria', true);
+                return;
+            }
+            
+            for (const investor of investors) {
+                await supabaseClient.from('admin_notifications').insert([{
+                    id: crypto.randomUUID(),
+                    investor_id: investor.id,
+                    title: title,
+                    message: message,
+                    read: false,
+                    created_at: new Date().toISOString()
+                }]);
+            }
+            
+            await logAudit('targeted_notification_sent', `Sent notification to ${investors.length} investors (${audience})`, { title });
+            showNotification(`Notification sent to ${investors.length} investors!`, false);
+            
+            document.getElementById('notifTitle').value = '';
+            document.getElementById('notifMessage').value = '';
+        }
+        
+        // Create popup from communication section
+        async function createCommunicationPopup() {
+            const title = document.getElementById('commPopupTitle').value.trim();
+            const message = document.getElementById('commPopupMessage').value.trim();
+            const target = document.getElementById('commPopupTarget').value;
+            const expiryDays = parseInt(document.getElementById('commPopupExpiry').value) || 7;
+            
+            if (!title || !message) {
+                showNotification('Please enter both title and message', true);
+                return;
+            }
+            
+            let query = supabaseClient.from('investors').select('id');
+            
+            if (target === 'premium') {
+                query = query.eq('subscription_status', 'premium');
+            } else if (target === 'free') {
+                query = query.eq('subscription_status', 'free');
+            } else if (target === 'tier_bronze') {
+                query = query.eq('tier', 'bronze');
+            } else if (target === 'tier_silver') {
+                query = query.eq('tier', 'silver');
+            } else if (target === 'tier_gold') {
+                query = query.eq('tier', 'gold');
+            } else if (target === 'tier_vip') {
+                query = query.eq('tier', 'vip');
+            }
+            
+            const { data: investors } = await query;
+            
+            if (!investors || investors.length === 0) {
+                showNotification('No investors match the selected criteria', true);
+                return;
+            }
+            
+            const expiresAt = new Date();
+            expiresAt.setDate(expiresAt.getDate() + expiryDays);
+            
+            for (const investor of investors) {
+                await supabaseClient.from('admin_popups').insert([{
+                    id: crypto.randomUUID(),
+                    investor_id: investor.id,
+                    title: title,
+                    message: message,
+                    is_active: true,
+                    expires_at: expiresAt.toISOString(),
+                    created_at: new Date().toISOString()
+                }]);
+            }
+            
+            await logAudit('popup_created', `Created popup for ${investors.length} investors (${target})`, { title });
+            showNotification(`Popup created for ${investors.length} investors!`, false);
+            
+            document.getElementById('commPopupTitle').value = '';
+            document.getElementById('commPopupMessage').value = '';
+        }
+        
+        // Load referral stats for monitoring
+        async function loadReferralStats() {
+            try {
+                const { data: investors } = await supabaseClient.from('investors').select('id, full_name, email, referral_code');
+                const stats = [];
+                
+                for (const investor of investors || []) {
+                    const { data: referrals } = await supabaseClient.from('referrals').select('commission_earned, commission_status').eq('investor_id', investor.id);
+                    const totalReferrals = referrals?.length || 0;
+                    const totalCommission = referrals?.reduce((sum, r) => sum + (r.commission_earned || 0), 0) || 0;
+                    const paidCommission = referrals?.filter(r => r.commission_status === 'paid').reduce((sum, r) => sum + (r.commission_earned || 0), 0) || 0;
+                    const pendingCommission = totalCommission - paidCommission;
+                    
+                    stats.push({
+                        ...investor,
+                        totalReferrals,
+                        totalCommission,
+                        paidCommission,
+                        pendingCommission
+                    });
+                }
+                
+                renderReferralStats(stats);
+                window.referralStatsCache = stats;
+            } catch(e) {
+                console.error('Error loading referral stats:', e);
+            }
+        }
+        
+        function renderReferralStats(stats) {
+            const tbody = document.getElementById('referralStatsList');
+            if (!tbody) return;
+            
+            if (stats.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No investors found</div></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = stats.map(s => `
+                <tr>
+                    <td><strong>${escapeHtml(s.full_name || 'Unknown')}</strong><br><small>${escapeHtml(s.email || '')}</small></td>
+                    <td><code>${escapeHtml(s.referral_code || '-')}</code></td>
+                    <td>${s.totalReferrals}</td>
+                    <td>Rs. ${(s.totalCommission || 0).toLocaleString()}</td>
+                    <td>Rs. ${(s.paidCommission || 0).toLocaleString()}</td>
+                    <td>Rs. ${(s.pendingCommission || 0).toLocaleString()}</td>
+                    <td><button onclick="viewInvestorReferrals('${s.id}')" class="btn-info">View Details</button></td>
+                </tr>
+            `).join('');
+        }
+        
+        async function viewInvestorReferrals(investorId) {
+            const { data: referrals } = await supabaseClient
+                .from('referrals')
+                .select('*, referred:referred_id(full_name, email, created_at)')
+                .eq('investor_id', investorId);
+            
+            let html = '<div style="max-height: 400px; overflow-y: auto;">';
+            if (!referrals || referrals.length === 0) {
+                html += '<p>No referrals found for this investor.</p>';
+            } else {
+                html += '<table style="width:100%;"><thead><tr><th>Referred Person</th><th>Email</th><th>Investment</th><th>Commission</th><th>Status</th></tr></thead><tbody>';
+                referrals.forEach(r => {
+                    html += `<tr>
+                        <td>${escapeHtml(r.referred?.full_name || 'Unknown')}</td>
+                        <td>${escapeHtml(r.referred?.email || '-')}</td>
+                        <td>Rs. ${(r.investment_amount || 0).toLocaleString()}</td>
+                        <td>Rs. ${(r.commission_earned || 0).toLocaleString()}</td>
+                        <td><span class="status-badge ${r.commission_status === 'paid' ? 'status-active' : 'status-pending'}">${r.commission_status || 'pending'}</span></td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+            }
+            html += '</div>';
+            
+            Swal.fire({
+                title: 'Referral Details',
+                html: html,
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                color: '#fff',
+                confirmButtonColor: '#E8B13C'
+            });
+        }
+        
+        function searchReferralStats() {
+            const term = document.getElementById('referralSearch').value.toLowerCase();
+            if (!window.referralStatsCache) return;
+            const filtered = window.referralStatsCache.filter(s => 
+                (s.full_name?.toLowerCase().includes(term) || s.email?.toLowerCase().includes(term))
+            );
+            renderReferralStats(filtered);
+        }
+        
+        function resetReferralSearch() {
+            document.getElementById('referralSearch').value = '';
+            if (window.referralStatsCache) {
+                renderReferralStats(window.referralStatsCache);
+            } else {
+                loadReferralStats();
+            }
+        }
+        
+        // Populate investor select dropdowns
+        async function populateInvestorSelects() {
+            const { data: investors } = await supabaseClient.from('investors').select('id, full_name');
+            const select = document.getElementById('singleInvestorNotifSelect');
+            if (select && investors) {
+                select.innerHTML = '<option value="">Select Investor</option>' + investors.map(i => `<option value="${i.id}">${escapeHtml(i.full_name)}</option>`).join('');
+            }
+        }
         
         function setupRealtimeSync() {
             if (batchSubscription) return;
@@ -1654,6 +1689,7 @@
             if (section === 'team') { loadTeamMembers(); }
             if (section === 'bulk') { loadBulkApproveList(); }
             if (section === 'loss') { loadLossData(); }
+            if (section === 'investors') { loadReferralStats(); populateInvestorSelects(); }
         };
 
         // ========== ENHANCED INVESTMENT BATCH SYSTEM WITH SLOT VALIDATION ==========
@@ -1705,12 +1741,9 @@
                 
                 if (error) throw error;
                 
-                // Log audit
                 await logAudit('batch_created', `Created batch: ${batchName}`, { batchName, amount, totalSlots });
-                
                 showNotification('Investment batch created successfully!', false);
                 
-                // Reset form
                 document.getElementById('newBatchName').value = '';
                 document.getElementById('newBatchAmount').value = '';
                 document.getElementById('newBatchProfitPercent').value = '50';
@@ -1750,8 +1783,8 @@
                 const tbody = document.getElementById('batchesList');
                 if(!tbody) return;
                 
-                if(allBatches.length === 0 && prodBatchesList.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="19" class="empty-state">No batches created yet. Create your first batch above.</tr></tr>'; 
+                                if(allBatches.length === 0 && prodBatchesList.length === 0) { 
+                    tbody.innerHTML = '<tr><td colspan="19" class="empty-state">No batches created yet. Create your first batch above.</td></tr>'; 
                     return; 
                 }
                 
@@ -1809,8 +1842,8 @@
                             <button onclick="event.stopPropagation();toggleBatchVisibility('${batch.id}', ${!batch.is_visible})" class="btn-info">${batch.is_visible ? 'Hide' : 'Show'}</button>
                             ${batch.status === 'Sold' && !batch.profit_credited ? `<button onclick="event.stopPropagation();distributeBatchProfit('${batch.id}', ${investorShare})" class="btn-success">Distribute Profit</button>` : ''}
                             <button onclick="event.stopPropagation();deleteInvestmentBatch('${batch.id}')" class="btn-danger">Delete</button>
-                         </td>
-                     </tr>`;
+                          </td>
+                      </tr>`;
                 }
                 
                 // Add production batches (legacy)
@@ -1855,8 +1888,8 @@
                             <button onclick="event.stopPropagation();updateBatchStatus('${batch.id}')" class="btn-warning">Update Status</button>
                             ${!batch.profit_credited && batch.status === 'Sold' ? `<button onclick="event.stopPropagation();creditProfitToInvestor('${batch.id}', ${investorShare}, '${batch.investments?.investor_id}')" class="btn-success">Credit Profit</button>` : ''}
                             <button onclick="event.stopPropagation();deleteBatch('${batch.id}')" class="btn-danger">Delete</button>
-                         </td>
-                     </tr>`;
+                          </td>
+                      </tr>`;
                 }
                 
                 tbody.innerHTML = html;
@@ -2440,6 +2473,7 @@
             await loadStats(); await loadInvestors(); await loadBuyers(); await loadInvestmentRequests();
             await loadInvestmentHistory(); await loadProfitHistory(); await loadWithdrawals();
             await loadProducts(); await loadOrders(); await loadRecentActivities(); await loadBatches(); await renderAllCharts();
+            await loadReferralStats(); await populateInvestorSelects();
         }
         
         async function checkAuth() {
@@ -2526,10 +2560,45 @@
                             <button onclick="toggleInvestorTier('${i.id}')" class="btn-premium">Change Tier</button>
                             <button onclick="toggleInvestorSubscription('${i.id}', '${i.subscription_status === 'premium' ? 'free' : 'premium'}')" class="btn-warning">${i.subscription_status === 'premium' ? 'Remove Premium' : 'Make Premium'}</button>
                             <button onclick="toggleInvestorPermission('${i.id}', 'chat', ${i.chat_enabled !== false})" class="btn-info">Toggle Chat</button>
+                            <button onclick="sendSingleInvestorNotification('${i.id}', '${escapeHtml(i.full_name)}')" class="btn-primary">Send Notif</button>
                             <button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
                         </td>
                     </tr>`;
                 }).join('');
+            }
+        }
+        
+        // Send notification to single investor from action button
+        async function sendSingleInvestorNotification(investorId, investorName) {
+            const { value: formData } = await Swal.fire({
+                title: `Send Notification to ${investorName}`,
+                html: `
+                    <input id="notifTitle" class="swal2-input" placeholder="Notification Title">
+                    <textarea id="notifMsg" class="swal2-textarea" placeholder="Notification Message" rows="3"></textarea>
+                `,
+                focusConfirm: false,
+                preConfirm: () => ({
+                    title: document.getElementById('notifTitle').value,
+                    message: document.getElementById('notifMsg').value
+                }),
+                confirmButtonText: 'Send',
+                confirmButtonColor: '#E8B13C',
+                background: '#1a3d33', color: '#fff'
+            });
+            
+            if (formData && formData.title && formData.message) {
+                await supabaseClient.from('admin_notifications').insert([{
+                    id: crypto.randomUUID(),
+                    investor_id: investorId,
+                    title: formData.title,
+                    message: formData.message,
+                    read: false,
+                    created_at: new Date().toISOString()
+                }]);
+                await logAudit('notification_sent', `Sent notification to ${investorName}`, { investorId, title: formData.title });
+                showNotification(`Notification sent to ${investorName}!`, false);
+            } else if (formData && (!formData.title || !formData.message)) {
+                showNotification('Please enter both title and message', true);
             }
         }
         
@@ -2623,7 +2692,7 @@
             allProducts = data || [];
             const productsList = document.getElementById('productsList');
             if(productsList) {
-                if (!data || data.length === 0) { productsList.innerHTML = '<td><td colspan="6" class="empty-state">No products found</td></tr>'; return; }
+                if (!data || data.length === 0) { productsList.innerHTML = '<tr><td colspan="6" class="empty-state">No products found</div></tr>'; return; }
                 productsList.innerHTML = data.map(p=>`<tr>
                     <td><strong>${escapeHtml(p.name)}</strong></td>
                     <td>${p.category}</td>
@@ -2640,7 +2709,7 @@
             const { data } = await supabaseClient.from('investments').select('*,investors(full_name)').order('investment_date',{ascending:false}); 
             const investmentHistory = document.getElementById('investmentHistory');
             if(investmentHistory) {
-                investmentHistory.innerHTML = (data||[]).map(i=>`<tr>
+                investmentHistory.innerHTML = (data||[]).map(i=>`<td>
                     <td>${i.investors?.full_name||'-'}</td>
                     <td>Rs.${(i.amount||0).toLocaleString()}</td>
                     <td>${new Date(i.investment_date).toLocaleDateString()}</td>
@@ -2660,7 +2729,7 @@
                     <td>${p.investors?.full_name||'-'}</td>
                     <td>Rs.${(p.amount||0).toLocaleString()}</td>
                     <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
-                    <td>${p.profit_percentage||10}%</td>
+                    <td>${p.profit_percentage||10}%</div>
                     <td><button onclick="deleteProfit('${p.id}')" class="btn-danger">Delete</button></td>
                 </tr>`).join('');
             }
@@ -2674,12 +2743,12 @@
                 requestsList.innerHTML = (data || []).map(req => `<tr>
                     <td><strong>${escapeHtml(req.investors?.full_name || '-')}</strong><br><small>${req.investors?.email || '-'}</small></td>
                     <td>Rs. ${(req.amount || 0).toLocaleString()}</td>
-                    <td>${new Date(req.created_at).toLocaleDateString()}</td>
-                    <td>${req.payment_method || '-'}</td>
-                    <td>${req.transaction_id || '-'}</td>
-                    <td>${req.screenshot ? `<img src="${req.screenshot}" class="screenshot-thumb" onclick="window.open('${req.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</td>
-                    <td><span class="status-badge status-pending">Pending</span></td>
-                    <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></td>
+                    <td>${new Date(req.created_at).toLocaleDateString()}</div>
+                    <td>${req.payment_method || '-'}</div>
+                    <td>${req.transaction_id || '-'}</div>
+                    <td>${req.screenshot ? `<img src="${req.screenshot}" class="screenshot-thumb" onclick="window.open('${req.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</div>
+                    <td><span class="status-badge status-pending">Pending</span></div>
+                    <td class="action-buttons"><button onclick="approveInvestment('${req.id}', ${req.amount}, '${req.investor_id}')" class="btn-success">Approve</button><button onclick="rejectInvestment('${req.id}')" class="btn-danger">Reject</button></div>
                 </tr>`).join('');
             }
         }
@@ -2690,17 +2759,17 @@
             allWithdrawals = data || [];
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
-            if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; return; }
+            if (!allWithdrawals || allWithdrawals.length === 0) { withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</div></tr>'; return; }
             withdrawalsList.innerHTML = allWithdrawals.map(w => `<tr>
                 <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
                 <td><small>${w.investors?.email || '-'}</small></td>
-                <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                <td>${w.payment_method || '-'}</td>
-                <td><small>${w.account_details || '-'}</small></td>
-                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
-                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
-                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
+                <td>Rs. ${(w.amount || 0).toLocaleString()}</div>
+                <td>${new Date(w.request_date).toLocaleDateString()}</div>
+                <td>${w.payment_method || '-'}</div>
+                <td><small>${w.account_details || '-'}</small></div>
+                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></div>
+                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</div>
+                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</div>
             </tr>`).join('');
         }
         
@@ -2710,18 +2779,18 @@
             allOrders = data || [];
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
-            if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; return; }
+            if (!allOrders || allOrders.length === 0) { ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</div></tr>'; return; }
             ordersList.innerHTML = allOrders.map(o => `<tr>
-                <td><strong>${o.id?.slice(0, 12)}...</strong></td>
-                <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
-                <td>${o.products ? 'View' : '-'}</td>
-                <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
-                <td>${new Date(o.order_date).toLocaleDateString()}</td>
-                <td>${o.payment_method || '-'}</td>
-                <td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></td>
-                <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
-                <td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td>
-                <td class="action-buttons"><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td>
+                <td><strong>${o.id?.slice(0, 12)}...</strong></div>
+                <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></div>
+                <td>${o.products ? 'View' : '-'}</div>
+                <td>Rs. ${(o.total_amount || 0).toLocaleString()}</div>
+                <td>${new Date(o.order_date).toLocaleDateString()}</div>
+                <td>${o.payment_method || '-'}</div>
+                <td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></div>
+                <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></div>
+                <td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></div>
+                <td class="action-buttons"><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></div>
             </tr>`).join('');
         }
         
@@ -2736,10 +2805,10 @@
             const recentActivities = document.getElementById('recentActivities');
             if(recentActivities) {
                 recentActivities.innerHTML = activities.slice(0,10).map(a=>`<tr>
-                    <td>${a.action}</td>
-                    <td>${a.details}</td>
-                    <td>${a.time}</td>
-                    <td><button class="btn-info">View</button></td>
+                    <td>${a.action}</div>
+                    <td>${a.details}</div>
+                    <td>${a.time}</div>
+                    <td><button class="btn-info">View</button></div>
                 </tr>`).join('');
             }
         }
@@ -2771,6 +2840,7 @@
                 await loadInvestors(); 
                 await loadStats();
                 await renderAllCharts();
+                await loadReferralStats();
                 if (window.adminChatSystem) window.adminChatSystem.loadUsers();
             } catch(e) { showNotification(e.message, true); }
         };
@@ -2842,6 +2912,7 @@
                 await loadInvestors(); 
                 await loadStats();
                 await renderAllCharts();
+                await loadReferralStats();
                 if (window.adminChatSystem) window.adminChatSystem.loadUsers();
             } 
         };
@@ -3159,7 +3230,31 @@
             const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
             const investorsList = document.getElementById('investorsList');
             if(investorsList) {
-                investorsList.innerHTML = filtered.map(i=>`<td>...</td>`).join('');
+                investorsList.innerHTML = filtered.map(i=>{
+                    const tierClass = `tier-${i.tier || 'bronze'}`;
+                    const subClass = i.subscription_status === 'premium' ? 'sub-premium' : 'sub-free';
+                    return `<tr>
+                        <td><strong>${escapeHtml(i.full_name)}</strong></td>
+                        <td>${i.email}</td>
+                        <td>${i.phone||'-'}</td>
+                        <td>${i.city||'-'}</td>
+                        <td><span class="tier-badge ${tierClass}">${(i.tier || 'bronze').toUpperCase()}</span></td>
+                        <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
+                        <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
+                        <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
+                        <td><span class="subscription-badge ${subClass}">${i.subscription_status === 'premium' ? 'Premium' : 'Free'}</span></td>
+                        <td><span class="perm-badge ${i.chat_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.chat_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                        <td><span class="perm-badge ${i.voice_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.voice_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                        <td><span class="perm-badge ${i.video_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.video_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                        <td class="action-buttons">
+                            <button onclick="toggleInvestorTier('${i.id}')" class="btn-premium">Change Tier</button>
+                            <button onclick="toggleInvestorSubscription('${i.id}', '${i.subscription_status === 'premium' ? 'free' : 'premium'}')" class="btn-warning">${i.subscription_status === 'premium' ? 'Remove Premium' : 'Make Premium'}</button>
+                            <button onclick="toggleInvestorPermission('${i.id}', 'chat', ${i.chat_enabled !== false})" class="btn-info">Toggle Chat</button>
+                            <button onclick="sendSingleInvestorNotification('${i.id}', '${escapeHtml(i.full_name)}')" class="btn-primary">Send Notif</button>
+                            <button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
+                        </td>
+                    </tr>`;
+                }).join('');
             }
         };
         
@@ -3188,19 +3283,19 @@
             const withdrawalsList = document.getElementById('withdrawalsList');
             if (!withdrawalsList) return;
             if (filtered.length === 0) { 
-                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; 
+                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</div></tr>'; 
                 return; 
             }
             withdrawalsList.innerHTML = filtered.map(w => `<tr>
                 <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
                 <td><small>${w.investors?.email || '-'}</small></td>
-                <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                <td>${w.payment_method || '-'}</td>
-                <td><small>${w.account_details || '-'}</small></td>
-                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
-                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
-                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
+                <td>Rs. ${(w.amount || 0).toLocaleString()}</div>
+                <td>${new Date(w.request_date).toLocaleDateString()}</div>
+                <td>${w.payment_method || '-'}</div>
+                <td><small>${w.account_details || '-'}</small></div>
+                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></div>
+                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</div>
+                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</div>
             </tr>`).join('');
         };
         
@@ -3215,20 +3310,20 @@
             const ordersList = document.getElementById('ordersList');
             if (!ordersList) return;
             if (filtered.length === 0) { 
-                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; 
+                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</div></tr>'; 
                 return; 
             }
             ordersList.innerHTML = filtered.map(o => `<tr>
-                <td><strong>${o.id?.slice(0, 12)}...</strong></td>
-                <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
-                <td>${o.products ? 'View' : '-'}</td>
-                <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
-                <td>${new Date(o.order_date).toLocaleDateString()}</td>
-                <td>${o.payment_method || '-'}</td>
-                <td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></td>
-                <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
-                <td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td>
-                <td class="action-buttons"><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td>
+                <td><strong>${o.id?.slice(0, 12)}...</strong></div>
+                <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></div>
+                <td>${o.products ? 'View' : '-'}</div>
+                <td>Rs. ${(o.total_amount || 0).toLocaleString()}</div>
+                <td>${new Date(o.order_date).toLocaleDateString()}</div>
+                <td>${o.payment_method || '-'}</div>
+                <td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></div>
+                <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></div>
+                <td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></div>
+                <td class="action-buttons"><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></div>
             </tr>`).join('');
         };
         
@@ -3251,7 +3346,6 @@
         async function loadHoldingData() {
             if (!supabaseClient) return;
             
-            // Load pending holdings
             const { data: pendingHoldings } = await supabaseClient
                 .from('payment_holdings')
                 .select('*, investors(full_name, email)')
@@ -3266,15 +3360,14 @@
                     <td>${h.payment_method || '-'}</td>
                     <td>${h.transaction_id || '-'}</td>
                     <td>${h.screenshot ? `<img src="${h.screenshot}" class="screenshot-thumb" onclick="window.open('${h.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</td>
-                    <td>${new Date(h.created_at).toLocaleDateString()}</td>
-                    <td class="action-buttons">
+                    <td>${new Date(h.created_at).toLocaleDateString()}
+                                        <td class="action-buttons">
                         <button onclick="approveHolding('${h.id}', ${h.amount}, '${h.investor_id}')" class="btn-success">Approve & Release</button>
                         <button onclick="rejectHolding('${h.id}')" class="btn-danger">Reject</button>
-                    </td>
+                    </div>
                 </tr>`).join('');
             }
             
-            // Load release history
             const { data: releaseHistory } = await supabaseClient
                 .from('payment_holdings')
                 .select('*, investors(full_name, email)')
@@ -3293,7 +3386,6 @@
                 </tr>`).join('');
             }
             
-            // Calculate totals
             const totalHolding = (pendingHoldings || []).reduce((sum, h) => sum + (h.amount || 0), 0);
             const pendingCount = (pendingHoldings || []).length;
             
@@ -3316,14 +3408,12 @@
             
             if (result.isConfirmed) {
                 try {
-                    // Update holding record
                     await supabaseClient.from('payment_holdings').update({
                         status: 'released',
                         released_date: new Date().toISOString(),
                         approved_by: (await supabaseClient.auth.getUser()).data.user?.email || 'Admin'
                     }).eq('id', holdingId);
                     
-                    // Add to investments table as active investment
                     await supabaseClient.from('investments').insert([{
                         id: crypto.randomUUID(),
                         investor_id: investorId,
@@ -3334,7 +3424,6 @@
                         created_at: new Date().toISOString()
                     }]);
                     
-                    // Update investor balance
                     const { data: investor } = await supabaseClient.from('investors').select('total_investment, available_balance').eq('id', investorId).single();
                     await supabaseClient.from('investors').update({
                         total_investment: (investor?.total_investment || 0) + amount,
@@ -3362,31 +3451,29 @@
         
         // Tiers Configuration Functions
         async function loadTiersData() {
-            // Load investor tiers config
             const { data: investorTiers } = await supabaseClient.from('investor_tiers').select('*').order('min_investment', { ascending: true });
             const investorTiersBody = document.getElementById('investorTiersConfig');
             if (investorTiersBody) {
                 investorTiersBody.innerHTML = (investorTiers || []).map(t => `<tr>
                     <td><span class="tier-badge tier-${t.tier}">${t.tier.toUpperCase()}</span></td>
                     <td>Rs. ${(t.min_investment || 0).toLocaleString()}</td>
-                    <td>${t.profit_bonus || 0}%</td>
-                    <td>${t.priority_withdrawal ? 'Yes' : 'No'}</td>
-                    <td>${t.exclusive_batches ? 'Yes' : 'No'}</td>
-                    <td><button onclick="editInvestorTier('${t.tier}')" class="btn-warning">Edit</button></td>
+                    <td>${t.profit_bonus || 0}%</div>
+                    <td>${t.priority_withdrawal ? 'Yes' : 'No'}</div>
+                    <td>${t.exclusive_batches ? 'Yes' : 'No'}</div>
+                    <td><button onclick="editInvestorTier('${t.tier}')" class="btn-warning">Edit</button></div>
                 </tr>`).join('');
             }
             
-            // Load buyer tiers config
             const { data: buyerTiers } = await supabaseClient.from('buyer_tiers').select('*').order('min_purchase', { ascending: true });
             const buyerTiersBody = document.getElementById('buyerTiersConfig');
             if (buyerTiersBody) {
                 buyerTiersBody.innerHTML = (buyerTiers || []).map(t => `<tr>
                     <td><span class="tier-badge tier-${t.tier}">${t.tier.toUpperCase()}</span></td>
                     <td>Rs. ${(t.min_purchase || 0).toLocaleString()}</td>
-                    <td>${t.discount_percentage || 0}%</td>
-                    <td>${t.bulk_discount ? 'Yes' : 'No'}</td>
-                    <td>${t.early_access ? 'Yes' : 'No'}</td>
-                    <td><button onclick="editBuyerTier('${t.tier}')" class="btn-warning">Edit</button></td>
+                    <td>${t.discount_percentage || 0}%</div>
+                    <td>${t.bulk_discount ? 'Yes' : 'No'}</div>
+                    <td>${t.early_access ? 'Yes' : 'No'}</div>
+                    <td><button onclick="editBuyerTier('${t.tier}')" class="btn-warning">Edit</button></div>
                 </tr>`).join('');
             }
         }
@@ -3480,7 +3567,6 @@
         async function runManualTierAssignment() {
             showNotification('Running tier assignment... This may take a moment.', false);
             
-            // Get all investors with their total investment
             const { data: investors } = await supabaseClient.from('investors').select('id, total_investment');
             const { data: tiers } = await supabaseClient.from('investor_tiers').select('*').order('min_investment', { ascending: false });
             
@@ -3505,7 +3591,6 @@
         
         // Subscription System Functions
         async function loadSubscriptionsData() {
-            // Load subscription plans
             const { data: plans } = await supabaseClient.from('subscription_plans').select('*').order('monthly_price', { ascending: true });
             const plansList = document.getElementById('subscriptionPlansList');
             if (plansList) {
@@ -3519,7 +3604,6 @@
                 </tr>`).join('');
             }
             
-            // Load active subscriptions
             const { data: subscriptions } = await supabaseClient
                 .from('user_subscriptions')
                 .select('*, investors(full_name, email), buyers(full_name, email)')
@@ -3533,16 +3617,15 @@
                     const userType = s.user_type;
                     const plan = s.plan_name;
                     return `<tr>
-                        <td>${escapeHtml(userName)} (${userType})</td>
-                        <td>${userType}</td>
-                        <td>${plan}</td>
-                        <td>${new Date(s.start_date).toLocaleDateString()}</td>
-                        <td>${new Date(s.end_date).toLocaleDateString()}</td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>${s.auto_renew ? 'Yes' : 'No'}</td>
-                        <td><button onclick="cancelSubscription('${s.id}')" class="btn-danger">Cancel</button></td>
-                    </tr>`;
-                }).join('');
+                        <td>${escapeHtml(userName)} (${userType})</div>
+                        <td>${userType}</div>
+                        <td>${plan}</div>
+                        <td>${new Date(s.start_date).toLocaleDateString()}</div>
+                        <td>${new Date(s.end_date).toLocaleDateString()}</div>
+                        <td><span class="status-badge status-active">Active</span></div>
+                        <td>${s.auto_renew ? 'Yes' : 'No'}</div>
+                        <td><button onclick="cancelSubscription('${s.id}')" class="btn-danger">Cancel</button></div>
+                    </tr>`).join('');
             }
         }
         
@@ -3601,7 +3684,6 @@
         
         // Accounting Functions
         async function loadAccountingData() {
-            // Load ledger entries
             const { data: ledger } = await supabaseClient.from('general_ledger').select('*').order('created_at', { ascending: false }).limit(100);
             const ledgerBody = document.getElementById('generalLedger');
             if (ledgerBody) {
@@ -3611,16 +3693,15 @@
                     runningBalance += (l.debit || 0) - (l.credit || 0);
                     return `<tr>
                         <td>${new Date(l.created_at).toLocaleDateString()}</td>
-                        <td>${escapeHtml(l.description)}</td>
-                        <td>${l.account}</td>
-                        <td>${(l.debit || 0).toLocaleString()}</td>
-                        <td>${(l.credit || 0).toLocaleString()}</td>
-                        <td>${runningBalance.toLocaleString()}</td>
+                        <td>${escapeHtml(l.description)}</div>
+                        <td>${l.account}</div>
+                        <td>${(l.debit || 0).toLocaleString()}</div>
+                        <td>${(l.credit || 0).toLocaleString()}</div>
+                        <td>${runningBalance.toLocaleString()}</div>
                     </tr>`;
                 }).join('');
             }
             
-            // Calculate financial summaries
             const { data: investments } = await supabaseClient.from('investments').select('amount').eq('status', 'active');
             const totalAssets = (investments || []).reduce((s, i) => s + (i.amount || 0), 0);
             const { data: profits } = await supabaseClient.from('profits').select('amount').eq('paid', true);
@@ -3680,7 +3761,7 @@
                     <td>${l.action}</td>
                     <td>${escapeHtml(l.details?.substring(0, 100) || '')}</td>
                     <td>${escapeHtml(JSON.stringify(l.metadata || {}).substring(0, 50))}</td>
-                    <td>${l.ip_address || '-'}</td>
+                    <td>${l.ip_address || '-'}</div>
                 </tr>`).join('');
             }
         }
@@ -3727,13 +3808,13 @@
                     else { riskLevel = 'High'; riskScore = 80; recommendation = 'High potential returns with increased risk.'; }
                     
                     return `<tr>
-                        <td>${escapeHtml(b.batch_name)}</td>
-                        <td>Rs. ${(b.investment_amount || 0).toLocaleString()}</td>
-                        <td>${expectedROI}%</td>
-                        <td><span class="risk-level-${riskLevel.toLowerCase()}">${riskLevel}</span></td>
-                        <td>${riskScore}/100</td>
-                        <td>${recommendation}</td>
-                        <td><button onclick="viewBatchRiskDetail('${b.id}')" class="btn-info">Details</button></td>
+                        <td>${escapeHtml(b.batch_name)}</div>
+                        <td>Rs. ${(b.investment_amount || 0).toLocaleString()}</div>
+                        <td>${expectedROI}%</div>
+                        <td><span class="risk-level-${riskLevel.toLowerCase()}">${riskLevel}</span></div>
+                        <td>${riskScore}/100</div>
+                        <td>${recommendation}</div>
+                        <td><button onclick="viewBatchRiskDetail('${b.id}')" class="btn-info">Details</button></div>
                     </tr>`;
                 }).join('');
             }
@@ -3745,12 +3826,12 @@
             const docsBody = document.getElementById('documentsList');
             if (docsBody) {
                 docsBody.innerHTML = (docs || []).map(d => `<tr>
-                    <td>${new Date(d.created_at).toLocaleDateString()}</td>
-                    <td>${d.type}</td>
-                    <td>${d.user_id || '-'}</td>
-                    <td>${d.file_url ? `<a href="${d.file_url}" target="_blank" class="btn-info" style="padding:2px 8px;">View</a>` : '-'}</td>
-                    <td>${escapeHtml(d.notes?.substring(0, 50) || '-')}</td>
-                    <td><button onclick="deleteDocument('${d.id}')" class="btn-danger">Delete</button></td>
+                    <td>${new Date(d.created_at).toLocaleDateString()}</div>
+                    <td>${d.type}</div>
+                    <td>${d.user_id || '-'}</div>
+                    <td>${d.file_url ? `<a href="${d.file_url}" target="_blank" class="btn-info" style="padding:2px 8px;">View</a>` : '-'}</div>
+                    <td>${escapeHtml(d.notes?.substring(0, 50) || '-')}</div>
+                    <td><button onclick="deleteDocument('${d.id}')" class="btn-danger">Delete</button></div>
                 </tr>`).join('');
             }
         }
@@ -3812,13 +3893,13 @@
             const rulesBody = document.getElementById('automationRulesList');
             if (rulesBody) {
                 rulesBody.innerHTML = (rules || []).map(r => `<tr>
-                    <td>${escapeHtml(r.name)}</td>
-                    <td>${r.trigger}</td>
-                    <td>${r.action}</td>
-                    <td>${r.schedule || 'On trigger'}</td>
-                    <td><span class="status-badge ${r.is_active ? 'status-active' : 'status-pending'}">${r.is_active ? 'Active' : 'Inactive'}</span></td>
-                    <td>${r.last_run ? new Date(r.last_run).toLocaleDateString() : '-'}</td>
-                    <td><button onclick="toggleAutomationRule('${r.id}', ${!r.is_active})" class="btn-warning">${r.is_active ? 'Disable' : 'Enable'}</button><button onclick="deleteAutomationRule('${r.id}')" class="btn-danger">Delete</button></td>
+                    <td>${escapeHtml(r.name)}</div>
+                    <td>${r.trigger}</div>
+                    <td>${r.action}</div>
+                    <td>${r.schedule || 'On trigger'}</div>
+                    <td><span class="status-badge ${r.is_active ? 'status-active' : 'status-pending'}">${r.is_active ? 'Active' : 'Inactive'}</span></div>
+                    <td>${r.last_run ? new Date(r.last_run).toLocaleDateString() : '-'}</div>
+                    <td><button onclick="toggleAutomationRule('${r.id}', ${!r.is_active})" class="btn-warning">${r.is_active ? 'Disable' : 'Enable'}</button><button onclick="deleteAutomationRule('${r.id}')" class="btn-danger">Delete</button></div>
                 </tr>`).join('');
             }
         }
@@ -3866,19 +3947,18 @@
                 ticketsBody.innerHTML = (tickets || []).map(t => {
                     const userName = t.investors?.full_name || t.buyers?.full_name || 'Unknown';
                     return `<tr>
-                        <td>#${t.id?.slice(0, 8)}</td>
-                        <td>${escapeHtml(userName)}</td>
-                        <td>${escapeHtml(t.subject?.substring(0, 50))}</td>
-                        <td><span class="status-badge ${t.priority === 'high' ? 'status-pending' : 'status-active'}">${t.priority}</span></td>
-                        <td><span class="status-badge ${t.status === 'open' ? 'status-pending' : t.status === 'resolved' ? 'status-active' : 'status-completed'}">${t.status}</span></td>
-                        <td>${new Date(t.created_at).toLocaleDateString()}</td>
-                        <td>${t.updated_at ? new Date(t.updated_at).toLocaleDateString() : '-'}</td>
-                        <td><button onclick="viewTicketDetails('${t.id}')" class="btn-info">View</button></td>
+                        <td>#${t.id?.slice(0, 8)}</div>
+                        <td>${escapeHtml(userName)}</div>
+                        <td>${escapeHtml(t.subject?.substring(0, 50))}</div>
+                        <td><span class="status-badge ${t.priority === 'high' ? 'status-pending' : 'status-active'}">${t.priority}</span></div>
+                        <td><span class="status-badge ${t.status === 'open' ? 'status-pending' : t.status === 'resolved' ? 'status-active' : 'status-completed'}">${t.status}</span></div>
+                        <td>${new Date(t.created_at).toLocaleDateString()}</div>
+                        <td>${t.updated_at ? new Date(t.updated_at).toLocaleDateString() : '-'}</div>
+                        <td><button onclick="viewTicketDetails('${t.id}')" class="btn-info">View</button></div>
                     </tr>`;
                 }).join('');
             }
             
-            // Update stats
             const openCount = (tickets || []).filter(t => t.status === 'open').length;
             const inProgressCount = (tickets || []).filter(t => t.status === 'in_progress').length;
             document.getElementById('openTicketsCount').innerHTML = openCount;
@@ -3891,13 +3971,13 @@
             const teamBody = document.getElementById('teamMembersList');
             if (teamBody) {
                 teamBody.innerHTML = (team || []).map(m => `<tr>
-                    <td>${escapeHtml(m.name)}</td>
-                    <td>${m.email}</td>
-                    <td>${m.role}</td>
-                    <td>${m.permissions ? m.permissions.join(', ') : '-'}</td>
-                    <td>${m.last_active ? new Date(m.last_active).toLocaleDateString() : '-'}</td>
-                    <td><span class="status-badge ${m.is_active ? 'status-active' : 'status-pending'}">${m.is_active ? 'Active' : 'Inactive'}</span></td>
-                    <td><button onclick="toggleTeamMember('${m.id}', ${!m.is_active})" class="btn-warning">${m.is_active ? 'Disable' : 'Enable'}</button><button onclick="deleteTeamMember('${m.id}')" class="btn-danger">Delete</button></td>
+                    <td>${escapeHtml(m.name)}</div>
+                    <td>${m.email}</div>
+                    <td>${m.role}</div>
+                    <td>${m.permissions ? m.permissions.join(', ') : '-'}</div>
+                    <td>${m.last_active ? new Date(m.last_active).toLocaleDateString() : '-'}</div>
+                    <td><span class="status-badge ${m.is_active ? 'status-active' : 'status-pending'}">${m.is_active ? 'Active' : 'Inactive'}</span></div>
+                    <td><button onclick="toggleTeamMember('${m.id}', ${!m.is_active})" class="btn-warning">${m.is_active ? 'Disable' : 'Enable'}</button><button onclick="deleteTeamMember('${m.id}')" class="btn-danger">Delete</button></div>
                 </tr>`).join('');
             }
         }
@@ -3943,11 +4023,11 @@
                 const bulkBody = document.getElementById('bulkApproveList');
                 if (bulkBody) {
                     bulkBody.innerHTML = (pendingInvestments || []).map(i => `<tr>
-                        <td><input type="checkbox" class="bulk-select" value="${i.id}"></td>
-                        <td>${i.id?.slice(0, 8)}...</td>
-                        <td>${escapeHtml(i.investors?.full_name || 'Unknown')}</td>
-                        <td>Rs. ${(i.amount || 0).toLocaleString()}</td>
-                        <td>${new Date(i.created_at).toLocaleDateString()}</td>
+                        <td><input type="checkbox" class="bulk-select" value="${i.id}"></div>
+                        <td>${i.id?.slice(0, 8)}...</div>
+                        <td>${escapeHtml(i.investors?.full_name || 'Unknown')}</div>
+                        <td>Rs. ${(i.amount || 0).toLocaleString()}</div>
+                        <td>${new Date(i.created_at).toLocaleDateString()}</div>
                     </tr>`).join('');
                 }
             } else {
@@ -3955,11 +4035,11 @@
                 const bulkBody = document.getElementById('bulkApproveList');
                 if (bulkBody) {
                     bulkBody.innerHTML = (pendingWithdrawals || []).map(w => `<tr>
-                        <td><input type="checkbox" class="bulk-select" value="${w.id}"></td>
-                        <td>${w.id?.slice(0, 8)}...</td>
-                        <td>${escapeHtml(w.investors?.full_name || 'Unknown')}</td>
-                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                        <td><input type="checkbox" class="bulk-select" value="${w.id}"></div>
+                        <td>${w.id?.slice(0, 8)}...</div>
+                        <td>${escapeHtml(w.investors?.full_name || 'Unknown')}</div>
+                        <td>Rs. ${(w.amount || 0).toLocaleString()}</div>
+                        <td>${new Date(w.request_date).toLocaleDateString()}</div>
                     </tr>`).join('');
                 }
             }
@@ -4015,7 +4095,6 @@
                 recipients = [...(investors || []), ...(buyers || [])];
             }
             
-            // Store notification in database
             for (const recipient of recipients) {
                 await supabaseClient.from('notifications').insert([{
                     id: crypto.randomUUID(),
@@ -4042,17 +4121,16 @@
                     const affectedInvestors = b.filled_slots || 0;
                     const lossPerInvestor = affectedInvestors > 0 ? lossAmount / affectedInvestors : 0;
                     return `<tr>
-                        <td>${escapeHtml(b.batch_name)}</td>
-                        <td>Rs. ${lossAmount.toLocaleString()}</td>
-                        <td>${affectedInvestors}</td>
-                        <td>Rs. ${lossPerInvestor.toLocaleString()}</td>
-                        <td><span class="status-badge status-pending">Pending Resolution</span></td>
-                        <td><button onclick="resolveBatchLoss('${b.id}', ${lossAmount})" class="btn-warning">Resolve</button></td>
+                        <td>${escapeHtml(b.batch_name)}</div>
+                        <td>Rs. ${lossAmount.toLocaleString()}</div>
+                        <td>${affectedInvestors}</div>
+                        <td>Rs. ${lossPerInvestor.toLocaleString()}</div>
+                        <td><span class="status-badge status-pending">Pending Resolution</span></div>
+                        <td><button onclick="resolveBatchLoss('${b.id}', ${lossAmount})" class="btn-warning">Resolve</button></div>
                     </tr>`;
                 }).join('');
             }
             
-            // Load loss batch select for distribution
             const batchSelect = document.getElementById('lossBatchSelect');
             if (batchSelect) {
                 batchSelect.innerHTML = '<option value="">Select Batch</option>' + (batches || []).filter(b => (b.sales || 0) < (b.expenses || 0)).map(b => `<option value="${b.id}">${b.batch_name} - Loss: Rs. ${((b.expenses || 0) - (b.sales || 0)).toLocaleString()}</option>`).join('');
@@ -4261,7 +4339,7 @@
                 cancelVoiceRecording: function() { if (this.mediaRecorder && this.isRecording) { this.mediaRecorder.onstop = () => {}; this.mediaRecorder.stop(); } this.isRecording = false; document.getElementById('voiceRecordingOverlay').classList.remove('active'); if (this.recordingTimerInterval) clearInterval(this.recordingTimerInterval); },
                 showVoiceRecorder: function() { this.startVoiceRecording(); },
                 clearPendingMedia: function() { this.pendingMedia = null; document.getElementById('mediaPreview').classList.remove('active'); document.getElementById('mediaPreview').innerHTML = ''; },
-                setupEmojiPicker: function() { const emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','💀','👻','👽','🤖','💩','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🙈','🙉','🙊']; const picker = document.getElementById('emojiPicker'); if (picker) { picker.innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="adminChatSystem.addEmoji('${emoji}')">${emoji}</div>`).join(''); } },
+                setupEmojiPicker: function() { const emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','💀','👻','👽','🤖','💩']; const picker = document.getElementById('emojiPicker'); if (picker) { picker.innerHTML = emojis.map(emoji => `<div class="emoji-item" onclick="adminChatSystem.addEmoji('${emoji}')">${emoji}</div>`).join(''); } },
                 toggleEmojiPicker: function() { document.getElementById('emojiPicker').classList.toggle('active'); },
                 addEmoji: function(emoji) { const input = document.getElementById('chatInput'); input.value += emoji; input.focus(); document.getElementById('emojiPicker').classList.remove('active'); },
                 showAttachMenu: async function() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => this.handleMediaUpload(e.target.files[0], 'image'); input.click(); },
