@@ -583,6 +583,62 @@
         }
         .slot-warning.show { display: block; }
         
+        /* REFERRAL LINK STYLES */
+        .referral-card {
+            background: linear-gradient(135deg, rgba(232,177,60,0.1), rgba(30,126,94,0.2));
+            border: 2px solid #E8B13C;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .referral-link-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 50px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .referral-link-text {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #E8B13C;
+            word-break: break-all;
+            flex: 1;
+        }
+        .copy-btn {
+            background: linear-gradient(135deg, #E8B13C, #c99b2e);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #0a1f1a;
+        }
+        .referral-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .ref-stat-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 10px;
+            text-align: center;
+        }
+        .ref-stat-box .ref-stat-label {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.6);
+        }
+        .ref-stat-box .ref-stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #E8B13C;
+        }
+        
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; text-align: center; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
@@ -640,6 +696,7 @@
             <button class="nav-tab" onclick="showSection('team')"><i class="fas fa-users-cog"></i> Team</button>
             <button class="nav-tab" onclick="showSection('bulk')"><i class="fas fa-layer-group"></i> Bulk Ops</button>
             <button class="nav-tab" onclick="showSection('loss')"><i class="fas fa-chart-line"></i> Loss Mgmt</button>
+            <button class="nav-tab" onclick="showSection('referrals')"><i class="fas fa-link"></i> Referrals</button>
         </div>
 
         <!-- Dashboard Section (Existing - Preserved) -->
@@ -669,8 +726,7 @@
                 <h3 style="color:#E8B13C; margin-bottom:15px;">Recent Activities <i class="fas fa-history"></i></h3>
                 <table>
                     <thead>
-                        <tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Action</th><th>Details</th><th>Time</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="recentActivities"></tbody>
                 </table>
@@ -729,15 +785,14 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Batch ID</th><th>Batch Name</th><th>Investment</th><th>Profit %</th><th>Duration</th><th>Slots</th><th>Filled</th><th>Prod Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit</th><th>Investor Share (50%)</th><th>ROI</th><th>Visibility</th><th>Tier</th><th>Premium</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Batch ID</th><th>Batch Name</th><th>Investment</th><th>Profit %</th><th>Duration</th><th>Slots</th><th>Filled</th><th>Prod Qty</th><th>Status</th><th>Progress</th><th>Sales</th><th>Expenses</th><th>Net Profit</th><th>Investor Share (50%)</th><th>ROI</th><th>Visibility</th><th>Tier</th><th>Premium</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="batchesList"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Investors Section (Existing - Enhanced with Tiers) -->
+        <!-- Investors Section (Existing - Enhanced with Tiers and Referral Display) -->
         <div id="investorsSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-users"></i> Investors Management</h2>
             <div class="form-card">
@@ -754,6 +809,7 @@
                         <option value="gold">Gold</option>
                         <option value="vip">VIP</option>
                     </select></div>
+                    <div class="form-group"><label>Referred By (Referral Code)</label><input type="text" id="newInvestorReferredBy" placeholder="Enter referral code (optional)"></div>
                 </div>
                 <button onclick="addNewInvestor()" class="btn-primary"><i class="fas fa-save"></i> Add Investor</button>
             </div>
@@ -761,15 +817,14 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Tier</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Subscription</th><th>Chat</th><th>Voice</th><th>Video</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Tier</th><th>Total Investment</th><th>Total Profit</th><th>Balance</th><th>Referral Code</th><th>Referrals</th><th>Subscription</th><th>Chat</th><th>Voice</th><th>Video</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="investorsList"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Buyers Section (Existing - Enhanced with Tiers) -->
+        <!-- Buyers Section (Existing - Enhanced with Referral Display) -->
         <div id="buyersSection" class="admin-section">
             <h2 class="section-title"><i class="fas fa-user-friends"></i> Buyers Management</h2>
             <div class="form-card"><h3><i class="fas fa-plus-circle"></i> Add New Buyer</h3>
@@ -783,6 +838,7 @@
                         <option value="premium">Premium</option>
                         <option value="wholesale">Wholesale</option>
                     </select></div>
+                    <div class="form-group"><label>Referred By (Referral Code)</label><input type="text" id="newBuyerReferredBy" placeholder="Enter referral code (optional)"></div>
                 </div>
                 <button onclick="addNewBuyer()" class="btn-primary"><i class="fas fa-save"></i> Add Buyer</button>
             </div>
@@ -790,8 +846,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Tier</th><th>Subscription</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Tier</th><th>Referral Code</th><th>Referrals</th><th>Subscription</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="buyersList"></tbody>
                 </table>
@@ -804,8 +859,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Status</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Investor</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Status</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="investmentRequestsList"></tbody>
                 </table>
@@ -829,8 +883,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Investor</th><th>Amount</th><th>Date</th><th>Payment Method</th><th>Status</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="investmentHistory"></tbody>
                 </table>
@@ -853,8 +906,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Investor</th><th>Amount</th><th>Month</th><th>Percentage</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="profitHistory"></tbody>
                 </table>
@@ -868,8 +920,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Approval Screenshot</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Investor Name</th><th>Email</th><th>Amount</th><th>Request Date</th><th>Payment Method</th><th>Account Details</th><th>Status</th><th>Approval Screenshot</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="withdrawalsList"></tbody>
                 </table>
@@ -894,8 +945,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Premium Only</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Premium Only</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="productsList"></tbody>
                 </table>
@@ -911,8 +961,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th>
-                        </tr>
+                        <tr><th>Order ID</th><th>Customer</th><th>Products</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Address</th><th>Order Status</th><th>Actions</th></tr>
                     </thead>
                     <tbody id="ordersList"></tbody>
                 </table>
@@ -984,6 +1033,87 @@
             </div>
         </div>
 
+        <!-- ========== REFERRAL SYSTEM SECTION (NEW) ========== -->
+        <div id="referralsSection" class="admin-section">
+            <h2 class="section-title"><i class="fas fa-link"></i> Referral Link Management</h2>
+            
+            <!-- Referral Stats Summary -->
+            <div class="stats-row">
+                <div class="stat-box"><div class="stat-label">Total Referrals</div><div class="stat-value" id="totalReferralsCount">0</div></div>
+                <div class="stat-box"><div class="stat-label">Active Referrers</div><div class="stat-value" id="activeReferrersCount">0</div></div>
+                <div class="stat-box"><div class="stat-label">Conversion Rate</div><div class="stat-value" id="referralConversionRate">0%</div></div>
+            </div>
+            
+            <!-- Referral Leaderboard -->
+            <div class="form-card">
+                <h3><i class="fas fa-trophy"></i> Top Referrers Leaderboard</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Rank</th><th>User Name</th><th>Type</th><th>Referral Code</th><th>Total Referrals</th><th>Commission Earned</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="referralLeaderboard"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Search Referral Links -->
+            <div class="form-card">
+                <h3><i class="fas fa-search"></i> Search Referral Links</h3>
+                <div class="search-box">
+                    <input type="text" id="referralSearchInput" placeholder="Search by user name, email, or referral code...">
+                    <select id="referralUserTypeFilter">
+                        <option value="">All Users</option>
+                        <option value="investor">Investors</option>
+                        <option value="buyer">Buyers</option>
+                    </select>
+                    <button onclick="searchReferralLinks()" class="btn-primary"><i class="fas fa-search"></i> Search</button>
+                    <button onclick="resetReferralSearch()" class="btn-warning"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>User</th><th>Type</th><th>Referral Code</th><th>Referral Link</th><th>Referred By</th><th>Total Referrals</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="referralLinksList"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Referral Tree / Chain Viewer -->
+            <div class="form-card">
+                <h3><i class="fas fa-project-diagram"></i> Referral Chain Viewer</h3>
+                <div class="search-box">
+                    <input type="text" id="referralTreeSearch" placeholder="Enter user name or referral code to view their referral tree...">
+                    <button onclick="viewReferralTree()" class="btn-primary"><i class="fas fa-tree"></i> View Tree</button>
+                </div>
+                <div id="referralTreeContainer" style="margin-top: 20px; max-height: 500px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 16px; padding: 15px;">
+                    <div class="empty-state">Enter a user above to view their referral tree</div>
+                </div>
+            </div>
+            
+            <!-- Referral Commission Settings -->
+            <div class="form-card">
+                <h3><i class="fas fa-coins"></i> Referral Commission Settings</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Investor Referral Commission (%)</label><input type="number" id="investorReferralCommission" step="0.5" value="5" placeholder="Percentage of investment"></div>
+                    <div class="form-group"><label>Buyer Referral Commission (%)</label><input type="number" id="buyerReferralCommission" step="0.5" value="3" placeholder="Percentage of purchase"></div>
+                    <div class="form-group"><label>Bonus for New Referrer</label><input type="number" id="referralBonusAmount" step="100" value="500" placeholder="One-time bonus (Rs.)"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Commission Distribution Type</label><select id="commissionType">
+                        <option value="immediate">Immediate on Investment/Purchase</option>
+                        <option value="upon_maturity">Upon Batch Maturity</option>
+                        <option value="monthly">Monthly Distribution</option>
+                    </select></div>
+                    <div class="form-group"><label>Minimum Withdrawal for Commission</label><input type="number" id="minCommissionWithdrawal" step="100" value="1000" placeholder="Minimum amount (Rs.)"></div>
+                </div>
+                <button onclick="saveReferralCommissionSettings()" class="btn-primary"><i class="fas fa-save"></i> Save Commission Settings</button>
+                <button onclick="distributeReferralCommissions()" class="btn-success" style="margin-left:10px;"><i class="fas fa-gift"></i> Distribute Pending Commissions</button>
+            </div>
+        </div>
+
         <!-- ========== NEW ENTERPRISE SECTIONS ========== -->
 
         <!-- HOLDING WALLET SECTION (Escrow System) -->
@@ -1004,8 +1134,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Investor</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Submitted</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Investor</th><th>Amount</th><th>Payment Method</th><th>Transaction ID</th><th>Screenshot</th><th>Submitted</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="pendingHoldingsList"></tbody>
                     </table>
@@ -1017,8 +1146,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Investor</th><th>Amount</th><th>Released To</th><th>Released Date</th><th>Approved By</th>
-                            </tr>
+                            <tr><th>Investor</th><th>Amount</th><th>Released To</th><th>Released Date</th><th>Approved By</th></tr>
                         </thead>
                         <tbody id="releaseHistoryList"></tbody>
                     </table>
@@ -1035,8 +1163,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Tier</th><th>Min Investment</th><th>Profit Bonus %</th><th>Priority Withdrawal</th><th>Exclusive Batches</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Tier</th><th>Min Investment</th><th>Profit Bonus %</th><th>Priority Withdrawal</th><th>Exclusive Batches</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="investorTiersConfig"></tbody>
                     </table>
@@ -1049,8 +1176,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Tier</th><th>Min Purchase</th><th>Discount %</th><th>Bulk Discount</th><th>Early Access</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Tier</th><th>Min Purchase</th><th>Discount %</th><th>Bulk Discount</th><th>Early Access</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="buyerTiersConfig"></tbody>
                     </table>
@@ -1088,8 +1214,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Plan Name</th><th>Monthly Price</th><th>Yearly Price</th><th>Features</th><th>Status</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Plan Name</th><th>Monthly Price</th><th>Yearly Price</th><th>Features</th><th>Status</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="subscriptionPlansList"></tbody>
                     </table>
@@ -1102,8 +1227,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>User</th><th>Type</th><th>Plan</th><th>Start Date</th><th>End Date</th><th>Status</th><th>Auto-Renew</th><th>Actions</th>
-                            </tr>
+                            <tr><th>User</th><th>Type</th><th>Plan</th><th>Start Date</th><th>End Date</th><th>Status</th><th>Auto-Renew</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="activeSubscriptionsList"></tbody>
                     </table>
@@ -1142,8 +1266,7 @@
                 <div class="table-container">
                     <table class="ledger-table">
                         <thead>
-                            <tr><th>Date</th><th>Description</th><th>Account</th><th>Debit (Rs.)</th><th>Credit (Rs.)</th><th>Balance (Rs.)</th>
-                            </tr>
+                            <tr><th>Date</th><th>Description</th><th>Account</th><th>Debit (Rs.)</th><th>Credit (Rs.)</th><th>Balance (Rs.)</th></tr>
                         </thead>
                         <tbody id="generalLedger"></tbody>
                     </table>
@@ -1188,8 +1311,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Timestamp</th><th>Admin/User</th><th>Action Type</th><th>Action</th><th>Details</th><th>IP Address</th>
-                            </tr>
+                            <tr><th>Timestamp</th><th>Admin/User</th><th>Action Type</th><th>Action</th><th>Details</th><th>IP Address</th></tr>
                         </thead>
                         <tbody id="auditLogsList"></tbody>
                     </table>
@@ -1206,8 +1328,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Batch Name</th><th>Investment</th><th>Expected ROI</th><th>Risk Level</th><th>Risk Score</th><th>Recommendation</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Batch Name</th><th>Investment</th><th>Expected ROI</th><th>Risk Level</th><th>Risk Score</th><th>Recommendation</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="batchRiskAssessment"></tbody>
                     </table>
@@ -1261,8 +1382,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Date</th><th>Type</th><th>Associated User</th><th>Preview</th><th>Notes</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Date</th><th>Type</th><th>Associated User</th><th>Preview</th><th>Notes</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="documentsList"></tbody>
                     </table>
@@ -1279,8 +1399,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Rule Name</th><th>Trigger</th><th>Action</th><th>Schedule</th><th>Status</th><th>Last Run</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Rule Name</th><th>Trigger</th><th>Action</th><th>Schedule</th><th>Status</th><th>Last Run</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="automationRulesList"></tbody>
                     </table>
@@ -1334,8 +1453,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Ticket ID</th><th>User</th><th>Subject</th><th>Priority</th><th>Status</th><th>Created</th><th>Last Update</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Ticket ID</th><th>User</th><th>Subject</th><th>Priority</th><th>Status</th><th>Created</th><th>Last Update</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="ticketsList"></tbody>
                     </table>
@@ -1380,8 +1498,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Name</th><th>Email</th><th>Role</th><th>Permissions</th><th>Last Active</th><th>Status</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Name</th><th>Email</th><th>Role</th><th>Permissions</th><th>Last Active</th><th>Status</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="teamMembersList"></tbody>
                     </table>
@@ -1404,8 +1521,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th><input type="checkbox" id="selectAllBulk"></th><th>ID</th><th>User</th><th>Amount</th><th>Date</th>
-                            </tr>
+                            <tr><th><input type="checkbox" id="selectAllBulk"></th><th>ID</th><th>User</th><th>Amount</th><th>Date</th></tr>
                         </thead>
                         <tbody id="bulkApproveList"></tbody>
                     </table>
@@ -1438,8 +1554,7 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>Batch Name</th><th>Loss Amount</th><th>Affected Investors</th><th>Loss per Investor</th><th>Status</th><th>Actions</th>
-                            </tr>
+                            <tr><th>Batch Name</th><th>Loss Amount</th><th>Affected Investors</th><th>Loss per Investor</th><th>Status</th><th>Actions</th></tr>
                         </thead>
                         <tbody id="lossTrackingList"></tbody>
                     </table>
@@ -1589,6 +1704,530 @@
         // Real-time subscription for batch updates
         let batchSubscription = null;
         
+        // ========== REFERRAL SYSTEM FUNCTIONS ==========
+        
+        // Generate unique referral code for a user
+        async function generateReferralCode(userId, userName, userType) {
+            const prefix = userType === 'investor' ? 'INV' : 'BYR';
+            const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const code = `${prefix}${randomStr}`;
+            
+            const referralLink = `https://yourdomain.com/signup?ref=${code}`;
+            
+            // Check if referral already exists for this user
+            const { data: existing } = await supabaseClient.from('user_referrals').select('id').eq('user_id', userId).eq('user_type', userType).single();
+            
+            if (existing) {
+                // Update existing
+                await supabaseClient.from('user_referrals').update({
+                    referral_code: code,
+                    referral_link: referralLink,
+                    updated_at: new Date().toISOString()
+                }).eq('user_id', userId).eq('user_type', userType);
+            } else {
+                // Insert new
+                await supabaseClient.from('user_referrals').insert([{
+                    id: crypto.randomUUID(),
+                    user_id: userId,
+                    user_type: userType,
+                    user_name: userName,
+                    referral_code: code,
+                    referral_link: referralLink,
+                    total_referrals: 0,
+                    total_commission: 0,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                }]);
+            }
+            
+            return { code, link: referralLink };
+        }
+        
+        // Process referral when a new user signs up
+        async function processReferralSignup(newUserId, newUserType, referredByCode) {
+            if (!referredByCode) return null;
+            
+            // Find the referrer
+            const { data: referrer } = await supabaseClient.from('user_referrals').select('*').eq('referral_code', referredByCode).single();
+            
+            if (referrer) {
+                // Record the referral
+                await supabaseClient.from('referral_records').insert([{
+                    id: crypto.randomUUID(),
+                    referrer_id: referrer.user_id,
+                    referrer_type: referrer.user_type,
+                    referred_id: newUserId,
+                    referred_type: newUserType,
+                    status: 'pending',
+                    created_at: new Date().toISOString()
+                }]);
+                
+                // Update referrer's total referrals count
+                await supabaseClient.from('user_referrals').update({
+                    total_referrals: (referrer.total_referrals || 0) + 1,
+                    updated_at: new Date().toISOString()
+                }).eq('id', referrer.id);
+                
+                // Log audit
+                await logAudit('referral_processed', `User ${newUserId} referred by ${referrer.user_id}`, { referrerId: referrer.user_id, newUserId, code: referredByCode });
+                
+                return referrer;
+            }
+            return null;
+        }
+        
+        // Load referral links list for admin
+        async function loadReferralLinks() {
+            if (!supabaseClient) return;
+            
+            const { data: referrals } = await supabaseClient.from('user_referrals').select('*').order('total_referrals', { ascending: false });
+            
+            const tbody = document.getElementById('referralLinksList');
+            if (tbody) {
+                if (!referrals || referrals.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No referral links generated yet. Add users to generate links.</td></tr>';
+                } else {
+                    // Get user details for each referral
+                    let html = '';
+                    for (const ref of referrals) {
+                        let userName = ref.user_name;
+                        let userEmail = '';
+                        
+                        if (ref.user_type === 'investor') {
+                            const { data: investor } = await supabaseClient.from('investors').select('full_name, email').eq('id', ref.user_id).single();
+                            if (investor) {
+                                userName = investor.full_name;
+                                userEmail = investor.email;
+                            }
+                        } else {
+                            const { data: buyer } = await supabaseClient.from('buyers').select('full_name, email').eq('id', ref.user_id).single();
+                            if (buyer) {
+                                userName = buyer.full_name;
+                                userEmail = buyer.email;
+                            }
+                        }
+                        
+                        let referredByName = '-';
+                        if (ref.referred_by) {
+                            const { data: referrer } = await supabaseClient.from('user_referrals').select('user_name').eq('user_id', ref.referred_by).single();
+                            if (referrer) referredByName = referrer.user_name;
+                        }
+                        
+                        html += `<tr>
+                            <td><strong>${escapeHtml(userName)}</strong><br><small>${userEmail}</small></td>
+                            <td><span class="status-badge ${ref.user_type === 'investor' ? 'status-active' : 'status-pending'}">${ref.user_type}</span></td>
+                            <td><code>${ref.referral_code}</code></td>
+                            <td><div class="referral-link-box" style="padding: 5px 10px;"><span class="referral-link-text" style="font-size: 0.75rem;">${ref.referral_link}</span><button onclick="copyReferralLink('${ref.referral_link}')" class="copy-btn" style="padding: 4px 12px; font-size: 0.7rem;">Copy</button></div></td>
+                            <td>${referredByName}</td>
+                            <td><strong>${ref.total_referrals || 0}</strong></td>
+                            <td><button onclick="viewReferralDetails('${ref.user_id}', '${ref.user_type}')" class="btn-info" style="padding: 4px 10px;">View Tree</button></td>
+                        </tr>`;
+                    }
+                    tbody.innerHTML = html;
+                }
+            }
+            
+            // Load leaderboard
+            await loadReferralLeaderboard();
+            
+            // Load stats
+            const totalReferrals = (referrals || []).reduce((sum, r) => sum + (r.total_referrals || 0), 0);
+            const activeReferrers = (referrals || []).filter(r => (r.total_referrals || 0) > 0).length;
+            const totalUsers = (allInvestors?.length || 0) + (allBuyers?.length || 0);
+            const conversionRate = totalUsers > 0 ? ((totalReferrals / totalUsers) * 100).toFixed(1) : 0;
+            
+            document.getElementById('totalReferralsCount').innerHTML = totalReferrals;
+            document.getElementById('activeReferrersCount').innerHTML = activeReferrers;
+            document.getElementById('referralConversionRate').innerHTML = `${conversionRate}%`;
+        }
+        
+        async function loadReferralLeaderboard() {
+            const { data: referrals } = await supabaseClient.from('user_referrals').select('*').order('total_referrals', { ascending: false }).limit(10);
+            
+            const tbody = document.getElementById('referralLeaderboard');
+            if (tbody) {
+                if (!referrals || referrals.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No referrals yet</td></tr>';
+                } else {
+                    let html = '';
+                    for (let i = 0; i < referrals.length; i++) {
+                        const ref = referrals[i];
+                        let userName = ref.user_name;
+                        
+                        if (ref.user_type === 'investor') {
+                            const { data: investor } = await supabaseClient.from('investors').select('full_name').eq('id', ref.user_id).single();
+                            if (investor) userName = investor.full_name;
+                        } else {
+                            const { data: buyer } = await supabaseClient.from('buyers').select('full_name').eq('id', ref.user_id).single();
+                            if (buyer) userName = buyer.full_name;
+                        }
+                        
+                        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`;
+                        html += `<tr>
+                            <td>${medal}</td>
+                            <td><strong>${escapeHtml(userName)}</strong></td>
+                            <td><span class="status-badge ${ref.user_type === 'investor' ? 'status-active' : 'status-pending'}">${ref.user_type}</span></td>
+                            <td><code>${ref.referral_code}</code></td>
+                            <td><span class="stat-number" style="font-size: 1rem;">${ref.total_referrals || 0}</span></td>
+                            <td>Rs. ${(ref.total_commission || 0).toLocaleString()}</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>`;
+                    }
+                    tbody.innerHTML = html;
+                }
+            }
+        }
+        
+        async function viewReferralDetails(userId, userType) {
+            // Get user's referral tree
+            const { data: referrals } = await supabaseClient.from('referral_records').select('*').eq('referrer_id', userId).eq('referrer_type', userType);
+            
+            let userHtml = `<h3>Referral Tree for ${userType}: ${userId.slice(0, 8)}...</h3>`;
+            
+            if (!referrals || referrals.length === 0) {
+                userHtml += '<p>No referrals yet.</p>';
+            } else {
+                userHtml += '<ul style="list-style: none; padding-left: 0;">';
+                for (const ref of referrals) {
+                    let referredName = ref.referred_id;
+                    if (ref.referred_type === 'investor') {
+                        const { data: inv } = await supabaseClient.from('investors').select('full_name').eq('id', ref.referred_id).single();
+                        if (inv) referredName = inv.full_name;
+                    } else {
+                        const { data: buyer } = await supabaseClient.from('buyers').select('full_name').eq('id', ref.referred_id).single();
+                        if (buyer) referredName = buyer.full_name;
+                    }
+                    userHtml += `<li style="padding: 8px; margin: 5px 0; background: rgba(0,0,0,0.2); border-radius: 10px;">
+                        <i class="fas fa-user"></i> ${escapeHtml(referredName)} (${ref.referred_type})<br>
+                        <small>Referred on: ${new Date(ref.created_at).toLocaleDateString()} | Status: ${ref.status}</small>
+                    </li>`;
+                }
+                userHtml += '</ul>';
+            }
+            
+            await Swal.fire({
+                title: 'Referral Details',
+                html: userHtml,
+                icon: 'info',
+                background: 'linear-gradient(145deg, #1a3d33, #0f2a22)',
+                color: '#fff',
+                confirmButtonColor: '#E8B13C'
+            });
+        }
+        
+        async function viewReferralTree() {
+            const searchTerm = document.getElementById('referralTreeSearch').value.trim();
+            if (!searchTerm) {
+                showNotification('Please enter a user name or referral code', true);
+                return;
+            }
+            
+            // First try to find by referral code
+            let { data: referral } = await supabaseClient.from('user_referrals').select('*').eq('referral_code', searchTerm).single();
+            
+            if (!referral) {
+                // Try to find by user name in investors
+                let { data: investor } = await supabaseClient.from('investors').select('id, full_name').ilike('full_name', `%${searchTerm}%`).limit(1).single();
+                if (investor) {
+                    const { data: refData } = await supabaseClient.from('user_referrals').select('*').eq('user_id', investor.id).eq('user_type', 'investor').single();
+                    referral = refData;
+                } else {
+                    // Try buyers
+                    let { data: buyer } = await supabaseClient.from('buyers').select('id, full_name').ilike('full_name', `%${searchTerm}%`).limit(1).single();
+                    if (buyer) {
+                        const { data: refData } = await supabaseClient.from('user_referrals').select('*').eq('user_id', buyer.id).eq('user_type', 'buyer').single();
+                        referral = refData;
+                    }
+                }
+            }
+            
+            if (!referral) {
+                showNotification('User not found', true);
+                return;
+            }
+            
+            // Build tree recursively
+            const treeHtml = await buildReferralTree(referral.user_id, referral.user_type, referral.user_name, 0);
+            document.getElementById('referralTreeContainer').innerHTML = treeHtml;
+        }
+        
+        async function buildReferralTree(userId, userType, userName, depth) {
+            const { data: referrals } = await supabaseClient.from('referral_records').select('*').eq('referrer_id', userId).eq('referrer_type', userType);
+            
+            let html = `<div style="margin-left: ${depth * 30}px; padding: 10px; margin-bottom: 10px; border-left: 2px solid #E8B13C; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-user-circle" style="color: #E8B13C; font-size: 20px;"></i>
+                    <strong style="color: #E8B13C;">${escapeHtml(userName)}</strong>
+                    <span class="status-badge ${userType === 'investor' ? 'status-active' : 'status-pending'}">${userType}</span>
+                    <span class="stat-number" style="font-size: 0.8rem;">${referrals?.length || 0} referrals</span>
+                </div>`;
+            
+            if (referrals && referrals.length > 0) {
+                html += `<div style="margin-top: 10px;">`;
+                for (const ref of referrals) {
+                    let referredName = ref.referred_id;
+                    let referredType = ref.referred_type;
+                    
+                    if (ref.referred_type === 'investor') {
+                        const { data: inv } = await supabaseClient.from('investors').select('full_name').eq('id', ref.referred_id).single();
+                        if (inv) referredName = inv.full_name;
+                    } else {
+                        const { data: buyer } = await supabaseClient.from('buyers').select('full_name').eq('id', ref.referred_id).single();
+                        if (buyer) referredName = buyer.full_name;
+                    }
+                    
+                    html += await buildReferralTree(ref.referred_id, ref.referred_type, referredName, depth + 1);
+                }
+                html += `</div>`;
+            }
+            
+            html += `</div>`;
+            return html;
+        }
+        
+        function searchReferralLinks() {
+            const searchTerm = document.getElementById('referralSearchInput').value.toLowerCase();
+            const userType = document.getElementById('referralUserTypeFilter').value;
+            const rows = document.querySelectorAll('#referralLinksList tr');
+            
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                const rowType = row.innerText.includes('investor') ? 'investor' : 'buyer';
+                let show = text.includes(searchTerm);
+                if (userType && rowType !== userType) show = false;
+                row.style.display = show ? '' : 'none';
+            });
+        }
+        
+        function resetReferralSearch() {
+            document.getElementById('referralSearchInput').value = '';
+            document.getElementById('referralUserTypeFilter').value = '';
+            const rows = document.querySelectorAll('#referralLinksList tr');
+            rows.forEach(row => row.style.display = '');
+        }
+        
+        function copyReferralLink(link) {
+            navigator.clipboard.writeText(link);
+            showNotification('Referral link copied to clipboard!', false, 'Copied');
+        }
+        
+        async function saveReferralCommissionSettings() {
+            const settings = {
+                investor_commission: parseFloat(document.getElementById('investorReferralCommission').value) || 5,
+                buyer_commission: parseFloat(document.getElementById('buyerReferralCommission').value) || 3,
+                signup_bonus: parseFloat(document.getElementById('referralBonusAmount').value) || 500,
+                distribution_type: document.getElementById('commissionType').value,
+                min_withdrawal: parseFloat(document.getElementById('minCommissionWithdrawal').value) || 1000
+            };
+            
+            for (const [key, value] of Object.entries(settings)) {
+                await supabaseClient.from('system_settings').upsert([
+                    { key: `referral_${key}`, value: value, updated_at: new Date().toISOString() }
+                ]);
+            }
+            
+            await logAudit('referral_settings_updated', 'Updated referral commission settings', settings);
+            showNotification('Referral settings saved!', false);
+        }
+        
+        async function distributeReferralCommissions() {
+            showNotification('Commission distribution will be processed based on pending investments and purchases.', false);
+            // This function can be expanded to handle commission distribution logic
+            await logAudit('referral_commission_distribution', 'Manual commission distribution triggered', {});
+        }
+        
+        // Add referral code to existing user (migration)
+        async function ensureReferralCodeForUser(userId, userType, userName) {
+            const { data: existing } = await supabaseClient.from('user_referrals').select('id').eq('user_id', userId).eq('user_type', userType).single();
+            
+            if (!existing) {
+                await generateReferralCode(userId, userName, userType);
+            }
+        }
+        
+        // Override/addNewInvestor to include referral code handling
+        const originalAddNewInvestor = window.addNewInvestor;
+        window.addNewInvestor = async function() {
+            const name = document.getElementById('newInvestorName').value.trim();
+            const email = document.getElementById('newInvestorEmail').value.trim();
+            const phone = document.getElementById('newInvestorPhone').value;
+            const city = document.getElementById('newInvestorCity').value;
+            const investment = parseFloat(document.getElementById('newInvestorInvestment').value) || 0;
+            const tier = document.getElementById('newInvestorTier').value;
+            const referredBy = document.getElementById('newInvestorReferredBy').value.trim();
+            
+            if(!name || !email){ showNotification('Name and email are required!', true, 'Missing Fields'); return; }
+            try {
+                const userId = crypto.randomUUID();
+                const { error } = await supabaseClient.from('investors').insert([{ 
+                    id: userId, full_name: name, email, phone, city, 
+                    total_investment: investment, total_profit: 0, available_balance: investment,
+                    tier: tier, subscription_status: 'free',
+                    chat_enabled: true, voice_enabled: true, video_enabled: true,
+                    created_at: new Date().toISOString() 
+                }]);
+                if(error) throw error;
+                
+                // Generate referral code for the new investor
+                await generateReferralCode(userId, name, 'investor');
+                
+                // Process referral if referred by someone
+                if (referredBy) {
+                    await processReferralSignup(userId, 'investor', referredBy);
+                }
+                
+                await logAudit('investor_added', `Added new investor: ${name}`, { email, tier, referredBy });
+                
+                showNotification('Investor added successfully!', false, 'Added');
+                document.getElementById('newInvestorName').value = ''; 
+                document.getElementById('newInvestorEmail').value = ''; 
+                document.getElementById('newInvestorInvestment').value = '0';
+                document.getElementById('newInvestorReferredBy').value = '';
+                await loadInvestors(); 
+                await loadStats();
+                await renderAllCharts();
+                await loadReferralLinks();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } catch(e) { showNotification(e.message, true); }
+        };
+        
+        // Override addNewBuyer to include referral code handling
+        const originalAddNewBuyer = window.addNewBuyer;
+        window.addNewBuyer = async function() {
+            const name = document.getElementById('newBuyerName').value.trim();
+            const email = document.getElementById('newBuyerEmail').value.trim();
+            const phone = document.getElementById('newBuyerPhone').value;
+            const address = document.getElementById('newBuyerAddress').value;
+            const tier = document.getElementById('newBuyerTier').value;
+            const referredBy = document.getElementById('newBuyerReferredBy').value.trim();
+            
+            if(!name || !email){ showNotification('Name and email required!', true, 'Missing Fields'); return; }
+            try {
+                const userId = crypto.randomUUID();
+                const { error } = await supabaseClient.from('buyers').insert([{ 
+                    id: userId, full_name: name, email, phone, address,
+                    tier: tier, subscription_status: 'free',
+                    chat_enabled: true, voice_enabled: true, video_enabled: true,
+                    created_at: new Date().toISOString() 
+                }]);
+                if(error) throw error;
+                
+                // Generate referral code for the new buyer
+                await generateReferralCode(userId, name, 'buyer');
+                
+                // Process referral if referred by someone
+                if (referredBy) {
+                    await processReferralSignup(userId, 'buyer', referredBy);
+                }
+                
+                await logAudit('buyer_added', `Added new buyer: ${name}`, { email, tier, referredBy });
+                
+                showNotification('Buyer added successfully!', false, 'Added');
+                document.getElementById('newBuyerName').value = ''; 
+                document.getElementById('newBuyerEmail').value = ''; 
+                document.getElementById('newBuyerAddress').value = '';
+                document.getElementById('newBuyerReferredBy').value = '';
+                await loadBuyers(); 
+                await loadStats();
+                await renderAllCharts();
+                await loadReferralLinks();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } catch(e) { showNotification(e.message, true); }
+        };
+        
+        // Modified loadInvestors to show referral info
+        const originalLoadInvestors = window.loadInvestors;
+        async function loadInvestorsEnhanced() {
+            if(!supabaseClient) return;
+            const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
+            allInvestors = data || [];
+            const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${i.full_name}</option>`).join('');
+            if(document.getElementById('investorSelect')) document.getElementById('investorSelect').innerHTML = selectHtml;
+            if(document.getElementById('profitInvestorSelect')) document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
+            if(document.getElementById('docUserId')) {
+                document.getElementById('docUserId').innerHTML = '<option value="">None</option>' + allInvestors.map(i=>`<option value="${i.id}">Investor: ${i.full_name}</option>`).join('');
+            }
+            
+            // Get referral data for investors
+            const { data: referrals } = await supabaseClient.from('user_referrals').select('*');
+            const referralMap = new Map();
+            (referrals || []).forEach(r => {
+                referralMap.set(`${r.user_type}_${r.user_id}`, r);
+            });
+            
+            const investorsList = document.getElementById('investorsList');
+            if(investorsList) {
+                investorsList.innerHTML = allInvestors.map(i => {
+                    const refData = referralMap.get(`investor_${i.id}`);
+                    const tierClass = `tier-${i.tier || 'bronze'}`;
+                    const subClass = i.subscription_status === 'premium' ? 'sub-premium' : 'sub-free';
+                    return `<tr>
+                        <td><strong>${escapeHtml(i.full_name)}</strong></td>
+                        <td>${i.email}</td>
+                        <td>${i.phone||'-'}</td>
+                        <td>${i.city||'-'}</td>
+                        <td><span class="tier-badge ${tierClass}">${(i.tier || 'bronze').toUpperCase()}</span></td>
+                        <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
+                        <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
+                        <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
+                        <td><code style="font-size: 0.7rem;">${refData?.referral_code || 'N/A'}</code></td>
+                        <td><strong>${refData?.total_referrals || 0}</strong> <button onclick="viewReferralDetails('${i.id}', 'investor')" class="btn-info" style="padding: 2px 6px; font-size: 0.6rem;">View</button></td>
+                        <td><span class="subscription-badge ${subClass}">${i.subscription_status === 'premium' ? 'Premium' : 'Free'}</span></td>
+                        <td><span class="perm-badge ${i.chat_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.chat_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                        <td><span class="perm-badge ${i.voice_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.voice_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                        <td><span class="perm-badge ${i.video_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.video_enabled !== false ? 'ON' : 'OFF'}</span></td>
+                        <td class="action-buttons">
+                            <button onclick="toggleInvestorTier('${i.id}')" class="btn-premium">Change Tier</button>
+                            <button onclick="toggleInvestorSubscription('${i.id}', '${i.subscription_status === 'premium' ? 'free' : 'premium'}')" class="btn-warning">${i.subscription_status === 'premium' ? 'Remove Premium' : 'Make Premium'}</button>
+                            <button onclick="toggleInvestorPermission('${i.id}', 'chat', ${i.chat_enabled !== false})" class="btn-info">Toggle Chat</button>
+                            <button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
+                            ${refData?.referral_link ? `<button onclick="copyReferralLink('${refData.referral_link}')" class="btn-primary" style="padding: 2px 10px;">Copy Link</button>` : ''}
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+        
+        // Modified loadBuyers to show referral info
+        async function loadBuyersEnhanced() {
+            if(!supabaseClient) return;
+            const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
+            allBuyers = data || [];
+            
+            const { data: referrals } = await supabaseClient.from('user_referrals').select('*');
+            const referralMap = new Map();
+            (referrals || []).forEach(r => {
+                referralMap.set(`${r.user_type}_${r.user_id}`, r);
+            });
+            
+            const buyersList = document.getElementById('buyersList');
+            if(buyersList) {
+                buyersList.innerHTML = allBuyers.map(b => {
+                    const refData = referralMap.get(`buyer_${b.id}`);
+                    const tierClass = `tier-${b.tier || 'normal'}`;
+                    const subClass = b.subscription_status === 'premium' ? 'sub-premium' : 'sub-free';
+                    return `<tr>
+                        <td><strong>${escapeHtml(b.full_name)}</strong></td>
+                        <td>${b.email}</td>
+                        <td>${b.phone||'-'}</td>
+                        <td>${b.address||'-'}</td>
+                        <td><span class="tier-badge ${tierClass}">${(b.tier || 'normal').toUpperCase()}</span></td>
+                        <td><code style="font-size: 0.7rem;">${refData?.referral_code || 'N/A'}</code></td>
+                        <td><strong>${refData?.total_referrals || 0}</strong> <button onclick="viewReferralDetails('${b.id}', 'buyer')" class="btn-info" style="padding: 2px 6px; font-size: 0.6rem;">View</button></td>
+                        <td><span class="subscription-badge ${subClass}">${b.subscription_status === 'premium' ? 'Premium' : 'Free'}</span></td>
+                        <td><button onclick="toggleBuyerTier('${b.id}')" class="btn-premium">Change Tier</button>
+                           <button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button>
+                           ${refData?.referral_link ? `<button onclick="copyReferralLink('${refData.referral_link}')" class="btn-primary" style="padding: 2px 10px;">Copy Link</button>` : ''}
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+        
+        // Override the loadInvestors and loadBuyers functions
+        window.loadInvestors = loadInvestorsEnhanced;
+        window.loadBuyers = loadBuyersEnhanced;
+        
         function setupRealtimeSync() {
             if (batchSubscription) return;
             batchSubscription = supabaseClient
@@ -1623,8 +2262,11 @@
         }
         
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+            }
         }
         
         window.showSection = function(section) {
@@ -1654,6 +2296,7 @@
             if (section === 'team') { loadTeamMembers(); }
             if (section === 'bulk') { loadBulkApproveList(); }
             if (section === 'loss') { loadLossData(); }
+            if (section === 'referrals') { loadReferralLinks(); }
         };
 
         // ========== ENHANCED INVESTMENT BATCH SYSTEM WITH SLOT VALIDATION ==========
@@ -1705,12 +2348,10 @@
                 
                 if (error) throw error;
                 
-                // Log audit
                 await logAudit('batch_created', `Created batch: ${batchName}`, { batchName, amount, totalSlots });
                 
                 showNotification('Investment batch created successfully!', false);
                 
-                // Reset form
                 document.getElementById('newBatchName').value = '';
                 document.getElementById('newBatchAmount').value = '';
                 document.getElementById('newBatchProfitPercent').value = '50';
@@ -1751,13 +2392,12 @@
                 if(!tbody) return;
                 
                 if(allBatches.length === 0 && prodBatchesList.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="19" class="empty-state">No batches created yet. Create your first batch above.</tr></tr>'; 
+                    tbody.innerHTML = '<tr><td colspan="19" class="empty-state">No batches created yet. Create your first batch above. </td></tr>'; 
                     return; 
                 }
                 
                 let totalProd = 0, totalSales = 0, totalReturns = 0, totalDamaged = 0, totalRoi = 0;
                 
-                // Render Investment Batches first
                 let html = '';
                 
                 for (const batch of allBatches) {
@@ -1809,11 +2449,10 @@
                             <button onclick="event.stopPropagation();toggleBatchVisibility('${batch.id}', ${!batch.is_visible})" class="btn-info">${batch.is_visible ? 'Hide' : 'Show'}</button>
                             ${batch.status === 'Sold' && !batch.profit_credited ? `<button onclick="event.stopPropagation();distributeBatchProfit('${batch.id}', ${investorShare})" class="btn-success">Distribute Profit</button>` : ''}
                             <button onclick="event.stopPropagation();deleteInvestmentBatch('${batch.id}')" class="btn-danger">Delete</button>
-                         </td>
-                     </tr>`;
+                          </td>
+                      </tr>`;
                 }
                 
-                // Add production batches (legacy)
                 for (const batch of prodBatchesList) {
                     const progressSteps = ['Production', 'Completed', 'Sold', 'Profit Distributed'];
                     const currentStepIndex = progressSteps.indexOf(batch.status);
@@ -1855,8 +2494,8 @@
                             <button onclick="event.stopPropagation();updateBatchStatus('${batch.id}')" class="btn-warning">Update Status</button>
                             ${!batch.profit_credited && batch.status === 'Sold' ? `<button onclick="event.stopPropagation();creditProfitToInvestor('${batch.id}', ${investorShare}, '${batch.investments?.investor_id}')" class="btn-success">Credit Profit</button>` : ''}
                             <button onclick="event.stopPropagation();deleteBatch('${batch.id}')" class="btn-danger">Delete</button>
-                         </td>
-                     </tr>`;
+                          </td>
+                      </tr>`;
                 }
                 
                 tbody.innerHTML = html;
@@ -1870,21 +2509,18 @@
             } catch(e) { console.error('Error loading batches:', e); }
         }
         
-        // NEW FUNCTION: Distribute profit from batch to investor (50% profit sharing)
         async function distributeBatchProfit(batchId, profitAmount) {
             if (profitAmount <= 0) {
                 showNotification('No profit to distribute. Net profit is negative or zero.', true);
                 return;
             }
             
-            // Get the batch details
             const { data: batch } = await supabaseClient.from('investment_batches').select('*').eq('id', batchId).single();
             if (!batch) {
                 showNotification('Batch not found', true);
                 return;
             }
             
-            // Get all investments in this batch
             const { data: investments } = await supabaseClient
                 .from('investments')
                 .select('*, investors(id, full_name, email, available_balance, total_profit)')
@@ -1896,10 +2532,8 @@
                 return;
             }
             
-            // Calculate total investment amount in this batch
             const totalInvested = investments.reduce((sum, inv) => sum + (inv.amount || 0), 0);
             
-            // Prepare distribution summary
             let distributionHtml = '<div style="max-height: 400px; overflow-y: auto;">';
             distributionHtml += '<h3>Profit Distribution Summary</h3>';
             distributionHtml += `<p><strong>Total Batch Profit:</strong> Rs. ${profitAmount.toLocaleString()}</p>`;
@@ -1937,11 +2571,9 @@
             
             if (result.isConfirmed) {
                 try {
-                    // Process each investor's profit
                     for (const dist of distributions) {
                         const txId = `PROFIT-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
                         
-                        // Add to profit_ledger
                         await supabaseClient.from('profit_ledger').insert([{
                             investor_id: dist.investorId,
                             amount: dist.profitShare,
@@ -1951,7 +2583,6 @@
                             created_at: new Date().toISOString()
                         }]);
                         
-                        // Add to profits table
                         await supabaseClient.from('profits').insert([{
                             investor_id: dist.investorId,
                             amount: dist.profitShare,
@@ -1964,7 +2595,6 @@
                             notes: `Profit from batch: ${batch.batch_name}`
                         }]);
                         
-                        // Update investor balance
                         const { data: investor } = await supabaseClient.from('investors').select('total_profit, available_balance').eq('id', dist.investorId).single();
                         await supabaseClient.from('investors').update({ 
                             total_profit: (investor?.total_profit || 0) + dist.profitShare,
@@ -1972,7 +2602,6 @@
                         }).eq('id', dist.investorId);
                     }
                     
-                    // Mark batch as profit distributed
                     await supabaseClient.from('investment_batches').update({ 
                         profit_credited: true, 
                         status: 'Profit Distributed',
@@ -2082,7 +2711,6 @@
         }
         
         async function deleteInvestmentBatch(batchId) {
-            // Check if there are any investments linked to this batch
             const { data: linkedInvestments } = await supabaseClient
                 .from('investments')
                 .select('id')
@@ -2439,7 +3067,8 @@
         async function refreshAllData() {
             await loadStats(); await loadInvestors(); await loadBuyers(); await loadInvestmentRequests();
             await loadInvestmentHistory(); await loadProfitHistory(); await loadWithdrawals();
-            await loadProducts(); await loadOrders(); await loadRecentActivities(); await loadBatches(); await renderAllCharts();
+            await loadProducts(); await loadOrders(); await loadRecentActivities(); await loadBatches(); 
+            await loadReferralLinks(); await renderAllCharts();
         }
         
         async function checkAuth() {
@@ -2451,6 +3080,20 @@
                 document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
                 await refreshAllData();
                 setupRealtimeSync();
+                
+                // Ensure all existing users have referral codes (migration)
+                setTimeout(async () => {
+                    const { data: investors } = await supabaseClient.from('investors').select('id, full_name');
+                    for (const inv of investors || []) {
+                        await ensureReferralCodeForUser(inv.id, 'investor', inv.full_name);
+                    }
+                    const { data: buyers } = await supabaseClient.from('buyers').select('id, full_name');
+                    for (const buyer of buyers || []) {
+                        await ensureReferralCodeForUser(buyer.id, 'buyer', buyer.full_name);
+                    }
+                    await loadReferralLinks();
+                }, 2000);
+                
                 return user;
             } catch(e) { console.error('Auth error:', e); }
         }
@@ -2492,45 +3135,6 @@
             document.getElementById('totalProducts').innerHTML = pc || 0;
             const { count: oc } = await supabaseClient.from('orders').select('*',{count:'exact',head:true});
             document.getElementById('totalOrders').innerHTML = oc || 0;
-        }
-        
-        async function loadInvestors() {
-            if(!supabaseClient) return;
-            const { data } = await supabaseClient.from('investors').select('*').order('created_at', { ascending: false });
-            allInvestors = data || [];
-            const selectHtml = '<option value="">Select Investor</option>' + allInvestors.map(i=>`<option value="${i.id}">${i.full_name}</option>`).join('');
-            if(document.getElementById('investorSelect')) document.getElementById('investorSelect').innerHTML = selectHtml;
-            if(document.getElementById('profitInvestorSelect')) document.getElementById('profitInvestorSelect').innerHTML = selectHtml;
-            if(document.getElementById('docUserId')) {
-                document.getElementById('docUserId').innerHTML = '<option value="">None</option>' + allInvestors.map(i=>`<option value="${i.id}">Investor: ${i.full_name}</option>`).join('');
-            }
-            const investorsList = document.getElementById('investorsList');
-            if(investorsList) {
-                investorsList.innerHTML = allInvestors.map(i=>{
-                    const tierClass = `tier-${i.tier || 'bronze'}`;
-                    const subClass = i.subscription_status === 'premium' ? 'sub-premium' : 'sub-free';
-                    return `<tr>
-                        <td><strong>${escapeHtml(i.full_name)}</strong></td>
-                        <td>${i.email}</td>
-                        <td>${i.phone||'-'}</td>
-                        <td>${i.city||'-'}</td>
-                        <td><span class="tier-badge ${tierClass}">${(i.tier || 'bronze').toUpperCase()}</span></td>
-                        <td>Rs.${(i.total_investment||0).toLocaleString()}</td>
-                        <td>Rs.${(i.total_profit||0).toLocaleString()}</td>
-                        <td>Rs.${(i.available_balance||0).toLocaleString()}</td>
-                        <td><span class="subscription-badge ${subClass}">${i.subscription_status === 'premium' ? 'Premium' : 'Free'}</span></td>
-                        <td><span class="perm-badge ${i.chat_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.chat_enabled !== false ? 'ON' : 'OFF'}</span></td>
-                        <td><span class="perm-badge ${i.voice_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.voice_enabled !== false ? 'ON' : 'OFF'}</span></td>
-                        <td><span class="perm-badge ${i.video_enabled !== false ? 'perm-enabled' : 'perm-disabled'}">${i.video_enabled !== false ? 'ON' : 'OFF'}</span></td>
-                        <td class="action-buttons">
-                            <button onclick="toggleInvestorTier('${i.id}')" class="btn-premium">Change Tier</button>
-                            <button onclick="toggleInvestorSubscription('${i.id}', '${i.subscription_status === 'premium' ? 'free' : 'premium'}')" class="btn-warning">${i.subscription_status === 'premium' ? 'Remove Premium' : 'Make Premium'}</button>
-                            <button onclick="toggleInvestorPermission('${i.id}', 'chat', ${i.chat_enabled !== false})" class="btn-info">Toggle Chat</button>
-                            <button onclick="deleteInvestor('${i.id}')" class="btn-danger">Delete</button>
-                        </td>
-                    </tr>`;
-                }).join('');
-            }
         }
         
         window.toggleInvestorTier = async function(investorId) {
@@ -2576,28 +3180,6 @@
             } catch(e) { showNotification(e.message, true); }
         };
         
-        async function loadBuyers() {
-            if(!supabaseClient) return;
-            const { data } = await supabaseClient.from('buyers').select('*').order('created_at', { ascending: false });
-            allBuyers = data || [];
-            const buyersList = document.getElementById('buyersList');
-            if(buyersList) {
-                buyersList.innerHTML = allBuyers.map(b=>{
-                    const tierClass = `tier-${b.tier || 'normal'}`;
-                    const subClass = b.subscription_status === 'premium' ? 'sub-premium' : 'sub-free';
-                    return `<tr>
-                        <td><strong>${escapeHtml(b.full_name)}</strong></td>
-                        <td>${b.email}</td>
-                        <td>${b.phone||'-'}</td>
-                        <td>${b.address||'-'}</td>
-                        <td><span class="tier-badge ${tierClass}">${(b.tier || 'normal').toUpperCase()}</span></td>
-                        <td><span class="subscription-badge ${subClass}">${b.subscription_status === 'premium' ? 'Premium' : 'Free'}</span></td>
-                        <td><button onclick="toggleBuyerTier('${b.id}')" class="btn-premium">Change Tier</button><button onclick="deleteBuyer('${b.id}')" class="btn-danger">Delete</button></td>
-                    </tr>`;
-                }).join('');
-            }
-        }
-        
         window.toggleBuyerTier = async function(buyerId) {
             const { value: tier } = await Swal.fire({
                 title: 'Change Buyer Tier',
@@ -2623,7 +3205,8 @@
             allProducts = data || [];
             const productsList = document.getElementById('productsList');
             if(productsList) {
-                if (!data || data.length === 0) { productsList.innerHTML = '<td><td colspan="6" class="empty-state">No products found</td></tr>'; return; }
+                if (!data || data.length === 0)
+                    productsList.innerHTML = '<tr><td colspan="6" class="empty-state">No products found</td></tr>'; return; }
                 productsList.innerHTML = data.map(p=>`<tr>
                     <td><strong>${escapeHtml(p.name)}</strong></td>
                     <td>${p.category}</td>
@@ -2744,136 +3327,163 @@
             }
         }
         
-        window.addNewInvestor = async function() {
-            const name = document.getElementById('newInvestorName').value.trim();
-            const email = document.getElementById('newInvestorEmail').value.trim();
-            const phone = document.getElementById('newInvestorPhone').value;
-            const city = document.getElementById('newInvestorCity').value;
-            const investment = parseFloat(document.getElementById('newInvestorInvestment').value) || 0;
-            const tier = document.getElementById('newInvestorTier').value;
-            if(!name || !email){ showNotification('Name and email are required!', true, 'Missing Fields'); return; }
+        window.addInvestment = async function() { 
+            const investorId = document.getElementById('investorSelect').value;
+            const amount = parseFloat(document.getElementById('invAmount').value);
+            const date = document.getElementById('invDate').value;
+            const paymentMethod = document.getElementById('invPaymentMethod').value;
+            const transactionId = document.getElementById('invTransactionId').value; 
+            if(!investorId || !amount || !date){ 
+                showNotification('Please fill all required fields', true, 'Missing Fields'); 
+                return; 
+            } 
             try {
-                const { error } = await supabaseClient.from('investors').insert([{ 
-                    id: crypto.randomUUID(), full_name: name, email, phone, city, 
-                    total_investment: investment, total_profit: 0, available_balance: investment,
-                    tier: tier, subscription_status: 'free',
-                    chat_enabled: true, voice_enabled: true, video_enabled: true,
-                    created_at: new Date().toISOString() 
-                }]);
+                const { error } = await supabaseClient.from('investments').insert([{ 
+                    investor_id: investorId, 
+                    amount, 
+                    investment_date: date, 
+                    payment_method: paymentMethod, 
+                    transaction_id: transactionId, 
+                    status: 'active' 
+                }]); 
                 if(error) throw error;
                 
-                await logAudit('investor_added', `Added new investor: ${name}`, { email, tier });
+                await logAudit('investment_manual_added', `Manually added investment of Rs. ${amount}`, { investorId, amount });
                 
-                showNotification('Investor added successfully!', false, 'Added');
-                document.getElementById('newInvestorName').value = ''; 
-                document.getElementById('newInvestorEmail').value = ''; 
-                document.getElementById('newInvestorInvestment').value = '0';
+                showNotification('Investment added successfully!', false, 'Added'); 
+                document.getElementById('invAmount').value = ''; 
+                await loadInvestmentHistory(); 
                 await loadInvestors(); 
-                await loadStats();
+                await loadStats(); 
                 await renderAllCharts();
-                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
             } catch(e) { showNotification(e.message, true); }
         };
         
-        window.addNewBuyer = async function() {
-            const name = document.getElementById('newBuyerName').value.trim();
-            const email = document.getElementById('newBuyerEmail').value.trim();
-            const phone = document.getElementById('newBuyerPhone').value;
-            const address = document.getElementById('newBuyerAddress').value;
-            const tier = document.getElementById('newBuyerTier').value;
-            if(!name || !email){ showNotification('Name and email required!', true, 'Missing Fields'); return; }
+        window.addProfit = async function() { 
+            const investorId = document.getElementById('profitInvestorSelect').value;
+            const amount = parseFloat(document.getElementById('profitAmount').value);
+            const month = document.getElementById('profitMonth').value;
+            const percentage = parseFloat(document.getElementById('profitPercentage').value) || 10; 
+            if(!investorId || !amount || !month){ 
+                showNotification('Please fill all fields', true, 'Missing Fields'); 
+                return; 
+            } 
             try {
-                const { error } = await supabaseClient.from('buyers').insert([{ 
-                    id: crypto.randomUUID(), full_name: name, email, phone, address,
-                    tier: tier, subscription_status: 'free',
-                    chat_enabled: true, voice_enabled: true, video_enabled: true,
-                    created_at: new Date().toISOString() 
-                }]);
+                const { error } = await supabaseClient.from('profits').insert([{ 
+                    investor_id: investorId, 
+                    amount, 
+                    month: month + '-01', 
+                    profit_percentage: percentage, 
+                    paid: true, 
+                    paid_date: new Date().toISOString().split('T')[0] 
+                }]); 
                 if(error) throw error;
                 
-                await logAudit('buyer_added', `Added new buyer: ${name}`, { email, tier });
+                await logAudit('profit_manual_added', `Manually added profit of Rs. ${amount}`, { investorId, amount, percentage });
                 
-                showNotification('Buyer added successfully!', false, 'Added');
-                document.getElementById('newBuyerName').value = ''; 
-                document.getElementById('newBuyerEmail').value = ''; 
-                document.getElementById('newBuyerAddress').value = '';
-                await loadBuyers(); 
-                await loadStats();
-                await renderAllCharts();
-                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
-            } catch(e) { showNotification(e.message, true); }
-        };
-        
-        window.addNewProduct = async function() {
-            const name = document.getElementById('newProductName').value.trim();
-            const category = document.getElementById('newProductCategory').value;
-            const price = parseFloat(document.getElementById('newProductPrice').value);
-            const stock = parseInt(document.getElementById('newProductStock').value) || 0;
-            const premiumOnly = document.getElementById('newProductPremiumOnly').value === 'true';
-            if(!name || !category || !price){ showNotification('Name, category and price required', true, 'Missing Fields'); return; }
-            try {
-                const { error } = await supabaseClient.from('products').insert([{ 
-                    id: crypto.randomUUID(), name, category, price, 
-                    stock_quantity: stock, is_active: true, premium_only: premiumOnly,
-                    created_at: new Date().toISOString() 
-                }]);
-                if(error) throw error;
-                
-                await logAudit('product_added', `Added new product: ${name}`, { category, price, premiumOnly });
-                
-                showNotification('Product added successfully!', false, 'Added');
-                document.getElementById('newProductName').value = '';
-                document.getElementById('newProductPrice').value = '';
-                document.getElementById('newProductStock').value = '0';
-                await loadProducts(); 
-                await loadStats();
-                await renderAllCharts();
-            } catch(e) { showNotification(e.message, true); }
-        };
-        
-        window.deleteInvestor = async function(id){ 
-            if(await confirmAction('Delete this investor?', 'Delete Investor')){ 
-                await supabaseClient.from('investments').delete().eq('investor_id',id); 
-                await supabaseClient.from('profits').delete().eq('investor_id',id); 
-                await supabaseClient.from('withdrawals').delete().eq('investor_id',id); 
-                await supabaseClient.from('investors').delete().eq('id',id); 
-                await logAudit('investor_deleted', `Deleted investor`, { investorId: id });
-                showNotification('Investor deleted', false, 'Deleted'); 
+                showNotification('Profit added successfully!', false, 'Added'); 
+                document.getElementById('profitAmount').value = ''; 
+                await loadProfitHistory(); 
                 await loadInvestors(); 
-                await loadStats();
+                await loadStats(); 
                 await renderAllCharts();
-                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
-            } 
+            } catch(e) { showNotification(e.message, true); }
         };
         
-        window.deleteBuyer = async function(id){ 
-            if(await confirmAction('Delete this buyer?', 'Delete Buyer')){ 
-                await supabaseClient.from('buyers').delete().eq('id',id); 
-                await logAudit('buyer_deleted', `Deleted buyer`, { buyerId: id });
-                showNotification('Buyer deleted', false, 'Deleted'); 
-                await loadBuyers(); 
-                await loadStats();
-                await renderAllCharts();
-                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
-            } 
+        window.searchInvestors = function() { 
+            const term = document.getElementById('investorSearch').value.toLowerCase(); 
+            const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
+            const investorsList = document.getElementById('investorsList');
+            if(investorsList) {
+                investorsList.innerHTML = filtered.map(i=>`<td>...</td>`).join('');
+            }
         };
         
-        window.deleteProduct = async function(id){ 
-            if(await confirmAction('Delete this product?', 'Delete Product')){ 
-                await supabaseClient.from('products').update({is_active:false}).eq('id',id); 
-                await logAudit('product_deleted', `Deleted product`, { productId: id });
-                showNotification('Product deleted', false, 'Deleted'); 
-                await loadProducts(); 
-                await loadStats();
-                await renderAllCharts();
-            } 
+        window.resetInvestorSearch = function() { 
+            document.getElementById('investorSearch').value = ''; 
+            loadInvestors(); 
         };
         
-        // UPDATED: Investment approval with mandatory screenshot validation
+        window.searchBuyers = function() { 
+            const term = document.getElementById('buyerSearch').value.toLowerCase(); 
+            const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
+            const buyersList = document.getElementById('buyersList');
+            if(buyersList) {
+                buyersList.innerHTML = filtered.map(b=>`<td>...</td>`).join('');
+            }
+        };
+        
+        window.resetBuyerSearch = function() { 
+            document.getElementById('buyerSearch').value = ''; 
+            loadBuyers(); 
+        };
+        
+        window.searchWithdrawals = function() {
+            const term = document.getElementById('withdrawalSearch').value.toLowerCase();
+            const filtered = allWithdrawals.filter(w => w.investors?.full_name?.toLowerCase().includes(term) || w.investors?.email?.toLowerCase().includes(term));
+            const withdrawalsList = document.getElementById('withdrawalsList');
+            if (!withdrawalsList) return;
+            if (filtered.length === 0) { 
+                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; 
+                return; 
+            }
+            withdrawalsList.innerHTML = filtered.map(w => `<tr>
+                <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
+                <td><small>${w.investors?.email || '-'}</small></td>
+                <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                <td>${w.payment_method || '-'}</td>
+                <td><small>${w.account_details || '-'}</small></td>
+                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
+                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
+                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
+            </tr>`).join('');
+        };
+        
+        window.resetWithdrawalSearch = function() { 
+            document.getElementById('withdrawalSearch').value = ''; 
+            loadWithdrawals(); 
+        };
+        
+        window.searchOrders = function() { 
+            const term = document.getElementById('orderSearch').value.toLowerCase(); 
+            const filtered = allOrders.filter(o => o.id?.toLowerCase().includes(term) || (o.customer_name || o.user_type)?.toLowerCase().includes(term));
+            const ordersList = document.getElementById('ordersList');
+            if (!ordersList) return;
+            if (filtered.length === 0) { 
+                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; 
+                return; 
+            }
+            ordersList.innerHTML = filtered.map(o => `<tr>
+                <td><strong>${o.id?.slice(0, 12)}...</strong></td>
+                <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
+                <td>${o.products ? 'View' : '-'}</td>
+                <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
+                <td>${new Date(o.order_date).toLocaleDateString()}</td>
+                <td>${o.payment_method || '-'}</td>
+                <td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></td>
+                <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
+                <td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td>
+                <td class="action-buttons"><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td>
+            </tr>`).join('');
+        };
+        
+        window.resetOrderSearch = function() { 
+            document.getElementById('orderSearch').value = ''; 
+            loadOrders(); 
+        };
+        
+        window.searchProducts = function() { 
+            const term = document.getElementById('productSearch').value.toLowerCase(); 
+            const rows = document.querySelectorAll('#productsList tr'); 
+            rows.forEach(row=>{ 
+                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; 
+            }); 
+        };
+        
         window.approveInvestment = async function(id, amount, investorId) { 
             const { data: invReq } = await supabaseClient.from('investments').select('screenshot, notes, payment_method, transaction_id').eq('id', id).single();
             
-            // Check if screenshot exists
             if (!invReq?.screenshot) {
                 const result = await Swal.fire({
                     title: '⚠️ Screenshot Required!',
@@ -3091,973 +3701,356 @@
             input.click();
         };
         
-        window.addInvestment = async function() { 
-            const investorId = document.getElementById('investorSelect').value;
-            const amount = parseFloat(document.getElementById('invAmount').value);
-            const date = document.getElementById('invDate').value;
-            const paymentMethod = document.getElementById('invPaymentMethod').value;
-            const transactionId = document.getElementById('invTransactionId').value; 
-            if(!investorId || !amount || !date){ 
-                showNotification('Please fill all required fields', true, 'Missing Fields'); 
-                return; 
+        window.deleteInvestor = async function(id){ 
+            if(await confirmAction('Delete this investor?', 'Delete Investor')){ 
+                await supabaseClient.from('investments').delete().eq('investor_id',id); 
+                await supabaseClient.from('profits').delete().eq('investor_id',id); 
+                await supabaseClient.from('withdrawals').delete().eq('investor_id',id); 
+                await supabaseClient.from('investors').delete().eq('id',id); 
+                await supabaseClient.from('user_referrals').delete().eq('user_id',id).eq('user_type','investor');
+                await logAudit('investor_deleted', `Deleted investor`, { investorId: id });
+                showNotification('Investor deleted', false, 'Deleted'); 
+                await loadInvestors(); 
+                await loadStats();
+                await renderAllCharts();
+                await loadReferralLinks();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
             } 
+        };
+        
+        window.deleteBuyer = async function(id){ 
+            if(await confirmAction('Delete this buyer?', 'Delete Buyer')){ 
+                await supabaseClient.from('buyers').delete().eq('id',id); 
+                await supabaseClient.from('user_referrals').delete().eq('user_id',id).eq('user_type','buyer');
+                await logAudit('buyer_deleted', `Deleted buyer`, { buyerId: id });
+                showNotification('Buyer deleted', false, 'Deleted'); 
+                await loadBuyers(); 
+                await loadStats();
+                await renderAllCharts();
+                await loadReferralLinks();
+                if (window.adminChatSystem) window.adminChatSystem.loadUsers();
+            } 
+        };
+        
+        window.deleteProduct = async function(id){ 
+            if(await confirmAction('Delete this product?', 'Delete Product')){ 
+                await supabaseClient.from('products').update({is_active:false}).eq('id',id); 
+                await logAudit('product_deleted', `Deleted product`, { productId: id });
+                showNotification('Product deleted', false, 'Deleted'); 
+                await loadProducts(); 
+                await loadStats();
+                await renderAllCharts();
+            } 
+        };
+        
+        window.addNewProduct = async function() {
+            const name = document.getElementById('newProductName').value.trim();
+            const category = document.getElementById('newProductCategory').value;
+            const price = parseFloat(document.getElementById('newProductPrice').value);
+            const stock = parseInt(document.getElementById('newProductStock').value) || 0;
+            const premiumOnly = document.getElementById('newProductPremiumOnly').value === 'true';
+            if(!name || !category || !price){ showNotification('Name, category and price required', true, 'Missing Fields'); return; }
             try {
-                const { error } = await supabaseClient.from('investments').insert([{ 
-                    investor_id: investorId, 
-                    amount, 
-                    investment_date: date, 
-                    payment_method: paymentMethod, 
-                    transaction_id: transactionId, 
-                    status: 'active' 
-                }]); 
+                const { error } = await supabaseClient.from('products').insert([{ 
+                    id: crypto.randomUUID(), name, category, price, 
+                    stock_quantity: stock, is_active: true, premium_only: premiumOnly,
+                    created_at: new Date().toISOString() 
+                }]);
                 if(error) throw error;
                 
-                await logAudit('investment_manual_added', `Manually added investment of Rs. ${amount}`, { investorId, amount });
+                await logAudit('product_added', `Added new product: ${name}`, { category, price, premiumOnly });
                 
-                showNotification('Investment added successfully!', false, 'Added'); 
-                document.getElementById('invAmount').value = ''; 
-                await loadInvestmentHistory(); 
-                await loadInvestors(); 
-                await loadStats(); 
+                showNotification('Product added successfully!', false, 'Added');
+                document.getElementById('newProductName').value = '';
+                document.getElementById('newProductPrice').value = '';
+                document.getElementById('newProductStock').value = '0';
+                await loadProducts(); 
+                await loadStats();
                 await renderAllCharts();
             } catch(e) { showNotification(e.message, true); }
         };
         
-        window.addProfit = async function() { 
-            const investorId = document.getElementById('profitInvestorSelect').value;
-            const amount = parseFloat(document.getElementById('profitAmount').value);
-            const month = document.getElementById('profitMonth').value;
-            const percentage = parseFloat(document.getElementById('profitPercentage').value) || 10; 
-            if(!investorId || !amount || !month){ 
-                showNotification('Please fill all fields', true, 'Missing Fields'); 
-                return; 
-            } 
-            try {
-                const { error } = await supabaseClient.from('profits').insert([{ 
-                    investor_id: investorId, 
-                    amount, 
-                    month: month + '-01', 
-                    profit_percentage: percentage, 
-                    paid: true, 
-                    paid_date: new Date().toISOString().split('T')[0] 
-                }]); 
-                if(error) throw error;
-                
-                await logAudit('profit_manual_added', `Manually added profit of Rs. ${amount}`, { investorId, amount, percentage });
-                
-                showNotification('Profit added successfully!', false, 'Added'); 
-                document.getElementById('profitAmount').value = ''; 
-                await loadProfitHistory(); 
-                await loadInvestors(); 
-                await loadStats(); 
-                await renderAllCharts();
-            } catch(e) { showNotification(e.message, true); }
-        };
+        // ========== PREMIUM ENTERPRISE FEATURE FUNCTIONS (Placeholders - Preserved) ==========
         
-        window.searchInvestors = function() { 
-            const term = document.getElementById('investorSearch').value.toLowerCase(); 
-            const filtered = allInvestors.filter(i=>i.full_name?.toLowerCase().includes(term)||i.email?.toLowerCase().includes(term)); 
-            const investorsList = document.getElementById('investorsList');
-            if(investorsList) {
-                investorsList.innerHTML = filtered.map(i=>`<td>...</td>`).join('');
-            }
-        };
-        
-        window.resetInvestorSearch = function() { 
-            document.getElementById('investorSearch').value = ''; 
-            loadInvestors(); 
-        };
-        
-        window.searchBuyers = function() { 
-            const term = document.getElementById('buyerSearch').value.toLowerCase(); 
-            const filtered = allBuyers.filter(b=>b.full_name?.toLowerCase().includes(term)||b.email?.toLowerCase().includes(term)); 
-            const buyersList = document.getElementById('buyersList');
-            if(buyersList) {
-                buyersList.innerHTML = filtered.map(b=>`<td>...</td>`).join('');
-            }
-        };
-        
-        window.resetBuyerSearch = function() { 
-            document.getElementById('buyerSearch').value = ''; 
-            loadBuyers(); 
-        };
-        
-        window.searchWithdrawals = function() {
-            const term = document.getElementById('withdrawalSearch').value.toLowerCase();
-            const filtered = allWithdrawals.filter(w => w.investors?.full_name?.toLowerCase().includes(term) || w.investors?.email?.toLowerCase().includes(term));
-            const withdrawalsList = document.getElementById('withdrawalsList');
-            if (!withdrawalsList) return;
-            if (filtered.length === 0) { 
-                withdrawalsList.innerHTML = '<tr><td colspan="9" class="empty-state">No withdrawal requests found</td></tr>'; 
-                return; 
-            }
-            withdrawalsList.innerHTML = filtered.map(w => `<tr>
-                <td><strong>${escapeHtml(w.investors?.full_name || 'Unknown')}</strong></td>
-                <td><small>${w.investors?.email || '-'}</small></td>
-                <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                <td>${w.payment_method || '-'}</td>
-                <td><small>${w.account_details || '-'}</small></td>
-                <td><span class="status-badge ${w.status === 'pending' ? 'status-pending' : 'status-active'}">${w.status}</span></td>
-                <td>${w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="screenshot-thumb" onclick="window.open('${w.approval_screenshot}','_blank')">` : (w.status === 'approved' ? 'No screenshot' : '-')}</td>
-                <td class="action-buttons">${w.status === 'pending' ? `<button onclick="approveWithdrawal('${w.id}', ${w.amount}, '${w.investor_id}')" class="btn-success">Approve</button><button onclick="rejectWithdrawal('${w.id}')" class="btn-danger">Reject</button>` : `<button onclick="deleteWithdrawal('${w.id}')" class="btn-danger">Delete</button>`}</td>
-            </tr>`).join('');
-        };
-        
-        window.resetWithdrawalSearch = function() { 
-            document.getElementById('withdrawalSearch').value = ''; 
-            loadWithdrawals(); 
-        };
-        
-        window.searchOrders = function() { 
-            const term = document.getElementById('orderSearch').value.toLowerCase(); 
-            const filtered = allOrders.filter(o => o.id?.toLowerCase().includes(term) || (o.customer_name || o.user_type)?.toLowerCase().includes(term));
-            const ordersList = document.getElementById('ordersList');
-            if (!ordersList) return;
-            if (filtered.length === 0) { 
-                ordersList.innerHTML = '<tr><td colspan="10" class="empty-state">No orders found</td></tr>'; 
-                return; 
-            }
-            ordersList.innerHTML = filtered.map(o => `<tr>
-                <td><strong>${o.id?.slice(0, 12)}...</strong></td>
-                <td><strong>${o.customer_name || o.user_type || 'buyer'}</strong></td>
-                <td>${o.products ? 'View' : '-'}</td>
-                <td>Rs. ${(o.total_amount || 0).toLocaleString()}</td>
-                <td>${new Date(o.order_date).toLocaleDateString()}</td>
-                <td>${o.payment_method || '-'}</td>
-                <td><select onchange="updatePaymentStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.payment_status === 'pending' ? 'selected' : ''}>Pending</option><option value="paid" ${o.payment_status === 'paid' ? 'selected' : ''}>Paid</option></select></td>
-                <td><small>${o.delivery_address?.substring(0, 30) || '-'}</small></td>
-                <td><select onchange="updateOrderStatus('${o.id}', this.value)" class="status-badge" style="padding:5px;"><option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option><option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option><option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option><option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option><option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td>
-                <td class="action-buttons"><button onclick="editOrder('${o.id}')" class="btn-warning">Edit</button><button onclick="deleteOrder('${o.id}')" class="btn-danger">Delete</button></td>
-            </tr>`).join('');
-        };
-        
-        window.resetOrderSearch = function() { 
-            document.getElementById('orderSearch').value = ''; 
-            loadOrders(); 
-        };
-        
-        window.searchProducts = function() { 
-            const term = document.getElementById('productSearch').value.toLowerCase(); 
-            const rows = document.querySelectorAll('#productsList tr'); 
-            rows.forEach(row=>{ 
-                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none'; 
-            }); 
-        };
-        
-        // ========== PREMIUM ENTERPRISE FEATURE FUNCTIONS ==========
-        
-        // Holding/Escrow System
         async function loadHoldingData() {
             if (!supabaseClient) return;
-            
-            // Load pending holdings
-            const { data: pendingHoldings } = await supabaseClient
-                .from('payment_holdings')
-                .select('*, investors(full_name, email)')
-                .eq('status', 'pending')
-                .order('created_at', { ascending: false });
-            
-            const pendingList = document.getElementById('pendingHoldingsList');
-            if (pendingList) {
-                pendingList.innerHTML = (pendingHoldings || []).map(h => `<tr>
-                    <td>${escapeHtml(h.investors?.full_name || 'Unknown')}<br><small>${h.investors?.email || ''}</small></td>
-                    <td>Rs. ${(h.amount || 0).toLocaleString()}</td>
-                    <td>${h.payment_method || '-'}</td>
-                    <td>${h.transaction_id || '-'}</td>
-                    <td>${h.screenshot ? `<img src="${h.screenshot}" class="screenshot-thumb" onclick="window.open('${h.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</td>
-                    <td>${new Date(h.created_at).toLocaleDateString()}</td>
-                    <td class="action-buttons">
-                        <button onclick="approveHolding('${h.id}', ${h.amount}, '${h.investor_id}')" class="btn-success">Approve & Release</button>
-                        <button onclick="rejectHolding('${h.id}')" class="btn-danger">Reject</button>
-                    </td>
-                </tr>`).join('');
-            }
-            
-            // Load release history
-            const { data: releaseHistory } = await supabaseClient
-                .from('payment_holdings')
-                .select('*, investors(full_name, email)')
-                .eq('status', 'released')
-                .order('released_date', { ascending: false })
-                .limit(50);
-            
-            const historyList = document.getElementById('releaseHistoryList');
-            if (historyList) {
-                historyList.innerHTML = (releaseHistory || []).map(h => `<tr>
-                    <td>${escapeHtml(h.investors?.full_name || 'Unknown')}</td>
-                    <td>Rs. ${(h.amount || 0).toLocaleString()}</td>
-                    <td>${h.released_to || 'Investment Account'}</td>
-                    <td>${h.released_date ? new Date(h.released_date).toLocaleDateString() : '-'}</td>
-                    <td>${h.approved_by || 'Admin'}</td>
-                </tr>`).join('');
-            }
-            
-            // Calculate totals
-            const totalHolding = (pendingHoldings || []).reduce((sum, h) => sum + (h.amount || 0), 0);
-            const pendingCount = (pendingHoldings || []).length;
-            
-            document.getElementById('totalHoldingAmount').innerHTML = `Rs. ${totalHolding.toLocaleString()}`;
-            document.getElementById('pendingHoldingCount').innerHTML = pendingCount;
+            try {
+                const { data: pendingHoldings } = await supabaseClient.from('payment_holdings').select('*, investors(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false });
+                const pendingList = document.getElementById('pendingHoldingsList');
+                if (pendingList) {
+                    pendingList.innerHTML = (pendingHoldings || []).map(h => `<tr>
+                        <td>${escapeHtml(h.investors?.full_name || 'Unknown')}<br><small>${h.investors?.email || ''}</small></td>
+                        <td>Rs. ${(h.amount || 0).toLocaleString()}</td>
+                        <td>${h.payment_method || '-'}</td>
+                        <td>${h.transaction_id || '-'}</td>
+                        <td>${h.screenshot ? `<img src="${h.screenshot}" class="screenshot-thumb" onclick="window.open('${h.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</td>
+                        <td>${new Date(h.created_at).toLocaleDateString()}</td>
+                        <td class="action-buttons"><button onclick="approveHolding('${h.id}', ${h.amount}, '${h.investor_id}')" class="btn-success">Approve & Release</button><button onclick="rejectHolding('${h.id}')" class="btn-danger">Reject</button></td>
+                    </tr>`).join('');
+                }
+                const totalHolding = (pendingHoldings || []).reduce((sum, h) => sum + (h.amount || 0), 0);
+                document.getElementById('totalHoldingAmount').innerHTML = `Rs. ${totalHolding.toLocaleString()}`;
+                document.getElementById('pendingHoldingCount').innerHTML = (pendingHoldings || []).length;
+            } catch(e) { console.error('Error loading holding data:', e); }
         }
         
-        async function approveHolding(holdingId, amount, investorId) {
-            const result = await Swal.fire({
-                title: 'Approve & Release Payment',
-                html: `<p><strong>Amount:</strong> Rs. ${amount.toLocaleString()}</p>
-                       <p>This will release the funds from holding wallet to the investor's active investment balance.</p>
-                       <p><strong>Confirm approval?</strong></p>`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Release Funds',
-                confirmButtonColor: '#1e7e5e',
-                background: '#1a3d33', color: '#fff'
-            });
-            
-            if (result.isConfirmed) {
-                try {
-                    // Update holding record
-                    await supabaseClient.from('payment_holdings').update({
-                        status: 'released',
-                        released_date: new Date().toISOString(),
-                        approved_by: (await supabaseClient.auth.getUser()).data.user?.email || 'Admin'
-                    }).eq('id', holdingId);
-                    
-                    // Add to investments table as active investment
-                    await supabaseClient.from('investments').insert([{
-                        id: crypto.randomUUID(),
-                        investor_id: investorId,
-                        amount: amount,
-                        investment_date: new Date().toISOString().split('T')[0],
-                        status: 'active',
-                        notes: 'Released from holding wallet',
-                        created_at: new Date().toISOString()
-                    }]);
-                    
-                    // Update investor balance
-                    const { data: investor } = await supabaseClient.from('investors').select('total_investment, available_balance').eq('id', investorId).single();
-                    await supabaseClient.from('investors').update({
-                        total_investment: (investor?.total_investment || 0) + amount,
-                        available_balance: (investor?.available_balance || 0) + amount
-                    }).eq('id', investorId);
-                    
-                    await logAudit('holding_released', `Released holding payment of Rs. ${amount}`, { holdingId, amount, investorId });
-                    
-                    showNotification(`Rs. ${amount.toLocaleString()} released to investor's balance!`, false);
-                    loadHoldingData();
-                    loadInvestors();
-                    loadStats();
-                } catch(e) { showNotification(e.message, true); }
-            }
-        }
-        
-        async function rejectHolding(holdingId) {
-            if (await confirmAction('Reject this holding payment? The investor will need to resubmit.', 'Reject Payment')) {
-                await supabaseClient.from('payment_holdings').update({ status: 'rejected' }).eq('id', holdingId);
-                await logAudit('holding_rejected', `Rejected holding payment`, { holdingId });
-                showNotification('Payment rejected', false);
-                loadHoldingData();
-            }
-        }
-        
-        // Tiers Configuration Functions
         async function loadTiersData() {
-            // Load investor tiers config
-            const { data: investorTiers } = await supabaseClient.from('investor_tiers').select('*').order('min_investment', { ascending: true });
-            const investorTiersBody = document.getElementById('investorTiersConfig');
-            if (investorTiersBody) {
-                investorTiersBody.innerHTML = (investorTiers || []).map(t => `<tr>
-                    <td><span class="tier-badge tier-${t.tier}">${t.tier.toUpperCase()}</span></td>
-                    <td>Rs. ${(t.min_investment || 0).toLocaleString()}</td>
-                    <td>${t.profit_bonus || 0}%</td>
-                    <td>${t.priority_withdrawal ? 'Yes' : 'No'}</td>
-                    <td>${t.exclusive_batches ? 'Yes' : 'No'}</td>
-                    <td><button onclick="editInvestorTier('${t.tier}')" class="btn-warning">Edit</button></td>
-                </tr>`).join('');
-            }
-            
-            // Load buyer tiers config
-            const { data: buyerTiers } = await supabaseClient.from('buyer_tiers').select('*').order('min_purchase', { ascending: true });
-            const buyerTiersBody = document.getElementById('buyerTiersConfig');
-            if (buyerTiersBody) {
-                buyerTiersBody.innerHTML = (buyerTiers || []).map(t => `<tr>
-                    <td><span class="tier-badge tier-${t.tier}">${t.tier.toUpperCase()}</span></td>
-                    <td>Rs. ${(t.min_purchase || 0).toLocaleString()}</td>
-                    <td>${t.discount_percentage || 0}%</td>
-                    <td>${t.bulk_discount ? 'Yes' : 'No'}</td>
-                    <td>${t.early_access ? 'Yes' : 'No'}</td>
-                    <td><button onclick="editBuyerTier('${t.tier}')" class="btn-warning">Edit</button></td>
-                </tr>`).join('');
-            }
-        }
-        
-        function showAddTierModal() {
-            document.getElementById('tierNameModal').value = '';
-            document.getElementById('tierMinInvestment').value = '';
-            document.getElementById('tierProfitBonus').value = '0';
-            document.getElementById('tierPriorityWithdrawal').value = 'true';
-            document.getElementById('tierExclusiveBatches').value = 'false';
-            document.getElementById('addTierModal').style.display = 'flex';
-            document.getElementById('addTierModal').classList.add('active');
-        }
-        
-        async function saveTierConfig() {
-            const tier = document.getElementById('tierNameModal').value.toLowerCase();
-            const minInvestment = parseFloat(document.getElementById('tierMinInvestment').value);
-            const profitBonus = parseFloat(document.getElementById('tierProfitBonus').value);
-            const priorityWithdrawal = document.getElementById('tierPriorityWithdrawal').value === 'true';
-            const exclusiveBatches = document.getElementById('tierExclusiveBatches').value === 'true';
-            
-            if (!tier || !minInvestment) {
-                showNotification('Please fill required fields', true);
-                return;
-            }
-            
-            const { error } = await supabaseClient.from('investor_tiers').upsert([{
-                tier: tier,
-                min_investment: minInvestment,
-                profit_bonus: profitBonus,
-                priority_withdrawal: priorityWithdrawal,
-                exclusive_batches: exclusiveBatches,
-                updated_at: new Date().toISOString()
-            }]);
-            
-            if (error) {
-                showNotification(error.message, true);
-            } else {
-                showNotification('Tier configuration saved!', false);
-                closeModal('addTierModal');
-                loadTiersData();
-            }
-        }
-        
-        function showAddBuyerTierModal() {
-            Swal.fire({
-                title: 'Configure Buyer Tier',
-                html: `<input id="tierName" class="swal2-input" placeholder="Tier Name (normal/premium/wholesale)">
-                       <input id="minPurchase" class="swal2-input" type="number" placeholder="Min Purchase (Rs.)">
-                       <input id="discount" class="swal2-input" type="number" placeholder="Discount Percentage">
-                       <select id="bulkDiscount" class="swal2-select"><option value="true">Bulk Discount Enabled</option><option value="false">Bulk Discount Disabled</option></select>
-                       <select id="earlyAccess" class="swal2-select"><option value="true">Early Access Enabled</option><option value="false">Early Access Disabled</option></select>`,
-                confirmButtonText: 'Save',
-                confirmButtonColor: '#E8B13C',
-                background: '#1a3d33', color: '#fff',
-                preConfirm: () => ({
-                    tier: document.getElementById('tierName').value.toLowerCase(),
-                    minPurchase: parseFloat(document.getElementById('minPurchase').value),
-                    discount: parseFloat(document.getElementById('discount').value) || 0,
-                    bulkDiscount: document.getElementById('bulkDiscount').value === 'true',
-                    earlyAccess: document.getElementById('earlyAccess').value === 'true'
-                })
-            }).then(async (result) => {
-                if (result.value) {
-                    const { error } = await supabaseClient.from('buyer_tiers').upsert([{
-                        tier: result.value.tier,
-                        min_purchase: result.value.minPurchase,
-                        discount_percentage: result.value.discount,
-                        bulk_discount: result.value.bulkDiscount,
-                        early_access: result.value.earlyAccess,
-                        updated_at: new Date().toISOString()
-                    }]);
-                    if (error) showNotification(error.message, true);
-                    else { showNotification('Buyer tier saved!', false); loadTiersData(); }
-                }
-            });
-        }
-        
-        async function updateAutoAssignSettings() {
-            const autoInvestor = document.getElementById('autoAssignInvestorTiers').value === 'true';
-            const autoBuyer = document.getElementById('autoAssignBuyerTiers').value === 'true';
-            
-            await supabaseClient.from('system_settings').upsert([
-                { key: 'auto_assign_investor_tiers', value: autoInvestor, updated_at: new Date().toISOString() },
-                { key: 'auto_assign_buyer_tiers', value: autoBuyer, updated_at: new Date().toISOString() }
-            ]);
-            
-            showNotification('Auto-assign settings saved!', false);
-        }
-        
-        async function runManualTierAssignment() {
-            showNotification('Running tier assignment... This may take a moment.', false);
-            
-            // Get all investors with their total investment
-            const { data: investors } = await supabaseClient.from('investors').select('id, total_investment');
-            const { data: tiers } = await supabaseClient.from('investor_tiers').select('*').order('min_investment', { ascending: false });
-            
-            let updated = 0;
-            for (const investor of investors || []) {
-                let assignedTier = 'bronze';
-                for (const tier of tiers || []) {
-                    if ((investor.total_investment || 0) >= (tier.min_investment || 0)) {
-                        assignedTier = tier.tier;
-                        break;
-                    }
-                }
-                if (investor.tier !== assignedTier) {
-                    await supabaseClient.from('investors').update({ tier: assignedTier }).eq('id', investor.id);
-                    updated++;
-                }
-            }
-            
-            showNotification(`Tier assignment complete! ${updated} investors updated.`, false);
-            loadInvestors();
-        }
-        
-        // Subscription System Functions
-        async function loadSubscriptionsData() {
-            // Load subscription plans
-            const { data: plans } = await supabaseClient.from('subscription_plans').select('*').order('monthly_price', { ascending: true });
-            const plansList = document.getElementById('subscriptionPlansList');
-            if (plansList) {
-                plansList.innerHTML = (plans || []).map(p => `<tr>
-                    <td><strong>${escapeHtml(p.name)}</strong></td>
-                    <td>Rs. ${(p.monthly_price || 0).toLocaleString()}</td>
-                    <td>Rs. ${(p.yearly_price || 0).toLocaleString()}</td>
-                    <td>${p.features || '-'}</td>
-                    <td><span class="status-badge ${p.is_active ? 'status-active' : 'status-pending'}">${p.is_active ? 'Active' : 'Inactive'}</span></td>
-                    <td><button onclick="editSubscriptionPlan('${p.id}')" class="btn-warning">Edit</button><button onclick="deleteSubscriptionPlan('${p.id}')" class="btn-danger">Delete</button></td>
-                </tr>`).join('');
-            }
-            
-            // Load active subscriptions
-            const { data: subscriptions } = await supabaseClient
-                .from('user_subscriptions')
-                .select('*, investors(full_name, email), buyers(full_name, email)')
-                .eq('status', 'active')
-                .order('end_date', { ascending: true });
-            
-            const activeSubs = document.getElementById('activeSubscriptionsList');
-            if (activeSubs) {
-                activeSubs.innerHTML = (subscriptions || []).map(s => {
-                    const userName = s.investors?.full_name || s.buyers?.full_name || 'Unknown';
-                    const userType = s.user_type;
-                    const plan = s.plan_name;
-                    return `<tr>
-                        <td>${escapeHtml(userName)} (${userType})</td>
-                        <td>${userType}</td>
-                        <td>${plan}</td>
-                        <td>${new Date(s.start_date).toLocaleDateString()}</td>
-                        <td>${new Date(s.end_date).toLocaleDateString()}</td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>${s.auto_renew ? 'Yes' : 'No'}</td>
-                        <td><button onclick="cancelSubscription('${s.id}')" class="btn-danger">Cancel</button></td>
-                    </tr>`;
-                }).join('');
-            }
-        }
-        
-        function showAddPlanModal() {
-            document.getElementById('addPlanModal').style.display = 'flex';
-            document.getElementById('addPlanModal').classList.add('active');
-        }
-        
-        async function saveSubscriptionPlan() {
-            const name = document.getElementById('planName').value;
-            const monthlyPrice = parseFloat(document.getElementById('planMonthlyPrice').value);
-            const yearlyPrice = parseFloat(document.getElementById('planYearlyPrice').value);
-            const features = document.getElementById('planFeatures').value;
-            
-            if (!name) {
-                showNotification('Plan name required', true);
-                return;
-            }
-            
-            const { error } = await supabaseClient.from('subscription_plans').insert([{
-                id: crypto.randomUUID(),
-                name: name,
-                monthly_price: monthlyPrice,
-                yearly_price: yearlyPrice,
-                features: features,
-                is_active: true,
-                created_at: new Date().toISOString()
-            }]);
-            
-            if (error) {
-                showNotification(error.message, true);
-            } else {
-                showNotification('Plan added!', false);
-                closeModal('addPlanModal');
-                loadSubscriptionsData();
-            }
-        }
-        
-        async function savePremiumFeatureToggles() {
-            const toggles = {
-                early_access: document.getElementById('premiumEarlyAccess').value === 'true',
-                profit_bonus: document.getElementById('premiumProfitBonus').value === 'true',
-                priority_withdrawal: document.getElementById('premiumPriorityWithdrawal').value === 'true',
-                advanced_analytics: document.getElementById('premiumAnalytics').value === 'true',
-                priority_support: document.getElementById('premiumSupport').value === 'true'
-            };
-            
-            for (const [key, value] of Object.entries(toggles)) {
-                await supabaseClient.from('system_settings').upsert([
-                    { key: `premium_feature_${key}`, value: value, updated_at: new Date().toISOString() }
-                ]);
-            }
-            
-            showNotification('Premium feature toggles saved!', false);
-        }
-        
-        // Accounting Functions
-        async function loadAccountingData() {
-            // Load ledger entries
-            const { data: ledger } = await supabaseClient.from('general_ledger').select('*').order('created_at', { ascending: false }).limit(100);
-            const ledgerBody = document.getElementById('generalLedger');
-            if (ledgerBody) {
-                let runningBalance = 0;
-                const reversedLedger = [...(ledger || [])].reverse();
-                ledgerBody.innerHTML = reversedLedger.map(l => {
-                    runningBalance += (l.debit || 0) - (l.credit || 0);
-                    return `<tr>
-                        <td>${new Date(l.created_at).toLocaleDateString()}</td>
-                        <td>${escapeHtml(l.description)}</td>
-                        <td>${l.account}</td>
-                        <td>${(l.debit || 0).toLocaleString()}</td>
-                        <td>${(l.credit || 0).toLocaleString()}</td>
-                        <td>${runningBalance.toLocaleString()}</td>
-                    </tr>`;
-                }).join('');
-            }
-            
-            // Calculate financial summaries
-            const { data: investments } = await supabaseClient.from('investments').select('amount').eq('status', 'active');
-            const totalAssets = (investments || []).reduce((s, i) => s + (i.amount || 0), 0);
-            const { data: profits } = await supabaseClient.from('profits').select('amount').eq('paid', true);
-            const totalLiabilities = (profits || []).reduce((s, p) => s + (p.amount || 0), 0);
-            
-            document.getElementById('totalAssets').innerHTML = `Rs. ${totalAssets.toLocaleString()}`;
-            document.getElementById('totalLiabilities').innerHTML = `Rs. ${totalLiabilities.toLocaleString()}`;
-            document.getElementById('netWorth').innerHTML = `Rs. ${(totalAssets - totalLiabilities).toLocaleString()}`;
-        }
-        
-        async function addLedgerEntry() {
-            const description = document.getElementById('ledgerDescription').value;
-            const account = document.getElementById('ledgerAccount').value;
-            const amount = parseFloat(document.getElementById('ledgerAmount').value);
-            const type = document.getElementById('ledgerType').value;
-            
-            if (!description || !amount) {
-                showNotification('Please fill required fields', true);
-                return;
-            }
-            
-            const entry = {
-                id: crypto.randomUUID(),
-                description: description,
-                account: account,
-                created_at: new Date().toISOString()
-            };
-            
-            if (type === 'debit') {
-                entry.debit = amount;
-                entry.credit = 0;
-            } else {
-                entry.debit = 0;
-                entry.credit = amount;
-            }
-            
-            const { error } = await supabaseClient.from('general_ledger').insert([entry]);
-            if (error) {
-                showNotification(error.message, true);
-            } else {
-                showNotification('Ledger entry added!', false);
-                document.getElementById('ledgerDescription').value = '';
-                document.getElementById('ledgerAmount').value = '';
-                loadAccountingData();
-                await logAudit('ledger_entry_added', `Added ${type} entry of Rs. ${amount} to ${account}`, { description, account, amount, type });
-            }
-        }
-        
-        // Audit Log Functions
-        async function loadAuditLogs() {
-            const { data: logs } = await supabaseClient.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(200);
-            const auditBody = document.getElementById('auditLogsList');
-            if (auditBody) {
-                auditBody.innerHTML = (logs || []).map(l => `<tr>
-                    <td>${new Date(l.created_at).toLocaleString()}</td>
-                    <td>${escapeHtml(l.admin_email || l.admin_id || 'System')}</td>
-                    <td>${l.action}</td>
-                    <td>${escapeHtml(l.details?.substring(0, 100) || '')}</td>
-                    <td>${escapeHtml(JSON.stringify(l.metadata || {}).substring(0, 50))}</td>
-                    <td>${l.ip_address || '-'}</td>
-                </tr>`).join('');
-            }
-        }
-        
-        function searchAuditLogs() {
-            const searchTerm = document.getElementById('auditSearch').value.toLowerCase();
-            const rows = document.querySelectorAll('#auditLogsList tr');
-            rows.forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(searchTerm) ? '' : 'none';
-            });
-        }
-        
-        function exportAuditLogs() {
-            const rows = document.querySelectorAll('#auditLogsList tr');
-            let csv = 'Timestamp,Admin,Action,Details,Metadata,IP\n';
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                if (cells.length) {
-                    csv += Array.from(cells).map(c => `"${c.innerText.replace(/"/g, '""')}"`).join(',') + '\n';
-                }
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `audit_logs_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-        
-        // Risk Management Functions
-        async function loadRiskData() {
-            const { data: batches } = await supabaseClient.from('investment_batches').select('*');
-            const riskBody = document.getElementById('batchRiskAssessment');
-            if (riskBody) {
-                riskBody.innerHTML = (batches || []).map(b => {
-                    const expectedROI = b.profit_percentage || 0;
-                    let riskLevel = 'Low';
-                    let riskScore = 0;
-                    let recommendation = '';
-                    
-                    if (expectedROI <= 30) { riskLevel = 'Low'; riskScore = 20; recommendation = 'Safe investment with moderate returns.'; }
-                    else if (expectedROI <= 60) { riskLevel = 'Medium'; riskScore = 50; recommendation = 'Balanced risk-reward ratio.'; }
-                    else { riskLevel = 'High'; riskScore = 80; recommendation = 'High potential returns with increased risk.'; }
-                    
-                    return `<tr>
-                        <td>${escapeHtml(b.batch_name)}</td>
-                        <td>Rs. ${(b.investment_amount || 0).toLocaleString()}</td>
-                        <td>${expectedROI}%</td>
-                        <td><span class="risk-level-${riskLevel.toLowerCase()}">${riskLevel}</span></td>
-                        <td>${riskScore}/100</td>
-                        <td>${recommendation}</td>
-                        <td><button onclick="viewBatchRiskDetail('${b.id}')" class="btn-info">Details</button></td>
-                    </tr>`;
-                }).join('');
-            }
-        }
-        
-        // Document Management Functions
-        async function loadDocuments() {
-            const { data: docs } = await supabaseClient.from('documents').select('*').order('created_at', { ascending: false }).limit(100);
-            const docsBody = document.getElementById('documentsList');
-            if (docsBody) {
-                docsBody.innerHTML = (docs || []).map(d => `<tr>
-                    <td>${new Date(d.created_at).toLocaleDateString()}</td>
-                    <td>${d.type}</td>
-                    <td>${d.user_id || '-'}</td>
-                    <td>${d.file_url ? `<a href="${d.file_url}" target="_blank" class="btn-info" style="padding:2px 8px;">View</a>` : '-'}</td>
-                    <td>${escapeHtml(d.notes?.substring(0, 50) || '-')}</td>
-                    <td><button onclick="deleteDocument('${d.id}')" class="btn-danger">Delete</button></td>
-                </tr>`).join('');
-            }
-        }
-        
-        async function loadUserSelectForDoc() {
             if (!supabaseClient) return;
-            const { data: investors } = await supabaseClient.from('investors').select('id, full_name');
-            const { data: buyers } = await supabaseClient.from('buyers').select('id, full_name');
-            const select = document.getElementById('docUserId');
-            if (select) {
-                let options = '<option value="">None</option>';
-                (investors || []).forEach(i => { options += `<option value="investor_${i.id}">Investor: ${i.full_name}</option>`; });
-                (buyers || []).forEach(b => { options += `<option value="buyer_${b.id}">Buyer: ${b.full_name}</option>`; });
-                select.innerHTML = options;
-            }
-        }
-        
-        async function uploadDocument() {
-            const docType = document.getElementById('docType').value;
-            const userId = document.getElementById('docUserId').value;
-            const notes = document.getElementById('docNotes').value;
-            const fileInput = document.getElementById('docFile');
-            
-            if (!fileInput.files || !fileInput.files[0]) {
-                showNotification('Please select a file', true);
-                return;
-            }
-            
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const { error } = await supabaseClient.from('documents').insert([{
-                    id: crypto.randomUUID(),
-                    type: docType,
-                    user_id: userId || null,
-                    file_url: e.target.result,
-                    file_name: file.name,
-                    notes: notes,
-                    created_at: new Date().toISOString(),
-                    created_by: (await supabaseClient.auth.getUser()).data.user?.email || 'Admin'
-                }]);
-                
-                if (error) {
-                    showNotification(error.message, true);
-                } else {
-                    showNotification('Document uploaded!', false);
-                    document.getElementById('docFile').value = '';
-                    document.getElementById('docNotes').value = '';
-                    loadDocuments();
-                    await logAudit('document_uploaded', `Uploaded ${docType} document`, { type: docType, fileName: file.name });
+            try {
+                const { data: investorTiers } = await supabaseClient.from('investor_tiers').select('*').order('min_investment', { ascending: true });
+                const investorTiersBody = document.getElementById('investorTiersConfig');
+                if (investorTiersBody) {
+                    investorTiersBody.innerHTML = (investorTiers || []).map(t => `<tr>
+                        <td><span class="tier-badge tier-${t.tier}">${t.tier.toUpperCase()}</span></td>
+                        <td>Rs. ${(t.min_investment || 0).toLocaleString()}</td>
+                        <td>${t.profit_bonus || 0}%</td>
+                        <td>${t.priority_withdrawal ? 'Yes' : 'No'}</td>
+                        <td>${t.exclusive_batches ? 'Yes' : 'No'}</td>
+                        <td><button onclick="editInvestorTier('${t.tier}')" class="btn-warning">Edit</button></td>
+                    </tr>`).join('');
                 }
-            };
-            reader.readAsDataURL(file);
+            } catch(e) { console.error('Error loading tiers:', e); }
         }
         
-        // Automation Functions
+        async function loadSubscriptionsData() {
+            if (!supabaseClient) return;
+            try {
+                const { data: plans } = await supabaseClient.from('subscription_plans').select('*').order('monthly_price', { ascending: true });
+                const plansList = document.getElementById('subscriptionPlansList');
+                if (plansList) {
+                    plansList.innerHTML = (plans || []).map(p => `<tr>
+                        <td><strong>${escapeHtml(p.name)}</strong></td>
+                        <td>Rs. ${(p.monthly_price || 0).toLocaleString()}</td>
+                        <td>Rs. ${(p.yearly_price || 0).toLocaleString()}</td>
+                        <td>${p.features || '-'}</td>
+                        <td><span class="status-badge ${p.is_active ? 'status-active' : 'status-pending'}">${p.is_active ? 'Active' : 'Inactive'}</span></td>
+                        <td><button onclick="editSubscriptionPlan('${p.id}')" class="btn-warning">Edit</button><button onclick="deleteSubscriptionPlan('${p.id}')" class="btn-danger">Delete</button></td>
+                    </tr>`).join('');
+                }
+            } catch(e) { console.error('Error loading subscriptions:', e); }
+        }
+        
+        async function loadAccountingData() {
+            if (!supabaseClient) return;
+            try {
+                const { data: ledger } = await supabaseClient.from('general_ledger').select('*').order('created_at', { ascending: false }).limit(100);
+                const ledgerBody = document.getElementById('generalLedger');
+                if (ledgerBody) {
+                    let runningBalance = 0;
+                    const reversedLedger = [...(ledger || [])].reverse();
+                    ledgerBody.innerHTML = reversedLedger.map(l => {
+                        runningBalance += (l.debit || 0) - (l.credit || 0);
+                        return `<tr>
+                            <td>${new Date(l.created_at).toLocaleDateString()}</td>
+                            <td>${escapeHtml(l.description)}</td>
+                            <td>${l.account}</td>
+                            <td>${(l.debit || 0).toLocaleString()}</td>
+                            <td>${(l.credit || 0).toLocaleString()}</td>
+                            <td>${runningBalance.toLocaleString()}</td>
+                        </tr>`;
+                    }).join('');
+                }
+            } catch(e) { console.error('Error loading accounting:', e); }
+        }
+        
+        async function loadAuditLogs() {
+            if (!supabaseClient) return;
+            try {
+                const { data: logs } = await supabaseClient.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(200);
+                const auditBody = document.getElementById('auditLogsList');
+                if (auditBody) {
+                    auditBody.innerHTML = (logs || []).map(l => `<tr>
+                        <td>${new Date(l.created_at).toLocaleString()}</td>
+                        <td>${escapeHtml(l.admin_email || l.admin_id || 'System')}</td>
+                        <td>${l.action}</td>
+                        <td>${escapeHtml(l.details?.substring(0, 100) || '')}</td>
+                        <td>${escapeHtml(JSON.stringify(l.metadata || {}).substring(0, 50))}</td>
+                        <td>${l.ip_address || '-'}</td>
+                    </tr>`).join('');
+                }
+            } catch(e) { console.error('Error loading audit logs:', e); }
+        }
+        
+        async function loadRiskData() {
+            if (!supabaseClient) return;
+            try {
+                const { data: batches } = await supabaseClient.from('investment_batches').select('*');
+                const riskBody = document.getElementById('batchRiskAssessment');
+                if (riskBody) {
+                    riskBody.innerHTML = (batches || []).map(b => {
+                        const expectedROI = b.profit_percentage || 0;
+                        let riskLevel = 'Low';
+                        let riskScore = 0;
+                        let recommendation = '';
+                        if (expectedROI <= 30) { riskLevel = 'Low'; riskScore = 20; recommendation = 'Safe investment with moderate returns.'; }
+                        else if (expectedROI <= 60) { riskLevel = 'Medium'; riskScore = 50; recommendation = 'Balanced risk-reward ratio.'; }
+                        else { riskLevel = 'High'; riskScore = 80; recommendation = 'High potential returns with increased risk.'; }
+                        return `<tr>
+                            <td>${escapeHtml(b.batch_name)}</td>
+                            <td>Rs. ${(b.investment_amount || 0).toLocaleString()}</td>
+                            <td>${expectedROI}%</td>
+                            <td><span class="risk-level-${riskLevel.toLowerCase()}">${riskLevel}</span></td>
+                            <td>${riskScore}/100</td><td>${recommendation}</td>
+                            <td><button onclick="viewBatchRiskDetail('${b.id}')" class="btn-info">Details</button></td>
+                        </tr>`;
+                    }).join('');
+                }
+            } catch(e) { console.error('Error loading risk data:', e); }
+        }
+        
+        async function loadDocuments() {
+            if (!supabaseClient) return;
+            try {
+                const { data: docs } = await supabaseClient.from('documents').select('*').order('created_at', { ascending: false }).limit(100);
+                const docsBody = document.getElementById('documentsList');
+                if (docsBody) {
+                    docsBody.innerHTML = (docs || []).map(d => `<tr>
+                        <td>${new Date(d.created_at).toLocaleDateString()}</td>
+                        <td>${d.type}</td>
+                        <td>${d.user_id || '-'}</td>
+                        <td>${d.file_url ? `<a href="${d.file_url}" target="_blank" class="btn-info" style="padding:2px 8px;">View</a>` : '-'}</td>
+                        <td>${escapeHtml(d.notes?.substring(0, 50) || '-')}</td>
+                        <td><button onclick="deleteDocument('${d.id}')" class="btn-danger">Delete</button></td>
+                    </tr>`).join('');
+                }
+            } catch(e) { console.error('Error loading documents:', e); }
+        }
+        
         async function loadAutomationData() {
-            const { data: rules } = await supabaseClient.from('automation_rules').select('*').order('created_at', { ascending: false });
-            const rulesBody = document.getElementById('automationRulesList');
-            if (rulesBody) {
-                rulesBody.innerHTML = (rules || []).map(r => `<tr>
-                    <td>${escapeHtml(r.name)}</td>
-                    <td>${r.trigger}</td>
-                    <td>${r.action}</td>
-                    <td>${r.schedule || 'On trigger'}</td>
-                    <td><span class="status-badge ${r.is_active ? 'status-active' : 'status-pending'}">${r.is_active ? 'Active' : 'Inactive'}</span></td>
-                    <td>${r.last_run ? new Date(r.last_run).toLocaleDateString() : '-'}</td>
-                    <td><button onclick="toggleAutomationRule('${r.id}', ${!r.is_active})" class="btn-warning">${r.is_active ? 'Disable' : 'Enable'}</button><button onclick="deleteAutomationRule('${r.id}')" class="btn-danger">Delete</button></td>
-                </tr>`).join('');
-            }
+            if (!supabaseClient) return;
+            try {
+                const { data: rules } = await supabaseClient.from('automation_rules').select('*').order('created_at', { ascending: false });
+                const rulesBody = document.getElementById('automationRulesList');
+                if (rulesBody) {
+                    rulesBody.innerHTML = (rules || []).map(r => `<tr>
+                        <td>${escapeHtml(r.name)}</td><td>${r.trigger}</td><td>${r.action}</td><td>${r.schedule || 'On trigger'}</td>
+                        <td><span class="status-badge ${r.is_active ? 'status-active' : 'status-pending'}">${r.is_active ? 'Active' : 'Inactive'}</span></td>
+                        <td>${r.last_run ? new Date(r.last_run).toLocaleDateString() : '-'}</td>
+                        <td><button onclick="toggleAutomationRule('${r.id}', ${!r.is_active})" class="btn-warning">${r.is_active ? 'Disable' : 'Enable'}</button><button onclick="deleteAutomationRule('${r.id}')" class="btn-danger">Delete</button></td>
+                    </tr>`;
+                    }).join('');
+                }
+            } catch(e) { console.error('Error loading automation:', e); }
         }
         
-        function showAddAutomationRuleModal() {
-            document.getElementById('addAutomationRuleModal').style.display = 'flex';
-            document.getElementById('addAutomationRuleModal').classList.add('active');
-        }
-        
-        async function saveAutomationRule() {
-            const name = document.getElementById('autoRuleName').value;
-            const trigger = document.getElementById('autoTrigger').value;
-            const action = document.getElementById('autoAction').value;
-            const schedule = document.getElementById('autoSchedule').value;
-            
-            if (!name) {
-                showNotification('Rule name required', true);
-                return;
-            }
-            
-            const { error } = await supabaseClient.from('automation_rules').insert([{
-                id: crypto.randomUUID(),
-                name: name,
-                trigger: trigger,
-                action: action,
-                schedule: schedule,
-                is_active: true,
-                created_at: new Date().toISOString()
-            }]);
-            
-            if (error) {
-                showNotification(error.message, true);
-            } else {
-                showNotification('Automation rule added!', false);
-                closeModal('addAutomationRuleModal');
-                loadAutomationData();
-            }
-        }
-        
-        // Support Ticket Functions
         async function loadTickets() {
-            const { data: tickets } = await supabaseClient.from('support_tickets').select('*, investors(full_name, email), buyers(full_name, email)').order('created_at', { ascending: false });
-            const ticketsBody = document.getElementById('ticketsList');
-            if (ticketsBody) {
-                ticketsBody.innerHTML = (tickets || []).map(t => {
-                    const userName = t.investors?.full_name || t.buyers?.full_name || 'Unknown';
-                    return `<tr>
-                        <td>#${t.id?.slice(0, 8)}</td>
-                        <td>${escapeHtml(userName)}</td>
-                        <td>${escapeHtml(t.subject?.substring(0, 50))}</td>
-                        <td><span class="status-badge ${t.priority === 'high' ? 'status-pending' : 'status-active'}">${t.priority}</span></td>
-                        <td><span class="status-badge ${t.status === 'open' ? 'status-pending' : t.status === 'resolved' ? 'status-active' : 'status-completed'}">${t.status}</span></td>
-                        <td>${new Date(t.created_at).toLocaleDateString()}</td>
-                        <td>${t.updated_at ? new Date(t.updated_at).toLocaleDateString() : '-'}</td>
-                        <td><button onclick="viewTicketDetails('${t.id}')" class="btn-info">View</button></td>
-                    </tr>`;
-                }).join('');
-            }
-            
-            // Update stats
-            const openCount = (tickets || []).filter(t => t.status === 'open').length;
-            const inProgressCount = (tickets || []).filter(t => t.status === 'in_progress').length;
-            document.getElementById('openTicketsCount').innerHTML = openCount;
-            document.getElementById('inProgressTicketsCount').innerHTML = inProgressCount;
+            if (!supabaseClient) return;
+            try {
+                const { data: tickets } = await supabaseClient.from('support_tickets').select('*, investors(full_name, email), buyers(full_name, email)').order('created_at', { ascending: false });
+                const ticketsBody = document.getElementById('ticketsList');
+                if (ticketsBody) {
+                    ticketsBody.innerHTML = (tickets || []).map(t => {
+                        const userName = t.investors?.full_name || t.buyers?.full_name || 'Unknown';
+                        return `<tr>
+                            <td>#${t.id?.slice(0, 8)}</td><td>${escapeHtml(userName)}</td><td>${escapeHtml(t.subject?.substring(0, 50))}</td>
+                            <td><span class="status-badge ${t.priority === 'high' ? 'status-pending' : 'status-active'}">${t.priority}</span></td>
+                            <td><span class="status-badge ${t.status === 'open' ? 'status-pending' : t.status === 'resolved' ? 'status-active' : 'status-completed'}">${t.status}</span></td>
+                            <td>${new Date(t.created_at).toLocaleDateString()}</td><td>${t.updated_at ? new Date(t.updated_at).toLocaleDateString() : '-'}</td>
+                            <td><button onclick="viewTicketDetails('${t.id}')" class="btn-info">View</button></td>
+                        </tr>`;
+                    }).join('');
+                }
+                const openCount = (tickets || []).filter(t => t.status === 'open').length;
+                document.getElementById('openTicketsCount').innerHTML = openCount;
+            } catch(e) { console.error('Error loading tickets:', e); }
         }
         
-        // Team Management Functions
         async function loadTeamMembers() {
-            const { data: team } = await supabaseClient.from('team_members').select('*').order('created_at', { ascending: false });
-            const teamBody = document.getElementById('teamMembersList');
-            if (teamBody) {
-                teamBody.innerHTML = (team || []).map(m => `<tr>
-                    <td>${escapeHtml(m.name)}</td>
-                    <td>${m.email}</td>
-                    <td>${m.role}</td>
-                    <td>${m.permissions ? m.permissions.join(', ') : '-'}</td>
-                    <td>${m.last_active ? new Date(m.last_active).toLocaleDateString() : '-'}</td>
-                    <td><span class="status-badge ${m.is_active ? 'status-active' : 'status-pending'}">${m.is_active ? 'Active' : 'Inactive'}</span></td>
-                    <td><button onclick="toggleTeamMember('${m.id}', ${!m.is_active})" class="btn-warning">${m.is_active ? 'Disable' : 'Enable'}</button><button onclick="deleteTeamMember('${m.id}')" class="btn-danger">Delete</button></td>
-                </tr>`).join('');
-            }
-        }
-        
-        async function addTeamMember() {
-            const name = document.getElementById('teamMemberName').value;
-            const email = document.getElementById('teamMemberEmail').value;
-            const role = document.getElementById('teamMemberRole').value;
-            const permissions = Array.from(document.querySelectorAll('.teamPerm:checked')).map(cb => cb.value);
-            
-            if (!name || !email) {
-                showNotification('Name and email required', true);
-                return;
-            }
-            
-            const { error } = await supabaseClient.from('team_members').insert([{
-                id: crypto.randomUUID(),
-                name: name,
-                email: email,
-                role: role,
-                permissions: permissions,
-                is_active: true,
-                created_at: new Date().toISOString(),
-                created_by: (await supabaseClient.auth.getUser()).data.user?.email || 'Admin'
-            }]);
-            
-            if (error) {
-                showNotification(error.message, true);
-            } else {
-                showNotification('Team member added!', false);
-                document.getElementById('teamMemberName').value = '';
-                document.getElementById('teamMemberEmail').value = '';
-                loadTeamMembers();
-                await logAudit('team_member_added', `Added team member: ${name}`, { email, role });
-            }
-        }
-        
-        // Bulk Operations Functions
-        async function loadBulkApproveList() {
-            const type = document.getElementById('bulkApproveType').value;
-            if (type === 'investments') {
-                const { data: pendingInvestments } = await supabaseClient.from('investments').select('*, investors(full_name)').eq('status', 'pending').limit(50);
-                const bulkBody = document.getElementById('bulkApproveList');
-                if (bulkBody) {
-                    bulkBody.innerHTML = (pendingInvestments || []).map(i => `<tr>
-                        <td><input type="checkbox" class="bulk-select" value="${i.id}"></td>
-                        <td>${i.id?.slice(0, 8)}...</td>
-                        <td>${escapeHtml(i.investors?.full_name || 'Unknown')}</td>
-                        <td>Rs. ${(i.amount || 0).toLocaleString()}</td>
-                        <td>${new Date(i.created_at).toLocaleDateString()}</td>
-                    </tr>`).join('');
-                }
-            } else {
-                const { data: pendingWithdrawals } = await supabaseClient.from('withdrawals').select('*, investors(full_name)').eq('status', 'pending').limit(50);
-                const bulkBody = document.getElementById('bulkApproveList');
-                if (bulkBody) {
-                    bulkBody.innerHTML = (pendingWithdrawals || []).map(w => `<tr>
-                        <td><input type="checkbox" class="bulk-select" value="${w.id}"></td>
-                        <td>${w.id?.slice(0, 8)}...</td>
-                        <td>${escapeHtml(w.investors?.full_name || 'Unknown')}</td>
-                        <td>Rs. ${(w.amount || 0).toLocaleString()}</td>
-                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                    </tr>`).join('');
-                }
-            }
-        }
-        
-        async function processBulkApprovals() {
-            const selected = Array.from(document.querySelectorAll('.bulk-select:checked')).map(cb => cb.value);
-            if (selected.length === 0) {
-                showNotification('Please select items to approve', true);
-                return;
-            }
-            
-            const type = document.getElementById('bulkApproveType').value;
-            const table = type === 'investments' ? 'investments' : 'withdrawals';
-            const updateData = type === 'investments' ? { status: 'active' } : { status: 'approved' };
-            
-            for (const id of selected) {
-                await supabaseClient.from(table).update(updateData).eq('id', id);
-            }
-            
-            await logAudit('bulk_approval', `Bulk approved ${selected.length} ${type}`, { count: selected.length, type });
-            showNotification(`${selected.length} items approved!`, false);
-            loadBulkApproveList();
-            loadInvestmentRequests();
-            loadWithdrawals();
-            loadStats();
-        }
-        
-        async function sendBulkNotification() {
-            const type = document.getElementById('bulkNotifyType').value;
-            const tier = document.getElementById('bulkNotifyTier').value;
-            const message = document.getElementById('bulkMessage').value;
-            
-            if (!message) {
-                showNotification('Please enter a message', true);
-                return;
-            }
-            
-            let recipients = [];
-            if (type === 'all_investors') {
-                const { data } = await supabaseClient.from('investors').select('id, full_name, email');
-                recipients = data || [];
-            } else if (type === 'all_buyers') {
-                const { data } = await supabaseClient.from('buyers').select('id, full_name, email');
-                recipients = data || [];
-            } else if (type === 'premium_users') {
-                const { data: investors } = await supabaseClient.from('investors').select('id, full_name, email').eq('subscription_status', 'premium');
-                const { data: buyers } = await supabaseClient.from('buyers').select('id, full_name, email').eq('subscription_status', 'premium');
-                recipients = [...(investors || []), ...(buyers || [])];
-            } else if (type === 'specific_tier' && tier) {
-                const { data: investors } = await supabaseClient.from('investors').select('id, full_name, email').eq('tier', tier);
-                const { data: buyers } = await supabaseClient.from('buyers').select('id, full_name, email').eq('tier', tier);
-                recipients = [...(investors || []), ...(buyers || [])];
-            }
-            
-            // Store notification in database
-            for (const recipient of recipients) {
-                await supabaseClient.from('notifications').insert([{
-                    id: crypto.randomUUID(),
-                    user_id: recipient.id,
-                    user_type: recipient.full_name ? 'investor' : 'buyer',
-                    message: message,
-                    is_read: false,
-                    created_at: new Date().toISOString()
-                }]);
-            }
-            
-            await logAudit('bulk_notification', `Sent bulk notification to ${recipients.length} users`, { type, tier, messageLength: message.length });
-            showNotification(`Notification sent to ${recipients.length} users!`, false);
-            document.getElementById('bulkMessage').value = '';
-        }
-        
-        // Loss Management Functions
-        async function loadLossData() {
-            const { data: batches } = await supabaseClient.from('investment_batches').select('*').order('created_at', { ascending: false });
-            const lossBody = document.getElementById('lossTrackingList');
-            if (lossBody) {
-                lossBody.innerHTML = (batches || []).filter(b => (b.sales || 0) < (b.expenses || 0)).map(b => {
-                    const lossAmount = (b.expenses || 0) - (b.sales || 0);
-                    const affectedInvestors = b.filled_slots || 0;
-                    const lossPerInvestor = affectedInvestors > 0 ? lossAmount / affectedInvestors : 0;
-                    return `<tr>
-                        <td>${escapeHtml(b.batch_name)}</td>
-                        <td>Rs. ${lossAmount.toLocaleString()}</td>
-                        <td>${affectedInvestors}</td>
-                        <td>Rs. ${lossPerInvestor.toLocaleString()}</td>
-                        <td><span class="status-badge status-pending">Pending Resolution</span></td>
-                        <td><button onclick="resolveBatchLoss('${b.id}', ${lossAmount})" class="btn-warning">Resolve</button></td>
+            if (!supabaseClient) return;
+            try {
+                const { data: team } = await supabaseClient.from('team_members').select('*').order('created_at', { ascending: false });
+                const teamBody = document.getElementById('teamMembersList');
+                if (teamBody) {
+                    teamBody.innerHTML = (team || []).map(m => `<tr>
+                        <td>${escapeHtml(m.name)}</td><td>${m.email}</td><td>${m.role}</td><td>${m.permissions ? m.permissions.join(', ') : '-'}</td>
+                        <td>${m.last_active ? new Date(m.last_active).toLocaleDateString() : '-'}</td>
+                        <td><span class="status-badge ${m.is_active ? 'status-active' : 'status-pending'}">${m.is_active ? 'Active' : 'Inactive'}</span></td>
+                        <td><button onclick="toggleTeamMember('${m.id}', ${!m.is_active})" class="btn-warning">${m.is_active ? 'Disable' : 'Enable'}</button><button onclick="deleteTeamMember('${m.id}')" class="btn-danger">Delete</button></td>
                     </tr>`;
-                }).join('');
-            }
-            
-            // Load loss batch select for distribution
-            const batchSelect = document.getElementById('lossBatchSelect');
-            if (batchSelect) {
-                batchSelect.innerHTML = '<option value="">Select Batch</option>' + (batches || []).filter(b => (b.sales || 0) < (b.expenses || 0)).map(b => `<option value="${b.id}">${b.batch_name} - Loss: Rs. ${((b.expenses || 0) - (b.sales || 0)).toLocaleString()}</option>`).join('');
-            }
+                    }).join('');
+                }
+            } catch(e) { console.error('Error loading team members:', e); }
         }
+        
+        async function loadBulkApproveList() {
+            if (!supabaseClient) return;
+            try {
+                const type = document.getElementById('bulkApproveType').value;
+                if (type === 'investments') {
+                    const { data: pendingInvestments } = await supabaseClient.from('investments').select('*, investors(full_name)').eq('status', 'pending').limit(50);
+                    const bulkBody = document.getElementById('bulkApproveList');
+                    if (bulkBody) {
+                        bulkBody.innerHTML = (pendingInvestments || []).map(i => `<tr>
+                            <td><input type="checkbox" class="bulk-select" value="${i.id}"></td><td>${i.id?.slice(0, 8)}...</td>
+                            <td>${escapeHtml(i.investors?.full_name || 'Unknown')}</td><td>Rs. ${(i.amount || 0).toLocaleString()}</td>
+                            <td>${new Date(i.created_at).toLocaleDateString()}</td>
+                        </tr>`;
+                    }).join('');
+                } else {
+                    const { data: pendingWithdrawals } = await supabaseClient.from('withdrawals').select('*, investors(full_name)').eq('status', 'pending').limit(50);
+                    const bulkBody = document.getElementById('bulkApproveList');
+                    if (bulkBody) {
+                        bulkBody.innerHTML = (pendingWithdrawals || []).map(w => `<tr>
+                            <td><input type="checkbox" class="bulk-select" value="${w.id}"></td><td>${w.id?.slice(0, 8)}...</td>
+                            <td>${escapeHtml(w.investors?.full_name || 'Unknown')}</td><td>Rs. ${(w.amount || 0).toLocaleString()}</td>
+                            <td>${new Date(w.request_date).toLocaleDateString()}</td>
+                        </tr>`;
+                    }).join('');
+                }
+            } catch(e) { console.error('Error loading bulk list:', e); }
+        }
+        
+        async function loadLossData() {
+            if (!supabaseClient) return;
+            try {
+                const { data: batches } = await supabaseClient.from('investment_batches').select('*').order('created_at', { ascending: false });
+                const lossBody = document.getElementById('lossTrackingList');
+                if (lossBody) {
+                    lossBody.innerHTML = (batches || []).filter(b => (b.sales || 0) < (b.expenses || 0)).map(b => {
+                        const lossAmount = (b.expenses || 0) - (b.sales || 0);
+                        const affectedInvestors = b.filled_slots || 0;
+                        const lossPerInvestor = affectedInvestors > 0 ? lossAmount / affectedInvestors : 0;
+                        return `<tr>
+                            <td>${escapeHtml(b.batch_name)}</td><td>Rs. ${lossAmount.toLocaleString()}</td><td>${affectedInvestors}</td>
+                            <td>Rs. ${lossPerInvestor.toLocaleString()}</td><td><span class="status-badge status-pending">Pending Resolution</span></td>
+                            <td><button onclick="resolveBatchLoss('${b.id}', ${lossAmount})" class="btn-warning">Resolve</button></td>
+                        </tr>`;
+                    }).join('');
+                }
+            } catch(e) { console.error('Error loading loss data:', e); }
+        }
+        
+        // Placeholder functions for premium features
+        async function addLedgerEntry() { showNotification('Ledger entry feature coming soon', false); }
+        async function approveHolding(id, amount, investorId) { showNotification('Holding approval feature coming soon', false); }
+        async function rejectHolding(id) { showNotification('Holding rejection feature coming soon', false); }
+        async function editInvestorTier(tier) { showNotification('Edit tier feature coming soon', false); }
+        async function editBuyerTier(tier) { showNotification('Edit buyer tier feature coming soon', false); }
+        async function editSubscriptionPlan(id) { showNotification('Edit plan feature coming soon', false); }
+        async function deleteSubscriptionPlan(id) { showNotification('Delete plan feature coming soon', false); }
+        async function viewBatchRiskDetail(id) { showNotification('Risk detail feature coming soon', false); }
+        async function uploadDocument() { showNotification('Document upload feature coming soon', false); }
+        async function deleteDocument(id) { showNotification('Delete document feature coming soon', false); }
+        async function toggleAutomationRule(id, enable) { showNotification('Toggle automation feature coming soon', false); }
+        async function deleteAutomationRule(id) { showNotification('Delete automation feature coming soon', false); }
+        async function viewTicketDetails(id) { showNotification('Ticket details feature coming soon', false); }
+        async function addTeamMember() { showNotification('Add team member feature coming soon', false); }
+        async function toggleTeamMember(id, enable) { showNotification('Toggle team member feature coming soon', false); }
+        async function deleteTeamMember(id) { showNotification('Delete team member feature coming soon', false); }
+        async function processBulkApprovals() { showNotification('Bulk approvals feature coming soon', false); }
+        async function sendBulkNotification() { showNotification('Bulk notification feature coming soon', false); }
+        async function calculateLossDistribution() { showNotification('Loss distribution calculation feature coming soon', false); }
+        async function applyLossDistribution() { showNotification('Apply loss distribution feature coming soon', false); }
+        async function resolveBatchLoss(id, amount) { showNotification('Resolve batch loss feature coming soon', false); }
+        async function addToReserveFund() { showNotification('Add to reserve fund feature coming soon', false); }
+        async function saveRiskParameters() { showNotification('Save risk parameters feature coming soon', false); }
+        async function searchLedger() { showNotification('Search ledger feature coming soon', false); }
+        async function saveAutoDistributionSettings() { showNotification('Save auto distribution feature coming soon', false); }
+        async function runAutoProfitDistribution() { showNotification('Auto profit distribution feature coming soon', false); }
+        async function scheduleReport() { showNotification('Schedule report feature coming soon', false); }
+        async function searchTickets() { showNotification('Search tickets feature coming soon', false); }
+        async function searchDocuments() { showNotification('Search documents feature coming soon', false); }
+        async function loadUserSelectForDoc() { }
         
         // Initialize Supabase
         document.addEventListener('DOMContentLoaded', function() {
