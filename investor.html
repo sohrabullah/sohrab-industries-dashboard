@@ -67,6 +67,126 @@
         }
         .header h1 i { font-size: 1.2rem; color: #E8B13C; }
         
+        /* ========== NOTIFICATION BELL STYLES (NEW) ========== */
+        .notif-bell {
+            position: relative;
+            cursor: pointer;
+            background: rgba(0,0,0,0.3);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .notif-bell:hover { background: rgba(232,177,60,0.2); transform: scale(1.05); }
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .notif-panel {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            width: 320px;
+            max-height: 400px;
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 20px;
+            border: 1px solid rgba(232,177,60,0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            z-index: 200;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+        }
+        .notif-panel.active { display: flex; }
+        .notif-header {
+            padding: 12px;
+            border-bottom: 1px solid rgba(232,177,60,0.2);
+            font-weight: bold;
+            color: #E8B13C;
+            display: flex;
+            justify-content: space-between;
+        }
+        .notif-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .notif-item:hover { background: rgba(232,177,60,0.1); }
+        .notif-item.unread { background: rgba(232,177,60,0.15); border-left: 3px solid #E8B13C; }
+        .notif-title { font-weight: bold; font-size: 0.85rem; margin-bottom: 4px; }
+        .notif-msg { font-size: 0.7rem; opacity: 0.8; }
+        .notif-date { font-size: 0.6rem; opacity: 0.5; margin-top: 4px; }
+        
+        /* ========== WEBSITE TOUR STYLES (NEW) ========== */
+        .tour-highlight {
+            position: relative;
+            z-index: 1001;
+            box-shadow: 0 0 0 4px #E8B13C, 0 0 0 8px rgba(232,177,60,0.3);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .tour-tooltip {
+            position: fixed;
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border: 1px solid #E8B13C;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 320px;
+            z-index: 1002;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: fadeSlideUp 0.3s ease;
+        }
+        .tour-tooltip h3 { color: #E8B13C; margin-bottom: 8px; font-size: 1.1rem; }
+        .tour-tooltip p { font-size: 0.8rem; margin-bottom: 12px; line-height: 1.4; }
+        .tour-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+        .tour-btn { padding: 6px 12px; border-radius: 30px; border: none; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
+        .tour-next { background: #E8B13C; color: #0a1f1a; }
+        .tour-prev { background: rgba(255,255,255,0.1); color: white; }
+        .tour-skip { background: transparent; color: rgba(255,255,255,0.6); }
+        
+        /* ========== ADMIN POPUP MODAL (NEW) ========== */
+        .admin-popup-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-popup-modal.active { display: flex; }
+        .admin-popup-content {
+            background: linear-gradient(145deg, #1a3d33, #0f2a22);
+            border-radius: 28px;
+            padding: 25px;
+            max-width: 450px;
+            width: 90%;
+            border: 2px solid #E8B13C;
+            text-align: center;
+        }
+        .admin-popup-content i { font-size: 3rem; color: #E8B13C; margin-bottom: 15px; }
+        .admin-popup-content h2 { color: #E8B13C; margin-bottom: 10px; }
+        .admin-popup-content p { margin-bottom: 20px; line-height: 1.5; }
+        
         /* Responsive User Info Wrapper */
         .user-info-wrapper {
             display: flex;
@@ -1108,12 +1228,22 @@
     <div class="header">
         <h1><i class="fas fa-gem"></i> Sohrab Industries</h1>
         <div class="user-info-wrapper">
+            <!-- NEW: Notification Bell -->
+            <div class="notif-bell" id="notifBell">
+                <i class="fas fa-bell"></i>
+                <span id="notifBadge" class="notif-badge" style="display:none;">0</span>
+            </div>
             <div class="user-info">
                 <span id="userName"><i class="fas fa-user-astronaut"></i> Loading...</span>
                 <span id="investorTierBadge" class="investor-level-badge tier-bronze"><i class="fas fa-layer-group"></i> Bronze</span>
                 <span id="subscriptionBadge" class="subscription-badge sub-free">Free</span>
             </div>
             <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+        <!-- NEW: Notification Panel -->
+        <div id="notifPanel" class="notif-panel">
+            <div class="notif-header">Notifications <span id="clearNotifs" style="cursor:pointer;">Mark all read</span></div>
+            <div id="notifList"></div>
         </div>
     </div>
 
@@ -1189,7 +1319,7 @@
                 <button id="openWithdrawalModalBtn" class="btn-primary"><i class="fas fa-plus"></i> + Request Withdrawal</button>
             </div>
             <div class="table-container">
-                <table><thead><tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Account Title</th><th>Account Details</th><th>Status</th><th>Processed Date</th><th>Screenshot</th></tr></thead>
+                <tr><thead><tr><th>Request Date</th><th>Amount</th><th>Payment Method</th><th>Account Title</th><th>Account Details</th><th>Status</th><th>Processed Date</th><th>Screenshot</th></tr></thead>
                 <tbody id="withdrawalsList"></tbody>
             </table>
             </div>
@@ -1232,7 +1362,7 @@
             </div>
         </div>
 
-        <!-- REFERRALS TAB -->
+        <!-- REFERRALS TAB (FIXED) -->
         <div id="referralsTab" class="tab-content">
             <h2 class="section-title"><i class="fas fa-users"></i> Referral Program</h2>
             
@@ -1275,14 +1405,23 @@
             
             <h2 class="section-title"><i class="fas fa-chart-line"></i> My Referral Team</h2>
             <div class="table-container">
-                <tr><thead><tr><th>Referred Person</th><th>Investment Amount</th><th>Commission Earned</th><th>Status</th><th>Date</th></tr></thead>
+                <table><thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Join Date</th>
+                        <th>Investment</th>
+                        <th>Commission</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
                 <tbody id="referralTeamList"></tbody>
             </table>
             </div>
             
             <h2 class="section-title"><i class="fas fa-coins"></i> Referral Commission History</h2>
             <div class="table-container">
-                <tr><thead><tr><th>Date</th><th>Referred Person</th><th>Investment Amount</th><th>Commission (10%)</th><th>Status</th></tr></thead>
+                <table><thead><tr><th>Date</th><th>Referred Person</th><th>Investment Amount</th><th>Commission (10%)</th><th>Status</th></tr></thead>
                 <tbody id="referralCommissionList"></tbody>
             </table>
             </div>
@@ -1560,6 +1699,16 @@
         </div>
     </div>
 
+    <!-- NEW: Admin Popup Modal -->
+    <div id="adminPopupModal" class="admin-popup-modal">
+        <div class="admin-popup-content">
+            <i class="fas fa-info-circle"></i>
+            <h2 id="popupTitle"></h2>
+            <p id="popupMessage"></p>
+            <button class="btn-primary" id="closePopupBtn">Close</button>
+        </div>
+    </div>
+
     <!-- Investment Modal -->
     <div id="investmentModal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('investmentModal')">&times;</span><h2><i class="fas fa-plus-circle"></i> New Investment</h2><div class="payment-instruction"><p><i class="fas fa-info-circle"></i> <strong>Payment Instructions:</strong></p><p>1️⃣ Send payment to any account below</p><p>2️⃣ Save payment confirmation/screenshot</p><p>3️⃣ Upload screenshot (MANDATORY)</p><p>4️⃣ Admin will verify and approve</p></div><div class="payment-options"><div class="payment-card easypaisa" onclick="selectPaymentMethod('easypaisa')" id="card-easypaisa"><div class="payment-card-header"><i class="fas fa-mobile-alt"></i><h3>EasyPaisa</h3></div><div class="payment-details"><p><strong>Account:</strong> 0317-3703413</p><p><strong>Title:</strong> Sohrab Ullah</p></div></div><div class="payment-card jazzcash" onclick="selectPaymentMethod('jazzcash')" id="card-jazzcash"><div class="payment-card-header"><i class="fas fa-mobile-alt"></i><h3>JazzCash</h3></div><div class="payment-details"><p><strong>Account:</strong> 0317-3703413</p><p><strong>Title:</strong> Sohrab Ullah</p></div></div><div class="payment-card bank" onclick="selectPaymentMethod('bank')" id="card-bank"><div class="payment-card-header"><i class="fas fa-university"></i><h3>HBL Bank</h3></div><div class="payment-details"><p><strong>Account:</strong> 00587902117403</p><p><strong>IBAN:</strong> PK76HABB0000587902117403</p><p><strong>Title:</strong> Sohrab Ullah</p></div></div></div><input type="hidden" id="selectedPaymentMethod" value=""><div class="form-group"><label>Select Investment Batch (Optional)</label><select id="investmentBatchSelect"><option value="">No batch (direct investment)</option></select></div><div class="form-group"><label>Investment Amount (Rs.) *</label><input type="number" id="investmentAmount" placeholder="Min Rs. 1000"></div><div class="form-group"><label>Transaction ID *</label><input type="text" id="investmentTransactionId" placeholder="Transaction ID"></div><div class="form-group"><label>Payment Screenshot <span style="color:#dc3545;">*</span></label><input type="file" id="investmentScreenshot" accept="image/*" onchange="previewInvestmentScreenshot(this)"><small style="color:rgba(255,255,255,0.5); display:block; margin-top:5px;">⚠️ Upload clear screenshot of payment confirmation</small><div id="investmentScreenshotPreview" class="screenshot-preview"></div></div><div class="form-group"><label>Notes (Optional)</label><textarea id="investmentNotes" rows="2" placeholder="Additional notes..."></textarea></div><button id="submitInvestmentBtn" class="btn-primary" style="width:100%; margin-top:10px;">Submit Request</button></div></div>
     
@@ -1607,6 +1756,9 @@
             let analyticsCharts = {};
             let premiumFeatures = { early_access: true, profit_bonus: true, priority_withdrawal: true, advanced_analytics: true, priority_support: true };
             
+            // NEW: Notification variables
+            let notifications = [];
+            
             const emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','💀','👻','👽','🤖','💩'];
             
             const fallbackGIFs = ['https://media.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif', 'https://media.giphy.com/media/l0MYEqEzwMWFCg8rO/giphy.gif', 'https://media.giphy.com/media/26gR2qYlKkKp5UJ5e/giphy.gif'];
@@ -1648,6 +1800,181 @@
                     }, 500);
                 }, 500);
                 if (loadingInterval) clearInterval(loadingInterval);
+            }
+            
+            // ========== NEW: NOTIFICATION SYSTEM ==========
+            async function loadNotifications() {
+                if (!currentInvestorId) return;
+                const { data } = await supabase.from('admin_notifications').select('*').eq('investor_id', currentInvestorId).order('created_at', { ascending: false }).limit(20);
+                if (data) { 
+                    notifications = data; 
+                    renderNotifications(); 
+                    updateNotifBadge(); 
+                }
+            }
+            
+            function renderNotifications() {
+                const container = document.getElementById('notifList');
+                if (!container) return;
+                if (notifications.length === 0) {
+                    container.innerHTML = '<div class="notif-item">No notifications</div>';
+                    return;
+                }
+                container.innerHTML = notifications.map(n => `
+                    <div class="notif-item ${!n.read ? 'unread' : ''}" data-id="${n.id}">
+                        <div class="notif-title">${escapeHtml(n.title)}</div>
+                        <div class="notif-msg">${escapeHtml(n.message)}</div>
+                        <div class="notif-date">${new Date(n.created_at).toLocaleString()}</div>
+                    </div>
+                `).join('');
+                document.querySelectorAll('.notif-item').forEach(el => {
+                    el.addEventListener('click', async () => {
+                        const id = el.dataset.id;
+                        await supabase.from('admin_notifications').update({ read: true }).eq('id', id);
+                        loadNotifications();
+                    });
+                });
+            }
+            
+            function updateNotifBadge() {
+                const unread = notifications.filter(n => !n.read).length;
+                const badge = document.getElementById('notifBadge');
+                if (unread > 0) {
+                    badge.style.display = 'flex';
+                    badge.innerText = unread;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+            
+            // ========== NEW: ADMIN POPUP SYSTEM ==========
+            async function checkAdminPopups() {
+                if (!currentInvestorId) return;
+                const { data } = await supabase.from('admin_popups').select('*').eq('is_active', true).gte('expires_at', new Date().toISOString()).order('created_at', { ascending: false });
+                if (data && data.length) {
+                    const lastShown = localStorage.getItem('lastPopupShown');
+                    const popup = data[0];
+                    if (!lastShown || (Date.now() - parseInt(lastShown)) > 86400000) {
+                        document.getElementById('popupTitle').innerText = popup.title;
+                        document.getElementById('popupMessage').innerText = popup.message;
+                        document.getElementById('adminPopupModal').classList.add('active');
+                        localStorage.setItem('lastPopupShown', Date.now().toString());
+                        if (popup.button_text) {
+                            const btn = document.getElementById('closePopupBtn');
+                            btn.innerHTML = popup.button_text;
+                            if (popup.button_url) {
+                                btn.onclick = () => {
+                                    window.open(popup.button_url, '_blank');
+                                    document.getElementById('adminPopupModal').classList.remove('active');
+                                };
+                            }
+                        }
+                        setTimeout(() => {
+                            document.getElementById('adminPopupModal').classList.remove('active');
+                        }, 8000);
+                    }
+                }
+            }
+            
+            // ========== NEW: WEBSITE TOUR SYSTEM ==========
+            let tourActive = false;
+            let currentTourStep = 0;
+            const tourSteps = [
+                { target: '.stats', title: '📊 Dashboard Overview', desc: 'View your total investment, profit, and available balance at a glance.', example: 'Your wealth tracking hub', benefit: 'Know your financial position instantly' },
+                { target: '.tabs button:first-child', title: '💰 Investment Section', desc: 'See all your approved investments and their performance.', example: 'Track where your money is working', benefit: 'Monitor returns on each investment' },
+                { target: '.tab-btn[data-tab="referrals"]', title: '👥 Referral Program', desc: 'Invite friends and earn 10% commission on their investments.', example: 'Share your unique referral code', benefit: 'Build passive income streams' },
+                { target: '.tab-btn[data-tab="withdrawals"]', title: '💵 Withdrawals', desc: 'Request withdrawals of your earned profits.', example: 'Withdraw anytime with minimum Rs. 1,000', benefit: 'Access your earnings easily' },
+                { target: '.notif-bell', title: '🔔 Notifications', desc: 'Get real-time updates from admin about your account.', example: 'Investment approvals, profit credits, etc.', benefit: 'Stay informed always' }
+            ];
+            
+            async function initTour() {
+                const lastTour = localStorage.getItem('lastTourTime');
+                const tourCompleted = localStorage.getItem('tourCompleted');
+                const shouldShow = !tourCompleted || (lastTour && (Date.now() - parseInt(lastTour)) > 24 * 60 * 60 * 1000);
+                if (shouldShow && !tourActive) {
+                    setTimeout(() => startTour(), 2000);
+                }
+            }
+            
+            function startTour() {
+                tourActive = true;
+                currentTourStep = 0;
+                showTourStep();
+            }
+            
+            function showTourStep() {
+                if (currentTourStep >= tourSteps.length) {
+                    endTour();
+                    return;
+                }
+                const step = tourSteps[currentTourStep];
+                const targetEl = document.querySelector(step.target);
+                if (!targetEl) {
+                    currentTourStep++;
+                    showTourStep();
+                    return;
+                }
+                targetEl.classList.add('tour-highlight');
+                const rect = targetEl.getBoundingClientRect();
+                const existingTooltip = document.querySelector('.tour-tooltip');
+                if (existingTooltip) existingTooltip.remove();
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tour-tooltip';
+                let topPos = rect.bottom + 10;
+                if (topPos + 280 > window.innerHeight) topPos = rect.top - 280;
+                tooltip.style.top = `${Math.max(10, topPos)}px`;
+                tooltip.style.left = `${Math.min(window.innerWidth - 340, Math.max(10, rect.left))}px`;
+                tooltip.innerHTML = `
+                    <h3>${step.title}</h3>
+                    <p>${step.desc}</p>
+                    <div style="background:rgba(232,177,60,0.1); padding:8px; border-radius:12px; margin:8px 0;">
+                        <strong>📌 Example:</strong> ${step.example}
+                    </div>
+                    <div style="background:rgba(30,126,94,0.2); padding:8px; border-radius:12px; margin:8px 0;">
+                        <strong>🎯 Benefit:</strong> ${step.benefit}
+                    </div>
+                    <div class="tour-buttons">
+                        <button class="tour-btn tour-skip" onclick="window.skipTour()">Skip Tour</button>
+                        ${currentTourStep > 0 ? '<button class="tour-btn tour-prev" onclick="window.prevTour()">← Prev</button>' : ''}
+                        <button class="tour-btn tour-next" onclick="window.nextTour()">${currentTourStep === tourSteps.length - 1 ? '✓ Finish' : 'Next →'}</button>
+                    </div>
+                `;
+                document.body.appendChild(tooltip);
+            }
+            
+            window.nextTour = function() {
+                document.querySelector('.tour-highlight')?.classList.remove('tour-highlight');
+                document.querySelector('.tour-tooltip')?.remove();
+                currentTourStep++;
+                showTourStep();
+            };
+            
+            window.prevTour = function() {
+                document.querySelector('.tour-highlight')?.classList.remove('tour-highlight');
+                document.querySelector('.tour-tooltip')?.remove();
+                if (currentTourStep > 0) currentTourStep--;
+                showTourStep();
+            };
+            
+            window.skipTour = function() {
+                endTour();
+            };
+            
+            function endTour() {
+                document.querySelector('.tour-highlight')?.classList.remove('tour-highlight');
+                document.querySelector('.tour-tooltip')?.remove();
+                tourActive = false;
+                localStorage.setItem('lastTourTime', Date.now().toString());
+                localStorage.setItem('tourCompleted', 'true');
+                Swal.fire({
+                    title: '🎉 Tour Complete!',
+                    text: 'You are now ready to use your dashboard effectively.',
+                    icon: 'success',
+                    background: '#1a3d33',
+                    color: '#fff',
+                    confirmButtonColor: '#E8B13C',
+                    timer: 3000
+                });
             }
             
             function showPremiumOverlay(elementId, featureName) {
@@ -1826,6 +2153,7 @@
                         loadStatsAndBalance();
                         refreshAnalyticsData();
                     })
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'admin_notifications', filter: `investor_id=eq.${currentInvestorId}` }, () => { loadNotifications(); })
                     .subscribe();
             }
             
@@ -1910,6 +2238,7 @@
             window.shareOnTwitter = function() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Join me on Sohrab Industries! Earn 50% profit sharing! Use my referral code: ${referralData.code}`)}&url=${encodeURIComponent(referralData.link)}`, '_blank'); };
             window.shareOnLinkedIn = function() { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralData.link)}`, '_blank'); };
             
+            // FIXED: Referral Data with Name, Email, Join Date, Investment
             async function loadReferralData() {
                 if (!currentInvestorId) return;
                 try {
@@ -1923,25 +2252,57 @@
                         document.getElementById('profileReferralLink').value = referralData.link;
                     }
                     
-                    const { data: referrals } = await supabase.from('referrals').select('*, referred:referred_id(full_name)').eq('investor_id', currentInvestorId);
+                    // Get referrals with referred user details
+                    const { data: referrals } = await supabase
+                        .from('referrals')
+                        .select('*, referred:referred_id(full_name, email, created_at)')
+                        .eq('investor_id', currentInvestorId);
                     referralData.referrals = referrals || [];
                     
                     const teamList = document.getElementById('referralTeamList');
                     if (teamList) {
                         if (referralData.referrals.length === 0) {
-                            teamList.innerHTML = '<tr><td colspan="5" class="empty-state">No referrals yet. Share your code!</td></tr>';
+                            teamList.innerHTML = '<tr><td colspan="6" class="empty-state">No referrals yet. Share your code!</td></tr>';
                         } else {
-                            teamList.innerHTML = referralData.referrals.map(ref => `<tr>
-                                <td>${escapeHtml(ref.referred?.full_name || 'Unknown')}</td>
-                                <td>Rs. ${(ref.investment_amount || 0).toLocaleString()}</td>
-                                <td>Rs. ${(ref.commission_earned || 0).toLocaleString()}</td>
-                                <td><span class="status-badge ${ref.commission_status === 'paid' ? 'status-active' : 'status-pending'}">${ref.commission_status || 'pending'}</span></td>
-                                <td>${new Date(ref.created_at).toLocaleDateString()}</td>
-                            </tr>`).join('');
+                            teamList.innerHTML = referralData.referrals.map(ref => `
+                                <tr>
+                                    <td>${escapeHtml(ref.referred?.full_name || 'Unknown')}</td>
+                                    <td>${escapeHtml(ref.referred?.email || 'No email')}</td>
+                                    <td>${ref.referred?.created_at ? new Date(ref.referred.created_at).toLocaleDateString() : '-'}</td>
+                                    <td>Rs. ${(ref.investment_amount || 0).toLocaleString()}</td>
+                                    <td>Rs. ${(ref.commission_earned || 0).toLocaleString()}</td>
+                                    <td><span class="status-badge ${ref.commission_status === 'paid' ? 'status-active' : 'status-pending'}">${ref.commission_status || 'pending'}</span>
+                                </tr>
+                            `).join('');
                         }
                     }
                     
-                    const totalEarned = referralData.referrals.reduce((sum, r) => sum + (r.commission_earned || 0), 0);
+                    // Get commission history
+                    const { data: commissions } = await supabase
+                        .from('referral_commissions')
+                        .select('*, referred:referred_id(full_name)')
+                        .eq('investor_id', currentInvestorId)
+                        .order('created_at', { ascending: false });
+                    referralData.commissions = commissions || [];
+                    
+                    const commissionList = document.getElementById('referralCommissionList');
+                    if (commissionList) {
+                        if (referralData.commissions.length === 0) {
+                            commissionList.innerHTML = '<tr><td colspan="5" class="empty-state">No commissions yet</div></tr>';
+                        } else {
+                            commissionList.innerHTML = referralData.commissions.map(c => `
+                                <tr>
+                                    <td>${new Date(c.created_at).toLocaleDateString()}</td>
+                                    <td>${escapeHtml(c.referred?.full_name || 'Someone')}</td>
+                                    <td>Rs. ${(c.investment_amount || 0).toLocaleString()}</td>
+                                    <td>Rs. ${(c.amount || 0).toLocaleString()}</td>
+                                    <td><span class="status-badge ${c.status === 'paid' ? 'status-active' : 'status-pending'}">${c.status || 'pending'}</span>
+                                </tr>
+                            `).join('');
+                        }
+                    }
+                    
+                    const totalEarned = referralData.commissions.reduce((sum, c) => sum + (c.amount || 0), 0);
                     document.getElementById('referralEarnings').innerHTML = `Rs. ${totalEarned.toLocaleString()}`;
                     
                     const progressFill = document.getElementById('referralProgressFill');
@@ -2052,7 +2413,7 @@
                     const batchesList = document.getElementById('availableBatchesList');
                     if (batchesList) {
                         if (availableBatches.length === 0) { 
-                            batchesList.innerHTML = '<tr><td colspan="8" class="empty-state">No investment batches available for your tier. Upgrade to access more!</td></tr>'; 
+                            batchesList.innerHTML = '<tr><td colspan="8" class="empty-state">No investment batches available for your tier. Upgrade to access more!</div></tr>'; 
                         } else { 
                             batchesList.innerHTML = availableBatches.map(batch => { 
                                 const availableSlots = (batch.total_slots || 0) - (batch.filled_slots || 0); 
@@ -2061,12 +2422,12 @@
                                 return `<tr>
                                     <td><strong>${escapeHtml(batch.batch_name)}</strong></td>
                                     <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
-                                    <td>${batch.profit_percentage || 0}%</td>
-                                    <td>${batch.duration_days || 0} days</td>
-                                    <td>${batch.total_slots || 0}</td>
-                                    <td>${isFull ? '<span class="status-badge slot-full-badge">FULL</span>' : availableSlots}</td>
-                                    <td><span class="tier-badge ${tierClass}">${(batch.min_tier_required || 'bronze').toUpperCase()}</span></td>
-                                    <td>${!isFull ? `<button class="btn-primary" onclick="investInBatch('${batch.id}', ${batch.investment_amount})">Invest Now</button>` : '<button class="btn-primary" disabled>Full</button>'}</td>
+                                    <td>${batch.profit_percentage || 0}%</div>
+                                    <td>${batch.duration_days || 0} days</div>
+                                    <td>${batch.total_slots || 0}</div>
+                                    <td>${isFull ? '<span class="status-badge slot-full-badge">FULL</span>' : availableSlots}</div>
+                                    <td><span class="tier-badge ${tierClass}">${(batch.min_tier_required || 'bronze').toUpperCase()}</span></div>
+                                    <td>${!isFull ? `<button class="btn-primary" onclick="investInBatch('${batch.id}', ${batch.investment_amount})">Invest Now</button>` : '<button class="btn-primary" disabled>Full</button>'}
                                 </tr>`;
                             }).join(''); 
                         }
@@ -2213,17 +2574,17 @@
                 try {
                     const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'active').order('investment_date', {ascending:false});
                     if(error) throw error;
-                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments yet</td></tr>'; return; }
+                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No approved investments yet</div></tr>'; return; }
                     tbody.innerHTML = data.map(inv => `<tr>
-                        <td>${new Date(inv.investment_date).toLocaleDateString()}</td>
-                        <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
-                        <td>${inv.payment_method||'-'}</td>
-                        <td>${inv.transaction_id||'-'}</td>
-                        <td><span class="status-badge status-active">Approved</span></td>
-                        <td>${inv.notes||'-'}</td>
-                        <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</td>
+                        <td>${new Date(inv.investment_date).toLocaleDateString()}</div>
+                        <td>Rs. ${(inv.amount||0).toLocaleString()}</div>
+                        <td>${inv.payment_method||'-'}</div>
+                        <td>${inv.transaction_id||'-'}</div>
+                        <td><span class="status-badge status-active">Approved</span></div>
+                        <td>${inv.notes||'-'}</div>
+                        <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '-'}</div>
                     </tr>`).join('');
-                } catch(e) { console.error('Load investments error:', e); tbody.innerHTML='<tr><td colspan="7">Error loading investments</td></tr>'; }
+                } catch(e) { console.error('Load investments error:', e); tbody.innerHTML='<tr><td colspan="7">Error loading investments</div></tr>'; }
             }
             
             async function loadInvestmentRequests() {
@@ -2232,17 +2593,17 @@
                 try {
                     const { data, error } = await supabase.from('investments').select('*').eq('investor_id', currentInvestorId).eq('status', 'pending').order('created_at',{ascending:false});
                     if(error) throw error;
-                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</td></tr>'; return; }
+                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-state">No pending requests</div></tr>'; return; }
                     tbody.innerHTML = data.map(inv => `<tr>
-                        <td>${new Date(inv.created_at).toLocaleDateString()}</td>
-                        <td>Rs. ${(inv.amount||0).toLocaleString()}</td>
-                        <td>${inv.payment_method||'-'}</td>
-                        <td>${inv.transaction_id||'-'}</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                        <td>${inv.notes||'-'}</td>
-                        <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</td>
+                        <td>${new Date(inv.created_at).toLocaleDateString()}</div>
+                        <td>Rs. ${(inv.amount||0).toLocaleString()}</div>
+                        <td>${inv.payment_method||'-'}</div>
+                        <td>${inv.transaction_id||'-'}</div>
+                        <td><span class="status-badge status-pending">Pending</span></div>
+                        <td>${inv.notes||'-'}</div>
+                        <td>${inv.screenshot ? `<img src="${inv.screenshot}" class="approval-screenshot" onclick="window.open('${inv.screenshot}','_blank')">` : '<span class="status-badge status-pending">No Screenshot</span>'}</div>
                     </tr>`).join('');
-                } catch(e) { console.error('Load requests error:', e); tbody.innerHTML='<tr><td colspan="7">Error loading requests</td></tr>'; }
+                } catch(e) { console.error('Load requests error:', e); tbody.innerHTML='<tr><td colspan="7">Error loading requests</div></tr>'; }
             }
             
             async function loadProfits() {
@@ -2251,15 +2612,15 @@
                 try {
                     const { data, error } = await supabase.from('profits').select('*').eq('investor_id', currentInvestorId).order('month',{ascending:false});
                     if(error) throw error;
-                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</td></tr>'; return; }
+                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No profits recorded yet</div></tr>'; return; }
                     tbody.innerHTML = data.map(p => `<tr>
-                        <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</td>
-                        <td>Rs. ${(p.amount||0).toLocaleString()}</td>
-                        <td>${p.profit_percentage||10}%</td>
-                        <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></td>
-                        <td>${p.paid_date?new Date(p.paid_date).toLocaleDateString():'-'}</td>
+                        <td>${new Date(p.month).toLocaleDateString('default',{month:'long',year:'numeric'})}</div>
+                        <td>Rs. ${(p.amount||0).toLocaleString()}</div>
+                        <td>${p.profit_percentage||10}%</div>
+                        <td><span class="status-badge ${p.paid?'status-active':'status-pending'}">${p.paid?'Paid':'Pending'}</span></div>
+                        <td>${p.paid_date?new Date(p.paid_date).toLocaleDateString():'-'}</div>
                     </tr>`).join('');
-                } catch(e) { console.error('Load profits error:', e); tbody.innerHTML='<tr><td colspan="5">Error loading profits</td></tr>'; }
+                } catch(e) { console.error('Load profits error:', e); tbody.innerHTML='<tr><td colspan="5">Error loading profits</div></tr>'; }
             }
             
             async function loadWithdrawals() {
@@ -2268,18 +2629,18 @@
                 try {
                     const { data, error } = await supabase.from('withdrawals').select('*').eq('investor_id', currentInvestorId).order('request_date',{ascending:false});
                     if(error) throw error;
-                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</td></tr>'; return; }
-                    tbody.innerHTML = data.map(w => `<td>
-                        <td>${new Date(w.request_date).toLocaleDateString()}</td>
-                        <td>Rs. ${(w.amount||0).toLocaleString()}</td>
-                        <td>${w.payment_method||'-'}</td>
-                        <td>${w.account_title||'-'}</td>
-                        <td>${w.account_details||'-'}</td>
-                        <td><span class="status-badge ${w.status==='approved'?'status-active':(w.status==='rejected'?'status-rejected':'status-pending')}">${w.status==='pending'?'Pending':(w.status==='approved'?'Approved':'Rejected')}</span></td>
-                        <td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</td>
-                        <td>${w.screenshot ? `<img src="${w.screenshot}" class="approval-screenshot" onclick="window.open('${w.screenshot}','_blank')">` : (w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="window.open('${w.approval_screenshot}','_blank')">` : '-')}</td>
+                    if(!data?.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No withdrawal requests yet</div></tr>'; return; }
+                    tbody.innerHTML = data.map(w => `<tr>
+                        <td>${new Date(w.request_date).toLocaleDateString()}</div>
+                        <td>Rs. ${(w.amount||0).toLocaleString()}</div>
+                        <td>${w.payment_method||'-'}</div>
+                        <td>${w.account_title||'-'}</div>
+                        <td>${w.account_details||'-'}</div>
+                        <td><span class="status-badge ${w.status==='approved'?'status-active':(w.status==='rejected'?'status-rejected':'status-pending')}">${w.status==='pending'?'Pending':(w.status==='approved'?'Approved':'Rejected')}</span></div>
+                        <td>${w.processed_date?new Date(w.processed_date).toLocaleDateString():'-'}</div>
+                        <td>${w.screenshot ? `<img src="${w.screenshot}" class="approval-screenshot" onclick="window.open('${w.screenshot}','_blank')">` : (w.approval_screenshot ? `<img src="${w.approval_screenshot}" class="approval-screenshot" onclick="window.open('${w.approval_screenshot}','_blank')">` : '-')}</div>
                     </tr>`).join('');
-                } catch(e) { console.error('Load withdrawals error:', e); tbody.innerHTML='<tr><td colspan="8">Error loading withdrawals</td></tr>'; }
+                } catch(e) { console.error('Load withdrawals error:', e); tbody.innerHTML='<tr><td colspan="8">Error loading withdrawals</div></tr>'; }
             }
             
             async function loadProfile() {
@@ -2334,7 +2695,7 @@
                     const { data: productionBatches } = await supabase.from('batches').select('*, investments(investor_id, amount, investors(full_name))').eq('investor_id', currentInvestorId);
                     
                     const tbody = document.getElementById('batchesList');
-                    if((!investorInvestments?.length) && (!productionBatches?.length)) { tbody.innerHTML='<tr><td colspan="13" class="empty-state">No active batches for your investments</td></tr>'; } else {
+                    if((!investorInvestments?.length) && (!productionBatches?.length)) { tbody.innerHTML='<tr><td colspan="13" class="empty-state">No active batches for your investments</div></tr>'; } else {
                         let html = '';
                         batchDataCache = [];
                         let batchCounter = 0;
@@ -2356,19 +2717,19 @@
                             const profitStatusClass = matchedBatch.profit_credited ? 'status-active' : 'status-pending';
                             batchDataCache.push({ batchId: `BATCH-${batchCounter+1}`, inv, matchedBatch, netProfit, investorShare, roi });
                             html += `<tr class="batch-row" onclick="showBatchDetailAnalytics(${batchCounter})">
-                                <td>${`BATCH-${batchCounter+1}`}</td>
-                                <td><strong>${escapeHtml(matchedBatch.batch_name || 'Standard Batch')}</strong></td>
-                                <td>Rs. ${(inv.amount || 0).toLocaleString()}</td>
-                                <td>${matchedBatch.profit_percentage || 50}%</td>
-                                <td>${matchedBatch.production_quantity || 0}</td>
-                                <td><span class="status-badge ${statusClass}">${matchedBatch.status || 'In Production'}</span></td>
-                                <td>${progressHtml}</td>
-                                <td>${matchedBatch.status === 'In Production' || matchedBatch.status === 'Completed' ? '-' : `Rs. ${(matchedBatch.sales || 0).toLocaleString()}`}</td>
-                                <td>Rs. ${Math.abs(matchedBatch.expenses || 0).toLocaleString()}</td>
-                                <td class="${netProfitClass}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
-                                <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
-                                <td>${roi}%</td>
-                                <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
+                                <td>${`BATCH-${batchCounter+1}`}</div>
+                                <td><strong>${escapeHtml(matchedBatch.batch_name || 'Standard Batch')}</strong></div>
+                                <td>Rs. ${(inv.amount || 0).toLocaleString()}</div>
+                                <td>${matchedBatch.profit_percentage || 50}%</div>
+                                <td>${matchedBatch.production_quantity || 0}</div>
+                                <td><span class="status-badge ${statusClass}">${matchedBatch.status || 'In Production'}</span></div>
+                                <td>${progressHtml}</div>
+                                <td>${matchedBatch.status === 'In Production' || matchedBatch.status === 'Completed' ? '-' : `Rs. ${(matchedBatch.sales || 0).toLocaleString()}`}</div>
+                                <td>Rs. ${Math.abs(matchedBatch.expenses || 0).toLocaleString()}</div>
+                                <td class="${netProfitClass}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</div>
+                                <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</div>
+                                <td>${roi}%</div>
+                                <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></div>
                             </tr>`;
                             batchCounter++;
                         }
@@ -2389,20 +2750,20 @@
                             const profitStatusClass = batch.profit_credited ? 'status-active' : 'status-pending';
                             batchDataCache.push({ batchId: batch.id, inv: { amount: batch.investment_amount }, matchedBatch: batch, netProfit, investorShare, roi });
                             html += `<tr class="batch-row" onclick="showBatchDetailAnalytics(${batchCounter})">
-                                <td>${batch.id?.slice(0, 12)}...</td>
-                                <td>Production Batch</td>
-                                                                <td>Production Batch</td>
-                                <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</td>
-                                <td>50%</td>
-                                <td>${batch.production_quantity || 0}</td>
-                                <td><span class="status-badge ${statusClass}">${batch.status}</span></td>
-                                <td>${progressHtml}</td>
-                                <td>Rs. ${(batch.sales || 0).toLocaleString()}</td>
-                                <td>Rs. ${(batch.expenses || 0).toLocaleString()}</td>
-                                <td class="${netProfitClass}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</td>
-                                <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</td>
-                                <td>${roi}%</td>
-                                <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></td>
+                                <td>${batch.id?.slice(0, 12)}...</div>
+                                <td>Production Batch</div>
+                                                                <td>Production Batch</div>
+                                <td>Rs. ${(batch.investment_amount || 0).toLocaleString()}</div>
+                                <td>50%</div>
+                                <td>${batch.production_quantity || 0}</div>
+                                <td><span class="status-badge ${statusClass}">${batch.status}</span></div>
+                                <td>${progressHtml}</div>
+                                <td>Rs. ${(batch.sales || 0).toLocaleString()}</div>
+                                <td>Rs. ${(batch.expenses || 0).toLocaleString()}</div>
+                                <td class="${netProfitClass}">${netProfit < 0 ? '-' : ''}Rs. ${Math.abs(netProfit).toLocaleString()}</div>
+                                <td>${investorShare < 0 ? '-' : ''}Rs. ${Math.abs(investorShare).toLocaleString()}</div>
+                                <td>${roi}%</div>
+                                <td><span class="status-badge ${profitStatusClass}">${profitStatus}</span></div>
                             </tr>`;
                             batchCounter++;
                         }
@@ -2419,13 +2780,13 @@
                     withdrawalsLedger?.forEach(w => { balance -= w.amount; entries.push({ date: w.processed_date, desc: 'Withdrawal', credit: 0, debit: w.amount, balance: balance }); });
                     entries.sort((a,b) => new Date(a.date) - new Date(b.date));
                     const ledgerBody = document.getElementById('ledgerList');
-                    if(entries.length === 0) { ledgerBody.innerHTML='<tr><td colspan="5" class="empty-state">No ledger entries</td></tr>'; }
+                    if(entries.length === 0) { ledgerBody.innerHTML='<tr><td colspan="5" class="empty-state">No ledger entries</div></td>'; }
                     else { ledgerBody.innerHTML = entries.map(e => `<tr>
-                        <td>${new Date(e.date).toLocaleDateString()}</td>
-                        <td>${e.desc}</td>
-                        <td>${e.credit ? `Rs. ${e.credit.toLocaleString()}` : '-'}</td>
-                        <td>${e.debit ? `Rs. ${e.debit.toLocaleString()}` : '-'}</td>
-                        <td class="financial-highlight">Rs. ${e.balance.toLocaleString()}</td>
+                        <td>${new Date(e.date).toLocaleDateString()}</div>
+                        <td>${e.desc}</div>
+                        <td>${e.credit ? `Rs. ${e.credit.toLocaleString()}` : '-'}</div>
+                        <td>${e.debit ? `Rs. ${e.debit.toLocaleString()}` : '-'}</div>
+                        <td class="financial-highlight">Rs. ${e.balance.toLocaleString()}</div>
                     </tr>`).join(''); }
                 } catch(e) { console.error('Analytics error:', e); }
             }
@@ -2614,6 +2975,19 @@
             document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
             document.querySelectorAll('.stat-card').forEach(card => card.addEventListener('click', () => switchTab(card.getAttribute('data-tab'))));
             
+            // NEW: Notification bell and clear button
+            document.getElementById('notifBell').onclick = () => {
+                const panel = document.getElementById('notifPanel');
+                panel.classList.toggle('active');
+            };
+            document.getElementById('clearNotifs').onclick = async () => {
+                await supabase.from('admin_notifications').update({ read: true }).eq('investor_id', currentInvestorId);
+                loadNotifications();
+            };
+            document.getElementById('closePopupBtn').onclick = () => {
+                document.getElementById('adminPopupModal').classList.remove('active');
+            };
+            
             window.showUpgradeModal = showUpgradeModal;
             window.submitUpgradeRequest = submitUpgradeRequest;
             
@@ -2665,6 +3039,8 @@
                     await checkUserPermissions(); 
                     await loadReferralData(); 
                     await loadHoldingWallet();
+                    await loadNotifications();
+                    await checkAdminPopups();
                     loadPromoImages(); 
                     loadCampaignsForInvestor(); 
                     setupRealtimeBatchSync(); 
@@ -2672,6 +3048,7 @@
                     updateLoadingProgress(95, 'Finalizing...');
                     setTimeout(() => {
                         hideLoadingOverlay();
+                        initTour();
                     }, 500);
                 } catch(e) { 
                     console.error('Auth error:', e);
